@@ -82,6 +82,116 @@
 @section('add_on_script')
 <script src="{{ asset('assets/js/jquery.validate.min.js') }}"></script>
 <script>
+
+    $(document).ready(function() {
+    
+       $('#kt_ecommerce_add_product_form').validate({
+           rules: {
+                product_name : "required",
+                sku : "required",
+                category_id : "required",
+                brand_id : "required",
+                base_price : "required",
+           },
+           messages: {
+                product_name: "Product Name is required",
+                sku: "Product Sku is required",
+                category_id: "Category is required",
+                brand_id: "Brand is required",
+                base_price: "Base is required",
+           },
+           submitHandler: function(form) {
+            
+                var action="{{ route('products.save') }}";
+                var forms = $('#kt_ecommerce_add_product_form')[0]; 
+                var formData = new FormData(forms);                                       
+                
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });  
+                $.ajax({
+                    url: "{{ route('products.save') }}",
+                    type:"POST",
+                    data: formData,
+                    contentType: false,
+                    cache: false,
+                    processData:false,
+                    beforeSend: function() {
+                        submitButton.setAttribute('data-kt-indicator', 'on');
+                        submitButton.disabled = true;
+                    },
+                    success: function(res) {
+                        if( res.error == 1 ) {
+                            // Remove loading indication
+                            submitButton.removeAttribute('data-kt-indicator');
+                             // Enable button
+                            submitButton.disabled = false;
+                            let error_msg = res.message
+                            Swal.fire({
+                                html: res.message,
+                                icon: "error",
+                                buttonsStyling: false,
+                                confirmButtonText: "Ok, got it!",
+                                customClass: {
+                                    confirmButton: "btn btn-primary"
+                                }
+                             });
+                        } else {
+                            
+                            if( res.product_id ) {
+                                       
+                                myDropzone.processQueue();
+                                myDropzone.on("addedfiles", (file) => {
+                                //    console.log( myDropzone.hiddenFileInput );
+                               });
+
+                               myBrocheureDropzone.processQueue();
+
+                            }
+
+                            submitButton.removeAttribute('data-kt-indicator');
+                             // Enable button
+                            submitButton.disabled = false;
+                            setTimeout(() => {
+                                if( res.isUpdate ) {
+                                    location.reload();
+                                } else {
+                                    window.location.href = product_url;
+                                }
+                            }, 500);
+                            Swal.fire({
+                                // text: "Thank you! You've updated Products",
+                                text: res.message,
+                                icon: "success",
+                                buttonsStyling: false,
+                                confirmButtonText: "Ok, got it!",
+                                customClass: {
+                                    confirmButton: "btn btn-primary"
+                                }
+                            }).then(function (result) {
+                                if (result.isConfirmed) {
+                                   
+                                    // window.location.href=product_url;
+                                    
+                                }
+                            });
+                        }
+                    }
+                });
+           }
+       });
+
+    
+        $('#related_product').select2();
+        $('#cross_selling_product').select2();
+        $("body").on("click", ".removeUrlRow", function () {
+            $(this).parents(".childUrlRow").remove();
+        })
+    });
+
+    // alert();
     @if(isset( $info->id) && !empty( $info->id))
     addVariationRow('{{ $info->id }}');
     @endif
@@ -321,10 +431,10 @@
         });
     }
 
-    $("body").on("click", ".removeRow", function () {
-        $(this).parents(".childRow").remove();
-    })
-
+    function removeRow(data) {
+        $(data).parents(".childRow").remove();
+    }
+  
     var productCancelButton;
     productCancelButton = document.querySelector('#kt_ecommerce_add_product_cancel');
     productCancelButton.addEventListener('click', function (e) {
@@ -362,112 +472,7 @@
 // Define variables
 
 // Get elements
-$(document).ready(function() {
-       $('#kt_ecommerce_add_product_form').validate({
-           rules: {
-                product_name : "required",
-                sku : "required",
-                category_id : "required",
-                brand_id : "required",
-                base_price : "required",
-           },
-           messages: {
-                product_name: "Product Name is required",
-                sku: "Product Sku is required",
-                category_id: "Category is required",
-                brand_id: "Brand is required",
-                base_price: "Base is required",
-           },
-           submitHandler: function(form) {
-                var action="{{ route('products.save') }}";
-                var forms = $('#kt_ecommerce_add_product_form')[0]; 
-                var formData = new FormData(forms);                                       
-                
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                });  
-                $.ajax({
-                    url: "{{ route('products.save') }}",
-                    type:"POST",
-                    data: formData,
-                    contentType: false,
-                    cache: false,
-                    processData:false,
-                    beforeSend: function() {
-                        submitButton.setAttribute('data-kt-indicator', 'on');
-                        submitButton.disabled = true;
-                    },
-                    success: function(res) {
-                        if( res.error == 1 ) {
-                            // Remove loading indication
-                            submitButton.removeAttribute('data-kt-indicator');
-                             // Enable button
-                            submitButton.disabled = false;
-                            let error_msg = res.message
-                            Swal.fire({
-                                html: res.message,
-                                icon: "error",
-                                buttonsStyling: false,
-                                confirmButtonText: "Ok, got it!",
-                                customClass: {
-                                    confirmButton: "btn btn-primary"
-                                }
-                             });
-                        } else {
-                            
-                            if( res.product_id ) {
-                                       
-                                myDropzone.processQueue();
-                                myDropzone.on("addedfiles", (file) => {
-                                //    console.log( myDropzone.hiddenFileInput );
-                               });
-
-                               myBrocheureDropzone.processQueue();
-
-                            }
-
-                            submitButton.removeAttribute('data-kt-indicator');
-                             // Enable button
-                            submitButton.disabled = false;
-                            setTimeout(() => {
-                                if( res.isUpdate ) {
-                                    location.reload();
-                                } else {
-                                    window.location.href = product_url;
-                                }
-                            }, 500);
-                            Swal.fire({
-                                // text: "Thank you! You've updated Products",
-                                text: res.message,
-                                icon: "success",
-                                buttonsStyling: false,
-                                confirmButtonText: "Ok, got it!",
-                                customClass: {
-                                    confirmButton: "btn btn-primary"
-                                }
-                            }).then(function (result) {
-                                if (result.isConfirmed) {
-                                   
-                                    // window.location.href=product_url;
-                                    
-                                }
-                            });
-                        }
-                    }
-                });
-           }
-       });
-   });
-
-    $(document).ready(function() {
-        $('#related_product').select2();
-        $('#cross_selling_product').select2();
-        $("body").on("click", ".removeUrlRow", function () {
-            $(this).parents(".childUrlRow").remove();
-        })
-    });
+    
 
 
     function addLinks() {

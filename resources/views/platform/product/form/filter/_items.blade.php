@@ -55,7 +55,7 @@
     <input type="text" class="form-control mw-100 w-250px required" name="filter_variation_title[]" placeholder="Title" required />
     <input type="text" class="form-control mw-100 w-300px required" name="filter_variation_value[]" placeholder="Values" required />
     <!--end::Input-->
-    <button type="button" data-repeater-delete="" class="btn btn-sm btn-icon btn-light-danger removeRow"  >
+    <button type="button" data-repeater-delete="" class="btn btn-sm btn-icon btn-light-danger removeRow" onclick="return removeRow(this)"  >
         <!--begin::Svg Icon | path: icons/duotune/arrows/arr088.svg-->
         <span class="svg-icon svg-icon-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">

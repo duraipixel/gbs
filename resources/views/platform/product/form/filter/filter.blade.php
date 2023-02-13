@@ -3,10 +3,8 @@
     <!--begin::Card header-->
     <div class="card-header">
         <div class="card-title w-100">
-          
             <h2 class="w-100">
                 Filter Variations
-
                 <div class="form-group mt-5 float-end">
                     <button type="button" data-repeater-create="" onclick="return openForm('product-attribute', '', 'product')" class="btn btn-sm btn-light-primary">
                     <span class="svg-icon svg-icon-2">
@@ -18,8 +16,6 @@
                     Add Product Attribute Set</button>
                 </div>
             </h2>
-
-            
         </div>
     </div>
     <!--end::Card header-->
