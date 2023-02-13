@@ -26,11 +26,11 @@ var KTAccountSettingsProfileDetails = function () {
                             notEmpty: {
                                 message: 'Site phone number is required'
                             },
-                            stringLength: {
-                                max: 10,
-                                min: 10,
-                                message: 'The phone number must be 10 characters',
-                            },
+                            // stringLength: {
+                            //     max: 10,
+                            //     min: 10,
+                            //     message: 'The phone number must be 10 characters',
+                            // },
                         }
                     },
                     site_email: {

@@ -1,5 +1,3 @@
-@php
-@endphp
 <div class="aside-menu flex-column-fluid">
     <div class="hover-scroll-overlay-y my-5 my-lg-5" id="kt_aside_menu_wrapper" data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-height="auto" data-kt-scroll-dependencies="#kt_aside_logo, #kt_aside_footer" data-kt-scroll-wrappers="#kt_aside_menu" data-kt-scroll-offset="0">
         <div class="menu menu-column menu-title-gray-800 menu-state-title-primary menu-state-icon-primary menu-state-bullet-primary menu-arrow-gray-500" id="#kt_aside_menu" data-kt-menu="true" data-kt-menu-expand="false">
@@ -15,7 +13,7 @@
                             </svg>
                         </span>
                     </span>
-                    <span class="menu-title">Dashboard</span>
+                    <span class="menu-title"> Dashboard </span>
                 </a>
             </div>
            @if( access()->hasAccess(['product-category', 'product-tags', 'product-labels', 'products', 'product-attribute', 'product-collection']) )
@@ -75,14 +73,14 @@
                         </a>
                     </div>
                     @endif
-                    {{-- <div class="menu-item">
+                    <div class="menu-item">
                         <a class="menu-link" href="#">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
-                            <span class="menu-title">Product Groups</span>
+                            <span class="menu-title">Combo Product</span>
                         </a>
-                    </div> --}}
+                    </div>
                     @if( access()->hasAccess(['product-collection']) )
                     <div class="menu-item">
                         <a class="menu-link @if( request()->routeIs(['product-collection'])) active @endif" href="{{ route('product-collection') }}">
@@ -104,6 +102,23 @@
                     </div>
                     @endif                 
                 </div>
+            </div>
+            @endif
+            @if( access()->hasAccess('addons') )
+            <div class="menu-item">
+                <a class="menu-link @if(  request()->routeIs(['addons'])) active @elseif( request()->routeIs(['addons.view'])) active  @endif" href="{{ route('addons') }}">
+                    <span class="menu-icon">
+                        <span class="svg-icon svg-icon-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <rect x="2" y="2" width="9" height="9" rx="2" fill="currentColor" />
+                                <rect opacity="0.3" x="13" y="2" width="9" height="9" rx="2" fill="currentColor" />
+                                <rect opacity="0.3" x="13" y="13" width="9" height="9" rx="2" fill="currentColor" />
+                                <rect opacity="0.3" x="2" y="13" width="9" height="9" rx="2" fill="currentColor" />
+                            </svg>
+                        </span>
+                    </span>
+                    <span class="menu-title">Addons</span>
+                </a>
             </div>
             @endif
             @if( access()->hasAccess('customer') )
@@ -189,16 +204,6 @@
                         </a>
                     </div>
                     @endif
-                    {{-- <div class="menu-item">
-                        <a class="menu-link" href="#">
-                            <span class="menu-bullet">
-                                <span class="bullet bullet-dot"></span>
-                            </span>
-                            <span class="menu-title"> Cancelled Order </span>
-                        </a>
-                    </div> --}}
-                   
-                  
                 </div>
             </div>
             @endif
@@ -284,7 +289,36 @@
                 </div>
             </div>
             @endif
-            @if( access()->hasAccess(['banner', 'walkthroughs', 'testimonials', 'video-booking']) )
+            <div data-kt-menu-trigger="click" class="menu-item menu-accordion mb-1 ">
+                <span class="menu-link">
+                    <span class="menu-icon">
+                        <span class="svg-icon svg-icon-2">
+                            <i class="bi-chat-left fs-3"></i>
+                        </span>
+                    </span>
+                    <span class="menu-title"> Store Locators </span>
+                    <span class="menu-arrow"></span>
+                </span>
+                <div class="menu-sub menu-sub-accordion">
+                    <div class="menu-item">
+                        <a class="menu-link " href="javascript:void(0)">
+                            <span class="menu-bullet">
+                                <span class="bullet bullet-dot"></span>
+                            </span>
+                            <span class="menu-title">Stores</span>
+                        </a>
+                    </div>
+                    <div class="menu-item">
+                        <a class="menu-link " href="javascript:void(0)">
+                            <span class="menu-bullet">
+                                <span class="bullet bullet-dot"></span>
+                            </span>
+                            <span class="menu-title">Services</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            @if( access()->hasAccess(['banner']) )
             <div class="menu-item">
                 <div class="menu-content pt-8 pb-0">
                     <span class="menu-section text-muted text-uppercase fs-8 ls-1">Website</span>
@@ -306,24 +340,6 @@
                 </a>
             </div>
             @endif
-            @if( access()->hasAccess(['walkthroughs']) )
-            <div class="menu-item">
-                <a class="menu-link @if( request()->routeIs(['walkthroughs'])) active @endif" href="{{ route('walkthroughs') }}">
-                    <span class="menu-icon">
-                        <span class="svg-icon svg-icon-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <path d="M11.2929 2.70711C11.6834 2.31658 12.3166 2.31658 12.7071 2.70711L15.2929 5.29289C15.6834 5.68342 15.6834 6.31658 15.2929 6.70711L12.7071 9.29289C12.3166 9.68342 11.6834 9.68342 11.2929 9.29289L8.70711 6.70711C8.31658 6.31658 8.31658 5.68342 8.70711 5.29289L11.2929 2.70711Z" fill="currentColor" />
-                                <path d="M11.2929 14.7071C11.6834 14.3166 12.3166 14.3166 12.7071 14.7071L15.2929 17.2929C15.6834 17.6834 15.6834 18.3166 15.2929 18.7071L12.7071 21.2929C12.3166 21.6834 11.6834 21.6834 11.2929 21.2929L8.70711 18.7071C8.31658 18.3166 8.31658 17.6834 8.70711 17.2929L11.2929 14.7071Z" fill="currentColor" />
-                                <path opacity="0.3" d="M5.29289 8.70711C5.68342 8.31658 6.31658 8.31658 6.70711 8.70711L9.29289 11.2929C9.68342 11.6834 9.68342 12.3166 9.29289 12.7071L6.70711 15.2929C6.31658 15.6834 5.68342 15.6834 5.29289 15.2929L2.70711 12.7071C2.31658 12.3166 2.31658 11.6834 2.70711 11.2929L5.29289 8.70711Z" fill="currentColor" />
-                                <path opacity="0.3" d="M17.2929 8.70711C17.6834 8.31658 18.3166 8.31658 18.7071 8.70711L21.2929 11.2929C21.6834 11.6834 21.6834 12.3166 21.2929 12.7071L18.7071 15.2929C18.3166 15.6834 17.6834 15.6834 17.2929 15.2929L14.7071 12.7071C14.3166 12.3166 14.3166 11.6834 14.7071 11.2929L17.2929 8.70711Z" fill="currentColor" />
-                            </svg>
-                        </span>
-                        <!--end::Svg Icon-->
-                    </span>
-                    <span class="menu-title">History Video</span>
-                </a>
-            </div>
-            @endif
             @if( access()->hasAccess(['newsletter']) )
             <div class="menu-item">
                 <a class="menu-link @if( request()->routeIs(['newsletter'])) active @endif" href="{{ route('newsletter') }}">
@@ -337,38 +353,6 @@
                         </span>
                     </span>
                     <span class="menu-title">NewsLetter</span>
-                </a>
-            </div>
-            @endif
-            @if( access()->hasAccess(['testimonials']) )
-            <div class="menu-item">
-                <a class="menu-link @if(  request()->routeIs(['testimonials'])) active @endif" href="{{ route('testimonials') }}">
-                    <span class="menu-icon">
-                        <span class="svg-icon svg-icon-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <rect x="2" y="2" width="9" height="9" rx="2" fill="currentColor" />
-                                <rect opacity="0.3" x="13" y="2" width="9" height="9" rx="2" fill="currentColor" />
-                                <rect opacity="0.3" x="13" y="13" width="9" height="9" rx="2" fill="currentColor" />
-                                <rect opacity="0.3" x="2" y="13" width="9" height="9" rx="2" fill="currentColor" />
-                            </svg>
-                        </span>
-                    </span>
-                    <span class="menu-title">Testimonial</span>
-                </a>
-            </div>
-            @endif
-            @if( access()->hasAccess(['video-booking']) )
-            <div class="menu-item">
-                <a class="menu-link @if(  request()->routeIs(['video-booking'])) active @endif" href="{{ route('video-booking') }}">
-                    <span class="menu-icon">
-                        <span class="svg-icon svg-icon-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <path opacity="0.3" d="M21 22H14C13.4 22 13 21.6 13 21V3C13 2.4 13.4 2 14 2H21C21.6 2 22 2.4 22 3V21C22 21.6 21.6 22 21 22Z" fill="currentColor" />
-                                    <path d="M10 22H3C2.4 22 2 21.6 2 21V3C2 2.4 2.4 2 3 2H10C10.6 2 11 2.4 11 3V21C11 21.6 10.6 22 10 22Z" fill="currentColor" />
-                                </svg>
-                        </span>
-                    </span>
-                    <span class="menu-title">Video Booking</span>
                 </a>
             </div>
             @endif

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateComboProductsTable extends Migration
+class CreateEnquiriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,13 @@ class CreateComboProductsTable extends Migration
      */
     public function up()
     {
-        Schema::create('combo_products', function (Blueprint $table) {
+        Schema::create('enquiries', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('parent_product_id');
-            $table->unsignedBigInteger('product_id');
-            $table->double( 'price', 12,2 )->nullable();
+            $table->string('first_name');
+            $table->string('last_name')->nullable();
+            $table->string('email')->nullable();
+            $table->string('mobile_no')->nullable();
+            $table->text('message');
             $table->timestamps();
         });
     }
@@ -29,6 +31,6 @@ class CreateComboProductsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('combo_products');
+        Schema::dropIfExists('enquiries');
     }
 }

@@ -42,6 +42,7 @@ Route::middleware(['auth'])->group(function(){
     /***** loop for same routes */
     $routeArray = array(
         'brands' => App\Http\Controllers\Master\BrandController::class,
+        'addons' => App\Http\Controllers\AddonsController::class,
         'product-category' => App\Http\Controllers\Product\ProductCategoryController::class,
         'tax' => App\Http\Controllers\Settings\TaxController::class,
         'charges' => App\Http\Controllers\ChargesController::class,

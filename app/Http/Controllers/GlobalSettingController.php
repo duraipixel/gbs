@@ -33,7 +33,7 @@ class GlobalSettingController extends Controller
         
         $validator = Validator::make($request->all(), [
             'site_name' => 'required|string|max:255',
-            'site_mobile_number' => 'required|string|max:10',
+            'site_mobile_number' => 'required|string',
             'site_email' => 'required|email',
            
         ]);

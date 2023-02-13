@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddTextToWalkThroughs extends Migration
+class CreatePincodeHavingSalesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,11 @@ class AddTextToWalkThroughs extends Migration
      */
     public function up()
     {
-        Schema::table('walk_throughs', function (Blueprint $table) {
-            $table->text('description')->change();
-            $table->integer('order_by')->nullable()->change();
+        Schema::create('pincode_having_sales', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('pincode_id');
+            $table->string('pincode')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -26,8 +28,6 @@ class AddTextToWalkThroughs extends Migration
      */
     public function down()
     {
-        Schema::table('walk_throughs', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('pincode_having_sales');
     }
 }

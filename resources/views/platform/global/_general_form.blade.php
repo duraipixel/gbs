@@ -101,7 +101,7 @@
                 <span class="required">Site Phone</span>
             </label>
             <div class="col-lg-8 fv-row">
-                <input type="text" name="site_mobile_number" class="form-control form-control-lg form-control-solid numberonly" placeholder="Site Phone number" value="{{ $data->site_mobile_no ?? '' }}" />
+                <input type="text" name="site_mobile_number" class="form-control form-control-lg form-control-solid" placeholder="Site Phone number" value="{{ $data->site_mobile_no ?? '' }}" />
             </div>
         </div>
         <div class="row mb-6">

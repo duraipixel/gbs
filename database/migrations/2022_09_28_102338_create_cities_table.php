@@ -21,9 +21,6 @@ class CreateCitiesTable extends Migration
             $table->unsignedBigInteger('pincode_id')->nullable();
             $table->string('description')->nullable();
             $table->integer('status')->default(1)->comment('1-active,2-inactive');
-            $table->foreign('country_id')->references('id')->on('countries')->onDelete('cascade');
-            $table->foreign('state_id')->references('id')->on('states')->onDelete('cascade');
-            $table->foreign('pincode_id')->references('id')->on('pincodes')->onDelete('cascade');
             $table->unsignedBigInteger('added_by')->nullable();
             $table->softDeletes();
 

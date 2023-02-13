@@ -12,7 +12,7 @@
                     id="kt_sign_in_form"  action="{{ route('login') }}" method="POST">
                     @csrf
                     <div class="text-center mb-10">
-                        <h1 class="text-dark mb-3">Sign In to <img alt="Logo" src="{{ asset('assets/logo/logo.png') }}" class="h-20px" /></h1>
+                        <h1 class="text-dark mb-3">Sign In to <img alt="Logo" src="{{ asset('assets/logo/logo.webp') }}" class="h-20px" /></h1>
                         <div class="text-gray-400 fw-bold fs-4">
                             <div class="fv-plugins-message-container invalid-feedback">
                                 @error('email')

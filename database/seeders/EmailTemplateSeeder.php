@@ -21,8 +21,8 @@ class EmailTemplateSeeder extends Seeder
         if( isset( $type ) && !empty( $type ) ) {
 
             $ins['type_id'] = $type->id;
-            $ins['title'] = 'Welcome to Musee Musical';
-            $ins['message'] = '<p><img src="'.$logo.'" alt=\"Logo\"></p><p><br></p><p><br></p><p>Hi {$name},</p><p><br></p><p>Welcome to Musee Musical online purchase website.</p><p><br></p><p><br></p><p>Regards,</p><p>{$regards}.</p><p><br></p><p>{$company_website}</p><p>{$company_mobile_no}</p><p>{$company_address}</p><p><br></p>';
+            $ins['title'] = 'GBS System & Service Private Limited';
+            $ins['message'] = '<p><img src="'.$logo.'" alt=\"Logo\"></p><p><br></p><p><br></p><p>Hi {$name},</p><p><br></p><p>GBS System & Service Private Limited online purchase website.</p><p><br></p><p><br></p><p>Regards,</p><p>{$regards}.</p><p><br></p><p>{$company_website}</p><p>{$company_mobile_no}</p><p>{$company_address}</p><p><br></p>';
             $ins['params'] = 'name,regards,company_website,company_mobile_no,company_address';
             $ins['status'] = 'published';
 

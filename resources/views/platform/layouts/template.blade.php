@@ -23,7 +23,7 @@
 					<div class="aside-logo flex-column-auto" id="kt_aside_logo">
 						<!--begin::Logo-->
 						<a href="{{ url('/') }}">
-							<img alt="Logo" src="{{ asset(gSetting('logo')) }}" class="w-200px logo" />
+							<img alt="Logo" src="{{ asset(gSetting('logo')) }}" class="w-100px logo" />
 						</a> 
 						<!--end::Logo-->
 						<!--begin::Aside toggler-->

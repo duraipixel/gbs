@@ -15,7 +15,7 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        $seededAdminEmail = 'adminmusee@yopmail.com';
+        $seededAdminEmail = 'admingbs@yopmail.com';
         $user = User::where('email', '=', $seededAdminEmail)->first();
         if ($user === null) {
             $user = User::create([
@@ -27,11 +27,11 @@ class UserSeeder extends Seeder
         }
 
         // Seed test user 2
-        $user = User::where('email', '=', 'userLaravel@yopmail.com')->first();
+        $user = User::where('email', '=', 'usergbs@yopmail.com')->first();
         if ($user === null) {
             $user = User::create([
                 'name'                           => 'User',
-                'email'                          => 'user@user.com',
+                'email'                          => 'usergbs@yopmail.com',
                 'password'                       => Hash::make('password'),
             ]);
         }

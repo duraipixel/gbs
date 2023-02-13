@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddDecimal extends Migration
+class ReviewRepliesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,13 @@ class AddDecimal extends Migration
      */
     public function up()
     {
-        //
+        Schema::create('review_replies', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('review_id');
+            $table->text('message')->nullable();
+            $table->unsignedBigInteger('sender_id')->nullable();
+            $table->timestamps();
+        });
     }
 
     /**
