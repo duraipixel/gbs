@@ -18,6 +18,7 @@ class CreateServiceCentersTable extends Migration
             $table->id();
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->string('title');
+            $table->string('slug');
             $table->string('banner')->nullable()->comment('website image');
             $table->string('banner_mb')->nullable()->comment('mobile image');
             $table->text('description')->nullable();

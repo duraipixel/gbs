@@ -91,7 +91,6 @@ class ServiceCenterController extends Controller
     }
     public function saveForm(Request $request)
     {
-    //   dd($request->all());
       
       $id             = $request->id;
       $parent_id      = $request->parent_location;
@@ -104,16 +103,21 @@ class ServiceCenterController extends Controller
                                               }),
                                               ],
 
-                        //   'banner' => 'required|mimes:jpeg,png,jpg',
-                        //   'banner_mb' => 'required|mimes:jpeg,png,jpg',
                           'address' => 'required',
                           'contact_no' => 'required',
                       ]);
         $serviceCenterId         = '';
         if ($validator->passes()) {
+            $ins['slug'] = \Str::slug($request->title);
+           
             if( !$request->is_parent ) {
+                $parent_slug = ServiceCenter::where('id',$parent_id)->select('slug')->first();
+                $parent_slug = $parent_slug->slug ?? '';
+                $ins['slug'] = $parent_slug .'-'. \Str::slug($request->title);
                 $ins['parent_id'] = $request->parent_location;
             } else {
+
+                $ins['slug'] = \Str::slug($request->title);
                 $ins['parent_id'] = 0;
             }
             if( !$id ) {
@@ -123,7 +127,6 @@ class ServiceCenterController extends Controller
             }
             $ins['title'] = $request->title;
             $ins['address'] = $request->address;
-            // $ins['contact_no'] = $request->contact_no;
             $ins['pincode'] = $request->pincode;
             $ins['latitude'] = $request->latitude;
             $ins['longitude'] = $request->longitude;
@@ -135,7 +138,6 @@ class ServiceCenterController extends Controller
             } else {
                 $ins['status']          = 'unpublished';
             }
-            // dd($request->email);
             if(!empty($request->email))
             {
                 $email = explode(',',$request->email);
@@ -266,6 +268,6 @@ class ServiceCenterController extends Controller
         $pdf        = PDF::loadView('platform.exports.product.product_category_excel', array('list' => $list, 'from' => 'pdf'))->setPaper('a4', 'landscape');;
         return $pdf->download('productCategories.pdf');
     }
-
+    
     
 }

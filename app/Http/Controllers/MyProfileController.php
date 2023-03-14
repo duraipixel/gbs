@@ -125,9 +125,5 @@ class MyProfileController extends Controller
         }
       
         return response()->json(['error'=> $error, 'message' => $message, 'tabType' => $tabType]);
-    }
-    public function saveFormPassword(Request $request)
-    {
-        dd($request->all());
-    }
+    }  
 }

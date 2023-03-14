@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
 Route::get('/get/site/info', [App\Http\Controllers\Api\SiteController::class, 'siteInfo']);
 Route::get('/get/home/details', [App\Http\Controllers\Api\CommonController::class, 'getAllHomeDetails']);
 Route::get('/get/topMenu/{slug?}', [App\Http\Controllers\Api\MenuController::class, 'getTopMenu']);
@@ -40,6 +42,8 @@ Route::post('/login', [App\Http\Controllers\Api\CustomerController::class, 'doLo
 Route::post('/send/password/link', [App\Http\Controllers\Api\CustomerController::class, 'sendPasswordLink']);
 Route::post('/reset/password', [App\Http\Controllers\Api\CustomerController::class, 'resetPasswordLink']);
 Route::post('/check/tokenValid', [App\Http\Controllers\Api\CustomerController::class, 'checkValidToken']);
+Route::get('/serviceCenter', [App\Http\Controllers\Api\ServiceController::class, 'getServiceCenter']);
+Route::get('/serviceCenterDetail/{slug}', [App\Http\Controllers\Api\ServiceController::class, 'getServiceCenterDetail']);
 
 Route::middleware(['client'])->group(function(){
     

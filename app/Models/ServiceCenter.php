@@ -13,6 +13,7 @@ class ServiceCenter extends Model
 
         'parent_id',
         'title',
+        'slug',
         'banner',
         'banner_mb',
         'description',
@@ -35,6 +36,10 @@ class ServiceCenter extends Model
     public function parent()
     {
         return $this->belongsTo(ServiceCenter::class, 'parent_id', 'id');
+    }
+    public function child()
+    {
+        return $this->hasMany(ServiceCenter::class, 'parent_id', 'id')->select('id','parent_id','title','slug','banner','banner_mb','description','pincode','address','latitude','longitude','email','contact_no','status','order_by');
     }
 
 }
