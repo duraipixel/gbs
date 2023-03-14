@@ -294,7 +294,17 @@
                 'export': {
                     'excel': "{{ route('order.export.excel') }}",
                 }
-            }
+            },
+            'service-center': {
+
+                'delete': "{{ route('service-center.delete') }}",
+                'status': "{{ route('service-center.status') }}",
+                'add': "{{ route('service-center.add.edit') }}",
+                'export': {
+                    'excel': "{{ route('service-center.export.excel') }}",
+                    'pdf': "{{ route('service-center.export.pdf') }}",
+                }
+            },
 
         }
     };
