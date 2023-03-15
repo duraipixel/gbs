@@ -103,13 +103,10 @@ class ServiceCenterController extends Controller
                                               }),
                                               ],
 
-                          'address' => 'required',
-                          'contact_no' => 'required',
+                          'description' => 'required',
                       ]);
         $serviceCenterId         = '';
         if ($validator->passes()) {
-            $ins['slug'] = \Str::slug($request->title);
-           
             if( !$request->is_parent ) {
                 $parent_slug = ServiceCenter::where('id',$parent_id)->select('slug')->first();
                 $parent_slug = $parent_slug->slug ?? '';

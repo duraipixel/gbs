@@ -305,6 +305,16 @@
                     'pdf': "{{ route('service-center.export.pdf') }}",
                 }
             },
+            'store-locator': {
+                'delete': "{{ route('store-locator.delete') }}",
+                'status': "{{ route('store-locator.status') }}",
+                'add': "{{ route('store-locator.add.edit') }}",
+                'export': {
+                    'excel': "{{ route('store-locator.export.excel') }}",
+                    'pdf': "{{ route('store-locator.export.pdf') }}",
+                }
+            },
+            
 
         }
     };

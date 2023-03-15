@@ -301,7 +301,7 @@
                 </span>
                 <div class="menu-sub menu-sub-accordion">
                     <div class="menu-item">
-                        <a class="menu-link " href="javascript:void(0)">
+                        <a class="menu-link @if( request()->routeIs(['store-locator'])) active @endif" href="{{ route('store-locator') }}">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
@@ -309,7 +309,7 @@
                         </a>
                     </div>
                     <div class="menu-item">
-                        <a class="menu-link " href="{{ route('service-center') }}">
+                        <a class="menu-link @if( request()->routeIs(['service-center'])) active @endif" href="{{ route('service-center') }}">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>

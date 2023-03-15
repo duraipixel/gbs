@@ -66,6 +66,8 @@ Route::middleware(['auth'])->group(function(){
         'banner' => App\Http\Controllers\BannerController::class,
         'newsletter' => App\Http\Controllers\NewsletterController::class,
         'service-center' => App\Http\Controllers\ServiceCenterController::class,
+        'store-locator' => App\Http\Controllers\StoreLocatorController::class,
+        
     );
    
     foreach ($routeArray as $key => $value) {

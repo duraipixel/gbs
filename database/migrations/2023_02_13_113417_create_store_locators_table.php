@@ -15,8 +15,10 @@ class CreateStoreLocatorsTable extends Migration
     {
         Schema::create('store_locators', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('parent_id');
+            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->unsignedBigInteger('brand_id');
             $table->string('title');
+            $table->string('slug');
             $table->string('banner')->nullable()->comment('website image');
             $table->string('banner_mb')->nullable()->comment('mobile image');
             $table->string('store_image')->nullable()->comment('website image');
@@ -29,6 +31,10 @@ class CreateStoreLocatorsTable extends Migration
             $table->json('email')->nullable();
             $table->json('contact_no')->nullable();
             $table->enum('status', ['published', 'unpublished']);
+            $table->unsignedBigInteger('added_by');
+            $table->integer( 'order_by' )->nullable();
+            $table->foreign('added_by')->references('id')->on('users');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
