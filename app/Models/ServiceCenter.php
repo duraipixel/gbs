@@ -30,7 +30,7 @@ class ServiceCenter extends Model
     ];
     public function meta()
     {
-        return $this->hasOne(ServiceCenterMetaTag::class, 'service_center_id', 'id');
+        return $this->hasOne(ServiceCenterMetaTag::class, 'service_center_id', 'id')->select('id','service_center_id','meta_title','meta_keyword','meta_description');
     }
     
     public function parent()

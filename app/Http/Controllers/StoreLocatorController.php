@@ -106,7 +106,10 @@ class StoreLocatorController extends Controller
             } else {
                 $ins['added_by'] = Auth::id();
             }
-            $ins['slug'] = \Str::slug($request->title);
+            $brand = Brands::where('status','published')->where('id',$request->brand_id)->select('slug')->first();
+            $brand = $brand->slug ?? '';
+
+            $ins['slug'] = $brand.'-'.\Str::slug($request->title);
             $ins['title'] = $request->title;
             $ins['brand_id'] = $request->brand_id;
             $ins['address'] = $request->address;
@@ -204,10 +207,10 @@ class StoreLocatorController extends Controller
                 }
 
                 $thumbnailPath          = 'public/storeLocator/'.$storeLocatorId.'/thumbnail/' . $imagName;
-                Image::make($request->file('banner'))->resize(350,690)->save(storage_path('app/' . $thumbnailPath));
+                Image::make($request->file('store_image'))->resize(350,690)->save(storage_path('app/' . $thumbnailPath));
 
                 $carouselPath          = 'public/storeLocator/'.$storeLocatorId.'/carousel/' . $imagName;
-                Image::make($request->file('banner'))->resize(300,220)->save(storage_path('app/' . $carouselPath));
+                Image::make($request->file('store_image'))->resize(300,220)->save(storage_path('app/' . $carouselPath));
 
                 // $carouselPath          = $directory.'/carousel/'.$imagName;
                 // Storage::disk('public')->put( $carouselPath, Image::make($request->file('categoryImage'))->resize(300,220) );
@@ -231,10 +234,10 @@ class StoreLocatorController extends Controller
                 }
 
                 $thumbnailPath          = 'public/storeLocator/'.$storeLocatorId.'/thumbnail/' . $imagName;
-                Image::make($request->file('banner_mb'))->resize(350,690)->save(storage_path('app/' . $thumbnailPath));
+                Image::make($request->file('store_image_mb'))->resize(350,690)->save(storage_path('app/' . $thumbnailPath));
 
                 $carouselPath          = 'public/storeLocator/'.$storeLocatorId.'/carousel/' . $imagName;
-                Image::make($request->file('banner_mb'))->resize(300,220)->save(storage_path('app/' . $carouselPath));
+                Image::make($request->file('store_image_mb'))->resize(300,220)->save(storage_path('app/' . $carouselPath));
 
                 // $carouselPath          = $directory.'/carousel/'.$imagName;
                 // Storage::disk('public')->put( $carouselPath, Image::make($request->file('categoryImage'))->resize(300,220) );

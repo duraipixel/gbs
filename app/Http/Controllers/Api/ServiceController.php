@@ -28,9 +28,27 @@ class ServiceController extends Controller
             $temp['address']        = $val->address;
             $temp['latitude']       = $val->latitude;
             $temp['langitude']      = $val->langitude;
-            $temp['email']          = $val->email;
-            $temp['contact_no']     = $val->contact_no;
-            
+
+            if(isset($val->email) && !empty($val->email))
+            {
+                $arrEmail = json_decode( $val->email );
+                $val->email = implode(',',$arrEmail);
+                $temp['email']          = $val->email;
+            }
+            else{
+                $temp['email']       = '' ;
+            }
+             
+            if(isset($val->contact_no) && !empty($val->contact_no))
+            {
+                $arrContact             = json_decode( $val->contact_no );
+                $val->contact_no      = implode(',',$arrContact);
+                $temp['contact_no']     = $val->contact_no;
+            }
+            else{
+                $temp['contact_no']       = '' ;
+            }
+
             if($val->banner )
             {
                 $url = Storage::url($val->banner );
@@ -49,8 +67,12 @@ class ServiceController extends Controller
             else{
                 $val->banner_mb = asset('userImage/no_Image.jpg');
             }
-            $temp['banner_mb'] = $val->banner_mb ;
-            $temp['status'] = $val->status;
+            $temp['banner_mb']          = $val->banner_mb ;
+            $temp['status']             = $val->status;
+            $temp['meta_title']         = $val->meta->meta_title ?? "";
+            $temp['meta_keyword']       = $val->meta->meta_keyword ?? "";
+            $temp['meta_description']   = $val->meta->meta_description ?? "";
+
             if(isset($val->child) && !empty($val->child) && count($val->child) > 0)
             {
                 foreach($val->child as $childData){
@@ -85,7 +107,12 @@ class ServiceController extends Controller
                         $childData->banner_mb = asset('userImage/no_Image.jpg');
                     }
                     $temp1['banner_mb'] = $childData->banner_mb ;
-                    $temp1['status'] = $val->status;
+                    $temp1['status']    = $childData->status;
+                    $temp1['meta_title']         = $childData->meta->meta_title ?? "";
+                    $temp1['meta_keyword']       = $childData->meta->meta_keyword ?? "";
+                    $temp1['meta_description']   = $childData->meta->meta_description ?? "";
+
+
                     $temp['child'][] = $temp1;
                 }
 
@@ -101,7 +128,47 @@ class ServiceController extends Controller
     public function getServiceCenterDetail(Request $request)
     {
         $slug = $request->slug;
-        $data = ServiceCenter::where('status','published')->where('slug',$slug)->select('id','parent_id','title','slug','banner','banner_mb','description','pincode','address','latitude','longitude','email','contact_no','status','order_by')->get();
+        $data = ServiceCenter::where('status','published')
+        ->where('slug',$slug)
+        ->select('id','parent_id','title','slug','banner','banner_mb','description','pincode','address','latitude','longitude','email','contact_no','status','order_by')->first();
+        if(isset($data->banner) && !empty($data->banner))
+        {
+            $url = Storage::url($data->banner );
+            $data->banner = asset($url);
+        }
+        else{
+            $data->banner = asset('userImage/no_Image.jpg');
+        }
+        if(isset($data->banner_mb) && !empty($data->banner_mb))
+        {
+            $url = Storage::url($data->banner_mb );
+            $data->banner_mb = asset($url);
+        }
+        else{
+            $data->banner_mb = asset('userImage/no_Image.jpg');
+        }
+
+
+        
+        if(isset($data->email) && !empty($data->email))
+        {
+            $arrEmail = json_decode( $data->email );
+            $data->email = implode(',',$arrEmail);
+        }
+        else{
+            $data->email        = '' ;
+        }
+         
+        if(isset($data->contact_no) && !empty($data->contact_no))
+        {
+            $arrContact             = json_decode( $data->contact_no );
+            $data->contact_no      = implode(',',$arrContact);
+        }
+        else{
+            $data->contact_no       = '' ;
+        }
+        
+        $data->meta                = $data->meta;
         return response()->json(['data'=>$data]);
 
     }
