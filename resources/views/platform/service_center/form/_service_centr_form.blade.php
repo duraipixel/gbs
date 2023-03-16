@@ -177,7 +177,7 @@
                 placeholder="Sorting Order" value="{{ $info->order_by ?? '' }}" min="1" />
         </div>
         <div class="mb-7 mt-4">
-            <label class="fw-bold fs-6 mb-2"> Published </label>
+            <label class="fw-bold fs-6 mb-2"> Status </label>
             <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
                 <input class="form-check-input" type="checkbox"  name="status" value="1"  @if( (isset( $info->status) && $info->status == 'published') || (!isset($info->status)))  checked @endif />
             </div>
