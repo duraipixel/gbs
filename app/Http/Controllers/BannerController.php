@@ -29,7 +29,10 @@ class BannerController extends Controller
                     }
                     if ($keywords) {
                         $date = date('Y-m-d', strtotime($keywords));
-                        return $query->where('banners.title', 'like', "%{$keywords}%")->orWhere('banners.status', 'like', "%{$keywords}%")->orWhere('users.name', 'like', "%{$keywords}%")->orWhere('banners.description', 'like', "%{$keywords}%")->orWhere('banners.tag_line', 'like', "%{$keywords}%")->orWhereDate("banners.created_at", $date);
+                        return $query->where('banners.title', 'like', "%{$keywords}%")
+                        ->orWhere('banners.status', 'like', "%{$keywords}%")->orWhere('users.name', 'like', "%{$keywords}%")
+                        ->orWhere('banners.description', 'like', "%{$keywords}%")->orWhere('banners.tag_line', 'like', "%{$keywords}%")
+                        ->orWhereDate("banners.created_at", $date);
                     }
                 })
                 ->addIndexColumn()

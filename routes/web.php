@@ -81,6 +81,9 @@ Route::middleware(['auth'])->group(function(){
             Route::get('/export/pdf', [$value, 'exportPdf'])->name($key.'.export.pdf')->middleware(['checkAccess:export']);
         });
     }
+    Route::prefix('customer')->group(function(){
+        Route::get('/customer-wishlist', [App\Http\Controllers\CustomerController::class, 'wishlist'])->name('customer-wishlist'); 
+    });
 
     Route::prefix('coupon')->group(function(){
         Route::get('/coupon-gendrate', [App\Http\Controllers\Offers\CouponController::class, 'couponGendrate'])->name('coupon.coupon-gendrate');
