@@ -314,6 +314,15 @@
                     'pdf': "{{ route('store-locator.export.pdf') }}",
                 }
             },
+            'wishlist': {
+                'delete': "{{ route('wishlist.delete') }}",
+                'status': "{{ route('wishlist.status') }}",
+                'add': "{{ route('wishlist.add.edit') }}",
+                'export': {
+                    'excel': "{{ route('wishlist.export.excel') }}",
+                    'pdf': "{{ route('wishlist.export.pdf') }}",
+                }
+            },
             
 
         }

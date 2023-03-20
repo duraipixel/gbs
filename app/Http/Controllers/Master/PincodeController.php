@@ -19,7 +19,6 @@ class PincodeController extends Controller
 {
     public function index(Request $request)
     {
-        $title = "Country";
         if ($request->ajax()) {
             $data = Pincode::select('pincodes.*','users.name as users_name',DB::raw(" IF(mm_pincodes.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'pincodes.added_by');
             $status = $request->get('status');
@@ -62,18 +61,18 @@ class PincodeController extends Controller
                 ->rawColumns(['action', 'status', 'image']);
             return $datatables->make(true);
         }
-        $breadCrum  = array('Masters', 'PostCodes');
-        $title      = 'PostCodes';
+        $breadCrum  = array('Deliverable pincode management', 'Pincode');
+        $title      = 'Deliverable pincode management';
         return view('platform.master.pincode.index', compact('breadCrum', 'title'));
     }
     public function modalAddEdit(Request $request)
     {
         $id                 = $request->id;
         $info               = '';
-        $modal_title        = 'Add Country';
+        $modal_title        = 'Add Pincode';
         if (isset($id) && !empty($id)) {
             $info           = Pincode::find($id);
-            $modal_title    = 'Update Country';
+            $modal_title    = 'Update Pincode';
         }
         return view('platform.master.pincode.add_edit_modal', compact('info', 'modal_title'));
     }
