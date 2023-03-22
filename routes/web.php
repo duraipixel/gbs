@@ -67,6 +67,8 @@ Route::middleware(['auth'])->group(function(){
         'newsletter' => App\Http\Controllers\NewsletterController::class,
         'service-center' => App\Http\Controllers\ServiceCenterController::class,
         'store-locator' => App\Http\Controllers\StoreLocatorController::class,
+        'combo' => App\Http\Controllers\Product\ComboProductController::class,
+        'quick-link'    => App\Http\Controllers\Master\QuickLinkController::class,
         
     );
    

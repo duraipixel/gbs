@@ -323,6 +323,25 @@
                     'pdf': "{{ route('wishlist.export.pdf') }}",
                 }
             },
+            'combo': {
+                'delete': "{{ route('combo.delete') }}",
+                'status': "{{ route('combo.status') }}",
+                'add': "{{ route('combo.add.edit') }}",
+                'export': {
+                    'excel': "{{ route('combo.export.excel') }}",
+                    'pdf': "{{ route('combo.export.pdf') }}",
+                }
+            },
+            'quick-link': {
+               'delete': "{{ route('quick-link.delete') }}",
+               'status': "{{ route('quick-link.status') }}",
+               'add': "{{ route('quick-link.add.edit') }}",
+               'export': {
+                   'excel': "{{ route('quick-link.export.excel') }}",
+                   'pdf': "{{ route('quick-link.export.pdf') }}",
+                }
+            },
+            
             
 
         }

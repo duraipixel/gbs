@@ -15,9 +15,10 @@ class CreateComboProductsTable extends Migration
     {
         Schema::create('combo_products', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('parent_product_id');
+            $table->unsignedBigInteger('combo_id');
             $table->unsignedBigInteger('product_id');
             $table->double( 'price', 12,2 )->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -78,7 +78,6 @@ class PincodeController extends Controller
     }
     public function saveForm(Request $request,$id = null)
     {
-        // dd($request->all());
         $id             = $request->id;
         $validator      = Validator::make($request->all(), [
                                 'pincode' => 'required|string|unique:pincodes,pincode,' . $id . ',id,deleted_at,NULL',
@@ -113,7 +112,6 @@ class PincodeController extends Controller
         $id         = $request->id;
         $info       = Pincode::find($id);
         $info->delete();
-        // echo 1;
         return response()->json(['message'=>"Successfully deleted pincode!",'status'=>1]);
     }
     public function changeStatus(Request $request)
@@ -123,7 +121,6 @@ class PincodeController extends Controller
         $info           = Pincode::find($id);
         $info->status   = $status;
         $info->update();
-        // echo 1;
         return response()->json(['message'=>"You changed the Pincode status!",'status'=>1]);
 
     }
@@ -134,7 +131,6 @@ class PincodeController extends Controller
 
     public function exportPdf()
     {
-        // $list       = OrderStatus::select('status_name', 'added_by', 'description', 'order', DB::raw(" IF(status = 2, 'Inactive', 'Active') as user_status"))->get();
         $list       = Pincode::select('pincodes.*', 'users.name as users_name',DB::raw(" IF(mm_pincodes.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'pincodes.added_by')->get();
         $pdf        = PDF::loadView('platform.exports.pincode.excel', array('list' => $list, 'from' => 'pdf'))->setPaper('a4', 'landscape');;
         return $pdf->download('pincode.pdf');
