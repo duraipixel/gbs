@@ -46,6 +46,7 @@ Route::get('/serviceCenter', [App\Http\Controllers\Api\ServiceController::class,
 Route::get('/serviceCenterDetail/{slug}', [App\Http\Controllers\Api\ServiceController::class, 'getServiceCenterDetail']);
 Route::get('/storeLocator', [App\Http\Controllers\Api\StoreLocatorController::class, 'getStoreLocator']);
 Route::get('/storeLocatorDetail/{slug}', [App\Http\Controllers\Api\StoreLocatorController::class, 'getStoreLocatorDetail']);
+Route::get('/quickLink', [App\Http\Controllers\Api\QuickLinkController::class, 'index']);
 
 Route::middleware(['client'])->group(function(){
     
