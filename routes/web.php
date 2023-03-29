@@ -65,6 +65,11 @@ Route::middleware(['auth'])->group(function(){
         'customer' => App\Http\Controllers\CustomerController::class,
         'banner' => App\Http\Controllers\BannerController::class,
         'newsletter' => App\Http\Controllers\NewsletterController::class,
+        'service-center' => App\Http\Controllers\ServiceCenterController::class,
+        'store-locator' => App\Http\Controllers\StoreLocatorController::class,
+        'combo' => App\Http\Controllers\Product\ComboProductController::class,
+        'quick-link'    => App\Http\Controllers\Master\QuickLinkController::class,
+        
     );
    
     foreach ($routeArray as $key => $value) {
@@ -78,6 +83,22 @@ Route::middleware(['auth'])->group(function(){
             Route::get('/export/pdf', [$value, 'exportPdf'])->name($key.'.export.pdf')->middleware(['checkAccess:export']);
         });
     }
+    Route::prefix('customer')->group(function(){
+        Route::get('/customer-wishlist', [App\Http\Controllers\CustomerController::class, 'wishlist'])->name('customer-wishlist'); 
+    });
+    
+
+    Route::prefix('wishlist')->group(function() {
+        Route::get('/', [App\Http\Controllers\WishlistController::class, 'index'])->name('wishlist')->middleware(['checkAccess:editable']);
+        Route::post('/addOrEdit', [App\Http\Controllers\WishlistController::class, 'modalAddEdit'])->name('wishlist.add.edit')->middleware(['checkAccess:editable']);
+        Route::post('/status', [App\Http\Controllers\WishlistController::class, 'changeStatus'])->name('wishlist.status')->middleware(['checkAccess:status']);
+        Route::post('/delete', [App\Http\Controllers\WishlistController::class, 'delete'])->name('wishlist.delete')->middleware(['checkAccess:delete']);
+        Route::get('/view/{id}', [App\Http\Controllers\WishlistController::class, 'view'])->name('wishlist.view')->middleware(['checkAccess:visible']);
+        Route::post('/save', [App\Http\Controllers\WishlistController::class, 'saveForm'])->name('wishlist.save');
+        Route::post('/export/excel', [App\Http\Controllers\WishlistController::class, 'export'])->name('wishlist.export.excel')->middleware(['checkAccess:export']);
+        Route::get('/export/pdf', [App\Http\Controllers\WishlistController::class, 'exportPdf'])->name('wishlist.export.pdf')->middleware(['checkAccess:export']);
+    
+    });
 
     Route::prefix('coupon')->group(function(){
         Route::get('/coupon-gendrate', [App\Http\Controllers\Offers\CouponController::class, 'couponGendrate'])->name('coupon.coupon-gendrate');

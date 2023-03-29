@@ -19,7 +19,6 @@ class PincodeController extends Controller
 {
     public function index(Request $request)
     {
-        $title = "Country";
         if ($request->ajax()) {
             $data = Pincode::select('pincodes.*','users.name as users_name',DB::raw(" IF(mm_pincodes.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'pincodes.added_by');
             $status = $request->get('status');
@@ -62,24 +61,23 @@ class PincodeController extends Controller
                 ->rawColumns(['action', 'status', 'image']);
             return $datatables->make(true);
         }
-        $breadCrum  = array('Masters', 'PostCodes');
-        $title      = 'PostCodes';
+        $breadCrum  = array('Deliverable pincode management', 'Pincode');
+        $title      = 'Deliverable pincode management';
         return view('platform.master.pincode.index', compact('breadCrum', 'title'));
     }
     public function modalAddEdit(Request $request)
     {
         $id                 = $request->id;
         $info               = '';
-        $modal_title        = 'Add Country';
+        $modal_title        = 'Add Pincode';
         if (isset($id) && !empty($id)) {
             $info           = Pincode::find($id);
-            $modal_title    = 'Update Country';
+            $modal_title    = 'Update Pincode';
         }
         return view('platform.master.pincode.add_edit_modal', compact('info', 'modal_title'));
     }
     public function saveForm(Request $request,$id = null)
     {
-        // dd($request->all());
         $id             = $request->id;
         $validator      = Validator::make($request->all(), [
                                 'pincode' => 'required|string|unique:pincodes,pincode,' . $id . ',id,deleted_at,NULL',
@@ -114,7 +112,6 @@ class PincodeController extends Controller
         $id         = $request->id;
         $info       = Pincode::find($id);
         $info->delete();
-        // echo 1;
         return response()->json(['message'=>"Successfully deleted pincode!",'status'=>1]);
     }
     public function changeStatus(Request $request)
@@ -124,7 +121,6 @@ class PincodeController extends Controller
         $info           = Pincode::find($id);
         $info->status   = $status;
         $info->update();
-        // echo 1;
         return response()->json(['message'=>"You changed the Pincode status!",'status'=>1]);
 
     }
@@ -135,7 +131,6 @@ class PincodeController extends Controller
 
     public function exportPdf()
     {
-        // $list       = OrderStatus::select('status_name', 'added_by', 'description', 'order', DB::raw(" IF(status = 2, 'Inactive', 'Active') as user_status"))->get();
         $list       = Pincode::select('pincodes.*', 'users.name as users_name',DB::raw(" IF(mm_pincodes.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'pincodes.added_by')->get();
         $pdf        = PDF::loadView('platform.exports.pincode.excel', array('list' => $list, 'from' => 'pdf'))->setPaper('a4', 'landscape');;
         return $pdf->download('pincode.pdf');

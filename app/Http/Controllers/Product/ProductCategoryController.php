@@ -99,7 +99,6 @@ class ProductCategoryController extends Controller
             $info           = ProductCategory::find($id);
             $modal_title    = 'Update Product Category';
         }
-        
         return view('platform.product_category.form.add_edit_form', compact('modal_title', 'breadCrum', 'info', 'from', 'productCategory', 'taxAll'));
     }
     

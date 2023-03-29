@@ -26,6 +26,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-active-primary pb-4" data-bs-toggle="tab" href="#kt_ecommerce_order">Order</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-active-primary pb-4" data-bs-toggle="tab" href="#kt_ecommerce_wishlist">Wishlist</a>
+                        </li>
                        
                     </ul>
                     <!--end:::Tabs-->
@@ -40,6 +43,13 @@
                       
                         <div class="tab-pane fade" id="kt_ecommerce_order" role="tab-panel">
                             @include('platform.customer.form.order.order')
+                        </div>
+                        <div class="tab-pane fade" id="kt_ecommerce_wishlist" role="tab-panel">
+                            <div class="card card-flush" >
+                                <div class="card-body">
+                                    @include('platform.customer.form.wishlist.wishlist')
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <!--end::Tab content-->

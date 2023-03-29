@@ -294,7 +294,55 @@
                 'export': {
                     'excel': "{{ route('order.export.excel') }}",
                 }
-            }
+            },
+            'service-center': {
+
+                'delete': "{{ route('service-center.delete') }}",
+                'status': "{{ route('service-center.status') }}",
+                'add': "{{ route('service-center.add.edit') }}",
+                'export': {
+                    'excel': "{{ route('service-center.export.excel') }}",
+                    'pdf': "{{ route('service-center.export.pdf') }}",
+                }
+            },
+            'store-locator': {
+                'delete': "{{ route('store-locator.delete') }}",
+                'status': "{{ route('store-locator.status') }}",
+                'add': "{{ route('store-locator.add.edit') }}",
+                'export': {
+                    'excel': "{{ route('store-locator.export.excel') }}",
+                    'pdf': "{{ route('store-locator.export.pdf') }}",
+                }
+            },
+            'wishlist': {
+                'delete': "{{ route('wishlist.delete') }}",
+                'status': "{{ route('wishlist.status') }}",
+                'add': "{{ route('wishlist.add.edit') }}",
+                'export': {
+                    'excel': "{{ route('wishlist.export.excel') }}",
+                    'pdf': "{{ route('wishlist.export.pdf') }}",
+                }
+            },
+            'combo': {
+                'delete': "{{ route('combo.delete') }}",
+                'status': "{{ route('combo.status') }}",
+                'add': "{{ route('combo.add.edit') }}",
+                'export': {
+                    'excel': "{{ route('combo.export.excel') }}",
+                    'pdf': "{{ route('combo.export.pdf') }}",
+                }
+            },
+            'quick-link': {
+               'delete': "{{ route('quick-link.delete') }}",
+               'status': "{{ route('quick-link.status') }}",
+               'add': "{{ route('quick-link.add.edit') }}",
+               'export': {
+                   'excel': "{{ route('quick-link.export.excel') }}",
+                   'pdf': "{{ route('quick-link.export.pdf') }}",
+                }
+            },
+            
+            
 
         }
     };

@@ -3,6 +3,7 @@
 namespace App\Models\Master;
 
 use App\Models\Product\Product;
+use App\Models\StoreLocator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -33,5 +34,9 @@ class Brands extends Model
                     ->join('product_categories', 'product_categories.id', '=', 'products.category_id')
                     ->join( DB::raw('mm_product_categories as p'), DB::raw('p.id'),'=','product_categories.parent_id')
                     ->groupBy(DB::raw('p.id'));
+    }
+    public function storeLocator()
+    {
+        return $this->hasMany(StoreLocator::class,'brand_id','id');
     }
 }

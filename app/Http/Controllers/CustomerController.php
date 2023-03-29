@@ -10,6 +10,7 @@ use App\Models\Master\Customer;
 use App\Models\Master\CustomerAddress;
 use App\Models\Master\Pincode;
 use App\Models\Master\State;
+use App\Models\Wishlist;
 use PDF;
 use Illuminate\Http\Request;
 use DataTables;
@@ -266,5 +267,33 @@ class CustomerController extends Controller
         $customerAddress    = CustomerAddress::where('id', $request->addressId)->delete();
         $message                        = 'Deleted Successfully';
         return response()->json(['message' => $message]);
+    }
+    public function wishlist(Request $request)
+    {
+        if($request->ajax())
+        {
+            $customerId = $request->customer_id;
+            $data = Wishlist::select('wishlists.*','products.product_name','products.price')->where('customer_id',$customerId)
+            ->leftJoin('products','products.id','=','wishlists.product_id');
+            $keywords = $request->get('search')['value'];
+            $datatables =  Datatables::of($data)
+            ->filter(function ($query) use ($keywords) {
+                if ($keywords) {
+                   
+                    return $query->where(function($query) use ($keywords) {
+                        $date = date('Y-m-d', strtotime($keywords));
+                                    $query->orWhere('products.price', 'like', "%{$keywords}%");
+                                    $query->orWhere('products.product_name', 'like', "%{$keywords}%");
+                                    $query->orWhereDate("wishlists.created_at", $date);
+                    });
+                }
+            })
+            ->addIndexColumn()
+            ->editColumn('created_at', function ($row) {
+                $created_at = Carbon::createFromFormat('Y-m-d H:i:s', $row['created_at'])->format('d-m-Y');
+                return $created_at;
+            });
+            return $datatables->make(true);
+        }
     }
 }
