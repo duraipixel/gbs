@@ -28,8 +28,8 @@ class CreateStoreLocatorsTable extends Migration
             $table->text('address')->nullable();
             $table->decimal('latitude', 10, 10)->nullable();
             $table->decimal('longitude', 11, 10)->nullable();
-            $table->json('email')->nullable();
-            $table->json('contact_no')->nullable();
+            $table->text('email')->nullable();
+            $table->text('contact_no')->nullable();
             $table->enum('status', ['published', 'unpublished']);
             $table->unsignedBigInteger('added_by');
             $table->integer( 'order_by' )->nullable();
