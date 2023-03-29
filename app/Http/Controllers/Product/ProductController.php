@@ -54,7 +54,6 @@ class ProductController extends Controller
             $f_stock_status = $request->get('filter_stock_status');
             $f_product_name = $request->get('filter_product_name');
             $f_product_status = $request->get('filter_product_status');
-            $f_video_booking = $request->get('filter_video_booking');
 
             $data = Product::leftJoin('brands','brands.id','=','products.brand_id')->
             leftJoin('product_categories','product_categories.id','=','products.category_id')
@@ -73,9 +72,7 @@ class ProductController extends Controller
             ->when($f_product_status, function($q) use($f_product_status) {
                 return $q->where('products.status', $f_product_status);
             })
-            ->when($f_video_booking, function($q) use($f_video_booking) {
-                return $q->where('has_video_shopping', $f_video_booking);
-            })
+           
             ->when($f_product_name, function($q) use($f_product_name) {
                 return $q->where(function($qr) use($f_product_name){
                     $qr->where('product_name', 'like', "%{$f_product_name}%")

@@ -1,7 +1,10 @@
-<div class="card-toolbar w-100">
-    <div>
+<div class="row">
+    <div class="col-sm-12">
         <h4> Filter Products </h4>
     </div>
+</div>
+<div class="card-toolbar w-100">
+    
     <form id="search-form">
         <div class="row w-100">
             <div class="col-sm-6 col-md-4 col-lg-3">
@@ -103,23 +106,6 @@
                 </div>
             </div>
 
-            <div class="col-sm-6 col-md-4 col-lg-2">
-                @php
-                    $videoBookingArray = array('yes', 'no');
-                @endphp
-                <div class="form-group">
-                    <label class="text-muted">Video Booking</label>
-                    <select name="filter_video_booking" id="filter_video_booking" class="form-control product-select2">
-                        <option value="">All</option>
-                        @if( isset( $videoBookingArray ) && !empty( $videoBookingArray )) 
-                            @foreach ($videoBookingArray as $item)
-                                <option value="{{ $item }}" >{{ ucfirst($item) }}</option>    
-                            @endforeach
-                        @endif
-                    </select>
-                </div>
-            </div>
-            
             <div class="col-sm-6 col-md-4 col-lg-2">
                 <div class="form-group mt-8 text-end">
                     <button type="reset" class="btn btn-sm btn-warning" > Clear </button>
