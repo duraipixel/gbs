@@ -535,7 +535,7 @@
                     </div>
                 </div>
             @endif
-            @if (access()->hasAccess(['country', 'brands', 'city', 'state', 'quick-link', 'main_category', 'sub_category']))
+            @if (access()->hasAccess(['country', 'brands', 'city', 'state', 'quick-link', 'main_category', 'sub_category', 'pincode']))
                 <div data-kt-menu-trigger="click"
                     class="menu-item menu-accordion @if (request()->routeIs(['country', 'quick-link', 'brands', 'city', 'state', 'main_category', 'sub_category'])) hover show @endif">
                     <span class="menu-link">
