@@ -37,7 +37,7 @@ class CommonController extends Controller
 
     public function getAllBanners()
     {
-        return BannerResource::collection(Banner::select('id', 'title', 'description', 'banner_image','mobile_banner', 'tag_line', 'order_by')->where(['status' => 'published'])->orderBy('order_by', 'asc')->get());
+        return BannerResource::collection(Banner::select('id', 'title', 'description', 'banner_image','mobile_banner','links', 'tag_line', 'order_by')->where(['status' => 'published'])->orderBy('order_by', 'asc')->get());
     }
 
     public function getAllBrands()
