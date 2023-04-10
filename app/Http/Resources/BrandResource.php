@@ -24,7 +24,7 @@ class BrandResource extends JsonResource
         $tmp[ 'title' ]         = $this->brand_name;
         $tmp[ 'slug' ]          = $this->slug;
         $tmp[ 'image' ]         = $path;
-        $tmp[ 'brand_banner' ]  = $this->brand_banner;
+        // $tmp[ 'brand_banner' ]  = $this->brand_banner;
         $tmp[ 'description' ]   = $this->short_description;
         $tmp[ 'notes' ]         = $this->notes;
 
