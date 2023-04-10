@@ -15,7 +15,7 @@ class BannerResource extends JsonResource
         $url                    = Storage::url($bannerImagePath);
         $path                   = asset($url);
 
-        $mobileBanner           = 'banner/'.$this->id.'/mobile_banner/'.$this->banner_image;
+        $mobileBanner           = 'banner/'.$this->id.'/mobile_banner/'.$this->mobile_banner;
         $mobUrl                 = Storage::url($mobileBanner);
         $pathBanner             = asset($mobUrl);
 

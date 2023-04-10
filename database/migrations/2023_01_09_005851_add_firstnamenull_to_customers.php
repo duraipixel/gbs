@@ -14,7 +14,7 @@ class AddFirstnamenullToCustomers extends Migration
     public function up()
     {
         Schema::table('customers', function (Blueprint $table) {
-            $table->string('first_name')->nullable()->change();
+            $table->string('first_name')->nullable(true)->change();
         });
     }
 
