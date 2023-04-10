@@ -209,7 +209,20 @@ class CommonController extends Controller
         $parent['id'] = $brand_info->id;
         $parent['name'] = $brand_info->name;
         $parent['slug'] = $brand_info->slug;
-        $parent['image'] = $brand_info->image;
+
+
+        $brandLogoPath          = 'public/brands/'.$brand_info->id.'/default/'.$brand_info->brand_logo;
+        
+        if( !Storage::exists( $brandLogoPath ) || $brand_info->brand_logo === null ) {
+            $path               = asset('assets/logo/no_Image.jpg');
+        } else {
+            $url                    = Storage::url($brandLogoPath);
+            $path                   = asset($url);
+        }
+
+        $parent['image'] = $path;
+
+
         if ($brand_info->category) {
             foreach ($brand_info->category as $items) {
                 $tmp = [];
