@@ -147,7 +147,6 @@
                                 //    console.log( myDropzone.hiddenFileInput );
                                });
 
-                               myBrocheureDropzone.processQueue();
 
                             }
 
@@ -306,76 +305,7 @@
            
         });
 
-        var myBrocheureDropzone = new Dropzone("#kt_ecommerce_add_product_brochure", {
-            autoProcessQueue: false,
-            url: brochure_upload_url, // Set the url for your upload script location
-            paramName: "file", // The name that will be used to transfer the file
-            maxFiles: 1,
-            maxFilesize: 10, // MB
-            addRemoveLinks: true,
-            
-            accept: function (file, done) {
-                if (file.name == "wow.jpg") {
-                    done("Naha, you don't.");
-                } else {
-                    done();
-                }
-            },
-            sending: function(file, xhr, formData) {
-                formData.append("_token", $("meta[name='csrf-token']").attr("content"));
-            },
-            success: function(file, serverFileName) {
-                // let fileList[file.name] = {"fid" : serverFileName };
-                console.log( serverFileName );
-                console.log( file );
-               
-            },
-            init: function() {
-                let dropZone = this;
-                let jsonData = '{!! $brochures !!}';
-                jsonData = JSON.parse(jsonData);
-                // console.log(jsonData);
-                if( Object.keys(jsonData).length > 0 ) {
-                    let formIns = jsonData;
-                    // If the thumbnail is already in the right size on your server:
-                    let mockFile1 = {name:formIns.name,size:formIns.size, id:formIns.id};
-                    let callback = null; // Optional callback when it's done
-                    let crossOrigin = null; // Added to the `img` tag for crossOrigin handling
-                    let resizeThumbnail = false; // Tells Dropzone whether it should resize the image first
-                    dropZone.displayExistingFile(mockFile1, formIns.url, callback, crossOrigin, resizeThumbnail);
-
-                    var a = document.createElement('a');
-                    a.setAttribute('href',formIns.url);
-                    a.setAttribute('rel',"nofollow");
-                    a.setAttribute('target',"_blank");
-                    a.setAttribute('download',formIns.name);
-                                        
-                    a.innerHTML = "<br>download";
-                    $('#kt_ecommerce_add_product_brochure').find(".dz-remove").after(a);
-                }
-
-            },
-            removedfile: function(file) {
-                Swal.fire({
-                    text: "Are you sure you would like to remove?",
-                    icon: "warning",
-                    showCancelButton: true,
-                    buttonsStyling: false,
-                    confirmButtonText: "Yes, remove it!",
-                    cancelButtonText: "No, return",
-                    customClass: {
-                        confirmButton: "btn btn-primary",
-                        cancelButton: "btn btn-active-light"
-                    }
-                }).then(function(result) {
-                    if (result.value) {
-                        removeBrochure(file.id)
-                        file.previewElement.remove();
-                    }
-                });
-                
-            }
-        });
+       
 
         
     function removeGalleryImage( productImageId ) {
