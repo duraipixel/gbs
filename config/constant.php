@@ -28,7 +28,9 @@ return [
                     'sub_category',
                     'global',
                     'my-profile',
-                    'newsletter'
+                    'newsletter',
+                    'store-locator',
+                    'service-center',
 
                 ),
     
