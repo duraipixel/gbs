@@ -19,7 +19,9 @@ class DatabaseSeeder extends Seeder
             CountrySeed::class,
             OrderStatusSeeder::class,
             EmailTemplateTypeSeeder::class,
-            EmailTemplateSeeder::class
+            EmailTemplateSeeder::class,
+            BrandSeeder::class
+            
         ]);
     }
 }
