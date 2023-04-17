@@ -20,7 +20,9 @@ class DatabaseSeeder extends Seeder
             OrderStatusSeeder::class,
             EmailTemplateTypeSeeder::class,
             EmailTemplateSeeder::class,
-            BrandSeeder::class
+            BrandSeeder::class,
+            TaxSeeder::class,
+            CategorySeeder::class
             
         ]);
     }
