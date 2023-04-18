@@ -15,30 +15,18 @@ class WishlistController extends Controller
     {
         $product_id = $request->product_id;
         $customer_id = $request->customer_id;
-        // $validator = Validator::make($request->all(),[
-        //     'name' => ['required','string',
-        //             Rule::unique('wishlists')->where(function($query) use ($product_id,$customer_id) {
-        //                 return $query->where('customer_id','!=',$customer_id)->where('product_ids','!=',$product_id);
-        //             }),
-        //         ],
 
-        // ]);
-            if(!empty($customer_id) && !empty($product_id))
-            {
-                $data = Wishlist::where('customer_id','=',$customer_id)->where('product_id','=',$product_id)->first();
-                if(empty($data))
-                {
-                    $ins['customer_id'] = $customer_id;
-                    $ins['product_id']  = $product_id;
-                    $ins['guest_token'] = '';
-                    $data = Wishlist::create($ins);
-                    return array('error' => 0, 'message' => 'Wishlist added successfully', 'status' => 'success');
-                }
-                else{
-                    return array('error' => 1, 'message' => 'Wishlist already added', 'status' => 'error');
-                }
-                
+        if (!empty($customer_id) && !empty($product_id)) {
+            $data = Wishlist::where('customer_id', '=', $customer_id)->where('product_id', '=', $product_id)->first();
+            if (empty($data)) {
+                $ins['customer_id'] = $customer_id;
+                $ins['product_id']  = $product_id;
+                $ins['guest_token'] = '';
+                $data = Wishlist::create($ins);
+                return array('error' => 0, 'message' => 'Wishlist added successfully', 'status' => 'success');
+            } else {
+                return array('error' => 1, 'message' => 'Wishlist already added', 'status' => 'error');
             }
-        
+        }
     }
 }

@@ -154,7 +154,7 @@ class BannerController extends Controller
                 // $otherBanner            = 'public/banner/'.$banner_id ."/other_banner/". $imageName;
                 // Image::make($file)->resize(1600,420)->save(storage_path('app/' . $otherBanner));
 
-                $info->banner_image       = $imageName;
+                $info->banner_image     = $imageName;
                 $info->update();
             }
 
