@@ -31,6 +31,7 @@ return [
                     'newsletter',
                     'store-locator',
                     'service-center',
+                    'product-addon',
 
                 ),
     

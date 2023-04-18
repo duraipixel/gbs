@@ -146,10 +146,10 @@
                     </div>
                 </div>
             @endif
-            @if (access()->hasAccess('addons'))
+            @if (access()->hasAccess('product-addon'))
                 <div class="menu-item">
-                    <a class="menu-link @if (request()->routeIs(['addons'])) active @elseif(request()->routeIs(['addons.view'])) active @endif"
-                        href="{{ route('addons') }}">
+                    <a class="menu-link @if (request()->routeIs(['product-addon'])) active @endif"
+                        href="{{ route('product-addon') }}">
                         <span class="menu-icon">
                             <span class="svg-icon svg-icon-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"

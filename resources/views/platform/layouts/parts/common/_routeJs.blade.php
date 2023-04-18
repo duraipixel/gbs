@@ -341,6 +341,15 @@
                    'pdf': "{{ route('quick-link.export.pdf') }}",
                 }
             },
+            'product-addon': {
+               'delete': "{{ route('product-addon.delete') }}",
+               'status': "{{ route('product-addon.status') }}",
+               'add': "{{ route('product-addon.add.edit') }}",
+               'export': {
+                   'excel': "{{ route('product-addon.export.excel') }}",
+                   'pdf': "{{ route('product-addon.export.pdf') }}",
+                }
+            },
             
             
 
