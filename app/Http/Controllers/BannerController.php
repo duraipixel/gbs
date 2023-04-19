@@ -98,7 +98,8 @@ class BannerController extends Controller
         $id             = $request->id;
         $validator      = Validator::make($request->all(), [
                                 'title' => 'required|string|unique:banners,title,' . $id . ',id,deleted_at,NULL',
-                                'avatar' => 'mimes:jpeg,png,jpg|dimensions:min_width=1600,min_height=420',
+                                'avatar' => 'mimes:jpeg,png,jpg',
+                                // 'avatar' => 'mimes:jpeg,png,jpg|dimensions:min_width=1600,min_height=420',
                                 'order_by' => 'required|unique:banners,order_by,'.$id.',id,deleted_at,NULL'
                             ]);
         $banner_id      = '';
@@ -142,17 +143,9 @@ class BannerController extends Controller
                 if (!is_dir(storage_path("app/public/banner/".$banner_id."/main_banner"))) {
                     mkdir(storage_path("app/public/banner/".$banner_id."/main_banner"), 0775, true);
                 }
-                // if (!is_dir(storage_path("app/public/banner/".$banner_id."/other_banner"))) {
-                //     mkdir(storage_path("app/public/banner/".$banner_id."/other_banner"), 0775, true);
-                // }
-                // if (!is_dir(storage_path("app/public/banner/".$banner_id."/mobile_banner"))) {
-                //     mkdir(storage_path("app/public/banner/".$banner_id."/mobile_banner"), 0775, true);
-                // }
+               
                 $mainBanner            = 'public/banner/'.$banner_id .'/main_banner/' .$imageName;
-                Image::make($file)->resize(1600,420)->save(storage_path('app/' . $mainBanner));
-
-                // $otherBanner            = 'public/banner/'.$banner_id ."/other_banner/". $imageName;
-                // Image::make($file)->resize(1600,420)->save(storage_path('app/' . $otherBanner));
+                Image::make($file)->save(storage_path('app/' . $mainBanner));
 
                 $info->banner_image     = $imageName;
                 $info->update();
