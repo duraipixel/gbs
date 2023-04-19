@@ -59,7 +59,7 @@
                                         style="background-image: url({{ asset('userImage/no_Image.jpg') }})">
                                         @if ($info->image ?? '')
                                         @php
-                                            $path = Storage::url($info->image,'public')
+                                                $path = Storage::url('productCollection/'.$info->id.'/'.$info->image)
                                         @endphp
                                             <div class="image-input-wrapper w-125px h-125px manual-image"
                                                 id="manual-image"
