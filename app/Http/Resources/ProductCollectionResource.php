@@ -10,11 +10,17 @@ class ProductCollectionResource extends JsonResource
 {
     public function toArray($request)
     {
-        
+        $imagePath              = $this->image;
+        $bannerImagePath        = 'productCollection/'.$this->id.'/'.$this->image;
+        $url                    = Storage::url($bannerImagePath);
+        $path                   = asset($url);
+      
+
         $childTmp                   = [];
         $tmp[ 'id' ]                = $this->id;
         $tmp[ 'collection_name' ]   = $this->collection_name;
         $tmp[ 'collection_slug' ]   = Str::slug($this->collection_name);
+        $tmp[ 'image' ]             = $path;
         $tmp[ 'tag_line' ]          = $this->tag_line;
         $tmp[ 'order_by' ]          = $this->order_by;
         $tmp[ 'status' ]            = $this->status;
@@ -46,7 +52,7 @@ class ProductCollectionResource extends JsonResource
                 $imagePath              = $items->product->base_image;
 
                 if(!Storage::exists( $imagePath)) {
-                    $path               = asset('assets/logo/no-img-1.jpg');
+                    $path               = asset('assets/logo/no_Image.jpg');
                 } else {
                     $url                = Storage::url($imagePath);
                     $path               = asset($url);

@@ -64,26 +64,77 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <label class="fw-bold fs-6 mb-2">Description</label>
-                                    <textarea name="description" id="description" class="form-control" cols="30" rows="5">{{ $info->description ?? '' }}</textarea>
+                                    <textarea name="description" id="description" class="form-control" cols="30" rows="2">{{ $info->description ?? '' }}</textarea>
+                                    <br>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label class="fw-bold fs-6 mb-2">Sorting Order</label>
+                                            <input type="text" name="order_by" class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
+                                            placeholder="Sorting Order" value="{{ $info->order_by ?? '' }}" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="fw-bold fs-6 mb-2"> Status </label>
+                                            <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
+                                                <input class="form-check-input" type="checkbox"  name="status" value="1"  @if( ( isset( $info->status) && $info->status == 'published') || (!isset( $info->status ))) checked @endif />
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="fw-bold fs-6 mb-2">Sorting Order</label>
-                                        <input type="text" name="order_by" class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
-                                        placeholder="Sorting Order" value="{{ $info->order_by ?? '' }}" />
+                                    <div class="fv-row mb-7">
+                                        <label class="d-block fw-bold fs-6 mb-5">Icon</label>
+
+                                        <div class="form-text">Allowed file types: png, jpg,
+                                            jpeg.</div>
                                     </div>
-                                    <br>
-                                    <div class="row">
-                                        <label class="fw-bold fs-6 mb-2"> Status </label>
-                                        <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
-                                            <input class="form-check-input" type="checkbox"  name="status" value="1"  @if( ( isset( $info->status) && $info->status == 'published') || (!isset( $info->status ))) checked @endif />
-                                        </div>
+                                    <input id="image_remove_image" type="hidden" name="image_remove_image" value="no">
+                                    <div class="image-input image-input-outline manual-image" data-kt-image-input="true"
+                                        style="background-image: url({{ asset('userImage/no_Image.jpg') }})">
+                                        @if ($info->icon ?? '')
+                                        @php
+                                            $path = Storage::url($info->icon,'public')
+                                        @endphp
+                                            <div class="image-input-wrapper w-125px h-125px manual-image"
+                                                id="manual-image"
+                                                style="background-image: url({{ asset($path) }});">
+                                                
+                                            </div>
+                                        @else
+                                            <div class="image-input-wrapper w-125px h-125px manual-image"
+                                                id="manual-image"
+                                                style="background-image: url({{ asset('userImage/no_Image.jpg') }});">
+                                            </div>
+                                        @endif
+                                        <label
+                                            class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
+                                            data-kt-image-input-action="change" data-bs-toggle="tooltip"
+                                            title="Change avatar">
+                                            <i class="bi bi-pencil-fill fs-7"></i>
+                                            <input type="file" name="icon" id="readUrl"
+                                                accept=".png, .jpg, .jpeg" />
+                                        
+                                        </label>
+
+                                        <span
+                                            class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
+                                            data-kt-image-input-action="cancel" data-bs-toggle="tooltip"
+                                            title="Cancel avatar">
+                                            <i class="bi bi-x fs-2"></i>
+                                        </span>
+                                        <span
+                                            class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
+                                            data-kt-image-input-action="remove" data-bs-toggle="tooltip"
+                                            title="Remove avatar1">
+                                            <i class="bi bi-x fs-2" id="avatar_remove_logo"></i>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
                             
                         </div>
-                        
+                       
+                      
                         <div class="fv-row mb-7">
                             <div class="row">
                                 <div class="col-sm-12  text-end p-11">
@@ -103,7 +154,7 @@
                                     <input type="text" name="label[]" class="form-control" value="{{ $item->label ?? '' }}"  placeholder="Label">
                                 </div>
                                 <div class="col-sm-5">
-                                    <input type="text" name="amount[]" class="form-control" value="{{ $item->amount ?? '' }}"  placeholder="Amount" required>
+                                    <input type="number" name="amount[]" class="form-control numberonly" value="{{ $item->amount ?? '' }}"  placeholder="Amount" required>
                                 </div>
                                 <div class="col-sm-2">
                                     <div class="input-group mt-1">
@@ -167,16 +218,56 @@
     }
 </style>
 
-
 <script>
+      document.getElementById('readUrl').addEventListener('change', function() {
+      
+        if (this.files[0]) {
+            var picture = new FileReader();
+            picture.readAsDataURL(this.files[0]);
+            picture.addEventListener('load', function(event) {
+                console.log(event.target);
+                let img_url = event.target.result;
+                $('#manual-image').css({
+                    'background-image': 'url(' + event.target.result + ')'
+                });
+            });
+        }
+    });
+    document.getElementById('avatar_remove_logo').addEventListener('click', function() {
+        $('#image_remove_image').val("yes");
+        $('#manual-image').css({
+            'background-image': ''
+        });
+    });
+    $('.mobile_num').keypress(
+        function(event) {
+            if (event.keyCode == 46 || event.keyCode == 8) {
+                //do nothing
+            } else {
+                if (event.keyCode < 48 || event.keyCode > 57) {
+                    event.preventDefault();
+                }
+            }
+        }
+    );
+</script>
+<script>
+ $(document).ready(function () {    
+        $('.numberonly').keypress(function (e) {    
+            var charCode = (e.which) ? e.which : event.keyCode    
+            if (String.fromCharCode(charCode).match(/[^0-9]/g))    
+                return false;                        
+        });    
+
+    }); 
     $("#rowAddon").on("click", function() {
             newRowAdd =
                 '<div id="row" class="row p-7">'+
-                '<div class="col-sm-3">'+
+                '<div class="col-sm-2">'+
                     '<input type="text" name="label[]" class="form-control" placeholder="Label" required>'+
                 '</div>'+
-                '<div class="col-sm-2">'+
-                    '<input type="text" name="amount[]" class="form-control" placeholder="Amount">'+
+                '<div class="col-sm-5">'+
+                    '<input type="number" name="amount[]" class="form-control numberonly" placeholder="Amount">'+
                 '</div>'+
                 '<div class="col-sm-2">'+
                     '<div class="input-group mt-1">'+

@@ -24,8 +24,8 @@
         <div class="card">
             <div class="card-header border-0 pt-6 w-100">
                 <div class="card-toolbar w-100">
-                    <div class="d-flex justify-content-end w-100" data-kt-product_addon-table-toolbar="base">
-                        @if( access()->hasAccess('product-addon', 'filter') )
+                    <div class="d-flex justify-content-end w-100" data-kt-homepage_setting-table-toolbar="base">
+                        @if( access()->hasAccess('homepage-setting', 'filter') )
                         <button type="button" class="btn btn-light-primary me-3" id="btn-light-primary" data-kt-menu-trigger="click"
                             data-kt-menu-placement="bottom-end">
                             <span class="svg-icon svg-icon-2">
@@ -43,14 +43,14 @@
                                 <div class="fs-5 text-dark fw-bolder">Filter Options</div>
                             </div>
                             <div class="separator border-gray-200"></div>
-                            <div class="px-7 py-5" data-kt-product_addon-table-filter="form">
+                            <div class="px-7 py-5" data-kt-homepage_setting-table-filter="form">
                                 <form id="search-form">
                                     <!--begin::Input group-->
                                     <div class="mb-10">
                                         <label class="form-label fs-6 fw-bold">Status:</label>
                                         <select name="filter_status" id="filter_status" class="form-select form-select-solid fw-bolder"
                                             data-kt-select2="true" data-placeholder="Select option" data-allow-clear="true"
-                                            data-kt-product_addon-table-filter="order" data-hide-search="true">
+                                            data-kt-homepage_setting-table-filter="order" data-hide-search="true">
                                             <option value="0">All</option>
                                             <option value="published">Published</option>
                                             <option value="unpublished">Unpublished</option>
@@ -59,9 +59,9 @@
                                     <div class="d-flex justify-content-end">
                                         <button type="reset"
                                             class="btn btn-light btn-active-light-primary fw-bold me-2 px-6"
-                                            data-kt-menu-dismiss="true" data-kt-product_addon-table-filter="reset">Reset</button>
+                                            data-kt-menu-dismiss="true" data-kt-homepage_setting-table-filter="reset">Reset</button>
                                         <button type="submit" class="btn btn-primary fw-bold px-6"
-                                            data-kt-menu-dismiss="true" data-kt-product_addon-table-filter="filter">Apply</button>
+                                            data-kt-menu-dismiss="true" data-kt-homepage_setting-table-filter="filter">Apply</button>
                                     </div>
                                 </form>
                             </div>
@@ -70,7 +70,7 @@
 
                         @include('platform.layouts.parts.common._export_button')
 
-                        <button type="button" class="btn btn-primary" onclick="return openForm('product-addon')">
+                        <button type="button" class="btn btn-primary" onclick="return openForm('homepage-setting')">
                             <span class="svg-icon svg-icon-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none">
@@ -80,7 +80,7 @@
                                         fill="currentColor" />
                                 </svg>
                             </span>
-                            Add Product Addon
+                            Add Homepage Setting
                         </button>
 
                     </div>
@@ -92,11 +92,11 @@
             <!--begin::Card body-->
             <div class="card-body py-4">
                 <div class="table-responsive">
-                    <table class="table align-middle table-row-dashed fs-6 gy-2 mb-0 dataTable no-footer" id="product_addon-table">
+                    <table class="table align-middle table-row-dashed fs-6 gy-2 mb-0 dataTable no-footer" id="homepage_setting-table">
                         <thead>
                             <tr class="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
                                 <th> Title  </th>
-                                <th>Product</th>
+                                <th> Field  </th>
                                 <th> Status </th>
                                 <th style="width: 75px;">Action</th>
                             </tr>
@@ -115,13 +115,13 @@
     <script src="{{ asset('assets/js/datatable.min.js') }}"></script>
 
     <script>
-        var dtTable = $('#product_addon-table').DataTable({
+        var dtTable = $('#homepage_setting-table').DataTable({
 
             processing: true,
             serverSide: true,
             type: 'POST',
             ajax: {
-                "url": "{{ route('product-addon') }}",
+                "url": "{{ route('homepage-setting') }}",
                 "data": function(d) {
                     d.status = $('select[name=filter_status]').val();
                 }
@@ -134,8 +134,9 @@
                   
                 },
                 {
-                    data: 'product_name',
-                    name: 'product_name',
+                    data: 'field_name',
+                    name: 'field_name',
+                  
                 },
                 {
                     data: 'status',
