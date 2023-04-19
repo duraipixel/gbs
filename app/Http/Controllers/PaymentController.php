@@ -14,7 +14,7 @@ class PaymentController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = Payment::selectRaw('mm_orders.order_no, mm_payments.status as payment_status, mm_payments.*, sum(mm_order_products.quantity) as order_quantity')
+            $data = Payment::selectRaw('gbs_orders.order_no, gbs_payments.status as payment_status, gbs_payments.*, sum(gbs_order_products.quantity) as order_quantity')
                             ->join('orders', 'orders.id', '=', 'payments.order_id')
                             ->join('order_products', 'order_products.order_id', '=', 'orders.id')
                             ->groupBy('orders.id')->orderBy('orders.id', 'desc');

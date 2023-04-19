@@ -15,7 +15,7 @@ class AddFieldsToProducts extends Migration
     public function up()
     {
         Schema::table('products', function (Blueprint $table) {
-            DB::statement("ALTER TABLE `mm_products` CHANGE `stock_status` `stock_status` ENUM('in_stock', 'out_of_stock', 'coming_soon', 'notify') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'in_stock';");
+            DB::statement("ALTER TABLE `gbs_products` CHANGE `stock_status` `stock_status` ENUM('in_stock', 'out_of_stock', 'coming_soon', 'notify') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'in_stock';");
         });
     }
 

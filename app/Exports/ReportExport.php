@@ -22,7 +22,7 @@ class ReportExport implements FromView
             $end_date = date('Y-m-d', strtotime( trim( str_replace('/', '-', $dates[1]))));
             
         }
-        $list = Order::selectRaw('mm_payments.order_id,mm_payments.payment_no,mm_payments.status as payment_status,mm_orders.*,sum(mm_order_products.quantity) as order_quantity')
+        $list = Order::selectRaw('gbs_payments.order_id,gbs_payments.payment_no,gbs_payments.status as payment_status,gbs_orders.*,sum(gbs_order_products.quantity) as order_quantity')
                             ->join('order_products', 'order_products.order_id', '=', 'orders.id')
                             ->join('payments', 'payments.order_id', '=', 'orders.id')
                             ->where('orders.status', '!=', 'pending')

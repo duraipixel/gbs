@@ -29,7 +29,7 @@ class ServiceCenterController extends Controller
         {
            
             $data = ServiceCenter::select('service_centers.*','users.name as user_name',
-            DB::raw('IF(mm_service_centers.parent_id = 0,"Parent",mm_parent_category.title) as parent_name'))
+            DB::raw('IF(gbs_service_centers.parent_id = 0,"Parent",gbs_parent_category.title) as parent_name'))
             ->join('users','users.id','=','service_centers.added_by')
             ->leftJoin('service_centers as parent_category','parent_category.id','=','service_centers.parent_id');
             $status     = $request->get('status');

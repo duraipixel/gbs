@@ -21,7 +21,7 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = Order::selectRaw('mm_payments.order_id,mm_payments.payment_no,mm_payments.status as payment_status,mm_orders.*,sum(mm_order_products.quantity) as order_quantity')
+            $data = Order::selectRaw('gbs_payments.order_id,gbs_payments.payment_no,gbs_payments.status as payment_status,gbs_orders.*,sum(gbs_order_products.quantity) as order_quantity')
                             ->join('order_products', 'order_products.order_id', '=', 'orders.id')
                             ->join('payments', 'payments.order_id', '=', 'orders.id')
                             ->groupBy('orders.id')->orderBy('orders.id', 'desc');

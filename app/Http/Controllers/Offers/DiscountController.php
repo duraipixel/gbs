@@ -136,7 +136,7 @@ class DiscountController extends Controller
         {
             $data = DB::table('product_categories')
                             ->select('id','name')
-                            ->whereRaw('id not IN(select category_id from mm_coupon_categories)')
+                            ->whereRaw('id not IN(select category_id from gbs_coupon_categories)')
                             ->where('status', 'published')->get();
             $title = "Categories"; 
             foreach($data as $key=>$val)
@@ -151,7 +151,7 @@ class DiscountController extends Controller
                         ->select('id','collection_name')
                         ->where('status', 'published')
                         ->where('can_map_discount', 'yes')
-                        ->whereRaw('id not in (select product_collection_id from mm_coupon_product_collection)')
+                        ->whereRaw('id not in (select product_collection_id from gbs_coupon_product_collection)')
                         ->get();
             $title = "Product Collection"; 
             foreach($data as $key=>$val)

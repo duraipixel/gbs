@@ -57,7 +57,7 @@ class DashboardRepository
 
     public function getTopSellingCategory( $fromDate = '', $toDate = '' )
     {
-        $details = OrderProduct::select( DB::raw("count(mm_product_categories.id) as total_count, sum(mm_order_products.sub_total) as total_amount"), 'product_categories.*' )
+        $details = OrderProduct::select( DB::raw("count(gbs_product_categories.id) as total_count, sum(gbs_order_products.sub_total) as total_amount"), 'product_categories.*' )
                     ->join('orders', 'orders.id', '=', 'order_products.order_id')
                     ->join('products', 'products.id', '=', 'order_products.product_id')
                     ->join('product_categories', 'product_categories.id', '=', 'products.category_id')
@@ -83,7 +83,7 @@ class DashboardRepository
 
     public function getTopSellingProduct( $fromDate = '', $toDate = '' )
     {
-        $details = OrderProduct::select( DB::raw("count(mm_products.id) as total_count, sum(mm_order_products.sub_total) as total_amount"), 'products.*' )
+        $details = OrderProduct::select( DB::raw("count(gbs_products.id) as total_count, sum(gbs_order_products.sub_total) as total_amount"), 'products.*' )
                     ->join('orders', 'orders.id', '=', 'order_products.order_id')
                     ->join('products', 'products.id', '=', 'order_products.product_id')
                     ->where('orders.status', '!=', 'pending')

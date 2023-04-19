@@ -29,7 +29,7 @@ class ProductCategoryController extends Controller
         $breadCrum              = array('Products', 'Product Categories');
         $taxData = Tax::where('status','published')->get();
         if ($request->ajax()) {
-            $data               = ProductCategory::select('product_categories.*','users.name as users_name','taxes.title as tax', DB::raw('IF(mm_product_categories.parent_id = 0, "Parent", mm_parent_category.name ) as parent_name '))
+            $data               = ProductCategory::select('product_categories.*','users.name as users_name','taxes.title as tax', DB::raw('IF(gbs_product_categories.parent_id = 0, "Parent", gbs_parent_category.name ) as parent_name '))
                                     ->join('users', 'users.id', '=', 'product_categories.added_by')
                                     ->leftJoin('taxes', 'taxes.id', '=', 'product_categories.tax_id')
                                     ->leftJoin('product_categories as parent_category', 'parent_category.id', '=', 'product_categories.parent_id');

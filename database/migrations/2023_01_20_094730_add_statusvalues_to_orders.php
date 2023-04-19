@@ -14,7 +14,7 @@ class AddStatusvaluesToOrders extends Migration
      */
     public function up()
     {
-        DB::statement("ALTER TABLE mm_orders MODIFY `status` ENUM('pending', 'placed', 'shipped', 'delivered', 'cancelled', 'payment_pending') NOT NULL");
+        DB::statement("ALTER TABLE gbs_orders MODIFY `status` ENUM('pending', 'placed', 'shipped', 'delivered', 'cancelled', 'payment_pending') NOT NULL");
 
     }
 
@@ -25,6 +25,6 @@ class AddStatusvaluesToOrders extends Migration
      */
     public function down()
     {
-        DB::statement("ALTER TABLE mm_orders MODIFY `status` ENUM('pending', 'completed', 'cancelled') NOT NULL");
+        DB::statement("ALTER TABLE gbs_orders MODIFY `status` ENUM('pending', 'completed', 'cancelled') NOT NULL");
     }
 }

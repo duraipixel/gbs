@@ -22,7 +22,7 @@ class UserController extends Controller
     {
         $title = "Users";
         if ($request->ajax()) {
-            $data = User::select('users.*', 'roles.name as role_name', DB::raw(" IF(mm_users.status = 2, 'Inactive', 'Active') as user_status"))->join('roles', 'roles.id', '=', 'users.role_id');
+            $data = User::select('users.*', 'roles.name as role_name', DB::raw(" IF(gbs_users.status = 2, 'Inactive', 'Active') as user_status"))->join('roles', 'roles.id', '=', 'users.role_id');
             $status = $request->get('status');
             $keywords = $request->get('search')['value'];
             $datatables =  Datatables::of($data)
@@ -169,7 +169,7 @@ class UserController extends Controller
 
     public function exportPdf()
     {
-        $list       = User::select('users.name', 'users.added_by', 'email', 'mobile_no', 'address', 'users.created_at', 'roles.name as role_name', DB::raw(" IF(mm_users.status = 2, 'Inactive', 'Active') as user_status"))->join('roles', 'roles.id', '=', 'users.role_id')->where('users.is_super_admin', '!=', 1)->get();
+        $list       = User::select('users.name', 'users.added_by', 'email', 'mobile_no', 'address', 'users.created_at', 'roles.name as role_name', DB::raw(" IF(gbs_users.status = 2, 'Inactive', 'Active') as user_status"))->join('roles', 'roles.id', '=', 'users.role_id')->where('users.is_super_admin', '!=', 1)->get();
         $pdf        = PDF::loadView('platform.exports.users.excel', array('list' => $list, 'from' => 'pdf'))->setPaper('a4', 'landscape');;
         return $pdf->download('users.pdf');
     }

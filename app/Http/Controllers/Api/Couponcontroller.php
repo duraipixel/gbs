@@ -112,7 +112,7 @@ class Couponcontroller extends Controller
                             if( isset( $coupon->couponCategory ) && !empty( $coupon->couponCategory ) ) {
                                 foreach ($coupon->couponCategory as $item) {
                                     
-                                    $cartCouponInfo = Cart::selectRaw('sum(mm_carts.sub_total) as category_total,mm_carts.*,mm_products.product_name,mm_product_categories.id as cat_id, mm_product_categories.parent_id')
+                                    $cartCouponInfo = Cart::selectRaw('sum(gbs_carts.sub_total) as category_total,gbs_carts.*,gbs_products.product_name,gbs_product_categories.id as cat_id, gbs_product_categories.parent_id')
                                                         ->join('products', 'products.id', '=', 'carts.product_id')
                                                         ->join('product_categories', function($join) {
                                                             $join->on('product_categories.id', '=', 'products.category_id');
@@ -120,7 +120,7 @@ class Couponcontroller extends Controller
                                                         })
                                                         ->where('product_categories.id', $item->category_id)
                                                         ->orWhere('product_categories.parent_id', $item->category_id)
-                                                        ->groupByRaw('mm_product_categories.id, parent_id')->first();
+                                                        ->groupByRaw('gbs_product_categories.id, parent_id')->first();
                                 
                                     if( $cartCouponInfo ) {
                                         if( $cartCouponInfo->category_total >= $coupon->minimum_order_value ) {

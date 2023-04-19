@@ -165,7 +165,7 @@ class TestimonialsController extends Controller
     }
     public function exportPdf()
     {
-        $list       = Testimonials::select('testimonials.*','users.name as users_name',DB::raw(" IF(mm_testimonials.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'testimonials.added_by')->get();
+        $list       = Testimonials::select('testimonials.*','users.name as users_name',DB::raw(" IF(gbs_testimonials.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'testimonials.added_by')->get();
         $pdf        = PDF::loadView('platform.exports.testimonials.excel', array('list' => $list, 'from' => 'pdf'))->setPaper('a4', 'landscape');;
         return $pdf->download('testimonial.pdf');
     }

@@ -20,7 +20,7 @@ class PincodeController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = Pincode::select('pincodes.*','users.name as users_name',DB::raw(" IF(mm_pincodes.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'pincodes.added_by');
+            $data = Pincode::select('pincodes.*','users.name as users_name',DB::raw(" IF(gbs_pincodes.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'pincodes.added_by');
             $status = $request->get('status');
             $keywords = $request->get('search')['value'];
             $datatables =  Datatables::of($data)
@@ -131,7 +131,7 @@ class PincodeController extends Controller
 
     public function exportPdf()
     {
-        $list       = Pincode::select('pincodes.*', 'users.name as users_name',DB::raw(" IF(mm_pincodes.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'pincodes.added_by')->get();
+        $list       = Pincode::select('pincodes.*', 'users.name as users_name',DB::raw(" IF(gbs_pincodes.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'pincodes.added_by')->get();
         $pdf        = PDF::loadView('platform.exports.pincode.excel', array('list' => $list, 'from' => 'pdf'))->setPaper('a4', 'landscape');;
         return $pdf->download('pincode.pdf');
     }
