@@ -86,8 +86,7 @@ Route::middleware(['auth'])->group(function(){
     }
     Route::prefix('customer')->group(function(){
         Route::get('/customer-wishlist', [App\Http\Controllers\CustomerController::class, 'wishlist'])->name('customer-wishlist'); 
-    });
-    
+    });    
 
     Route::prefix('wishlist')->group(function() {
         Route::get('/', [App\Http\Controllers\WishlistController::class, 'index'])->name('wishlist')->middleware(['checkAccess:editable']);

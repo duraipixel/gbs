@@ -24,21 +24,8 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
          * 3.check subcategory exist
          * 4.check brand exist         
          */
-
-        $status = (isset($row['status']) && strtolower($row['status']) == 'active') ? 'published' : 'unpublished';
         
-        $bulleting = $row['4_bullet_points'] ?? '';
-        $bulleting = explode('•', $bulleting);
-        $bullet_html = '<ul class="product_bulletin">';
-
-        if( isset( $bulleting ) && !empty( $bulleting)){
-            foreach ($bulleting as $list) {
-                if( !empty( trim($list) ) ) {
-                    $bullet_html .= '<li>'.$list.'</li>';
-                }
-            }
-        }
-        $bullet_html .= '</ul>';
+        $status = 'published'; 
         
         $ins = $cat_ins = $tax_ins = $subcat_ins = $brand_ins = $link_ins = [];
         $category           = $row['category'] ?? null;
@@ -79,6 +66,7 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
                 $category_id                = ProductCategory::create($cat_ins)->id;
 
             }
+            
             #check subcategory exist or create new one
             $checkSubCategory = ProductCategory::where(['name' => trim($sub_category), 'parent_id' => $category_id] )->first();
             if( isset( $checkSubCategory ) && !empty( $checkSubCategory ) ) {
@@ -121,35 +109,30 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
             }
 
             #check product exist or create new one
-           
-            $sku            = generateProductSku(trim($row['brand']), trim($row['sku']));
+            $sku            = Str::replace('.','-',$row['sku']);
+            
             $amount         = $row['mrp'] ?? $row['tax_inclexcl'] ?? 100;
-            $productPriceDetails = getAmountExclusiveTax((float)$amount, $taxPercentage ?? 0 );
+            // $productPriceDetails = getAmountExclusiveTax((float)$amount, $taxPercentage ?? 0 );
 			
             $productInfo = Product::where('sku', $sku)->first();
 
             $ins['product_name'] = trim($row['product_name']);
-            $ins['hsn_code'] = $row['hsn'];
-            $ins['product_url'] = Str::slug($row['product_name']);
+            $ins['hsn_code'] = $row['hsn'] ?? null;
+            $ins['product_url'] = Str::slug(Str::replace('.', '-', $row['sku']).'-'.trim($row['brand']));
             $ins['sku'] = $sku;
-            $ins['price'] = $productPriceDetails['basePrice'] ?? 0;
-            $ins['mrp'] = $row['mrp'] ?? 0;
-            $ins['sale_price'] = $row['discounted_price'] ?? 0;
-            $ins['sale_start_date'] = ( isset($row['start_date']) && !empty( $row['start_date']) ) ? date('Y-m-d', strtotime($row['start_date'])) : null;
-            $ins['sale_end_date'] = ( isset($row['end_date']) && !empty( $row['end_date']) ) ? date('Y-m-d', strtotime($row['end_date'])) : null;
-            $ins['status'] = (isset($row['status']) && strtolower($row['status']) == 'active') ? 'published' : 'unpublished';
+            $ins['price'] = round($row['base_price']);
+            $ins['mrp'] = round($row['mrp'] ?? 0);
+            $ins['status'] = $status;
             $ins['quantity'] = 1;
-            $ins['has_video_shopping'] = $row['video_shopping'] ?? 'no';
             $ins['stock_status'] = 'in_stock';
             $ins['brand_id'] = $brand_id;
-            $ins['category_id'] = $sub_category_id;
+            $ins['category_id'] = $sub_category_id ?? $category_id;
             $ins['is_featured'] = ( isset($row['featured']) && !empty( $row['featured']) ) ? 1 : 0;
             $ins['tax_id'] = $tax_id;
             $ins['description'] = $row['short_description'];
-            $ins['technical_information'] = $row['technical_specifications'] ?? null;
-            $ins['feature_information'] = $bullet_html ?? null;
-            $ins['specification'] = $row['long_description'] ?? null;
+           
             $ins['added_by'] = Auth::id();
+            
 			if( isset( $productInfo ) && !empty( $productInfo ) ) {
                 
             	DB::table('products')->where('id', $productInfo->id)->update($ins);
