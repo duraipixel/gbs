@@ -32,6 +32,7 @@ return [
                     'store-locator',
                     'service-center',
                     'product-addon',
+                    'homepage-setting-field',
 
                 ),
     

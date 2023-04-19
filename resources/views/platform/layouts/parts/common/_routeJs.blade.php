@@ -350,6 +350,15 @@
                    'pdf': "{{ route('product-addon.export.pdf') }}",
                 }
             },
+            'homepage-setting-field': {
+               'delete': "{{ route('homepage-setting-field.delete') }}",
+               'status': "{{ route('homepage-setting-field.status') }}",
+               'add': "{{ route('homepage-setting-field.add.edit') }}",
+               'export': {
+                   'excel': "{{ route('homepage-setting-field.export.excel') }}",
+                   'pdf': "{{ route('homepage-setting-field.export.pdf') }}",
+                }
+            },
             
             
 
