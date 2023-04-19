@@ -9,6 +9,8 @@ use App\Models\Product\ProductCollection;
 use App\Models\Product\ProductCollectionProduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 use DataTables;
 use Excel;
 use PDF;
@@ -121,9 +123,18 @@ class ProductCollectionController extends Controller
                 $ins['status']          = 'unpublished';
             }
             $error                      = 0;
-            // dd( $ins );
             $collectionInfo             = ProductCollection::updateOrCreate(['id' => $id], $ins);
             $collection_id              = $collectionInfo->id;
+            if ($request->hasFile('image')) {
+                $filename       = time() . '_' . $request->image->getClientOriginalName();
+                $directory      = 'productCollection/'.$collection_id;
+                $filename       = $directory.'/'.$filename;
+                Storage::deleteDirectory('public/'.$directory);
+                Storage::disk('public')->put($filename, File::get($request->image));
+                
+                $collectionInfo->image = $filename;
+                $collectionInfo->save();
+            }
             
             if( isset($request->collection_product) && !empty($request->collection_product) ) {
                 ProductCollectionProduct::where('product_collection_id', $collection_id)->delete();

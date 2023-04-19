@@ -83,7 +83,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="fv-row mb-7">
-                                        <label class="d-block fw-bold fs-6 mb-5">Image</label>
+                                        <label class="d-block fw-bold fs-6 mb-5">Icon</label>
 
                                         <div class="form-text">Allowed file types: png, jpg,
                                             jpeg.</div>
