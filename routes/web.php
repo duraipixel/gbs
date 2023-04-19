@@ -71,6 +71,7 @@ Route::middleware(['auth'])->group(function(){
         'quick-link'    => App\Http\Controllers\Master\QuickLinkController::class,
         'product-addon'    => App\Http\Controllers\ProductAddonController::class,
         'homepage-setting-field'    => App\Http\Controllers\HomePageSetting\HomepageSettingFieldController::class,
+        'homepage-setting'    => App\Http\Controllers\HomePageSetting\HomepageSettingController::class,
         
     );
    

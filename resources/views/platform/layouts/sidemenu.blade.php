@@ -537,9 +537,9 @@
                     </div>
                 </div>
             @endif
-            @if (access()->hasAccess(['homepage-setting-field']))
+            @if (access()->hasAccess(['homepage-setting-field','homepage-setting']))
             <div data-kt-menu-trigger="click"
-                class="menu-item menu-accordion mb-1 @if (request()->routeIs(['homepage-setting-field'])) hover show @endif">
+                class="menu-item menu-accordion mb-1 @if (request()->routeIs(['homepage-setting-field','homepage-setting'])) hover show @endif">
                 <span class="menu-link">
                     <span class="menu-icon">
                         <span class="svg-icon svg-icon-2">
@@ -568,6 +568,17 @@
                                 <span class="menu-title">Homepage Setting Field </span>
                             </a>
                         </div>
+                    @endif
+                    @if (access()->hasAccess(['homepage-setting']))
+                    <div class="menu-item">
+                        <a class="menu-link @if (request()->routeIs(['homepage-setting'])) active @endif"
+                            href="{{ route('homepage-setting') }}">
+                            <span class="menu-bullet">
+                                <span class="bullet bullet-dot"></span>
+                            </span>
+                            <span class="menu-title">Homepage Setting </span>
+                        </a>
+                    </div>
                     @endif
                 </div>
             </div>

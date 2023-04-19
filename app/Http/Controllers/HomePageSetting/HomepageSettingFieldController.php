@@ -126,7 +126,7 @@ class HomepageSettingFieldController extends Controller
         $info           = HomepageSettingField::find($id);
         $info->status   = $status;
         $info->update();
-        return response()->json(['message'=>"You changed the Product Addon status!",'status'=>1]);
+        return response()->json(['message'=>"You changed the Homepage Setting Field status!",'status'=>1]);
 
     }
 

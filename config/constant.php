@@ -33,6 +33,7 @@ return [
                     'service-center',
                     'product-addon',
                     'homepage-setting-field',
+                    'homepage-setting',
 
                 ),
     

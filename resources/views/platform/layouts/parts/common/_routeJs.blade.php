@@ -359,6 +359,16 @@
                    'pdf': "{{ route('homepage-setting-field.export.pdf') }}",
                 }
             },
+            'homepage-setting': {
+               'delete': "{{ route('homepage-setting.delete') }}",
+               'status': "{{ route('homepage-setting.status') }}",
+               'add': "{{ route('homepage-setting.add.edit') }}",
+               'export': {
+                   'excel': "{{ route('homepage-setting.export.excel') }}",
+                   'pdf': "{{ route('homepage-setting.export.pdf') }}",
+                }
+            },
+            
             
             
 
