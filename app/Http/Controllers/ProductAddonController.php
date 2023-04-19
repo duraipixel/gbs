@@ -7,7 +7,9 @@ use App\Models\Product\Product;
 use Illuminate\Http\Request;
 use App\Models\ProductAddon;
 use App\Models\ProductAddonItem;
+use Illuminate\Support\Facades\Storage;
 use DataTables;
+use Illuminate\Support\Facades\File;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Excel;
@@ -18,7 +20,7 @@ class ProductAddonController extends Controller
     {
         if ($request->ajax()) {
             $data       = ProductAddon::select('product_addons.*','products.product_name')
-            ->leftJoin('products','products.product_name','=','product_addons.product_id');
+            ->leftJoin('products','products.id','=','product_addons.product_id');
             $status     = $request->get('status');
             $keywords   = $request->get('search')['value'];
 
@@ -31,7 +33,7 @@ class ProductAddonController extends Controller
                         $date = date('Y-m-d', strtotime($keywords));
                         return $query->where('product_addons.title', 'like', "%{$keywords}%")
                         ->orWhere('products.product_name', 'like', "%{$keywords}%")
-                        ->orWhereDate("created_at", $date);
+                        ->orWhereDate("product_addons.created_at", $date);
                     }
                 })
                 ->addIndexColumn()
@@ -102,6 +104,17 @@ class ProductAddonController extends Controller
             
             $error                      = 0;
             $info                       = ProductAddon::updateOrCreate(['id' => $id], $ins);
+            if ($request->hasFile('icon')) {
+               
+                $filename       = time() . '_' . $request->icon->getClientOriginalName();
+                $directory      = 'product_addon/'.$info->id;
+                $filename       = $directory.'/'.$filename;
+                Storage::deleteDirectory('public/'.$directory);
+                Storage::disk('public')->put($filename, File::get($request->icon));
+                
+                $info->icon = $filename;
+                $info->save();
+            }
             if(!empty($request->label))
             {
                 $dataItem = ProductAddonItem::where('product_addon_id',$id)->get();
