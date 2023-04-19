@@ -152,13 +152,13 @@ if (!function_exists('getCustomerNo')) {
     {
 
         $countNumber    = '000001';
-        $customer_no    = 'MM' . $countNumber;
+        $customer_no    = 'GBS' . $countNumber;
 
         $checkCustomer  = Customer::orderBy('id', 'desc')->first();
 
         if (isset($checkCustomer) && !empty($checkCustomer)) {
             $old_no = $checkCustomer->customer_no;
-            $end = substr($old_no, 2);
+            $end = substr($old_no, 3);
 
             $old_no = (int)$end + 1;
 
@@ -169,7 +169,7 @@ if (!function_exists('getCustomerNo')) {
                 }
                 $ord = $new_no . $old_no;
 
-                $customer_no =  'MM' . $ord;
+                $customer_no =  'gbs' . $ord;
             }
         }
         return $customer_no;

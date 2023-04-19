@@ -15,15 +15,15 @@ class EmailTemplateSeeder extends Seeder
      */
     public function run()
     {
-        $logo = asset('assets/logo/logo.png');
+        $logo = asset('assets/logo/logo.webp');
         
         $type = SubCategory::where('slug', 'new-registration')->first();
         if( isset( $type ) && !empty( $type ) ) {
 
             $ins['type_id'] = $type->id;
             $ins['title'] = 'GBS System & Service Private Limited';
-            $ins['message'] = '<p><img src="'.$logo.'" alt=\"Logo\"></p><p><br></p><p><br></p><p>Hi {$name},</p><p><br></p><p>GBS System & Service Private Limited online purchase website.</p><p><br></p><p><br></p><p>Regards,</p><p>{$regards}.</p><p><br></p><p>{$company_website}</p><p>{$company_mobile_no}</p><p>{$company_address}</p><p><br></p>';
-            $ins['params'] = 'name,regards,company_website,company_mobile_no,company_address';
+            $ins['message'] = '<p><img src="'.$logo.'" alt=\"Logo\"></p><p><br></p><p><br></p><p>Hi {$name},</p><p><br></p><p>GBS System & Service Private Limited online purchase website.</p><p>Complete your registration {$link}<br></p><p><br></p><p>Regards,</p><p>{$regards}.</p><p><br></p><p>{$company_website}</p><p>{$company_mobile_no}</p><p>{$company_address}</p><p><br></p>';
+            $ins['params'] = 'name,regards,company_website,company_mobile_no,company_address,link';
             $ins['status'] = 'published';
 
             EmailTemplate::create($ins);

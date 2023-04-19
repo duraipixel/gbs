@@ -15,6 +15,7 @@ class CategorySeeder extends Seeder
      */
     public function run()
     {
+        
         $ins['name']                = "LAPTOP";
         $ins['parent_id']           =   0;
         $ins['slug']                = Str::slug("LAPTOP");
@@ -24,7 +25,7 @@ class CategorySeeder extends Seeder
         $ins['order_by']            = '1';
         $ins['added_by']            = '1';
        
-        ProductCategory::create($ins);
+        ProductCategory::updateOrCreate(['name' => 'LAPTOP'], $ins);
 
     }
 }

@@ -15,6 +15,7 @@ class CountrySeed extends Seeder
     public function run()
     {
         $insArray = array('iso' => 'IN', 'name' => 'INDIA', 'nice_name' => 'India', 'iso3'=>'AFG', 'num_code'=>356, 'phone_code' => 91);
-        $user = Country::create($insArray);
+        
+        Country::updateOrCreate(['name' => 'INDIA'], $insArray);
     }
 }

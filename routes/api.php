@@ -42,6 +42,8 @@ Route::post('/login', [App\Http\Controllers\Api\CustomerController::class, 'doLo
 Route::post('/send/password/link', [App\Http\Controllers\Api\CustomerController::class, 'sendPasswordLink']);
 Route::post('/reset/password', [App\Http\Controllers\Api\CustomerController::class, 'resetPasswordLink']);
 Route::post('/check/tokenValid', [App\Http\Controllers\Api\CustomerController::class, 'checkValidToken']);
+Route::post('/verify/account', [App\Http\Controllers\Api\CustomerController::class, 'verifyAccount']);
+
 Route::get('/serviceCenter', [App\Http\Controllers\Api\ServiceController::class, 'getServiceCenter']);
 Route::get('/serviceCenterDetail/{slug}', [App\Http\Controllers\Api\ServiceController::class, 'getServiceCenterDetail']);
 Route::get('/storeLocator', [App\Http\Controllers\Api\StoreLocatorController::class, 'getStoreLocator']);

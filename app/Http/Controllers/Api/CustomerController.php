@@ -14,21 +14,47 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Mail;
+use Carbon\Carbon;
 
 class CustomerController extends Controller
 {
+    public function verifyAccount(Request $request)
+    {
+        
+        $email = $request->token;
+        $email = base64_decode($email);
+        $error = 1;
+        $message = 'Token Expired';
+        $customer = Customer::with('customerAddress')->where('email', $email)->whereNull('deleted_at')->first();
+        if( $customer ) {
+            if( !empty($customer->verification_token) ) {
+                $customer->email_verified_at = Carbon::now();
+                $customer->verification_token = null;
+                $customer->update();
+                $error = 0;
+                $message = 'Account Verified Succesfull';
+            } 
+        }
+
+        return array('error' => $error, 'message' => $message, 'customer' => $customer);
+
+    }
+
     public function registerCustomer(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'firstName' => 'required|string',
-            'email' => 'required|email|unique:customers,email',
+            'lastName' => 'required|string',
+            'email' => 'required|email|unique:customers,email,id,deleted_at,NULL', 
             'password' => 'required|string',
 
         ], ['email.unique' => 'Email id is already registered.Please try to login']);
 
-        if ($validator->passes()) {
+        $customer = Customer::where('email', $request->email)->whereNull('deleted_at')->first();
+        if (!$customer) {
 
             $ins['first_name'] = $request->firstName;
+            $ins['last_name'] = $request->lastName ?? null;
             $ins['email'] = $request->email;
             $ins['mobile_no'] = $request->mobile_no ?? null;
             $ins['customer_no'] = getCustomerNo();
@@ -37,6 +63,8 @@ class CustomerController extends Controller
 
             $customer_data = Customer::create($ins);
 
+            $token_id = base64_encode($request->email);
+
             /** send email for new customer */
             $emailTemplate = EmailTemplate::select('email_templates.*')
                 ->join('sub_categories', 'sub_categories.id', '=', 'email_templates.type_id')
@@ -44,9 +72,16 @@ class CustomerController extends Controller
 
             $globalInfo = GlobalSettings::first();
 
+            // $link = 'http://192.168.0.35:2000/verify-account/' . $token_id;
+            $link = 'https://gbs-dev.vercel.app/verify-account/' . $token_id;
+
+            $customer_data->verification_token = $token_id;
+            $customer_data->update();
+
             $extract = array(
                 'name' => $request->firstName,
                 'regards' => $globalInfo->site_name,
+                'link' => '<a href="' . $link . '"> Verify Account </a>',
                 'company_website' => '',
                 'company_mobile_no' => $globalInfo->site_mobile_no,
                 'company_address' => $globalInfo->address
@@ -73,15 +108,16 @@ class CustomerController extends Controller
                     'mobile_no' => [$request->mobile_no]
                 );
 
-                sendMuseeSms('register', $sms_params);
+                // sendMuseeSms('register', $sms_params);
             }
 
             $error = 0;
-            $message = 'Registered success';
+            $message = 'Verification email is sent to your email address, Please verify account to login';
             $status = 'success';
         } else {
             $error = 1;
-            $message = $validator->errors()->all();
+            // $message = $validator->errors()->all();
+            $message = ['Email id is already exists'];
             $status = 'error';
         }
         return array('error' => $error, 'message' => $message, 'status' => $status, 'customer_data' => $customer_data ?? '' );

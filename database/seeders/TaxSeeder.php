@@ -17,6 +17,7 @@ class TaxSeeder extends Seeder
         $ins['title']               = 'Tax 18';
         $ins['pecentage']           = 18;
         $ins['order_by']            = '1';
-       Tax::create($ins);
+        Tax::updateOrCreate(['title' => 'Tax 18'], $ins);
+       
     }
 }
