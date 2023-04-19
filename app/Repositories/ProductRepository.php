@@ -14,7 +14,7 @@ class ProductRepository
             foreach ($info->productImages as $key => $value) {
                 $tmp['name'] = 'image-'.$value->id;
                 $tmp['size'] = $value->file_size;
-                $tmp['url'] = asset( Storage::url($value->image_path));
+                $tmp['url'] = asset( Storage::url($value->gallery_path));
                 $tmp['id'] = $value->id;
 
                 $imgArray[] = $tmp;

@@ -17,6 +17,8 @@ class Product extends Model
         'hsn_code',
         'product_url',
         'sku',
+        'strike_price',
+        'discount_percentage',
         'price',
         'mrp',
         'sale_price',

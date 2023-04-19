@@ -210,9 +210,7 @@
     var isImage = false;
     var product_url = "{{ route('products') }}";
     var product_add_url = "{{ route('products.save') }}";
-    var remove_image_url = "{{ route('products.remove.image') }}";
-    var remove_brochure_url = "{{ route('products.remove.brochure') }}";
-    var brochure_upload_url = "{{ route('products.upload.brochure') }}";
+    var remove_image_url = "{{ route('products.remove.image') }}";    
     var gallery_upload_url = "{{ route('products.upload.gallery') }}";
 
     var myDropzone = new Dropzone("#kt_ecommerce_add_product_media", {
@@ -276,9 +274,7 @@
               
             },
             removedfile: function (file) {
-                console.log( file );
-                console.log('started');
-                
+                               
                 Swal.fire({
                     title: 'Are you sure?',
                     text: "You won't be able to revert this!",
@@ -297,15 +293,11 @@
                         )
                         file.previewElement.remove();
                     }
-                })
-
-                
+                })                
                 
             }
            
-        });
-
-       
+        });      
 
         
     function removeGalleryImage( productImageId ) {
@@ -326,24 +318,7 @@
 
     }
 
-    function removeBrochure( product_id ) {
-
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        }); 
-        $.ajax({
-            url: remove_brochure_url,
-            type: 'POST',
-            data: {id:product_id},
-            success:function(res) {
-                
-            }
-        });
-
-    }
-
+   
     function addVariationRow( id = '') {
         $.ajaxSetup({
             headers: {

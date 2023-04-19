@@ -119,8 +119,7 @@ class FilterController extends Controller
         $limit = 12;
         $skip = (isset($page) && !empty($page)) ? ($page * $limit) : 0;
 
-        $from   = 1 + ($page * $limit);
-        
+        $from   = 1 + ($page * $limit);        
 
         $take_limit = $limit + ($page * $limit);
         $total = Product::select('products.*')->where('products.status', 'published')

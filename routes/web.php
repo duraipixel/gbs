@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/', [App\Http\Controllers\HomeController::class, 'index']);
+Route::get('/upload-image', [App\Http\Controllers\ImageUploadController::class, 'index']);
 Route::get('/test', [App\Http\Controllers\TestController::class, 'index']);
 Route::get('/test-mail', [App\Http\Controllers\TestController::class, 'sendMail']);
 Route::get('/test-invoice', [App\Http\Controllers\TestController::class, 'invoiceSample']);
@@ -116,9 +117,9 @@ Route::middleware(['auth'])->group(function(){
         Route::post('/status', [App\Http\Controllers\Product\ProductController::class, 'changeStatus'])->name('products.status')->middleware(['checkAccess:status']);
         Route::post('/delete', [App\Http\Controllers\Product\ProductController::class, 'delete'])->name('products.delete')->middleware(['checkAccess:delete']);
         Route::post('/save', [App\Http\Controllers\Product\ProductController::class, 'saveForm'])->name('products.save');
+        Route::post('/get/base/mrp', [App\Http\Controllers\Product\ProductController::class, 'getBaseMrpPrice'])->name('get.product.base_mrp_prce');
         Route::post('/remove/image', [App\Http\Controllers\Product\ProductController::class, 'removeImage'])->name('products.remove.image');
-        Route::post('/remove/brochure', [App\Http\Controllers\Product\ProductController::class, 'removeBrochure'])->name('products.remove.brochure');
-        Route::post('/upload/brochure', [App\Http\Controllers\Product\ProductController::class, 'uploadBrochure'])->name('products.upload.brochure');
+        
         Route::post('/upload/gallery', [App\Http\Controllers\Product\ProductController::class, 'uploadGallery'])->name('products.upload.gallery');
         Route::post('/export/excel', [App\Http\Controllers\Product\ProductController::class, 'export'])->name('products.export.excel')->middleware(['checkAccess:export']);
         Route::get('/export/pdf', [App\Http\Controllers\Product\ProductController::class, 'exportPdf'])->name('products.export.pdf')->middleware(['checkAccess:export']);

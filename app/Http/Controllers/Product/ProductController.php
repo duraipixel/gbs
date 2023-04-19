@@ -212,6 +212,8 @@ class ProductController extends Controller
                                 'stock_status' => 'required',
                                 'product_name' => 'required_if:product_page_type,==,general',
                                 'base_price' => 'required_if:product_page_type,==,general',
+                                'mrp' => 'required_if:product_page_type,==,general',
+                                'strike_price' => 'required_if:product_page_type,==,general',
                                 'sku' => 'required_if:product_page_type,==,general|unique:products,sku,' . $id . ',id,deleted_at,NULL',
                                 'sale_price' => 'required_if:discount_option,==,percentage',
                                 'sale_price' => 'required_if:discount_option,==,fixed_amount',
@@ -247,6 +249,8 @@ class ProductController extends Controller
             $ins[ 'product_url' ]           = Str::slug($request->product_name);
             $ins[ 'sku' ]                   = $request->sku;
             $ins[ 'price' ]                 = $request->base_price;
+            $ins[ 'mrp' ]                   = $request->mrp;
+            $ins[ 'strike_price' ]          = $request->strike_price;
             $ins[ 'status' ]                = $request->status;
             $ins[ 'brand_id' ]              = $request->brand_id;
             $ins[ 'category_id' ]           = $request->category_id;
@@ -256,9 +260,9 @@ class ProductController extends Controller
             $ins[ 'has_video_shopping' ]    = $request->has_video_shopping ?? 'no';
             $ins[ 'quantity' ]              = $request->qty;
             $ins[ 'stock_status' ]          = $request->stock_status;
-            $ins[ 'sale_price' ]            = $request->sale_price ?? 0;
-            $ins[ 'sale_start_date' ]       = $request->sale_start_date ?? null;
-            $ins[ 'sale_end_date' ]         = $request->sale_end_date ?? null;
+            // $ins[ 'sale_price' ]            = $request->sale_price ?? 0;
+            // $ins[ 'sale_start_date' ]       = $request->sale_start_date ?? null;
+            // $ins[ 'sale_end_date' ]         = $request->sale_end_date ?? null;
             $ins[ 'description' ]           = $request->product_description ?? null;
             $ins[ 'technical_information' ] = $request->product_technical_information ?? null;
             $ins[ 'feature_information' ]   = $request->product_feature_information ?? null;
@@ -284,44 +288,29 @@ class ProductController extends Controller
                     mkdir(storage_path("app/public/products/".$product_id."/default"), 0775, true);
                 }
 
-                $fileNameThumb              = 'public/products/'.$product_id.'/default/335_225_px_' . time() . '-' . $imageName;
-                Image::make($request->avatar)->resize(280,190)->save(storage_path('app/' . $fileNameThumb));
+              
+                $fileNameThumb              = 'public/products/'.$product_id.'/default/' . time() . '-' . $imageName;
+                Image::make($request->avatar)->save(storage_path('app/' . $fileNameThumb));
 
                 $productInfo->base_image    = $fileNameThumb;
                 $productInfo->update();
 
             }
             
-            ProductDiscount::where('product_id', $product_id )->delete();
-            if( isset( $request->discount_option ) && $request->discount_option != 1 ) {
-                $disIns['product_id'] = $product_id;
-                $disIns['discount_type'] = $request->discount_option;
-                $disIns['discount_value'] = $request->discount_percentage ?? 0; //this is for percentage 
-                $disIns['amount'] = $request->dicsounted_price ?? 0; //this only for fixed amount
-                ProductDiscount::create($disIns);
-            }
-
-            ProductMeasurement::where('product_id', $product_id )->delete();
-            if( isset( $request->isShipping ) ) {
-
-                $measure['product_id']  = $product_id;
-                $measure[ 'weight' ]    = $request->weight ?? 0;
-                $measure[ 'width' ]     = $request->width ?? 0;
-                $measure[ 'hight' ]     = $request->height ?? 0;
-                $measure[ 'length' ]    = $request->length ?? 0;
-                ProductMeasurement::create($measure);
-            }
+            // ProductDiscount::where('product_id', $product_id )->delete();
+            // if( isset( $request->discount_option ) && $request->discount_option != 1 ) {
+            //     $disIns['product_id'] = $product_id;
+            //     $disIns['discount_type'] = $request->discount_option;
+            //     $disIns['discount_value'] = $request->discount_percentage ?? 0; //this is for percentage 
+            //     $disIns['amount'] = $request->dicsounted_price ?? 0; //this only for fixed amount
+            //     ProductDiscount::create($disIns);
+            // }
 
             $request->session()->put('image_product_id', $product_id);
-            $request->session()->put('brochure_product_id', $product_id);
-
-
+            
             //////////////////
-
-
             if( isset( $request->filter_variation ) && !empty( $request->filter_variation ) )  {
                 ProductMapAttribute::where('product_id', $product_id)->delete();
-
 
                 $filter_variation = $request->filter_variation;
                 $filter_variation_value = $request->filter_variation_value;
@@ -379,9 +368,7 @@ class ProductController extends Controller
 
                 $url = $request->url;
                 $url_type = $request->url_type;
-                
                 // $linkArr                        = array_combine($url_type, $url);
-                
                 if( isset( $url ) && !empty( $url )) {
                     
                     ProductLink::where('product_id', $product_id)->delete();
@@ -393,9 +380,7 @@ class ProductController extends Controller
 
                         ProductLink::create($insAttr);
                     }
-                    
                 }
-
             } 
             
             $error                          = 0;
@@ -414,39 +399,27 @@ class ProductController extends Controller
     {
         
         $product_id = $request->session()->pull('image_product_id');
+
         if( $request->hasFile('file') && isset( $product_id ) ) {
+            
             $files = $request->file('file');
             $imageIns = [];
             $iteration = 1;
             foreach ($files as $file) {
+
                 $imageName = uniqid().$file->getClientOriginalName();
-                if (!is_dir(storage_path("app/public/products/".$product_id."/thumbnail"))) {
-                    mkdir(storage_path("app/public/products/".$product_id."/thumbnail"), 0775, true);
-                }
                 
                 if (!is_dir(storage_path("app/public/products/".$product_id."/gallery"))) {
                     mkdir(storage_path("app/public/products/".$product_id."/gallery"), 0775, true);
                 }
-                if (!is_dir(storage_path("app/public/products/".$product_id."/detailPreview"))) {
-                    mkdir(storage_path("app/public/products/".$product_id."/detailPreview"), 0775, true);
-                }
-
-                $fileNameThumb =  'public/products/'.$product_id.'/thumbnail/100_100_px_' . time() . '-' . $imageName;
-                Image::make($file)->resize(120,120)->save(storage_path('app/' . $fileNameThumb));
-
+                
+                $fileName =  'public/products/'.$product_id.'/gallery/' . time() . '-' . $imageName;
+                Image::make($file)->save(storage_path('app/' . $fileName));
                 
                 $fileSize = $file->getSize();
 
-                $fileName =  'public/products/'.$product_id.'/gallery/1000_700_px_' . time() . '-' . $imageName;
-                Image::make($file)->resize(1000,700)->save(storage_path('app/' . $fileName));
-
-                $fileNamePreview = 'public/products/'.$product_id.'/detailPreview/615_450_px_' . time() . '-' . $imageName;
-                Image::make($file)->resize(615,450)->save(storage_path('app/' . $fileNamePreview));
-
                 $imageIns[] = array( 
-                    'gallery_path'  => $fileName, 
-                    'image_path'    => $fileNameThumb,
-                    'preview_path'  => $fileNamePreview,
+                    'gallery_path'  => $fileName,                   
                     'product_id'    => $product_id,
                     'file_size'     => $fileSize,
                     'is_default'    => ($iteration == 1) ? 1: "0",
@@ -473,59 +446,14 @@ class ProductController extends Controller
     {
 
         $id             = $request->id;
-        $info           = ProductImage::find( $id );
-        
-        $directory      = 'public/products/'.$info->product_id.'/detailPreview/'.$info->preview_path;
-        Storage::delete($directory);
-        
-        $directory      = 'products/'.$info->info.'/gallery/'.$info->gallery_path;
-        Storage::delete('public/'.$directory);
+        $info           = ProductImage::find( $id );              
+        if( isset( $info->gallery_path ) && !empty( $info->gallery_path ) ) {
 
-        $directory      = 'products/'.$info->info.'/thumbnail/'.$info->image_path;
-        Storage::delete('public/'.$directory);
-
-        $info->delete();
-        echo 1;
-        return true;
-
-    }
-
-    public function uploadBrochure(Request $request)
-    {
-        
-        $product_id = $request->session()->pull('brochure_product_id');
-        if( $request->hasFile('file') && isset( $product_id ) ) {
-            
-            $filename       = time() . '_' . $request->file->getClientOriginalName();
-            $directory      = 'products/'.$product_id.'/brochure';
-            $filename       = $directory.'/'.$filename;
-            Storage::deleteDirectory('public/'.$directory);
-
-            if (!is_dir(storage_path("app/public/products/".$product_id."/brochure"))) {
-                mkdir(storage_path("app/public/products/".$product_id."/brochure"), 0775, true);
-            }
-           
-            Storage::disk('public')->put($filename, File::get($request->file));
-
-            $info = Product::find( $product_id );
-            $info->brochure_upload = $filename;
-            $info->update();
-
+            $directory      = 'products/'.$info->product_id.'/gallery/'.$info->gallery_path;
+            Storage::delete('public/'.$directory);       
+    
+            $info->delete();
         }
-        echo 1;
-    }
-
-    public function removeBrochure(Request $request)
-    {
-
-        $id             = $request->id;
-        $info           = Product::find( $id );
-        
-        $directory      = 'products/'.$id.'/brochure';
-        Storage::deleteDirectory('public/'.$directory);
-
-        $info->brochure_upload = null;
-        $info->update();
         echo 1;
         return true;
 
@@ -586,6 +514,34 @@ class ProductController extends Controller
     {
         Excel::import( new MultiSheetProductImport, request()->file('file') );
         return response()->json(['error'=> 0, 'message' => 'Imported successfully']);
+    }
+
+    public function getBaseMrpPrice(Request $request )
+    {
+        $category_id = $request->category_id;
+        $price = $request->price;
+        $inputField = $request->inputField;
+        $tax = ProductCategory::find($category_id);
+        
+        if( isset( $tax->tax ) && !empty( $tax->tax ) ) {
+
+            $percentage = $tax->tax->pecentage;
+            if( $inputField == 'mrp') {
+                $price_info = getAmountExclusiveTax( $price, $percentage);
+            } else {
+                $price_info = getAmountInclusiveTax( $price, $percentage);
+            }
+
+            $message = 'Success';
+            $error = 0;
+
+        } else {
+            $error = 1;
+            $message = 'Please set Tax to Product Category';
+
+        }
+
+        return response()->json(['error' => $error, 'message' => $message, 'price_info' => $price_info ?? ''] );
     }
 
 }

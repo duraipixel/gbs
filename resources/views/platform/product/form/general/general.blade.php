@@ -16,8 +16,8 @@
     </div>
     <!--end::Pricing-->
      <!--begin::Shipping-->
-    <div class="card card-flush py-4" id="product-shipping">
+    {{-- <div class="card card-flush py-4" id="product-shipping">
         @include('platform.product.form.general._shipping')
-    </div>
+    </div> --}}
     <!--end::Shipping-->
 </div>

@@ -7,16 +7,42 @@
     // dd( $info->productDiscount );
 @endphp
 <div class="card-body pt-0">
-    <div class="fv-row mb-10">
+    <div class="fv-row row mb-10">
         <div class="col-md-4">
             <div class="">
                 <label class="required form-label">Base Price</label>
-                <input type="text" name="base_price" id="base_price" class="form-control mb-2 mobile_num" placeholder="Product Price" value="{{ $info->price ?? '' }}" />
+                <input type="text" name="base_price"  onkeyup="getBaseMrpPrice('base_price', this.value)" id="base_price" class="form-control mb-2 mobile_num" placeholder="Product Price" value="{{ $info->price ?? '' }}" />
                 <div class="text-muted fs-7">Set the product price.</div>
             </div>
         </div>
+        <div class="col-sm-4">
+            <div class="">
+                <label class="required form-label">MOP Price <small id="mrp_tax"> (Inclusive Tax (
+                        {{ $info->productCategory->tax->pecentage ?? 0 }}%)) </small></label>
+                <input type="text" name="mrp" id="mrp" onkeyup="getBaseMrpPrice('mrp', this.value)"
+                    class="form-control mb-2 mobile_num" placeholder="Product Price"
+                    value="{{ $info->mrp ?? '' }}" />
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="">
+                <label class="required form-label">MRP Price <small id="mrp_tax"> (Inclusive Tax (
+                        {{ $info->productCategory->tax->pecentage ?? 0 }}%)) </small></label>
+                <input type="text" name="strike_price" id="strike_price" onkeyup="getDiscountPricePercentage('strike', this.value)"
+                    class="form-control mb-2 mobile_num" placeholder="Product Price"
+                    value="{{ $info->strike_price ?? '' }}" />
+            </div>
+        </div>
     </div>
-    <div class="row mb-10 d-none" id="kt_ecommerce_add_product_sale_price">
+    <div class="row">
+        <div class="text-center col-sm-12 fs-1 fw-bold">
+            <p> Discount Percentage</p>
+            <label>
+                <span id="discount_price_percentage"><?= $info->discount_percentage ?? 0 ?></span> %
+            </label>
+        </div>
+    </div>
+    {{-- <div class="row mb-10 d-none" id="kt_ecommerce_add_product_sale_price">
         <div class="col-md-4">
             <div class="mb-10">
                 <label class="form-label">Sale Price</label>
@@ -87,10 +113,71 @@
         <label class="form-label">Fixed Discounted Price</label>
         <input type="text" name="dicsounted_price" onkeyup="return getSalePrice(this)" class="form-control mb-2 mobile_num" placeholder="Discounted price" value="{{ $info->productDiscount->amount ?? '' }}" />
         <div class="text-muted fs-7">Set the discounted product price. The product will be reduced at the determined fixed price</div>
-    </div>
+    </div> --}}
 </div>
 
 <script>
+
+    function getDisPercentage(mop, mrp) {
+        mop = parseFloat(mop);
+        mrp = parseFloat(mrp);
+        return Math.round(((mop/mrp)*100) - 100).toFixed(2);
+    }
+
+    function getDiscountPricePercentage(inputField, price) {
+
+        const discount_price_percentage = document.getElementById('discount_price_percentage');
+
+        let mop = $('#mrp').val();
+        if( mop == '' || mop == 'undefined' || mop == null ) {
+            toastr.clear()
+            toastr.error('Error', 'Mop Price is mandatory to get discount percentage');
+            return false;
+        }
+        if( price == '' ) {
+            toastr.clear()
+            toastr.error('Error', 'Mrp Price is mandatory');
+            return false;
+        }
+         
+        mop = parseFloat(mop);
+        let mrp = parseFloat(price);
+        if( mop > mrp ) {
+            toastr.clear()
+            toastr.error('Error', 'Mrp price should be greater than MOP price');
+            return false;
+        }
+        toastr.clear();
+        discount_price_percentage.innerHTML = getDisPercentage(mop, mrp);
+        
+
+    }
+
+    function getBaseMrpPrice(inputField, price) {
+        
+        let category_id = $('#category_id').val();
+
+        $.ajax({
+            url: "{{ route('get.product.base_mrp_prce') }}",
+            type: 'POST',
+            data: {
+                category_id: category_id,
+                price: price,
+                inputField: inputField
+            },
+            success: function(res) {
+                if (res.error == 0) {
+                    if (res.price_info.basePrice) {
+                        $('#base_price').val(res.price_info.basePrice);
+                    } else if (res.price_info.mrpPrice) {
+                        $('#mrp').val(res.price_info.mrpPrice);
+                    }
+                } else {
+                    toastr.error('Error', res.message);
+                }
+            }
+        })
+    }
     var discount_option = '{{ $info->productDiscount->discount_type ?? '' }}';
     var discount_percentage = '{{ $info->productDiscount->discount_value ?? 10 }}';
 

@@ -31,7 +31,7 @@ class ProductCollectionResource extends JsonResource
             foreach ($this->collectionProducts as $items ) {
                 $category = $items->product->productCategory;
                 // dd( $category->id );
-                $salePrices             = getProductPrice( $items->product );
+                // $salePrices             = getProductPrice( $items->product );
 
                 $pro                    = [];
                 $pro['id']              = $items->product->id;
@@ -45,9 +45,9 @@ class ProductCollectionResource extends JsonResource
                 $pro['is_featured']     = $items->product->is_featured;
                 $pro['is_best_selling'] = $items->product->is_best_selling;
                 $pro['is_new']          = $items->product->is_new;
-                $pro['sale_prices']     = $salePrices;
-                $pro['mrp_price']       = $items->product->price;
-                $pro['image']           = $items->product->base_image;
+                $pro['price']           = $items->product->mrp;
+                $pro['strike_price']    = $items->product->strike_price;
+                $pro['thumbnail']       = $items->product->base_image;
 
                 $imagePath              = $items->product->base_image;
 
@@ -58,7 +58,7 @@ class ProductCollectionResource extends JsonResource
                     $path               = asset($url);
                 }
 
-                $pro['image']           = $path;
+                $pro['thumbnail']           = $path;
 
                 $tmp['products'][]      = $pro; 
             }

@@ -222,7 +222,7 @@
                                 </a>
                             </div>
                         @endif
-                        @if (access()->hasAccess(['discount']))
+                        {{-- @if (access()->hasAccess(['discount']))
                             <div class="menu-item">
                                 <a class="menu-link @if (request()->routeIs(['discount'])) active @endif"
                                     href="{{ route('discount') }}">
@@ -232,7 +232,7 @@
                                     <span class="menu-title"> Discount </span>
                                 </a>
                             </div>
-                        @endif
+                        @endif --}}
                     </div>
                 </div>
             @endif

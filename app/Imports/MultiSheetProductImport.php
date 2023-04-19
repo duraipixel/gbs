@@ -66,32 +66,35 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
                 $category_id                = ProductCategory::create($cat_ins)->id;
 
             }
-            
-            #check subcategory exist or create new one
-            $checkSubCategory = ProductCategory::where(['name' => trim($sub_category), 'parent_id' => $category_id] )->first();
-            if( isset( $checkSubCategory ) && !empty( $checkSubCategory ) ) {
-                $sub_category_id                = $checkSubCategory->id;
-            } else {
-                #insert new sub category
-                $subcat_ins['tax_id']           = $tax_id;
-                $subcat_ins['is_home_menu']     = 'no';
-                $subcat_ins['added_by']         = Auth::id();
-                $subcat_ins['name']             = trim($sub_category);
-                $subcat_ins['description']      = $row['subcategory_description'] ?? null;
-                $subcat_ins['order_by']         = 0;
-                $subcat_ins['tag_line']         = $row['subcategory_tagline'] ?? null;
-                $subcat_ins['status']           = 'published';
-                $subcat_ins['parent_id']        = $category_id;
-                $subcat_ins['is_featured']      = '0';
+            if( !empty($category_id)) {
 
-                $parent_name = '';
-                if( isset( $category_id ) && !empty( $category_id ) ) {
-                    $parentInfo                 = ProductCategory::find($category_id);
-                    $parent_name                = $parentInfo->name ?? '';
-                }
+                #check subcategory exist or create new one
+                $checkSubCategory = ProductCategory::where(['name' => trim($sub_category), 'parent_id' => $category_id] )->first();
+                if( isset( $checkSubCategory ) && !empty( $checkSubCategory ) ) {
+                    $sub_category_id                = $checkSubCategory->id;
+                } else if( $sub_category ) {
+                    #insert new sub category
+                    $subcat_ins['tax_id']           = $tax_id;
+                    $subcat_ins['is_home_menu']     = 'no';
+                    $subcat_ins['added_by']         = Auth::id();
+                    $subcat_ins['name']             = trim($sub_category);
+                    $subcat_ins['description']      = $row['subcategory_description'] ?? null;
+                    $subcat_ins['order_by']         = 0;
+                    $subcat_ins['tag_line']         = $row['subcategory_tagline'] ?? null;
+                    $subcat_ins['status']           = 'published';
+                    $subcat_ins['parent_id']        = $category_id;
+                    $subcat_ins['is_featured']      = '0';
     
-                $subcat_ins['slug']             = Str::slug($sub_category.' '.$parent_name);
-                $sub_category_id                = ProductCategory::create($subcat_ins);
+                    $parent_name = '';
+                    if( isset( $category_id ) && !empty( $category_id ) ) {
+                        $parentInfo                 = ProductCategory::find($category_id);
+                        $parent_name                = $parentInfo->name ?? '';
+                    }
+        
+                    $subcat_ins['slug']             = Str::slug($sub_category.' '.$parent_name);
+                    $sub_category_id                = ProductCategory::create($subcat_ins);
+    
+                }
 
             }
             #check brand exist or create new one
@@ -120,8 +123,10 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
             $ins['hsn_code'] = $row['hsn'] ?? null;
             $ins['product_url'] = Str::slug(Str::replace('.', '-', $row['sku']).'-'.trim($row['brand']));
             $ins['sku'] = $sku;
+            $ins['strike_price'] = round($row['mrp']);
             $ins['price'] = round($row['base_price']);
-            $ins['mrp'] = round($row['mrp'] ?? 0);
+            $ins['mrp'] = round($row['price_with_tax'] ?? 0);
+            $ins['discount_percentage'] = getDiscountPercentage(round($row['price_with_tax'] ?? 0), round($row['mrp']));
             $ins['status'] = $status;
             $ins['quantity'] = 1;
             $ins['stock_status'] = 'in_stock';

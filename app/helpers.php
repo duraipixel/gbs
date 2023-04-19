@@ -101,6 +101,21 @@ if (!function_exists('getAmountExclusiveTax')) {
     }
 }
 
+if (!function_exists('getAmountInclusiveTax')) {
+    function getAmountInclusiveTax($productAmount, $gstPercentage)
+    {
+        // GST = (Original Cost * GST rate%) / 100
+        $mrpPrice      = $productAmount ?? 0;
+        $gstAmount      = 0;
+        if ((int)$gstPercentage > 0) {
+            $gstAmount = ($productAmount * $gstPercentage)/100;
+            $mrpPrice = $productAmount + $gstAmount;
+        }
+
+        return array('mrpPrice' => $mrpPrice, 'gstAmount' => $gstAmount, 'tax_percentage' => $gstPercentage);
+    }
+}
+
 if (!function_exists('generateProductSku')) {
     function generateProductSku($brand, $sku = '')
     {
@@ -426,4 +441,8 @@ function getIndianCurrency(float $number)
     $Rupees = implode('', array_reverse($str));
     $paise = ($decimal > 0) ? "." . ($words[$decimal / 10] . " " . $words[$decimal % 10]) . ' Paise' : '';
     return ($Rupees ? $Rupees . 'Rupees ' : '') . $paise;
+}
+
+function getDiscountPercentage($mop, $mrp) {
+    return round((($mop/$mrp)*100) - 100 );
 }
