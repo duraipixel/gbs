@@ -228,7 +228,7 @@ class FilterController extends Controller
                 $pro['is_new']          = $items->is_new;
                 $pro['price']           = $items->mrp;
                 $pro['strike_price']    = $items->strike_price;
-                $pro['save_price']      = $items->strike_price ?? 0 - $items->mrp ?? 0;
+                $pro['save_price']      = $items->strike_price - $items->mrp;
                 $pro['discount_percentage'] = abs($items->discount_percentage);
                 $pro['image']           = $items->base_image;
                 $pro['max_quantity']    = $items->quantity;
