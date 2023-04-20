@@ -12,6 +12,7 @@ class Pincode extends Model
     protected $fillable = [
         'pincode',
         'description',
+        'shipping_information',
         'added_by',
         'status',
     ];

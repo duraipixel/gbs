@@ -39,8 +39,13 @@
                                 placeholder="Pincode here" value="{{ $info->pincode ?? '' }}" />
                         </div>
                         <div class="fv-row mb-7">
+                            <label class="required fw-bold fs-6 mb-2">Shipping Information</label>
+                            <input type="text" name="shipping_information" class="form-control form-control-solid mb-3 mb-lg-0"
+                                placeholder="Shipping Information" value="{{ $info->shipping_information ?? '' }}" />
+                        </div>
+                        <div class="fv-row mb-7">
                             <label class="fw-bold fs-6 mb-2">Description</label>
-                            <textarea name="description"  placeholder="Description" class="form-control form-control-solid mb-3 mb-lg-0" id="description" cols="30" rows="10">{{ $info->description ?? '' }}</textarea>
+                            <textarea name="description"  placeholder="Description" class="form-control form-control-solid mb-3 mb-lg-0" id="description" cols="30" rows="3">{{ $info->description ?? '' }}</textarea>
                         </div>
                      
                         <div class="fv-row mb-7">
@@ -114,6 +119,14 @@
                                 }
                             }
                         },
+                        'shipping_information': {
+                            validators: {
+                                notEmpty: {
+                                    message: 'Shipping Information  is required'
+                                }
+                            }
+                        },
+                        
                       
                         
                     

@@ -86,8 +86,9 @@ class PincodeController extends Controller
 
         if ($validator->passes()) {
            
-            $ins['pincode']                        = $request->pincode;
-            $ins['description']                   = $request->description;
+            $ins['pincode']                                 = $request->pincode;
+            $ins['description']                             = $request->description;
+            $ins['shipping_information']                    = $request->shipping_information;
             $ins['added_by']        = Auth::id();
             if($request->status == "1")
             {
