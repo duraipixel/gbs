@@ -34,6 +34,7 @@ return [
                     'product-addon',
                     'homepage-setting-field',
                     'homepage-setting',
+                    'warranty',
 
                 ),
     
