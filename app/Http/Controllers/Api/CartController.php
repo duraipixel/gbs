@@ -76,12 +76,16 @@ class CartController extends Controller
                 $ins['cart_order_no']   = 'ORD' . date('ymdhis');
                 
                 $cart_id = Cart::create($ins)->id;
-                $ins['message']         = 'added';
+                $error = 0;
+                $message = 'Cart added successfull';
+                $data = $this->getCartListAll($customer_id, $guest_token);
             } else {
-                return array('error' => 1, 'message' => 'Customer Data not available.Contact Administrator');
+                $error = 1;
+                $message = 'Customer Data not available';
+                $data = [];
             }
         }
-        return $this->getCartListAll($customer_id, $guest_token);
+        return array( 'error' => $error, 'message' => $message, 'data' => $data);
     }
 
     public function updateCart(Request $request)
@@ -98,11 +102,17 @@ class CartController extends Controller
             $checkCart->quantity = $quantity;
             $checkCart->sub_total = $checkCart->price * $quantity;
             $checkCart->update();
-
-            return $this->getCartListAll($checkCart->customer_id, $checkCart->guest_token);
+            $error = 0;
+            $message = 'Cart updated successfull';
+            $data = $this->getCartListAll($checkCart->customer_id, $checkCart->guest_token);
         } else {
-            return array('error' => 1, 'message' => 'Cart Data not available. Contact Administrator');
+
+            $error = 1;
+            $message = 'Cart Data not available';
+            $data = [];
         }
+
+        return array( 'error' => $error, 'message' => $message, 'data' => $data );
     }
 
     public function deleteCart(Request $request)
@@ -111,10 +121,22 @@ class CartController extends Controller
         $cart_id        = $request->cart_id;    
 
         $checkCart      = Cart::find($cart_id);
-        $customer_id    = $checkCart->customer_id;
-        $guest_token    = $checkCart->guest_token;
-        $checkCart->delete();
-        return $this->getCartListAll($customer_id, $guest_token);
+        if( $checkCart ) {
+
+            $customer_id    = $checkCart->customer_id;
+            $guest_token    = $checkCart->guest_token;
+            $checkCart->delete();
+
+            $error = 0;
+            $message = 'Cart Item deleted successfull';
+
+            $data = $this->getCartListAll($customer_id, $guest_token);
+        } else {
+            $error = 1;
+            $message = 'Cart Data not available';
+            $data = [];
+        }
+        return array( 'error' => $error, 'message' => $message, 'data' => $data );
 
     }
 
@@ -124,18 +146,29 @@ class CartController extends Controller
         $customer_id        = $request->customer_id;
         $guest_token        = $request->guest_token;
 
-        Cart::when( $customer_id != '', function($q) use($customer_id) {
-                $q->where('customer_id', $customer_id);
-            })->
-            when( $customer_id == '' && $guest_token != '', function($q) use($guest_token) {
-                $q->where('token', $guest_token);
-            })->delete();
+        if( $customer_id || $guest_token ) {
 
-        if( $customer_id ) {
-            CartAddress::where('customer_id', $customer_id)->delete();
+            Cart::when( $customer_id != '', function($q) use($customer_id) {
+                    $q->where('customer_id', $customer_id);
+                })->
+                when( $customer_id == '' && $guest_token != '', function($q) use($guest_token) {
+                    $q->where('guest_token', $guest_token);
+                })->delete();
+            
+            $data = $this->getCartListAll($customer_id, $guest_token);
+            $error = 0;
+            $message = 'Cart Cleared successfull';
+
+        } else {
+
+            $error = 1;
+            $message = 'Customer Data not available';
+            $data = [];
+
         }
-        // CartShiprocketResponse::where('cart_token')
-        return $this->getCartListAll($customer_id, $guest_token);
+
+        return array( 'error' => $error, 'message' => $message, 'data' => $data );
+
     }
 
     public function getCarts(Request $request)
