@@ -59,9 +59,10 @@ Route::post('/clear/cart', [App\Http\Controllers\Api\CartController::class, 'cle
 Route::middleware(['client'])->group(function(){
     //get profile data
     Route::post('/get/profile', [App\Http\Controllers\Api\CustomerController::class, 'getProfileDetails']);
-    Route::post('/get/addresses', [App\Http\Controllers\Api\CustomerController::class, 'getCustomerAddressDetails']);
     Route::post('/update/profile', [App\Http\Controllers\Api\CustomerController::class, 'updateProfile']);
+    
     Route::post('/change/password', [App\Http\Controllers\Api\CustomerController::class, 'changePassword']);
+    Route::post('/get/addresses', [App\Http\Controllers\Api\CustomerController::class, 'getCustomerAddressDetails']);
 
     Route::post('/update/cartAmount', [App\Http\Controllers\Api\CartController::class, 'updateCartAmount']);
 

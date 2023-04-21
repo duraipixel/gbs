@@ -196,17 +196,26 @@ class CustomerController extends Controller
     {
 
         $customer_id = $request->customer_id;
-        $first_name = $request->firstName;
-        $last_name = $request->lastName;
-        $email = $request->email;
-        $mobile_no = $request->mobileNo;
+        $first_name = $request->first_name;
+        $last_name = $request->last_name;
+        
+        $mobile_no = $request->mobile_no;
 
         $customerInfo = Customer::find($customer_id);
-        $customerInfo->first_name = $first_name;
-        $customerInfo->last_name = $last_name;
-        $customerInfo->email = $email;
-        $customerInfo->mobile_no = $mobile_no;
-        $customerInfo->update();
+        if( $first_name ) {
+            $customerInfo->first_name = $first_name;
+        }
+        if( $last_name ) {
+            $customerInfo->last_name = $last_name;
+        }
+        if( $mobile_no ) {
+
+            $customerInfo->mobile_no = $mobile_no;
+        }
+        if( $first_name || $last_name || $mobile_no ) {
+
+            $customerInfo->update();
+        }
         return array('error' => 0, 'message' => 'Profile updated successfully', 'status' => 'success',  'customer' => $customerInfo);
     }
 
@@ -214,27 +223,33 @@ class CustomerController extends Controller
     {
 
         $customer_id = $request->customer_id;
-        $current_password = $request->currentPassword;
+        $current_password = $request->current_password;
         $newPassword = $request->password;
 
         $customerInfo = Customer::find($customer_id);
-        if ($current_password == $newPassword) {
-            $error = 1;
-            $message = 'New password cannot be same as current password';
-        } else if (isset($customerInfo) && !empty($customerInfo)) {
-
-            if (Hash::check($current_password, $customerInfo->password)) {
-                $error = 0;
-
-                $customerInfo->password = Hash::make($newPassword);
-                $customerInfo->update();
-
-                $message = 'Password changed successfully';
-            } else {
+        if( $customerInfo ) {
+            if ($current_password == $newPassword) {
                 $error = 1;
-                $message = 'Current password is not match';
+                $message = 'New password cannot be same as current password';
+            } else if (isset($customerInfo) && !empty($customerInfo)) {
+    
+                if (Hash::check($current_password, $customerInfo->password)) {
+                    $error = 0;
+    
+                    $customerInfo->password = Hash::make($newPassword);
+                    $customerInfo->update();
+    
+                    $message = 'Password changed successfully';
+                } else {
+                    $error = 1;
+                    $message = 'Current password is not match';
+                }
             }
+        } else {
+            $error = 1;
+            $message = 'Customer Data not exits';
         }
+        
 
         return array('error' => $error, 'message' => $message);
     }
@@ -401,6 +416,6 @@ class CustomerController extends Controller
         $address_details = CustomerAddress::where('customer_id', $customer_id)->get();
 
         $address_array = CustomerAddressesResource::collection($address_details);
-        return array('status' => 'success', 'message' => 'Successfully fetched customer data', 'addresses' => $address_array );
+        return array('status' => 'success', 'message' => 'Successfully fetched address data', 'addresses' => $address_array );
     }
 }
