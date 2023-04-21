@@ -14,7 +14,6 @@ class OrderStatusExport implements FromView
     {
         $list = OrderStatus::select('order_statuses.*','users.name as users_name')->join('users', 'users.id', '=', 'order_statuses.added_by')->get();
         
-        // dd($list[0]->added); 
         return view('platform.exports.order_status.excel', compact('list'));
     }
 }

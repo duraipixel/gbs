@@ -117,7 +117,7 @@
 
     <script>
         var dtTable = $('#pincode-table').DataTable({
-
+            order: [[ 3, 'desc' ]],
             processing: true,
             serverSide: true,
             type: 'POST',

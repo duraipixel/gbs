@@ -10,14 +10,14 @@
     <thead>
         <tr>
             <th>Added Date</th>
-            <th>Status Name</th>
-            <th>Tracking Number</th>
-            <th>Tracking Link</th>
-            <th>Shipping Medium</th>
-            <th>Description</th>
-            <th>Order</th>
+            <th>Name</th>
+            <th>Warranty Information</th>
+            <th>Warranty Period</th>
+            <th>Warranty Period Type</th>
+            <th>Order By</th>
+            <th>Added By</th>
             <th>Status</th>
-            <th> Added By </th>
+          
         </tr>
     </thead>
     <tbody>
@@ -25,14 +25,14 @@
             @foreach ($list as $item)
             <tr>
                 <td>{{ $item->created_at }}</td>
-                <td>{{ $item->status_name }}</td>
-                <td>{{ $item->tracking_number }}</td>
-                <td>{{ $item->tracking_link }}</td>
-                <td>{{ $item->shipping_medium }}</td>
+                <td>{{ $item->name }}</td>
                 <td>{{ $item->description }}</td>
-                <td>{{ $item->order }}</td>
-                <td>{{  $item->status }}</td>
+                <td>{{ $item->warranty_period }}</td>
+                <td>{{ $item->warranty_period_type }}</td>
+                <td>{{ $item->order_by }}</td>
                 <td>{{ $item->users_name }}</td>
+                <td>{{  $item->status }}</td>
+                
             </tr>
             @endforeach
         @endif

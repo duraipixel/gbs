@@ -45,7 +45,7 @@
                                     <label class="required fw-bold fs-6 mb-2">Product</label>
                                     <select name="product_id" id="product_id"
                                             aria-label="Select a Product" data-control="select2"
-                                            data-placeholder="Select a Category..." class="form-select mb-2">
+                                            data-placeholder="Select a Product..." class="form-select mb-2">
                                             <option value="">-select--</option>
                                             @if (isset($product) && !empty($product))
                                                 @foreach ($product as $item)

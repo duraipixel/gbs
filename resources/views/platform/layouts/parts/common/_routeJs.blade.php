@@ -368,6 +368,16 @@
                    'pdf': "{{ route('homepage-setting.export.pdf') }}",
                 }
             },
+            'warranty': {
+               'delete': "{{ route('warranty.delete') }}",
+               'status': "{{ route('warranty.status') }}",
+               'add': "{{ route('warranty.add.edit') }}",
+               'export': {
+                   'excel': "{{ route('warranty.export.excel') }}",
+                   'pdf': "{{ route('warranty.export.pdf') }}",
+                }
+            },
+            
             
             
             

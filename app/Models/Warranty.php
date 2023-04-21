@@ -1,19 +1,21 @@
 <?php
 
-namespace App\Models\Master;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Pincode extends Model
+class Warranty extends Model
 {
     use HasFactory,SoftDeletes;
     protected $fillable = [
-        'pincode',
+        'name',
         'description',
-        'shipping_information',
-        'added_by',
+        'warranty_period',
+        'warranty_period_type',
         'status',
+        'order_by',
+        'added_by',
     ];
 }

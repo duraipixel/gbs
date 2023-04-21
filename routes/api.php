@@ -50,13 +50,14 @@ Route::get('/storeLocator', [App\Http\Controllers\Api\StoreLocatorController::cl
 Route::get('/storeLocatorDetail/{slug}', [App\Http\Controllers\Api\StoreLocatorController::class, 'getStoreLocatorDetail']);
 Route::get('/quickLink', [App\Http\Controllers\Api\QuickLinkController::class, 'index']);
 
+Route::post('/add/cart', [App\Http\Controllers\Api\CartController::class, 'addToCart']);
+Route::post('/get/cart', [App\Http\Controllers\Api\CartController::class, 'getCarts']);
+Route::post('/update/cart', [App\Http\Controllers\Api\CartController::class, 'updateCart']);
+Route::post('/delete/cart', [App\Http\Controllers\Api\CartController::class, 'deleteCart']);    
+Route::post('/clear/cart', [App\Http\Controllers\Api\CartController::class, 'clearCart']);  
+
 Route::middleware(['client'])->group(function(){
     
-    Route::post('/add/cart', [App\Http\Controllers\Api\CartController::class, 'addToCart']);
-    Route::post('/get/cart', [App\Http\Controllers\Api\CartController::class, 'getCarts']);
-    Route::post('/update/cart', [App\Http\Controllers\Api\CartController::class, 'updateCart']);
-    Route::post('/delete/cart', [App\Http\Controllers\Api\CartController::class, 'deleteCart']);    
-    Route::post('/clear/cart', [App\Http\Controllers\Api\CartController::class, 'clearCart']);  
     Route::post('/update/cartAmount', [App\Http\Controllers\Api\CartController::class, 'updateCartAmount']);
 
     Route::post('/apply/coupon', [App\Http\Controllers\Api\Couponcontroller::class, 'applyCoupon']);

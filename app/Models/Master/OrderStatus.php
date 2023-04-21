@@ -14,6 +14,9 @@ class OrderStatus extends Model
         'status_name',
         'description',
         'order',
+        'tracking_link',
+        'tracking_number',
+        'shipping_medium',
         'added_by',
         'status',
     ];

@@ -18,7 +18,7 @@
 </div>
 <!--end::Header-->
 <!--begin::Body-->
-<form id="add_order_status_form" class="form" action="#" enctype="multipart/form-data">
+<form id="add_warranty_form" class="form" action="#" enctype="multipart/form-data">
 
     <div class="card-body position-relative" id="kt_activities_body">
         <div id="kt_activities_scroll" class="position-relative scroll-y me-n5 pe-5" data-kt-scroll="true"
@@ -30,57 +30,65 @@
                         data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}"
                         data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_user_header"
                         data-kt-scroll-wrappers="#kt_modal_add_user_scroll" data-kt-scroll-offset="300px">
-
-                        <div class="fv-row mb-7">
-                            <label class="required fw-bold fs-6 mb-2">Status Name </label>
-                            <input type="text" name="status_name" value="{{ $info->status_name ?? '' }}"
-                                class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Status name" />
-                        </div>
                         <input type="hidden" name="id" value="{{ $info->id ?? '' }}">
-
+                      
+                      
                         <div class="fv-row mb-7">
-                            <label class=" fw-bold fs-6 mb-2">Description</label>
-                            <textarea name="description" id="description" class="form-control form-control-solid  mb-3 mb-lg-0" cols="30" rows="3">{{ $info->description ?? '' }}</textarea>
+
+                            <div class="row">
+                                    <label class="required fw-bold fs-6 mb-2">Warranty Name</label>
+                                    <input type="text" name="name" class="form-control form-control-solid mb-3 mb-lg-0"
+                                        placeholder="Name" value="{{ $info->name ?? '' }}" />
+                              
+                            </div>
                         </div>
                        
-                        <div class="fv-row mb-7">
+                        <div class="fv-row">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <label class=" fw-bold fs-6 mb-2">Tracking Number </label>
-                                    <input type="text" name="tracking_number" value="{{ $info->tracking_number ?? '' }}"
-                                        class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Tracking Number" />
-                                </div>
-                                <div class="col-md-6">
-                                    <label class=" fw-bold fs-6 mb-2">Shipping Medium </label>
-                                    <input type="text" name="shipping_medium" value="{{ $info->shipping_medium ?? '' }}"
-                                        class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Shipping Medium" />
-                               
-                                </div>
-                            </div>
-                           
-                        </div>
-                        
-                        <div class="fv-row mb-7">
-                            <label class=" fw-bold fs-6 mb-2">Tracking Link </label>
-                            <input type="text" name="tracking_link" value="{{ $info->tracking_link ?? '' }}"
-                                class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Tracking Link" />
-                        </div>
-                        <div class="fv-row mb-7">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label class="required fw-bold fs-6 mb-2">Sorting Order</label>
-                                    <input type="text" name="order" class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
-                                    placeholder="Sorting Order" value="{{ $info->order ?? '' }}" />
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="fw-bold fs-6 mb-2"> Status </label>
-                                    <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
-                                        <input class="form-check-input" type="checkbox"  name="status" value="1"  @if((isset( $info->status) && $info->status == 'published' ) || !isset($info->status)) checked @endif />
+                                    <div class="fv-row mb-7">
+                                            <label class="required fw-bold fs-6 mb-2">Warranty Period</label>
+                                            <input type="text" name="warranty_period" id="warranty_period" class="form-control form-control-solid mb-3 mb-lg-0 numberonly"
+                                                placeholder="Warranty Period" value="{{ $info->warranty_period ?? '' }}" />
                                     </div>
                                 </div>
+                                <div class="col-md-6">
+                                    <label class="required fw-bold fs-6 mb-2">Warranty period type</label>
+                                    <select name="warranty_period_type" id="warranty_period_type"
+                                            aria-label="Select a type" data-control="select2"
+                                            data-placeholder="Select a type..." class="form-select mb-2">
+                                            <option value="">--Select--</option>
+                                            <option value="Day" @if((isset($info->warranty_period_type) && $info->warranty_period_type == 'Day' )) selected @endif > Day</option>
+                                            <option value="Month"  @if((isset($info->warranty_period_type) && $info->warranty_period_type == 'Month' )) selected @endif>Month</option>
+                                            <option value="Year"  @if((isset($info->warranty_period_type) && $info->warranty_period_type == 'Year' )) selected @endif>Year</option>
+                                    </select>
+                                </div>
+                              
                             </div>
                         </div>
-                     
+                        <div class="fv-row mb-7">
+
+                                <label class="fw-bold fs-6 mb-2">Warranty Information</label>
+                                <textarea name="description" id="description" class="form-control form-control-solid mb-3 mb-lg-0" cols="30" rows="2">{{ $info->description ?? '' }}</textarea>
+                        
+                        </div>
+                            <div class="fv-row mb-7">
+                                <div class="row">
+                                        <div class="col-md-6">
+                                                <label class="fw-bold fs-6 mb-2">Sorting Order</label>
+                                                <input type="text" name="order_by" class="form-control form-control-solid mb-3 mb-lg-0 numberonly"
+                                                placeholder="Sorting Order" value="{{ $info->order_by ?? '' }}" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="fw-bold fs-6 mb-2"> Status </label>
+                                            <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
+                                                <input class="form-check-input" type="checkbox"  name="status" value="1"  @if( ( isset( $info->status) && $info->status == 'published') || (!isset( $info->status ))) checked @endif />
+                                            </div>
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
+                      
                     </div>
                 </div>
             </div>
@@ -107,48 +115,77 @@
 </style>
 
 <script>
-
-    var add_url = "{{ route('order-status.save') }}";
-    $('.mobile_num').keypress(
-        function(event) {
-            if (event.keyCode == 46 || event.keyCode == 8) {
-                //do nothing
-            } else {
-                if (event.keyCode < 48 || event.keyCode > 57) {
-                    event.preventDefault();
-                }
-            }
+      document.getElementById('readUrl').addEventListener('change', function() {
+      
+        if (this.files[0]) {
+            var picture = new FileReader();
+            picture.readAsDataURL(this.files[0]);
+            picture.addEventListener('load', function(event) {
+                console.log(event.target);
+                let img_url = event.target.result;
+                $('#manual-image').css({
+                    'background-image': 'url(' + event.target.result + ')'
+                });
+            });
         }
-    );
+    });
+    document.getElementById('avatar_remove_logo').addEventListener('click', function() {
+        $('#image_remove_image').val("yes");
+        $('#manual-image').css({
+            'background-image': ''
+        });
+    });
+ 
+</script>
+<script>
+ $(document).ready(function () {    
+        $('.numberonly').keypress(function (e) {    
+            var charCode = (e.which) ? e.which : event.keyCode    
+            if (String.fromCharCode(charCode).match(/[^0-9]/g))    
+                return false;                        
+        });    
+
+    }); 
+  
+    var add_url = "{{ route('warranty.save') }}";
+$('#warranty_period_type').select2();
     // Class definition
-    var KTOrderStatus = function() {
+    var KTUsersAddProductWarranty = function() {
         // Shared variables
         const element = document.getElementById('kt_common_add_form');
-        const form = element.querySelector('#add_order_status_form');
+        const form = element.querySelector('#add_warranty_form');
         const modal = new bootstrap.Modal(element);
 
         const drawerEl = document.querySelector("#kt_common_add_form");
         const commonDrawer = KTDrawer.getInstance(drawerEl);
 
-
         // Init add schedule modal
-        var initAddOrderStatus = () => {
+        var initAddProductWarranty = () => {
 
             // Init form validation rules. For more info check the FormValidation plugin's official documentation:https://formvalidation.io/
             var validator = FormValidation.formValidation(
                 form, {
                     fields: {
-                        'status_name': {
+                        'name': {
                             validators: {
                                 notEmpty: {
-                                    message: 'Status name is required'
+                                    message: 'Name is required'
                                 }
                             }
                         },
-                        'order': {
+
+                        'warranty_period_type': {
                             validators: {
                                 notEmpty: {
-                                    message: 'Sorting order is required'
+                                    message: 'Warranty Type is required'
+                                }
+                            }
+                        },
+
+                        'warranty_period': {
+                            validators: {
+                                notEmpty: {
+                                    message: 'Warranty Period is required'
                                 }
                             }
                         },
@@ -192,16 +229,15 @@
             // Submit button handler
             const submitButton = element.querySelector('[data-kt-order_status-modal-action="submit"]');
             // submitButton.addEventListener('click', function(e) {
-            $('#add_order_status_form').submit(function(e) {
+            $('#add_warranty_form').submit(function(e) {
                 // Prevent default button action
                 e.preventDefault();
                 // Validate form before submit
                 if (validator) {
                     validator.validate().then(function(status) {
                         if (status == 'Valid') {
-
-                            var formData = new FormData(document.getElementById(
-                                "add_order_status_form"));
+                            var from = $('#from').val();
+                            var formData = new FormData(document.getElementById("add_warranty_form"));
                             submitButton.setAttribute('data-kt-indicator', 'on');
                             // Disable button to avoid multiple click 
                             submitButton.disabled = true;
@@ -213,14 +249,14 @@
                                 data: formData,
                                 processData: false,
                                 contentType: false,
-                                beforeSend: function() {},
+                                beforeSend: function() {
+                                    
+                                },
                                 success: function(res) {
-
 
                                     if (res.error == 1) {
                                         // Remove loading indication
-                                        submitButton.removeAttribute(
-                                            'data-kt-indicator');
+                                     
                                         // Enable button
                                         submitButton.disabled = false;
                                         let error_msg = res.message
@@ -233,7 +269,9 @@
                                                 confirmButton: "btn btn-primary"
                                             }
                                         });
-                                    } else {
+                                    } else { 
+                                        
+                                     
                                         dtTable.ajax.reload();
                                         Swal.fire({
                                             text: res.message,
@@ -275,14 +313,15 @@
         return {
             // Public functions
             init: function() {
-                initAddOrderStatus();
+                initAddProductWarranty();
             }
         };
     }();
 
     // On document ready
     KTUtil.onDOMContentLoaded(function() {
-        KTOrderStatus.init();
+        KTUsersAddProductWarranty.init();
     });
 
+   
 </script>

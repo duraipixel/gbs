@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Mail\DynamicMail;
+use App\Models\Cart;
 use App\Models\Category\MainCategory;
 use App\Models\GlobalSettings;
 use App\Models\Master\Customer;
@@ -43,8 +44,8 @@ class CustomerController extends Controller
     public function registerCustomer(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'firstName' => 'required|string',
-            'lastName' => 'required|string',
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
             'email' => 'required|email|unique:customers,email,id,deleted_at,NULL', 
             'password' => 'required|string',
 
@@ -53,10 +54,10 @@ class CustomerController extends Controller
         $customer = Customer::where('email', $request->email)->whereNull('deleted_at')->first();
         if (!$customer) {
 
-            $ins['first_name'] = $request->firstName;
-            $ins['last_name'] = $request->lastName ?? null;
+            $ins['first_name'] = $request->first_name;
+            $ins['last_name'] = $request->last_name ?? null;
             $ins['email'] = $request->email;
-            $ins['mobile_no'] = $request->mobile_no ?? null;
+            $ins['mobile_no'] = $request->mobile ?? null;
             $ins['customer_no'] = getCustomerNo();
             $ins['password'] = Hash::make($request->password);
             $ins['status'] = 'published';
@@ -127,22 +128,33 @@ class CustomerController extends Controller
     {
         $email = $request->email;
         $password = $request->password;
+        $guest_token = $request->guest_token;
 
-        $checkCustomer = Customer::where('email', $email)->first();
+        
+        $checkCustomer = Customer::with(['customerAddress', 'customerAddress.subCategory'])->where('email', $email)->first();
         if ($checkCustomer) {
-            // dd( $password );
-            if (Hash::check($password, $checkCustomer->password)) {
+            if( $checkCustomer->email_verified_at == null ) {
+                $error = 1;
+                $message = 'Verification pending check your mail';
+                $status = 'error';
+                $customer_data = '';
+                $customer_address = [];
+            } else {
+
                 $error = 0;
                 $message = 'Login Success';
                 $status = 'success';
                 $customer_data = $checkCustomer;
                 $customer_address = $checkCustomer->customerAddress ?? [];
-            } else {
-                $error = 1;
-                $message = 'Invalid credentials';
-                $status = 'error';
-                $customer_data = '';
-                $customer_address = [];
+
+                if( $guest_token ) {
+
+                    $cartData = Cart::where('token', $guest_token)->get();
+                    if( isset( $cartData ) && count($cartData) > 0 ) {
+                        Cart::where('token', $guest_token)->update(['token' => null, 'customer_id' => $checkCustomer->id ]);
+                    }
+                    
+                }
             }
         } else {
             $error = 1;
@@ -296,7 +308,7 @@ class CustomerController extends Controller
 
         if (isset($customer_info) && !empty($customer_info)) {
             $error = 0;
-            $message = '';
+            $message = 'Password link sent to mail, Please check';
             $customer_info->forgot_token = $token_id;
             $customer_info->update();
             /** send email for new customer */
@@ -305,8 +317,8 @@ class CustomerController extends Controller
                 ->where('sub_categories.slug', 'forgot-password')->first();
 
             $globalInfo = GlobalSettings::first();
-            // $link = 'http://192.168.0.35:3000/#/reset-password/' . $token_id;
-            $link = 'https://museemusical.shop/#/reset-password/' . $token_id;
+            // $link = 'http://192.168.0.35:2000/verify-account/' . $token_id;
+            $link = 'https://gbs-dev.vercel.app/reset-password/' . $token_id;
             $extract = array(
                 'name' => $customer_info->firstName . ' ' . $customer_info->last_name,
                 'link' => '<a href="' . $link . '"> Reset Password </a>',

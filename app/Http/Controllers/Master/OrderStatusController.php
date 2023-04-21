@@ -82,14 +82,19 @@ class OrderStatusController extends Controller
         $id             = $request->id;
         $validator      = Validator::make($request->all(), [
                                 'status_name' => 'required|string|unique:order_statuses,status_name,' . $id . ',id,deleted_at,NULL',
+                                'order' => 'required|unique:order_statuses,order,' . $id . ',id,deleted_at,NULL',
+                                'tracking_link' => 'nullable|url',
                             ]);
 
         if ($validator->passes()) {
            
-            $ins['status_name']     = $request->status_name;
-            $ins['description']     = $request->description;
-            $ins['order']           = $request->order;
-            $ins['added_by']        = Auth::id();
+            $ins['status_name']         = $request->status_name;
+            $ins['description']         = $request->description;
+            $ins['tracking_link']       = $request->tracking_link;
+            $ins['tracking_number']     = $request->tracking_number;
+            $ins['shipping_medium']     = $request->shipping_medium;
+            $ins['order']               = $request->order ?? '';
+            $ins['added_by']            = Auth::id();
            
             if($request->status == "1")
             {

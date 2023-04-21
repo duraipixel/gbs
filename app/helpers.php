@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\Product\Product;
 use App\Models\SmsTemplate;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 
 if (!function_exists('gSetting')) {
     function gSetting($column)
@@ -45,10 +46,10 @@ function sendMuseeSms($sms_type, $details)
         $templateMessage = str_replace("\'", "", $templateMessage);
 
         $params             = array(
-                        'entityid' => $info->peid_no,
-                        'tempid' => $info->tdlt_no,
-                        'sid'   => urlencode(current(explode(",", $info->header)))
-                    );
+            'entityid' => $info->peid_no,
+            'tempid' => $info->tdlt_no,
+            'sid'   => urlencode(current(explode(",", $info->header)))
+        );
 
         sendSMS($mobile_no, $templateMessage, $params);
     }
@@ -56,7 +57,7 @@ function sendMuseeSms($sms_type, $details)
 
 function sendSMS($numbers, $msg, $params)
 {
-    
+
     extract($params);
     $uid = "museemusical";
     $pwd = urlencode("18870");
@@ -97,7 +98,7 @@ if (!function_exists('getAmountExclusiveTax')) {
             $basePrice = $productAmount - $gstAmount;
         }
 
-        return array('basePrice' => $basePrice, 'gstAmount' => $gstAmount, 'tax_percentage' => $gstPercentage);
+        return array('basePrice' => round($basePrice), 'gstAmount' => round($gstAmount), 'tax_percentage' => $gstPercentage);
     }
 }
 
@@ -108,7 +109,7 @@ if (!function_exists('getAmountInclusiveTax')) {
         $mrpPrice      = $productAmount ?? 0;
         $gstAmount      = 0;
         if ((int)$gstPercentage > 0) {
-            $gstAmount = ($productAmount * $gstPercentage)/100;
+            $gstAmount = ($productAmount * $gstPercentage) / 100;
             $mrpPrice = $productAmount + $gstAmount;
         }
 
@@ -267,6 +268,102 @@ if (!function_exists('getSaleProductPrices')) {
     }
 }
 
+function getProductApiData($product_data)
+{
+
+    $category               = $product_data->productCategory;
+    $pro                    = [];
+    $pro['id']              = $product_data->id;
+    $pro['product_name']    = $product_data->product_name;
+    $pro['category_name']   = $category->name ?? '';
+    $pro['brand_name']      = $product_data->productBrand->brand_name ?? '';
+    $pro['hsn_code']        = $product_data->hsn_code;
+    $pro['product_url']     = $product_data->product_url;
+    $pro['sku']             = $product_data->sku;
+    $pro['has_video_shopping'] = $product_data->has_video_shopping;
+    $pro['stock_status']    = $product_data->stock_status;
+    $pro['is_featured']     = $product_data->is_featured;
+    $pro['is_best_selling'] = $product_data->is_best_selling;
+    $pro['is_new']          = $product_data->is_new;
+    $pro['price']           = $product_data->mrp;
+    $pro['strike_price']    = $product_data->strike_price;
+    $pro['save_price']      = $product_data->strike_price - $product_data->mrp;
+    $pro['discount_percentage'] = abs($product_data->discount_percentage);
+    $pro['image']           = $product_data->base_image;
+    $pro['max_quantity']    = $product_data->quantity;
+
+    $imagePath              = $product_data->base_image;
+
+    if (!Storage::exists($imagePath)) {
+        $path               = asset('userImage/no_Image.jpg');
+    } else {
+        $url                = Storage::url($imagePath);
+        $path               = asset($url);
+    }
+
+    $pro['image']                   = $path;
+
+    $pro['description']             = $product_data->description;
+    // $pro['technical_information']   = $product_data->technical_information;
+    // $pro['feature_information']     = $product_data->feature_information;
+    // $pro['specification']           = $product_data->specification;
+    // $pro['gallery']                 = $product_data->productImages;
+
+    if (isset($product_data->productImages) && !empty($product_data->productImages)) {
+        foreach ($product_data->productImages as $att) {
+
+            $gallery_url            = Storage::url($att->gallery_path);
+            $path                   = asset($gallery_url);
+
+            $pro['gallery'][] = $path;
+        }
+    }
+
+    $pro['attributes']              = $product_data->productAttributes;
+    $related_arr                    = [];
+    if (isset($product_data->productRelated) && !empty($product_data->productRelated)) {
+        foreach ($product_data->productRelated as $related) {
+
+            $productInfo            = Product::find($related->to_product_id);
+            $category               = $productInfo->productCategory;
+            $salePrices1            = getProductPrice($productInfo);
+
+            $tmp2                    = [];
+            $tmp2['id']              = $productInfo->id;
+            $tmp2['product_name']    = $productInfo->product_name;
+            $tmp2['category_name']   = $category->name ?? '';
+            $tmp2['brand_name']      = $productInfo->productBrand->brand_name ?? '';
+            $tmp2['hsn_code']        = $productInfo->hsn_code;
+            $tmp2['product_url']     = $productInfo->product_url;
+            $tmp2['sku']             = $productInfo->sku;
+            $tmp2['has_video_shopping'] = $productInfo->has_video_shopping;
+            $tmp2['stock_status']    = $productInfo->stock_status;
+            $tmp2['is_featured']     = $productInfo->is_featured;
+            $tmp2['is_best_selling'] = $productInfo->is_best_selling;
+            $tmp2['is_new']          = $productInfo->is_new;
+            $tmp2['sale_prices']     = $salePrices1;
+            $tmp2['mrp_price']       = $productInfo->price;
+            $tmp2['image']           = $productInfo->base_image;
+
+            $imagePath              = $productInfo->base_image;
+
+            if (!Storage::exists($imagePath)) {
+                $path               = asset('assets/logo/no-img-1.jpg');
+            } else {
+                $url                = Storage::url($imagePath);
+                $path               = asset($url);
+            }
+
+            $tmp2['image']           = $path;
+            $related_arr[]          = $tmp2;
+        }
+    }
+    $pro['related_products']    = $related_arr;
+    $pro['meta'] = $product_data->productMeta;
+
+    return $pro;
+}
+
 if (!function_exists('getProductPrice')) {
     function getProductPrice($productsObjects)
     {
@@ -417,7 +514,8 @@ function getIndianCurrency(float $number)
     $digits_length = strlen($no);
     $i = 0;
     $str = array();
-    $words = array(0 => '', 1 => 'one', 2 => 'two',
+    $words = array(
+        0 => '', 1 => 'one', 2 => 'two',
         3 => 'three', 4 => 'four', 5 => 'five', 6 => 'six',
         7 => 'seven', 8 => 'eight', 9 => 'nine',
         10 => 'ten', 11 => 'eleven', 12 => 'twelve',
@@ -425,9 +523,10 @@ function getIndianCurrency(float $number)
         16 => 'sixteen', 17 => 'seventeen', 18 => 'eighteen',
         19 => 'nineteen', 20 => 'twenty', 30 => 'thirty',
         40 => 'forty', 50 => 'fifty', 60 => 'sixty',
-        70 => 'seventy', 80 => 'eighty', 90 => 'ninety');
-    $digits = array('', 'hundred','thousand','lakh', 'crore');
-    while( $i < $digits_length ) {
+        70 => 'seventy', 80 => 'eighty', 90 => 'ninety'
+    );
+    $digits = array('', 'hundred', 'thousand', 'lakh', 'crore');
+    while ($i < $digits_length) {
         $divider = ($i == 2) ? 10 : 100;
         $number = floor($no % $divider);
         $no = floor($no / $divider);
@@ -435,7 +534,7 @@ function getIndianCurrency(float $number)
         if ($number) {
             $plural = (($counter = count($str)) && $number > 9) ? 's' : null;
             $hundred = ($counter == 1 && $str[0]) ? ' and ' : null;
-            $str [] = ($number < 21) ? $words[$number].' '. $digits[$counter]. $plural.' '.$hundred:$words[floor($number / 10) * 10].' '.$words[$number % 10]. ' '.$digits[$counter].$plural.' '.$hundred;
+            $str[] = ($number < 21) ? $words[$number] . ' ' . $digits[$counter] . $plural . ' ' . $hundred : $words[floor($number / 10) * 10] . ' ' . $words[$number % 10] . ' ' . $digits[$counter] . $plural . ' ' . $hundred;
         } else $str[] = null;
     }
     $Rupees = implode('', array_reverse($str));
@@ -443,6 +542,7 @@ function getIndianCurrency(float $number)
     return ($Rupees ? $Rupees . 'Rupees ' : '') . $paise;
 }
 
-function getDiscountPercentage($mop, $mrp) {
-    return round((($mop/$mrp)*100) - 100 );
+function getDiscountPercentage($mop, $mrp)
+{
+    return round((($mop / $mrp) * 100) - 100);
 }
