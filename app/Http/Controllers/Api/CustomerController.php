@@ -413,9 +413,16 @@ class CustomerController extends Controller
     public function getCustomerAddressDetails(Request $request)
     {
         $customer_id = $request->customer_id;
+        $address_array  = $this->addressList($customer_id);
+        $address_type   = MainCategory::with('subCategory')->where('slug', 'address-type')->first();
+        
+        return array('status' => 'success', 'message' => 'Successfully fetched address data', 'addresses' => $address_array, 'address_type' => $address_type->subCategory );
+    }
+
+    public function addressList($customer_id)
+    {
         $address_details = CustomerAddress::where('customer_id', $customer_id)->get();
 
-        $address_array = CustomerAddressesResource::collection($address_details);
-        return array('status' => 'success', 'message' => 'Successfully fetched address data', 'addresses' => $address_array );
+        return CustomerAddressesResource::collection($address_details);
     }
 }

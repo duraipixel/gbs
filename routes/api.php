@@ -61,23 +61,21 @@ Route::middleware(['client'])->group(function(){
     //get profile data
     Route::post('/get/profile', [App\Http\Controllers\Api\CustomerController::class, 'getProfileDetails']);
     Route::post('/update/profile', [App\Http\Controllers\Api\CustomerController::class, 'updateProfile']);
-    
     Route::post('/change/password', [App\Http\Controllers\Api\CustomerController::class, 'changePassword']);
+
     Route::post('/get/addresses', [App\Http\Controllers\Api\CustomerController::class, 'getCustomerAddressDetails']);
-
-    Route::post('/update/cartAmount', [App\Http\Controllers\Api\CartController::class, 'updateCartAmount']);
-
-    Route::post('/apply/coupon', [App\Http\Controllers\Api\Couponcontroller::class, 'applyCoupon']);
     Route::post('/add/customer/address', [App\Http\Controllers\Api\CustomerController::class, 'addCustomerAddress']);
+
     Route::post('/update/customer/address', [App\Http\Controllers\Api\CustomerController::class, 'updateCustomerAddress']);
     Route::post('/get/customer/address', [App\Http\Controllers\Api\CustomerController::class, 'getCustomerAddress']);
     Route::post('/delete/customer/address', [App\Http\Controllers\Api\CustomerController::class, 'deleteCustomerAddress']);
     Route::post('/proceed/checkout', [App\Http\Controllers\Api\CheckoutController::class, 'proceedCheckout']);
     Route::post('/verify/payment/signature', [App\Http\Controllers\Api\CheckoutController::class, 'verifySignature']);
     Route::post('/get/shipping/charges', [App\Http\Controllers\Api\CartController::class, 'getShippingCharges']);
-
+    
     Route::post('/set/recent', [App\Http\Controllers\Api\CommonController::class, 'setRecentView']);
-
+    
+    Route::post('/apply/coupon', [App\Http\Controllers\Api\Couponcontroller::class, 'applyCoupon']);
     
 
     Route::post('/get/orders', [App\Http\Controllers\Api\OrderController::class, 'getOrders']);
