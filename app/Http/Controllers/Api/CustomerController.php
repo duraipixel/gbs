@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CustomerAddressesResource;
 use App\Mail\DynamicMail;
 use App\Models\Cart;
 use App\Models\Category\MainCategory;
@@ -121,7 +122,7 @@ class CustomerController extends Controller
             $message = ['Email id is already exists'];
             $status = 'error';
         }
-        return array('error' => $error, 'message' => $message, 'status' => $status, 'customer_data' => $customer_data ?? '' );
+        return array('error' => $error, 'message' => $message, 'status' => $status, 'customer' => $customer_data ?? '' );
     }
 
     public function doLogin(Request $request)
@@ -164,7 +165,7 @@ class CustomerController extends Controller
             $customer_address = [];
         }
 
-        return array('error' => $error, 'message' => $message, 'status' => $status, 'customer_data' => $customer_data, 'customer_addres' => $customer_address);
+        return array('error' => $error, 'message' => $message, 'status' => $status, 'customer' => $customer_data, 'customer_addres' => $customer_address);
     }
 
     public function addCustomerAddress(Request $request)
@@ -195,45 +196,60 @@ class CustomerController extends Controller
     {
 
         $customer_id = $request->customer_id;
-        $first_name = $request->firstName;
-        $last_name = $request->lastName;
-        $email = $request->email;
-        $mobile_no = $request->mobileNo;
+        $first_name = $request->first_name;
+        $last_name = $request->last_name;
+        
+        $mobile_no = $request->mobile_no;
 
         $customerInfo = Customer::find($customer_id);
-        $customerInfo->first_name = $first_name;
-        $customerInfo->last_name = $last_name;
-        $customerInfo->email = $email;
-        $customerInfo->mobile_no = $mobile_no;
-        $customerInfo->update();
-        return array('error' => 0, 'message' => 'Profile updated successfully', 'status' => 'success',  'customer_data' => $customerInfo);
+        if( $first_name ) {
+            $customerInfo->first_name = $first_name;
+        }
+        if( $last_name ) {
+            $customerInfo->last_name = $last_name;
+        }
+        if( $mobile_no ) {
+
+            $customerInfo->mobile_no = $mobile_no;
+        }
+        if( $first_name || $last_name || $mobile_no ) {
+
+            $customerInfo->update();
+        }
+        return array('error' => 0, 'message' => 'Profile updated successfully', 'status' => 'success',  'customer' => $customerInfo);
     }
 
     public function changePassword(Request $request)
     {
 
         $customer_id = $request->customer_id;
-        $current_password = $request->currentPassword;
+        $current_password = $request->current_password;
         $newPassword = $request->password;
 
         $customerInfo = Customer::find($customer_id);
-        if ($current_password == $newPassword) {
-            $error = 1;
-            $message = 'New password cannot be same as current password';
-        } else if (isset($customerInfo) && !empty($customerInfo)) {
-
-            if (Hash::check($current_password, $customerInfo->password)) {
-                $error = 0;
-
-                $customerInfo->password = Hash::make($newPassword);
-                $customerInfo->update();
-
-                $message = 'Password changed successfully';
-            } else {
+        if( $customerInfo ) {
+            if ($current_password == $newPassword) {
                 $error = 1;
-                $message = 'Current password is not match';
+                $message = 'New password cannot be same as current password';
+            } else if (isset($customerInfo) && !empty($customerInfo)) {
+    
+                if (Hash::check($current_password, $customerInfo->password)) {
+                    $error = 0;
+    
+                    $customerInfo->password = Hash::make($newPassword);
+                    $customerInfo->update();
+    
+                    $message = 'Password changed successfully';
+                } else {
+                    $error = 1;
+                    $message = 'Current password is not match';
+                }
             }
+        } else {
+            $error = 1;
+            $message = 'Customer Data not exits';
         }
+        
 
         return array('error' => $error, 'message' => $message);
     }
@@ -369,17 +385,37 @@ class CustomerController extends Controller
     public function checkValidToken(Request $request)
     {
         $token_id = $request->token_id;
+        
         $customerInfo = Customer::where('forgot_token', $token_id)->first();
 
         if (isset($customerInfo) && !empty($customerInfo)) {
             $error = 0;
             $message = 'Token is valid';
-            $data = [$customerInfo];
+            $data = $customerInfo;
         } else {
             $error = 1;
             $message = 'Token is invalid';
-            $data = [];
+            $data = '';
         }
-        return array('error' => $error, 'message' => $message, 'data' => $data);
+        return array('error' => $error, 'message' => $message, 'customer' => $data);
+    }
+
+    public function getProfileDetails(Request $request)
+    {
+
+        $customer_id = $request->customer_id;
+        $customer_info = Customer::find($customer_id);
+        
+        return array('status' => 'success', 'message' => 'Successfully fetched customer data', 'customer' => $customer_info );
+
+    }
+
+    public function getCustomerAddressDetails(Request $request)
+    {
+        $customer_id = $request->customer_id;
+        $address_details = CustomerAddress::where('customer_id', $customer_id)->get();
+
+        $address_array = CustomerAddressesResource::collection($address_details);
+        return array('status' => 'success', 'message' => 'Successfully fetched address data', 'addresses' => $address_array );
     }
 }
