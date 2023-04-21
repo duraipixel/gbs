@@ -82,6 +82,7 @@ class OrderStatusController extends Controller
         $id             = $request->id;
         $validator      = Validator::make($request->all(), [
                                 'status_name' => 'required|string|unique:order_statuses,status_name,' . $id . ',id,deleted_at,NULL',
+                                'order' => 'required|unique:order_statuses,order,' . $id . ',id,deleted_at,NULL',
                                 'tracking_link' => 'nullable|url',
                             ]);
 
