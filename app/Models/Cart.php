@@ -11,12 +11,12 @@ class Cart extends Model
 
     use HasFactory;
     protected $fillable = [
-        'customer_id', 'guest_token', 'product_id', 'price', 'quantity', 'sub_total'
+        'customer_id', 'guest_token', 'product_id', 'price', 'quantity', 'sub_total', 'cart_order_no'
     ];
 
     public function products()
     {
-        return $this->hasMany( Product::class, 'id', 'product_id' );
+        return $this->hasOne( Product::class, 'id', 'product_id' );
     }
 
     

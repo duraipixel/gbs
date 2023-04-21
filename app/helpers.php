@@ -98,7 +98,7 @@ if (!function_exists('getAmountExclusiveTax')) {
             $basePrice = $productAmount - $gstAmount;
         }
 
-        return array('basePrice' => $basePrice, 'gstAmount' => $gstAmount, 'tax_percentage' => $gstPercentage);
+        return array('basePrice' => round($basePrice), 'gstAmount' => round($gstAmount), 'tax_percentage' => $gstPercentage);
     }
 }
 
