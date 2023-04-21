@@ -206,17 +206,17 @@ $('select').change(function(){
                                 <div class="col-md-3">
                                     <label class="fw-bold fs-6 mb-2 start_val_append start_val" > </label>
                                     <input type="text" id="start" name="start[]" class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
-                                    placeholder="Start" value="{{ $info->order_by ?? '' }}" />
+                                    placeholder="Start" />
                                 </div>
                                 <div class="col-md-3">
                                     <label class="fw-bold fs-6 mb-2 end_val_append end_val" >  </label>
                                     <input type="text" id="end" name="end[]" class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
-                                    placeholder="End" value="{{ $info->order_by ?? '' }}" />
+                                    placeholder="End"  />
                                 </div>
                                 <div class="col-md-3">
                                     <label class="fw-bold fs-6 mb-2"> Image </label>
                                     <input type="file" id="home_image" name="home_image[]" class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
-                                    placeholder="Sorting Order" value="{{ $info->order_by ?? '' }}" />
+                                    placeholder="Sorting Order" />
                                     
                                 </div>
                                 <div class="col-md-3">
