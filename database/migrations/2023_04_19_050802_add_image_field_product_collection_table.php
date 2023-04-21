@@ -26,7 +26,7 @@ class AddImageFieldProductCollectionTable extends Migration
     public function down()
     {
         Schema::table('product_collections', function (Blueprint $table) {
-            //
+            $table->dropColumn('image');
         });
     }
 }

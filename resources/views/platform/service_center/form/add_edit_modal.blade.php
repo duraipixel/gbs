@@ -167,7 +167,14 @@
                                 }
                             }
                         },
-                       
+                        'pincode': {
+                            validators: {
+                                notEmpty: {
+                                    message: 'Pincode is required'
+                                }
+                            }
+                        },
+                        
                         'description': {
                             validators: {
                                 notEmpty: {

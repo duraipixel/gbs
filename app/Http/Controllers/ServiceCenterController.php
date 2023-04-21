@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Exports\Export;
 use App\Models\ServiceCenter;
+use App\Models\ServiceCenterContact;
+use App\Models\ServiceCenterEmail;
 use App\Models\ServiceCenterMetaTag;
+use App\Models\ServiceCenterPincode;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -79,7 +82,7 @@ class ServiceCenterController extends Controller
         $breadCrum          = array('Products', 'Add Service Center');
 
         $id                 = $request->id;
-        $info               = '';
+        $info               = '';      
         $modal_title        = 'Add Service Center';
         $serviceCenter    = ServiceCenter::where('status', 'published')->where('parent_id', 0)->get();
 
@@ -91,7 +94,7 @@ class ServiceCenterController extends Controller
     }
     public function saveForm(Request $request)
     {
-      
+            
       $id             = $request->id;
       $parent_id      = $request->parent_location;
       $validator      = Validator::make($request->all(), [
@@ -125,8 +128,8 @@ class ServiceCenterController extends Controller
             $ins['title'] = $request->title;
             $ins['address'] = $request->address;
             $ins['pincode'] = $request->pincode;
-            $ins['latitude'] = $request->latitude;
-            $ins['longitude'] = $request->longitude;
+            $ins['latitude'] = $request->latitude ?? '';
+            $ins['longitude'] = $request->longitude ?? '';
             $ins['description'] = $request->description;
             $ins['order_by'] = $request->order_by ?? 0;
             if($request->status)
@@ -135,23 +138,90 @@ class ServiceCenterController extends Controller
             } else {
                 $ins['status']          = 'unpublished';
             }
-            if(!empty($request->email))
-            {
-                $email = explode(',',$request->email);
-                $ins['email'] = json_encode($email);
-            }
-            if(!empty($request->contact_no))
-            {
-                $contact_no = explode(',',$request->contact_no);
-                $ins['contact_no'] = json_encode($contact_no);
-            }
+           
            
             $error                      = 0;
 
             $serviceCenterInfo               = ServiceCenter::updateOrCreate(['id' => $id], $ins);
+            
 
             $serviceCenterId                 = $serviceCenterInfo->id;
 
+            if(!empty($request->near_pincode) && count($request->near_pincode) > 0)
+            {
+                $dataItem = ServiceCenterPincode::where('service_center_id',$serviceCenterId)->get();
+                foreach($dataItem as $key=>$val)
+                {
+                    $val->delete();
+                }
+               
+                foreach($request->near_pincode as $key=>$val)
+                {
+                    $ins['service_center_id']       = $serviceCenterId;
+                    $ins['pincode']                 = $val;
+                    // $ins['order_by']                = '' ;
+                    $ins['status']                  = Auth::id();
+                    $data = ServiceCenterPincode::create($ins);
+                }
+                
+                
+            }
+            else{
+                $dataItem = ServiceCenterPincode::where('service_center_id',$serviceCenterId)->get();
+                foreach($dataItem as $key=>$val)
+                {
+                    $val->delete();
+                }
+            }
+            if(!empty($request->contact) && count($request->contact) > 0)
+            {
+                $dataItem = ServiceCenterContact::where('service_center_id',$serviceCenterId)->get();
+                foreach($dataItem as $key=>$val)
+                {
+                    $val->delete();
+                }
+               
+                foreach($request->contact as $key=>$val)
+                {
+                    $ins['service_center_id']       = $serviceCenterId;
+                    $ins['contact']                 = $val;
+                    $ins['status']                  = Auth::id();
+                    $data = ServiceCenterContact::create($ins);
+                }
+                
+                
+            }
+            else{
+                $dataItem = ServiceCenterContact::where('service_center_id',$serviceCenterId)->get();
+                foreach($dataItem as $key=>$val)
+                {
+                    $val->delete();
+                }
+            }
+            if(!empty($request->email) && count($request->email) > 0)
+            {
+                $dataItem = ServiceCenterEmail::where('service_center_id',$serviceCenterId)->get();
+                foreach($dataItem as $key=>$val)
+                {
+                    $val->delete();
+                }
+               
+                foreach($request->email as $key=>$val)
+                {
+                    $ins['service_center_id']       = $serviceCenterId;
+                    $ins['email']                   = $val;
+                    $ins['status']                  = Auth::id();
+                    $data = ServiceCenterEmail::create($ins);
+                }
+                
+            }
+            else{
+                $dataItem = ServiceCenterEmail::where('service_center_id',$serviceCenterId)->get();
+                foreach($dataItem as $key=>$val)
+                {
+                    $val->delete();
+                }
+            }
             if ($request->hasFile('banner')) {
                
                 $imagName               = time() . '_' . $request->banner->getClientOriginalName();

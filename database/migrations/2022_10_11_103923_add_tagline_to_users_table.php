@@ -26,7 +26,7 @@ class AddTaglineToUsersTable extends Migration
     public function down()
     {
         Schema::table('main_categories', function (Blueprint $table) {
-            //
+            $table->dropColumn('tagline');
         });
     }
 }

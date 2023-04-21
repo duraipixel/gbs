@@ -1,71 +1,155 @@
-<div class="row mb-7">
-    <div class="col-md-8">
-        <div class="fv-row mb-7">
-            <label class="required fw-bold fs-6 mb-2">Title</label>
-            <input type="text" name="title" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Title" value="{{ $info->title ?? '' }}" />
-        </div>
-       
-        <div class="fv-row mb-7">
-            <label class="required fw-bold fs-6 mb-2">Description</label>
-            <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Description" name="description" id="description" cols="30" rows="5">{{ $info->description ?? '' }}</textarea>
-        </div>
-        <div class="fv-row mb-7">
-            <label class="fw-bold fs-6 mb-2"> Is Parent </label>
-            <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
-                <input class="form-check-input" type="checkbox"  name="is_parent" id="is_parent" value="1" @if( (isset( $info->parent_id ) && $info->parent_id == 0 ) || !isset($info->parent_id) ) checked @endif />
-            </div>
-            <div class="fv-row @if( (isset( $info->parent_id ) && $info->parent_id == 0 ) || !isset($info->parent_id) ) d-none @endif" id="parent-tab">
-                <label class="required fw-bold fs-6 mb-2">Parent Location</label>
-                <select name="parent_location" id="parent_location" aria-label="Select a Location" data-control="select2" data-placeholder="Select a Location..." class="form-select mb-2">
 
-                    @isset($serviceCenter)
-                        @foreach ($serviceCenter as $item)
-                            <option value="{{ $item->id }}" @if( isset( $info->parent_id ) && $info->parent_id == $item->id ) selected @endif>{{ $item->title }}</option>
-                        @endforeach
-                    @endisset
-                </select>
+<div class="row mb-7">
+    <div class="col-md-10">
+        <div class="fv-row mb-5">
+            <div class="row">
+                <div class="col-md-6">
+                    <label class="required fw-bold fs-7 mb-2">Title</label>
+                    <input type="text" name="title" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Title" value="{{ $info->title ?? '' }}" />
+                </div>
+                <div class="col-md-6">
+                    <label class="required fw-bold fs-7 mb-2"> Pincode </label>
+                        <input class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Pincode" type="text"  name="pincode" value="{{ $info->pincode ?? '' }}" />
+                </div>
+             
             </div>
+            
         </div>
-        <div class="fv-row mb-7">
-            @if(isset( $info->email ) && !empty ( $info->email ))
-              <?php
-                $arrEmail = json_decode( $info->email );
-                $info->email = implode(',',$arrEmail);
-              ?>
-            @endif
-            <label class="fw-bold fs-6 mb-2">Email</label>
-            <input type="text" name="email" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Email" value="{{ $info->email ?? '' }}" />
-        </div>
-        <div class="fv-row mb-7">
-            <label class="fw-bold fs-6 mb-2">Contact Number</label>
-            @if(isset( $info->contact_no ) && !empty ( $info->contact_no ))
-              <?php
-                $arrMobile = json_decode( $info->contact_no );
-                $info->contact_no = implode(',',$arrMobile);
-              ?>
-            @endif
-            <input type="text" name="contact_no" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Contact Number" value="{{ $info->contact_no ?? '' }}" />
-        </div>
-        <div class="mb-7 mt-10">
-            <label class="fw-bold fs-6 mb-2"> Pincode </label>
-            <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
-                <input class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Pincode" type="text"  name="pincode" value="{{ $info->pincode ?? '' }}" />
+        <div class="fv-row mb-5">
+            <div class="row">
+                <div class="col-md-6">
+                    <label class="fw-bold fs-7 mb-2"> Is Parent </label>
+                    <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-7 mb-2">
+                        <input class="form-check-input" type="checkbox"  name="is_parent" id="is_parent" value="1" @if( (isset( $info->parent_id ) && $info->parent_id == 0 ) || !isset($info->parent_id) ) checked @endif />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="fv-row @if( (isset( $info->parent_id ) && $info->parent_id == 0 ) || !isset($info->parent_id) ) d-none @endif" id="parent-tab">
+                        <label class="required fw-bold fs-7 mb-2">Parent Location</label>
+                        <select name="parent_location" id="parent_location" aria-label="Select a Location" data-control="select2" data-placeholder="Select a Location..." class="form-select mb-2">
+        
+                            @isset($serviceCenter)
+                                @foreach ($serviceCenter as $item)
+                                    <option value="{{ $item->id }}" @if( isset( $info->parent_id ) && $info->parent_id == $item->id ) selected @endif>{{ $item->title }}</option>
+                                @endforeach
+                            @endisset
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
        
-        <div class="fv-row mb-7">
-            <label class="fw-bold fs-6 mb-2">Address</label>
-            <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Address" name="address" id="address" cols="30" rows="5">{{ $info->address ?? '' }}</textarea>
+        <div class="fv-row mb-5">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="fv-row mb-7">
+                        <label class="required fw-bold fs-7 mb-2">Description</label>
+                        <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Description" name="description" id="description" cols="30" rows="2">{{ $info->description ?? '' }}</textarea>
+                    </div>
+                   
+                </div>
+                <div class="col-md-6">
+                    <div class="fv-row mb-7">
+                        <label class="fw-bold fs-7 mb-2">Address</label>
+                        <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Address" name="address" id="address" cols="30" rows="2">{{ $info->address ?? '' }}</textarea>
+                    </div>
+                </div>
+            </div>
         </div>
-      
+       
+        <div class="fv-row mb-5">
+            <div class="row">
+                <div class="col-md-4">
+                    <button id="rowPincode" type="button" class="btn btn-info">
+                        <span class="bi bi-plus-square-dotted">
+                        </span> ADD Pincode
+                    </button>
+                    @if( isset( $info->nearPincode ) && !empty( $info->nearPincode ) ) 
+                        @foreach ($info->nearPincode as $item)
+                        <div id="row" class="row p-4">
+                            
+                            <div class="col-md-8">
+                                <input type="text" name="near_pincode[]" class="form-control" value="{{ $item->pincode ?? '' }}"  placeholder="Pincode">
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="input-group mt-1">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-danger btn-sm" id="DeleteRowPincode" type="button">
+                                            <i class="bi bi-trash"></i>
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach 
+                    @endif
+                    <div id="newinputPincode"></div>
+                </div>
+                <div class="col-md-4">
+                    <button id="rowContact" type="button" class="btn btn-info">
+                        <span class="bi bi-plus-square-dotted">
+                        </span> ADD Contact
+                    </button>
+                    @if( isset( $info->contact ) && !empty( $info->contact ) ) 
+                        @foreach ($info->contact as $item)
+                        <div id="row" class="row p-4">
+                            
+                            <div class="col-md-8">
+                                <input type="text" name="contact[]" class="form-control numberonly" value="{{ $item->contact ?? '' }}"  placeholder="Contact">
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="input-group mt-1">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-danger btn-sm" id="DeleteRowContact" type="button">
+                                            <i class="bi bi-trash"></i>
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach 
+                    @endif
+                    <div id="newinputContact"></div>
+                </div>
+                <div class="col-md-4">
+                    <button id="rowEmail" type="button" class="btn btn-info">
+                        <span class="bi bi-plus-square-dotted">
+                        </span> ADD Email
+                    </button>
+                    @if( isset( $info->serviceEmail ) && !empty( $info->serviceEmail ) ) 
+                        @foreach ($info->serviceEmail as $item)
+                        <div id="row" class="row p-4">
+                            
+                            <div class="col-md-8">
+                                <input type="text" name="email[]" class="form-control" value="{{ $item->email ?? '' }}"  placeholder="Email">
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="input-group mt-1">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-danger btn-sm" id="DeleteRowEmail" type="button">
+                                            <i class="bi bi-trash"></i>
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach 
+                    @endif
+                    <div id="newinputEmail"></div>
+                </div>
+            </div>
+        </div>
        
         
     </div>
-    <div class="col-md-4">
+    <div class="col-md-2">
         <div class=" mb-7">
             <div class="fv-row">
-                <label class="d-block fw-bold fs-6 mb-5">Banner Image</label>
-                <div class="form-text">
+                <label class="d-block fw-bold fs-7 mb-5">Banner Image</label>
+                <div class="form-text small">
                     Allowed file types: png, jpg,
                     jpeg.
                 </div>
@@ -112,7 +196,7 @@
         </div>
         <div class=" mb-7">
             <div class="fv-row">
-                <label class="d-block fw-bold fs-6 mb-5">Banner Image Mobile</label>
+                <label class="d-block fw-bold fs-7 mb-5">Banner Image Mobile</label>
                 <div class="form-text">
                     Allowed file types: png, jpg,
                     jpeg.
@@ -160,27 +244,106 @@
             </div>
         </div>
        
-        <div class="mb-7 mt-4">
-            <label class="fw-bold fs-6 mb-2">Latitude</label>
+        {{-- <div class="mb-7 mt-4">
+            <label class="fw-bold fs-7 mb-2">Latitude</label>
             <input type="text" name="latitude" class="form-control numberonly form-control-solid mb-3 mb-lg-0"
                 placeholder="Latitude" value="{{ $info->latitude ?? '' }}" />
         </div>
         <div class="mb-7 mt-4">
-            <label class="fw-bold fs-6 mb-2">Longitude</label>
+            <label class="fw-bold fs-7 mb-2">Longitude</label>
             <input type="text" name="longitude" class="form-control numberonly form-control-solid mb-3 mb-lg-0"
                 placeholder="Longitude" value="{{ $info->longitude ?? '' }}" />
-        </div>
+        </div> --}}
         
         <div class="mb-7 mt-4">
-            <label class="fw-bold fs-6 mb-2">Sorting Order</label>
+            <label class="fw-bold fs-7 mb-2">Sorting Order</label>
             <input type="text" name="order_by" class="form-control numberonly form-control-solid mb-3 mb-lg-0"
                 placeholder="Sorting Order" value="{{ $info->order_by ?? '' }}" min="1" />
         </div>
         <div class="mb-7 mt-4">
-            <label class="fw-bold fs-6 mb-2"> Status </label>
-            <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
+            <label class="fw-bold fs-7 mb-2"> Status </label>
+            <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-7 mb-2">
                 <input class="form-check-input" type="checkbox"  name="status" value="1"  @if( (isset( $info->status) && $info->status == 'published') || (!isset($info->status)))  checked @endif />
             </div>
         </div>
     </div>
 </div>
+<script>
+    $('.numberonly').keypress(function (e) {    
+        var charCode = (e.which) ? e.which : event.keyCode    
+        if (String.fromCharCode(charCode).match(/[^0-9]/g))    
+            return false;                        
+    }); 
+     $("#rowPincode").on("click", function() {
+            newRowAdd =
+                '<div id="row" class="row p-4">'+
+                '<div class="col-md-8">'+
+                    '<input type="text" name="near_pincode[]" class="form-control" placeholder="Pincode" required>'+
+                '</div>'+
+                '<div class="col-md-4">'+
+                    '<div class="input-group mt-1">'+
+                        '<div class="input-group-prepend">'+
+                            '<button class="btn btn-danger btn-sm" id="DeleteRowPincode" type="button">'+
+                                '<i class="bi bi-trash"></i>'+
+                                'Delete'+
+                            '</button>'+
+                        '</div>'+                        
+                    '</div>'+
+                '</div>'+
+            '</div>';
+
+            $('#newinputPincode').append(newRowAdd);
+        })
+        $("body").on("click", "#DeleteRowPincode", function() {
+            $(this).parents("#row").remove();
+        })
+
+        $("#rowContact").on("click", function() {
+            newRowAdd =
+                '<div id="row" class="row p-4">'+
+                '<div class="col-md-8">'+
+                    '<input type="text" name="contact[]" class="form-control numberonly" placeholder="Contact" required>'+
+                '</div>'+
+                '<div class="col-md-4">'+
+                    '<div class="input-group mt-1">'+
+                        '<div class="input-group-prepend">'+
+                            '<button class="btn btn-danger btn-sm" id="DeleteRowContact" type="button">'+
+                                '<i class="bi bi-trash"></i>'+
+                                'Delete'+
+                            '</button>'+
+                        '</div>'+                        
+                    '</div>'+
+                '</div>'+
+            '</div>';
+
+            $('#newinputContact').append(newRowAdd);
+        })
+        $("body").on("click", "#DeleteRowContact", function() {
+            $(this).parents("#row").remove();
+        })
+
+
+        $("#rowEmail").on("click", function() {
+            newRowAdd =
+                '<div id="row" class="row p-4">'+
+                '<div class="col-md-8">'+
+                    '<input type="text" name="email[]" class="form-control" placeholder="Email" required>'+
+                '</div>'+
+                '<div class="col-md-4">'+
+                    '<div class="input-group mt-1">'+
+                        '<div class="input-group-prepend">'+
+                            '<button class="btn btn-danger btn-sm" id="DeleteRowEmail" type="button">'+
+                                '<i class="bi bi-trash"></i>'+
+                                'Delete'+
+                            '</button>'+
+                        '</div>'+                        
+                    '</div>'+
+                '</div>'+
+            '</div>';
+
+            $('#newinputEmail').append(newRowAdd);
+        })
+        $("body").on("click", "#DeleteRowEmail", function() {
+            $(this).parents("#row").remove();
+        })
+</script>
