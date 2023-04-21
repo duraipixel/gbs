@@ -133,10 +133,9 @@ class HomepageSettingController extends Controller
                     'end_size' => $request->end[$i],
                     'setting_image_name' =>$fileNameThumb
                 ];
-                //HomepageSettingItems::updateOrCreate(['homepage_settings_id' => $id], $answers);
-                HomepageSettingItems::insert($answers);
+                //HomepageSettingItems::updateOrCreate(['homepage_settings_id' => $id], $answers);              
             }
-           
+            HomepageSettingItems::insert($answers);
             
        
             
