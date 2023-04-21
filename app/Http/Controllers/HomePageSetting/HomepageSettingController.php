@@ -116,7 +116,7 @@ class HomepageSettingController extends Controller
               
                     $imageName                  = uniqid().$request->home_image[$i]->getClientOriginalName();
                     $directory                  = 'home_settings/';
-                    Storage::deleteDirectory('public/'.$directory);
+                  //  Storage::deleteDirectory('public/'.$directory);
 
                     if (!is_dir(storage_path("app/public/home_settings/"))) {
                         mkdir(storage_path("app/public/home_settings/"), 0775, true);
