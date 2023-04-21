@@ -40,18 +40,44 @@
 
                         <div class="fv-row mb-7">
                             <label class=" fw-bold fs-6 mb-2">Description</label>
-                            <textarea name="description" id="description" class="form-control form-control-solid  mb-3 mb-lg-0" cols="30" rows="5">{{ $info->description ?? '' }}</textarea>
-                        </div>
-                        <div class="fv-row mb-7">
-                            <label class=" fw-bold fs-6 mb-2">Sorting Order</label>
-                            <input type="text" name="order" class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
-                                placeholder="Sorting Order" value="{{ $info->order ?? '' }}" />
+                            <textarea name="description" id="description" class="form-control form-control-solid  mb-3 mb-lg-0" cols="30" rows="3">{{ $info->description ?? '' }}</textarea>
                         </div>
                        
                         <div class="fv-row mb-7">
-                            <label class="fw-bold fs-6 mb-2"> Status </label>
-                            <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
-                                <input class="form-check-input" type="checkbox"  name="status" value="1"  @if((isset( $info->status) && $info->status == 'published' ) || !isset($info->status)) checked @endif />
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class=" fw-bold fs-6 mb-2">Tracking Number </label>
+                                    <input type="text" name="tracking_number" value="{{ $info->tracking_number ?? '' }}"
+                                        class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Tracking Number" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class=" fw-bold fs-6 mb-2">Shipping Medium </label>
+                                    <input type="text" name="shipping_medium" value="{{ $info->shipping_medium ?? '' }}"
+                                        class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Shipping Medium" />
+                               
+                                </div>
+                            </div>
+                           
+                        </div>
+                        
+                        <div class="fv-row mb-7">
+                            <label class=" fw-bold fs-6 mb-2">Tracking Link </label>
+                            <input type="text" name="tracking_link" value="{{ $info->tracking_link ?? '' }}"
+                                class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Tracking Link" />
+                        </div>
+                        <div class="fv-row mb-7">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class="required fw-bold fs-6 mb-2">Sorting Order</label>
+                                    <input type="text" name="order" class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
+                                    placeholder="Sorting Order" value="{{ $info->order ?? '' }}" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="fw-bold fs-6 mb-2"> Status </label>
+                                    <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
+                                        <input class="form-check-input" type="checkbox"  name="status" value="1"  @if((isset( $info->status) && $info->status == 'published' ) || !isset($info->status)) checked @endif />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                      
@@ -119,6 +145,14 @@
                                 }
                             }
                         },
+                        'order': {
+                            validators: {
+                                notEmpty: {
+                                    message: 'Sorting order is required'
+                                }
+                            }
+                        },
+                        
                     },
 
                     plugins: {

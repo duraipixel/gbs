@@ -11,6 +11,9 @@
         <tr>
             <th>Added Date</th>
             <th>Status Name</th>
+            <th>Tracking Number</th>
+            <th>Tracking Link</th>
+            <th>Shipping Medium</th>
             <th>Description</th>
             <th>Order</th>
             <th>Status</th>
@@ -23,6 +26,9 @@
             <tr>
                 <td>{{ $item->created_at }}</td>
                 <td>{{ $item->status_name }}</td>
+                <td>{{ $item->tracking_number }}</td>
+                <td>{{ $item->tracking_link }}</td>
+                <td>{{ $item->shipping_medium }}</td>
                 <td>{{ $item->description }}</td>
                 <td>{{ $item->order }}</td>
                 <td>{{  $item->status }}</td>

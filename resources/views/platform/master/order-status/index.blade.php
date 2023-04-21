@@ -137,7 +137,7 @@
 
     <script>
         var dtTable = $('#order_stauts-table').DataTable({
-
+            order: [[ 4, 'desc' ]],
             processing: true,
             serverSide: true,
             type: 'POST',
