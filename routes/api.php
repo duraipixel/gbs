@@ -50,6 +50,7 @@ Route::get('/storeLocator', [App\Http\Controllers\Api\StoreLocatorController::cl
 Route::get('/storeLocatorDetail/{slug}', [App\Http\Controllers\Api\StoreLocatorController::class, 'getStoreLocatorDetail']);
 Route::get('/quickLink', [App\Http\Controllers\Api\QuickLinkController::class, 'index']);
 Route::get('/browseHome', [App\Http\Controllers\Api\BrowseController::class, 'index']);
+Route::post('/productAvail', [App\Http\Controllers\Api\ProductAvailCheckController::class, 'index']);
 
 Route::post('/add/cart', [App\Http\Controllers\Api\CartController::class, 'addToCart']);
 Route::post('/get/cart', [App\Http\Controllers\Api\CartController::class, 'getCarts']);
