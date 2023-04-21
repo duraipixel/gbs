@@ -43,7 +43,7 @@
                             <select name="homepage_setting_field_id" id="homepage_setting_field_id" aria-label="Select a Homepage Setting Field" class="form-select form-select-solid fw-bolder">
                                 <option value="">Select a Homepage setting field...</option>
                                 @foreach($field as $key=>$val)
-                                <option value="{{ $val->id }}" @if(isset( $info->homepage_setting_field_id) && $info->homepage_setting_field_id == $val->id) selected @endif >{{ $val->title }}</option>
+                                <option  data-id="{{ $val->title }}"  value="{{ $val->id }}" @if(isset( $info->homepage_setting_field_id) && $info->homepage_setting_field_id == $val->id) selected @endif >{{ $val->title }}</option>
                                 @endforeach
                               
                             </select>
@@ -68,6 +68,87 @@
                                 </div>
                             </div>
                         </div>
+
+@if($home_items_first)
+
+<div class="fv-row mb-7">
+    @foreach($home_items as $home_set_items)
+   
+    <div class="row mt-6" id='new_row_add'>
+        <div class="col-md-3">
+            <label class="fw-bold fs-6 mb-2 start_val" id=""> </label>
+            <input type="text" id="start" name="start[]" class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
+            placeholder="Start" value='{{$home_set_items->start_size}}'  />
+        </div>
+        <div class="col-md-3">
+            <label class="fw-bold fs-6 mb-2 end_val" id="">  </label>
+            <input type="text" id="end" name="end[]" class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
+            placeholder="End" value='{{$home_set_items->end_size}}'  />
+        </div>
+        <div class="col-md-3">
+            <label class="fw-bold fs-6 mb-2"> Image </label>
+            <input type="file" id="home_image" name="home_image[]" class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
+            placeholder=""  /> 
+            
+        </div>
+        @endforeach
+        <div class="col-md-3">
+            <button type="button" id="btnAdd" class="btn btn-sm btn-light-primary mt-9" >
+                <!--begin::Svg Icon | path: icons/duotune/arrows/arr087.svg-->
+                <span class="svg-icon svg-icon-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <rect opacity="0.5" x="11" y="18" width="12" height="2" rx="1" transform="rotate(-90 11 18)" fill="currentColor" />
+                        <rect x="6" y="11" width="12" height="2" rx="1" fill="currentColor" />
+                    </svg>
+                </span>
+                <!--end::Svg Icon-->Add New</button>
+              
+            </div>
+    </div>
+   
+    <div id="newinput"></div>
+  
+        
+</div>
+
+ @else
+                        <div class="fv-row mb-7">
+                            <div class="row mt-6" id='new_row_add'>
+                                <div class="col-md-3">
+                                    <label class="fw-bold fs-6 mb-2 start_val" id=""> </label>
+                                    <input type="text" id="start" name="start[]"  class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
+                                    placeholder="Start" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="fw-bold fs-6 mb-2 end_val" id="">  </label>
+                                    <input type="text" id="end" name="end[]" class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
+                                    placeholder="End"  />
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="fw-bold fs-6 mb-2"> Image </label>
+                                    <input type="file" id="home_image" name="home_image[]" class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
+                                    placeholder=""  /> 
+                                    
+                                </div>
+                                <div class="col-md-3">
+                                    <button type="button" id="btnAdd" class="btn btn-sm btn-light-primary mt-9" >
+                                        <!--begin::Svg Icon | path: icons/duotune/arrows/arr087.svg-->
+                                        <span class="svg-icon svg-icon-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                                <rect opacity="0.5" x="11" y="18" width="12" height="2" rx="1" transform="rotate(-90 11 18)" fill="currentColor" />
+                                                <rect x="6" y="11" width="12" height="2" rx="1" fill="currentColor" />
+                                            </svg>
+                                        </span>
+                                        <!--end::Svg Icon-->Add New</button>
+                                      
+                                    </div>
+                            </div>
+                            <div id="newinput"></div>
+                          
+                                
+                        </div>
+ @endif
+
                 </div>
             </div>
         </div>
@@ -93,6 +174,72 @@
 </style>
 
 <script>
+
+$( document ).ready(function() {
+    var status=$("#homepage_setting_field_id").val();
+    if(status)
+    {
+        var state= $('select[name=homepage_setting_field_id]').find('option:selected').data('id');
+        $(".start_val").html('Start '+state);
+        $(".end_val").html('End '+state);
+        $(".start_val_append").html('Start '+state);
+        $(".end_val_append").html('End '+state);
+    }
+});
+$('select').change(function(){
+ var state= $(this).children('option:selected').data('id');
+ $(".start_val").html('Start '+state);
+ $(".end_val").html('End '+state);
+});
+
+    $("#btnAdd").click(function () {
+        var state= $('select[name=homepage_setting_field_id]').find('option:selected').data('id');
+        //var state= $(this).children('option:selected').data('id');
+        var status=$("#homepage_setting_field_id").val();
+        if(status)
+        {
+ $(".start_val_append").html('Start '+state);
+ $(".end_val_append").html('End '+state);
+        }
+            newRowAdd =
+            ` <div class="row mt-6" id='new_row_add'>
+                                <div class="col-md-3">
+                                    <label class="fw-bold fs-6 mb-2 start_val_append start_val" > </label>
+                                    <input type="text" id="start" name="start[]" class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
+                                    placeholder="Start" value="{{ $info->order_by ?? '' }}" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="fw-bold fs-6 mb-2 end_val_append end_val" >  </label>
+                                    <input type="text" id="end" name="end[]" class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
+                                    placeholder="End" value="{{ $info->order_by ?? '' }}" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="fw-bold fs-6 mb-2"> Image </label>
+                                    <input type="file" id="home_image" name="home_image[]" class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
+                                    placeholder="Sorting Order" value="{{ $info->order_by ?? '' }}" />
+                                    
+                                </div>
+                                <div class="col-md-3">
+                                <button type="button" id="DeleteRow" data-repeater-delete="" class="btn btn-sm btn-icon btn-light-danger removeRow mt-10" >
+                                        <!--begin::Svg Icon | path: icons/duotune/arrows/arr088.svg-->
+                                        <span class="svg-icon svg-icon-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                                <rect opacity="0.5" x="7.05025" y="15.5356" width="12" height="2" rx="1" transform="rotate(-45 7.05025 15.5356)" fill="currentColor"></rect>
+                                                <rect x="8.46447" y="7.05029" width="12" height="2" rx="1" transform="rotate(45 8.46447 7.05029)" fill="currentColor"></rect>
+                                            </svg>
+                                        </span>
+                                        <!--end::Svg Icon-->
+                                    </button>
+                                </div>
+                                    </div>`;
+ 
+            $('#newinput').append(newRowAdd);
+        });
+        $("body").on("click", "#DeleteRow", function () {
+            $(this).parents("#new_row_add").remove();
+          
+        })
+  
     $('#homepage_setting_field_id').select2();
 
 $('.mobile_num').keypress(
@@ -106,6 +253,7 @@ $('.mobile_num').keypress(
             }
         }
     );
+
     var add_url = "{{ route('homepage-setting.save') }}";
 
     // Class definition

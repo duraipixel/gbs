@@ -5,7 +5,8 @@ namespace App\Http\Controllers\HomePageSetting;
 use App\Exports\HomepageSettingExport;
 use App\Http\Controllers\Controller;
 use App\Models\HomePageSetting\HomepageSetting;
-use App\Models\HomePageSetting\HomepageSettingField;
+use App\Models\HomePageSetting\HomepageSettingField; 
+use App\Models\HomePageSetting\HomepageSettingItems; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use DataTables;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\File;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Excel;
+use Image;
 
 class HomepageSettingController extends Controller
 {
@@ -68,14 +70,20 @@ class HomepageSettingController extends Controller
         $from               = $request->from;
         $info               = '';
         $modal_title        = 'Add Homepage Setting';
+        $home_items         = '';
+        $home_items_first   = '';
         $field = HomepageSettingField::where('status','published')->get();
         if (isset($id) && !empty($id)) {
             $info           = HomepageSetting::find($id);
+            $home_items           = HomepageSettingItems::where('homepage_settings_id',$id)->get();
+            $home_items_first           = HomepageSettingItems::where('homepage_settings_id',$id)->get();
+           
+          
            
             $modal_title    = 'Update Homepage Setting';
         }
 
-        return view('platform.homepage_setting.homepage_setting.add_edit_modal', compact('info', 'modal_title', 'from','field'));
+        return view('platform.homepage_setting.homepage_setting.add_edit_modal', compact('info', 'modal_title', 'from','field','home_items','home_items_first'));
     }
     public function saveForm(Request $request,$id = null)
     {
@@ -102,7 +110,36 @@ class HomepageSettingController extends Controller
             
             $error                      = 0;
             $info                       = HomepageSetting::updateOrCreate(['id' => $id], $ins);
-        
+            $home_settings_id=$info->id;
+            $answers = [];
+            for ($i = 0; $i < count($request->start); $i++) {                     
+              
+                    $imageName                  = uniqid().$request->home_image[$i]->getClientOriginalName();
+                    $directory                  = 'home_settings/';
+                    Storage::deleteDirectory('public/'.$directory);
+
+                    if (!is_dir(storage_path("app/public/home_settings/"))) {
+                        mkdir(storage_path("app/public/home_settings/"), 0775, true);
+                    }    
+                  
+                    $fileNameThumb              = 'public/home_settings/' . time() . '-' . $imageName;
+                    Image::make($request->home_image[$i])->save(storage_path('app/' . $fileNameThumb));  
+                   
+    
+                
+                $answers[] = [
+                    'homepage_settings_id' => $home_settings_id,
+                    'start_size' => $request->start[$i],
+                    'end_size' => $request->end[$i],
+                    'setting_image_name' =>$fileNameThumb
+                ];
+                //HomepageSettingItems::updateOrCreate(['homepage_settings_id' => $id], $answers);
+                HomepageSettingItems::insert($answers);
+            }
+           
+            
+       
+            
             $message                    = (isset($id) && !empty($id)) ? 'Updated Successfully' : 'Added successfully';
         } else {
             $error                      = 1;
