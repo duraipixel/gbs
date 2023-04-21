@@ -28,7 +28,9 @@ class AddTrackingInOrderStatusTable extends Migration
     public function down()
     {
         Schema::table('order_statuses', function (Blueprint $table) {
-            //
+            $table->dropColumn('tracking_link');
+            $table->dropColumn('tracking_number');
+            $table->dropColumn('shipping_medium');
         });
     }
 }

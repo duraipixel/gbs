@@ -8,6 +8,7 @@ use App\Mail\DynamicMail;
 use App\Models\Cart;
 use App\Models\Category\MainCategory;
 use App\Models\GlobalSettings;
+use App\Models\Master\Country;
 use App\Models\Master\Customer;
 use App\Models\Master\CustomerAddress;
 use App\Models\Master\EmailTemplate;
@@ -168,29 +169,7 @@ class CustomerController extends Controller
         return array('error' => $error, 'message' => $message, 'status' => $status, 'customer' => $customer_data, 'customer_addres' => $customer_address);
     }
 
-    public function addCustomerAddress(Request $request)
-    {
-        if ($request->state) {
-            $state_info = State::find($request->state);
-            $ins['state'] = $state_info->state_name;
-            $ins['stateid'] = $state_info->id;
-        }
-
-        $ins['customer_id'] = $request->customer_id;
-        $ins['address_type_id'] = $request->address_type;
-        $ins['name'] = $request->contact_name;
-        $ins['email'] = $request->email;
-        $ins['mobile_no'] = $request->mobile_no;
-        $ins['address_line1'] = $request->address;
-        $ins['country'] = 'india';
-        $ins['post_code'] = $request->post_code;
-        $ins['city'] = $request->city;
-
-        $address_info = CustomerAddress::create($ins);
-
-        $address = CustomerAddress::where('customer_id', $request->customer_id)->get();
-        return array('error' => 0, 'message' => 'Address added successfully', 'status' => 'success', 'customer_address' => $address, 'address_info' => $address_info);
-    }
+   
 
     public function updateProfile(Request $request)
     {
@@ -237,6 +216,7 @@ class CustomerController extends Controller
                     $error = 0;
     
                     $customerInfo->password = Hash::make($newPassword);
+                    $customerInfo->password_changed_at = date('Y-m-d H:i:s');
                     $customerInfo->update();
     
                     $message = 'Password changed successfully';
@@ -254,66 +234,7 @@ class CustomerController extends Controller
         return array('error' => $error, 'message' => $message);
     }
 
-    public function deleteCustomerAddress(Request $request)
-    {
-
-        $address_id = $request->address_id;
-        $addressInfo = CustomerAddress::find($address_id);
-        $addressInfo->delete();
-        $address = CustomerAddress::where('customer_id', $request->customer_id)->get();
-        return array('error' => 0, 'message' => 'Address deleted successfully', 'status' => 'success', 'customer_address' => $address);
-    }
-
-    public function updateCustomerAddress(Request $request)
-    {
-        $address_id = $request->address_id;
-        if ($request->stateid) {
-            $state_info = State::find($request->stateid);
-            $ins['state'] = $state_info->state_name;
-            $ins['stateid'] = $state_info->id;
-        }
-
-        $ins['customer_id'] = $request->customer_id;
-        $ins['address_type_id'] = $request->address_type_id;
-        $ins['name'] = $request->name;
-        $ins['email'] = $request->email;
-        $ins['mobile_no'] = $request->mobile_no;
-        $ins['address_line1'] = $request->address_line;
-        $ins['country'] = 'india';
-        $ins['post_code'] = $request->post_code;
-
-        $ins['city'] = $request->city;
-
-        CustomerAddress::updateOrCreate(['id' => $address_id], $ins);
-
-        $address = CustomerAddress::where('customer_id', $request->customer_id)->get();
-        return array('error' => 0, 'message' => 'Address added successfully', 'status' => 'success', 'customer_address' => $address);
-    }
-
-    public function getCustomerAddress(Request $request)
-    {
-        $address_id = $request->address_id;
-        $res = [];
-        if (isset($address_id) && !empty( $address_id) ) {
-            $addressInfo = CustomerAddress::find($address_id);
-            $res['address_id'] = $addressInfo->id;
-            $res['address_line'] = $addressInfo->address_line1 ?? '';
-            $res['address_type_id'] = (string)$addressInfo->address_type_id;
-            $res['city'] = $addressInfo->city ?? '';
-            $res['customer_id'] = $addressInfo->customer_id;
-            $res['email'] = $addressInfo->email;
-            $res['mobile_no'] = $addressInfo->mobile_no;
-            $res['name'] = $addressInfo->name;
-            $res['post_code'] = $addressInfo->post_code ?? '';
-            $res['state'] = $addressInfo->state ?? '';
-            $res['stateid'] = $addressInfo->stateid ?? '';
-        }
-
-        $address_type       = MainCategory::where('slug', 'address-type')->first();
-        $res['address_type'] = $address_type->subCategory ?? [];
-
-        return $res;
-    }
+    
 
     public function sendPasswordLink(Request $request)
     {
@@ -370,6 +291,7 @@ class CustomerController extends Controller
         if (isset($customerInfo) && !empty($customerInfo)) {
 
             $customerInfo->password = Hash::make($password);
+            $customerInfo->password_changed_at = date('Y-m-d H:i:s');
             $customerInfo->forgot_token = null;
             $customerInfo->update();
 
@@ -415,14 +337,91 @@ class CustomerController extends Controller
         $customer_id = $request->customer_id;
         $address_array  = $this->addressList($customer_id);
         $address_type   = MainCategory::with('subCategory')->where('slug', 'address-type')->first();
+        $country    = Country::where('status', 1)->get();
+        $state    = State::where('status', 1)->get();
+
+        $response = array(
+                        'status' => 'success', 
+                        'message' => 'Successfully fetched address data', 
+                        'addresses' => $address_array, 
+                        'address_type' => $address_type->subCategory,
+                        'country' => $country,
+                        'state' => $state
+                    );
         
-        return array('status' => 'success', 'message' => 'Successfully fetched address data', 'addresses' => $address_array, 'address_type' => $address_type->subCategory );
+        return $response;
     }
 
     public function addressList($customer_id)
     {
-        $address_details = CustomerAddress::where('customer_id', $customer_id)->get();
-
+        $address_details = CustomerAddress::where('customer_id', $customer_id)->orderBy('is_default', 'desc')->get();
         return CustomerAddressesResource::collection($address_details);
     }
+
+    public function addUpdateCustomerAddress(Request $request)
+    {
+
+        $ins['customer_id'] = $request->customer_id;
+        $ins['address_type_id'] = $request->address_type_id;
+        $ins['name'] = $request->name;
+        $ins['email'] = $request->email;
+        $ins['mobile_no'] = $request->mobile_no;
+        $ins['address_line1'] = $request->address;
+        $ins['countryid'] = $request->country;
+        $ins['stateid'] = $request->state;
+        $ins['post_code'] = $request->post_code;
+        $ins['city'] = $request->city;
+
+        CustomerAddress::updateOrCreate(['id' => $request->id], $ins);
+        
+        $response = array(
+                        'error' => 0, 
+                        'message' => $request->id ? 'Address Updated successfully' :'Address Added successfully', 
+                        'status' => 'success', 
+                        'addresses' => $this->addressList($request->customer_id)
+                    );
+        return $response;
+
+    }
+
+    public function setDefaultAddress(Request $request)
+    {
+        
+        $customer_address_id = $request->customer_address_id;
+
+        if( !$customer_address_id ) {
+            $error = 1;
+            $message = 'Address id is required';
+        } else {
+            $error = 0;
+            $message = 'Address set as Default Successfully';
+            CustomerAddress::where('customer_id', $request->customer_id)->update(['is_default' => 0]);
+
+            $address = CustomerAddress::find($customer_address_id);
+            $address->is_default = 1;
+            $address->update();
+
+        }
+
+        return array('error' => $error, 'message' => $message, 'addresses' =>  $this->addressList($request->customer_id));
+    }
+
+    public function deleteCustomerAddress(Request $request)
+    {
+
+        $address_id = $request->customer_address_id;
+        if( !$address_id ) {
+            $error = 1;
+            $message = 'Address not found';
+        } else {
+            $error = 0;
+            $message = 'Address deleted successfully';
+            $addressInfo = CustomerAddress::find($address_id);
+            $addressInfo->delete();
+        }
+        
+        return array('error' => $error, 'message' => $message, 'addresses' =>  $this->addressList($request->customer_id));
+
+    }
+
 }

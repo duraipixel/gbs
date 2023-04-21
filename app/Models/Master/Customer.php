@@ -21,6 +21,7 @@ class Customer extends Authenticatable
         'mobile_no',
         'customer_no',
         'email_verified_at',
+        'password_changed_at',
         'password',
         'remember_token',
         'forgot_token',
@@ -28,6 +29,10 @@ class Customer extends Authenticatable
         'profile_image',
         'address',
         'status',
+    ];
+
+    protected $casts = [
+        'password_changed_at' => 'datetime:d M Y'
     ];
 
     public function customerAddress()

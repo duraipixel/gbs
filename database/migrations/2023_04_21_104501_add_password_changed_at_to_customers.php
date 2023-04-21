@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddShippingInformationPincodeTable extends Migration
+class AddPasswordChangedAtToCustomers extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddShippingInformationPincodeTable extends Migration
      */
     public function up()
     {
-        Schema::table('pincodes', function (Blueprint $table) {
-            $table->string('shipping_information')->after('pincode');
+        Schema::table('customers', function (Blueprint $table) {
+            $table->timestamp('password_changed_at')->after('password')->nullable();
         });
     }
 
@@ -25,8 +25,8 @@ class AddShippingInformationPincodeTable extends Migration
      */
     public function down()
     {
-        Schema::table('pincodes', function (Blueprint $table) {
-            $table->dropColumn('shipping_information');
+        Schema::table('customers', function (Blueprint $table) {
+            $table->dropColumn('password_changed_at');
         });
     }
 }
