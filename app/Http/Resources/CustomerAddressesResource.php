@@ -6,30 +6,25 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class CustomerAddressesResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
-     */
+    
     public function toArray($request)
     {
-        $response['customer_address_id'] = $request->id;
-        $response['address_type_id'] = $request->address_type_id;
-        $response['name'] = $request->name;
-        $response['email'] = $request->email;
-        $response['mobile_no'] = $request->mobile_no;
-        $response['address_line1'] = $request->address_line1;
-        $response['address_line2'] = $request->address_line2;
-        $response['landmark'] = $request->landmark;
-        $response['countryid'] = $request->countryid;
-        $response['country'] = $request->country;
-        $response['post_code'] = $request->post_code;
-        $response['stateid'] = $request->stateid;
-        $response['state'] = $request->state;
-        $response['cityid'] = $request->cityid;
-        $response['city'] = $request->city;
-        $response['is_default'] = $request->is_default;
+        $response['customer_address_id'] = $this->id;
+        $response['address_type_id'] = $this->address_type_id;
+        $response['name'] = $this->name;
+        $response['email'] = $this->email;
+        $response['mobile_no'] = $this->mobile_no;
+        $response['address_line1'] = $this->address_line1;
+        $response['address_line2'] = $this->address_line2;
+        $response['landmark'] = $this->landmark;
+        $response['countryid'] = $this->countryid;
+        $response['country'] = $this->country;
+        $response['post_code'] = $this->post_code;
+        $response['stateid'] = $this->stateid;
+        $response['state'] = $this->state;
+        $response['cityid'] = $this->cityid;
+        $response['city'] = $this->city;
+        $response['is_default'] = $this->is_default;
 
         return $response;
     }
