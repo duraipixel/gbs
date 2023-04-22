@@ -54,6 +54,7 @@
                 <table class="table align-middle table-row-dashed fs-6 gy-2 mb-0 dataTable no-footer" id="service-offer-table">
                     <thead>
                         <tr class="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
+                            <th> Service Center  </th>
                             <th> Title  </th>
                             <th> Status </th>
                             <th style="width: 75px;">Action</th>
@@ -86,7 +87,11 @@
         },
 
         columns: [
-          
+            
+            {
+                data: 'service_center',
+                name: 'service_center'
+            },
             {
                 data: 'title',
                 name: 'title'

@@ -388,7 +388,15 @@
                             <span class="menu-title">Stores</span>
                         </a>
                     </div>
-                   
+                    <div class="menu-item">
+                        <a class="menu-link @if (request()->routeIs(['service-offer'])) active @endif"
+                            href="{{ route('service-offer') }}">
+                            <span class="menu-bullet">
+                                <span class="bullet bullet-dot"></span>
+                            </span>
+                            <span class="menu-title">Store Locator Offer</span>
+                        </a>
+                    </div>
                 </div>
             </div>
             @endif

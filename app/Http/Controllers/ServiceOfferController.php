@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ServiceCenterOfferExport;
 use App\Models\ServiceCenter;
 use App\Models\ServiceCenterOffer;
 use App\Models\ServiceOffer;
@@ -20,7 +21,8 @@ class ServiceOfferController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data       = ServiceCenterOffer::select('service_center_offers.*')->groupBy('service_center_offers.service_center_id');
+            $data       = ServiceCenterOffer::select('service_center_offers.*','service_centers.title as service_center')
+            ->leftJoin('service_centers','service_centers.id','=','service_center_offers.service_center_id');
            
             $status     = $request->get('status');
             $keywords   = $request->get('search')['value'];
@@ -33,6 +35,7 @@ class ServiceOfferController extends Controller
                     if ($keywords) {
                         $date = date('Y-m-d', strtotime($keywords));
                         return $query->where('service_center_offers.title', 'like', "%{$keywords}%")
+                        ->orWhere('service_centers.title', 'like', "%{$keywords}%")
                         ->orWhereDate("service_center_offers.created_at", $date);
                     }
                 })
