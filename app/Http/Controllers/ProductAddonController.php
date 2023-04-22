@@ -107,9 +107,9 @@ class ProductAddonController extends Controller
             if ($request->hasFile('icon')) {
                
                 $filename       = time() . '_' . $request->icon->getClientOriginalName();
-                $directory      = 'product_addon/'.$info->id;
+                $directory      = 'public/product_addon/'.$info->id;
                 $filename       = $directory.'/'.$filename;
-                Storage::deleteDirectory('public/'.$directory);
+                Storage::deleteDirectory($directory);
                 Storage::disk('public')->put($filename, File::get($request->icon));
                 
                 $info->icon = $filename;
