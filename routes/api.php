@@ -75,7 +75,6 @@ Route::middleware(['client'])->group(function(){
      * Customer Reviews
      */
     Route::post('/add/customer/reviews', [App\Http\Controllers\Api\CustomerReviewController::class, 'addReviews']);
-    
     /**
      *  Add or Remove Whishlist
      */
