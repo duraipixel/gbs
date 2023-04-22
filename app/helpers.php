@@ -4,8 +4,10 @@ use App\Helpers\AccessGuard;
 use App\Models\Master\Customer;
 use App\Models\Order;
 use App\Models\Product\Product;
+use App\Models\Product\Review;
 use App\Models\SmsTemplate;
 use App\Models\User;
+use App\Models\Wishlist;
 use Illuminate\Support\Facades\Storage;
 
 if (!function_exists('gSetting')) {
@@ -268,9 +270,9 @@ if (!function_exists('getSaleProductPrices')) {
     }
 }
 
-function getProductApiData($product_data)
+function getProductApiData($product_data, $customer_id = '')
 {
-
+   
     $category               = $product_data->productCategory;
     $pro                    = [];
     $pro['id']              = $product_data->id;
@@ -301,6 +303,20 @@ function getProductApiData($product_data)
     }
 
     $pro['image']                   = $path;
+
+     /**
+     * check product has customer reveiws
+     */
+    $reviews = '';
+    $wishlist = '';
+    if( $customer_id ) {
+        $reviews = Review::where(['product_id' => $product_data->id, 'customer_id' => $customer_id ])->first();
+        $wishlist = Wishlist::where(['product_id' => $product_data->id, 'customer_id' => $customer_id ])->first();
+    }
+    
+    $pro['is_review'] = $reviews ? true : false;
+    $pro['is_wishlist'] = $wishlist ? true : false;
+   
 
     $pro['description']             = $product_data->description;
     // $pro['technical_information']   = $product_data->technical_information;

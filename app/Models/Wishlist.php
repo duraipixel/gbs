@@ -14,11 +14,14 @@ class Wishlist extends Model
         'customer_id',
         'guest_token',
         'product_id',
+        'status'
     ];
+
     public function customer()
     {
         return $this->hasOne(Customer::class,'id','customer_id');
     }
+
     public function product()
     {
         return $this->hasOne(Product::class,'id','product_id');

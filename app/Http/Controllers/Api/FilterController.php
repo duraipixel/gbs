@@ -224,9 +224,10 @@ class FilterController extends Controller
     public function getProductBySlug(Request $request)
     {
         $product_url = $request->product_url;
+        $customer_id = $request->customer_id;
         $items = Product::where('product_url', $product_url)->first();
         if( $items ) {
-            $return = getProductApiData($items);
+            $return = getProductApiData($items, $customer_id);
         }
         return $return ?? [];
     }

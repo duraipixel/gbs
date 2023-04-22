@@ -13,6 +13,7 @@ use App\Models\Master\Customer;
 use App\Models\Master\CustomerAddress;
 use App\Models\Master\EmailTemplate;
 use App\Models\Master\State;
+use App\Models\Wishlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -422,6 +423,31 @@ class CustomerController extends Controller
         
         return array('error' => $error, 'message' => $message, 'addresses' =>  $this->addressList($request->customer_id));
 
+    }
+
+    public function setWishlists(Request $request)
+    {
+        $customer_id = $request->customer_id;
+        $product_id = $request->product_id;
+        $status = $request->status;
+
+        $ins['customer_id'] = $customer_id;
+        $ins['product_id'] = $product_id;
+        $ins['status'] = $status;
+
+        Wishlist::updateOrCreate(['customer_id' => $customer_id, 'product_id' => $product_id], $ins);
+
+        if($status == 1){
+            $message = 'Added to Wishlist';
+        } else {
+            $message = 'Removed from Wishlist';
+        }
+        return array( 'error' => 0, 'message' => $message );
+    }
+
+    public function getWishlist(Request $request)
+    {
+        
     }
 
 }

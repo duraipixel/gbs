@@ -30,7 +30,7 @@ Route::get('/get/product/collections/{order_by?}', [App\Http\Controllers\Api\Col
 Route::get('/get/product/collections/byorder/{order_by}', [App\Http\Controllers\Api\CollectionController::class, 'getProductCollectionByOrder']);
 Route::get('/get/filter/static/sidemenus', [App\Http\Controllers\Api\FilterController::class, 'getFilterStaticSideMenu']);
 Route::get('/get/products', [App\Http\Controllers\Api\FilterController::class, 'getProducts']);
-Route::get('/get/products/by/slug/{product_url}', [App\Http\Controllers\Api\FilterController::class, 'getProductBySlug']);
+Route::post('/get/products/by/slug', [App\Http\Controllers\Api\FilterController::class, 'getProductBySlug']);
 Route::get('/get/states', [App\Http\Controllers\Api\CommonController::class, 'getSates']);
 Route::post('/get/meta', [App\Http\Controllers\Api\CommonController::class, 'getMetaInfo']);
 Route::post('/get/global/search', [App\Http\Controllers\Api\FilterController::class, 'globalSearch']);
@@ -74,6 +74,12 @@ Route::middleware(['client'])->group(function(){
      */
     Route::post('/add/customer/reviews', [App\Http\Controllers\Api\CustomerReviewController::class, 'addReviews']);
     Route::post('/list/customer/reviews', [App\Http\Controllers\Api\CustomerReviewController::class, 'listReviews']);
+    /**
+     *  Add or Remove Whishlist
+     */
+    Route::post('/add/remove/whishlist', [App\Http\Controllers\Api\CustomerController::class, 'setWishlists']);
+    Route::post('/get/whishlist', [App\Http\Controllers\Api\CustomerController::class, 'getWishlist']);
+
     
     Route::post('/proceed/checkout', [App\Http\Controllers\Api\CheckoutController::class, 'proceedCheckout']);
     Route::post('/verify/payment/signature', [App\Http\Controllers\Api\CheckoutController::class, 'verifySignature']);
