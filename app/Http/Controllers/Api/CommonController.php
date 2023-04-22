@@ -62,7 +62,7 @@ class CommonController extends Controller
                         $brandLogoPath           = 'brands/' . $daitem->id . '/default/' . $daitem->brand_logo;
 
                         if ($daitem->brand_logo === null) {
-                            $path                = asset('assets/logo/no-img-1.jpg');
+                            $path                = asset('assets/logo/no_Image.jpg');
                         } else {
                             $url                 = Storage::url($brandLogoPath);
                             $path                = asset($url);
@@ -134,7 +134,7 @@ class CommonController extends Controller
                         $imagePath              = $productInfo->base_image;
 
                         if (!Storage::exists($imagePath)) {
-                            $path               = asset('assets/logo/no-img-1.jpg');
+                            $path               = asset('assets/logo/no_Image.jpg');
                         } else {
                             $url                = Storage::url($imagePath);
                             $path               = asset($url);

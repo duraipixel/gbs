@@ -66,7 +66,7 @@ class OrderController extends Controller
                         $imagePath              = $pro->products->base_image;
 
                         if (!Storage::exists($imagePath)) {
-                            $path               = asset('assets/logo/no-img-1.jpg');
+                            $path               = asset('assets/logo/no_Image.jpg');
                         } else {
                             $url                = Storage::url($imagePath);
                             $path               = asset($url);
@@ -139,7 +139,7 @@ class OrderController extends Controller
                     $imagePath              = $pro->products->base_image;
 
                     if (!Storage::exists($imagePath)) {
-                        $path               = asset('assets/logo/no-img-1.jpg');
+                        $path               = asset('assets/logo/no_Image.jpg');
                     } else {
                         $url                = Storage::url($imagePath);
                         $path               = asset($url);

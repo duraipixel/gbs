@@ -79,7 +79,7 @@ class CollectionController extends Controller
                 $imagePath              = $productInfo->base_image;
 
                 if (!Storage::exists($imagePath)) {
-                    $path               = asset('assets/logo/no-img-1.jpg');
+                    $path               = asset('assets/logo/no_Image.jpg');
                 } else {
                     $url                = Storage::url($imagePath);
                     $path               = asset($url);

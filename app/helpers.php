@@ -347,7 +347,7 @@ function getProductApiData($product_data)
             $imagePath              = $productInfo->base_image;
 
             if (!Storage::exists($imagePath)) {
-                $path               = asset('assets/logo/no-img-1.jpg');
+                $path               = asset('assets/logo/no_Image.jpg');
             } else {
                 $url                = Storage::url($imagePath);
                 $path               = asset($url);
@@ -386,7 +386,7 @@ function getProductApiData($product_data)
             $imagePath              = $productInfo->base_image;
 
             if (!Storage::exists($imagePath)) {
-                $path               = asset('assets/logo/no-img-1.jpg');
+                $path               = asset('assets/logo/no_Image.jpg');
             } else {
                 $url                = Storage::url($imagePath);
                 $path               = asset($url);
@@ -406,7 +406,7 @@ function getProductApiData($product_data)
             $temp['description'] = $items->description;
 
             if (!Storage::exists($items->desc_image)) {
-                $path               = asset('assets/logo/no-img-1.jpg');
+                $path               = asset('assets/logo/no_Image.jpg');
             } else {
                 $url                = Storage::url($items->desc_image);
                 $path               = asset($url);
@@ -426,7 +426,7 @@ function getProductApiData($product_data)
             $temp['description'] = $items->description;
 
             if (!Storage::exists($items->icon)) {
-                $path               = asset('assets/logo/no-img-1.jpg');
+                $path               = asset('assets/logo/no_Image.jpg');
             } else {
                 $url                = Storage::url($items->icon);
                 $path               = asset($url);
