@@ -14,7 +14,8 @@ class AddStatusToReviews extends Migration
     public function up()
     {
         Schema::table('reviews', function (Blueprint $table) {
-            $table->enum('status', ['approved', 'pending']);
+            $table->integer('star')->change();
+            $table->enum('status', ['approved', 'pending'])->after('comments')->default('pending');
         });
     }
 
@@ -26,7 +27,7 @@ class AddStatusToReviews extends Migration
     public function down()
     {
         Schema::table('reviews', function (Blueprint $table) {
-            $table->dropColumn('status');
+            $table->dropColumn('status'); 
         });
     }
 }

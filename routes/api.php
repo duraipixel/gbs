@@ -69,7 +69,11 @@ Route::middleware(['client'])->group(function(){
     Route::post('/set/default/address', [App\Http\Controllers\Api\CustomerController::class, 'setDefaultAddress']);
     Route::post('/delete/customer/address', [App\Http\Controllers\Api\CustomerController::class, 'deleteCustomerAddress']);
 
-
+    /**
+     * Customer Reviews
+     */
+    Route::post('/add/customer/reviews', [App\Http\Controllers\Api\CustomerReviewController::class, 'addReviews']);
+    Route::post('/list/customer/reviews', [App\Http\Controllers\Api\CustomerReviewController::class, 'listReviews']);
     
     Route::post('/proceed/checkout', [App\Http\Controllers\Api\CheckoutController::class, 'proceedCheckout']);
     Route::post('/verify/payment/signature', [App\Http\Controllers\Api\CheckoutController::class, 'verifySignature']);
