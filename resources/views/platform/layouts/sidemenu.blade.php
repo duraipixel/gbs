@@ -367,8 +367,8 @@
                     </div>
                 </div>
             @endif
-            @if (access()->hasAccess(['store-locator', 'service-center']))
-            <div data-kt-menu-trigger="click" class="menu-item menu-accordion mb-1 @if (request()->routeIs(['store-locator', 'service-center'])) hover show @endif">
+            @if (access()->hasAccess([ 'store-locator']))
+            <div data-kt-menu-trigger="click" class="menu-item menu-accordion mb-1 @if (request()->routeIs(['store-locator'])) hover show @endif">
                 <span class="menu-link">
                     <span class="menu-icon">
                         <span class="svg-icon svg-icon-2">
@@ -388,15 +388,41 @@
                             <span class="menu-title">Stores</span>
                         </a>
                     </div>
+                   
+                </div>
+            </div>
+            @endif
+            @if (access()->hasAccess(['service-center','service-offer']))
+            <div data-kt-menu-trigger="click" class="menu-item menu-accordion mb-1 @if (request()->routeIs([ 'service-center','service-offer'])) hover show @endif">
+                <span class="menu-link">
+                    <span class="menu-icon">
+                        <span class="svg-icon svg-icon-2">
+                            <i class="bi-chat-left fs-3"></i>
+                        </span>
+                    </span>
+                    <span class="menu-title"> Service Center </span>
+                    <span class="menu-arrow"></span>
+                </span>
+                <div class="menu-sub menu-sub-accordion">
                     <div class="menu-item">
                         <a class="menu-link @if (request()->routeIs(['service-center'])) active @endif"
                             href="{{ route('service-center') }}">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
-                            <span class="menu-title">Services</span>
+                            <span class="menu-title">Services center</span>
                         </a>
                     </div>
+                    <div class="menu-item">
+                        <a class="menu-link @if (request()->routeIs(['service-offer'])) active @endif"
+                            href="{{ route('service-offer') }}">
+                            <span class="menu-bullet">
+                                <span class="bullet bullet-dot"></span>
+                            </span>
+                            <span class="menu-title">Services Offer</span>
+                        </a>
+                    </div>
+                    
                 </div>
             </div>
             @endif

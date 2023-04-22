@@ -123,7 +123,7 @@
                         <div id="row" class="row p-4">
                             
                             <div class="col-md-8">
-                                <input type="text" name="email[]" class="form-control" value="{{ $item->email ?? '' }}"  placeholder="Email">
+                                <input type="text" name="email[]" class="form-control" value="{{ $item->email ?? '' }}"  placeholder="Email" >
                             </div>
                             <div class="col-sm-2">
                                 <div class="input-group mt-1">
@@ -302,7 +302,7 @@
             newRowAdd =
                 '<div id="row" class="row p-4">'+
                 '<div class="col-md-8">'+
-                    '<input type="text" name="contact[]" class="form-control numberonly" placeholder="Contact" required>'+
+                    '<input type="number" name="contact[]" class="form-control numberonly" placeholder="Contact" required>'+
                 '</div>'+
                 '<div class="col-md-4">'+
                     '<div class="input-group mt-1">'+

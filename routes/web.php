@@ -67,6 +67,7 @@ Route::middleware(['auth'])->group(function(){
         'banner' => App\Http\Controllers\BannerController::class,
         'newsletter' => App\Http\Controllers\NewsletterController::class,
         'service-center' => App\Http\Controllers\ServiceCenterController::class,
+        'service-offer' => App\Http\Controllers\ServiceOfferController::class,
         'store-locator' => App\Http\Controllers\StoreLocatorController::class,
         'combo' => App\Http\Controllers\Product\ComboProductController::class,
         'quick-link'    => App\Http\Controllers\Master\QuickLinkController::class,
@@ -74,7 +75,6 @@ Route::middleware(['auth'])->group(function(){
         'homepage-setting-field'    => App\Http\Controllers\HomePageSetting\HomepageSettingFieldController::class,
         'homepage-setting'    => App\Http\Controllers\HomePageSetting\HomepageSettingController::class,
         'warranty'    => App\Http\Controllers\WarrantyController::class,
-        
     );
    
     foreach ($routeArray as $key => $value) {

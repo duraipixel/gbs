@@ -377,6 +377,15 @@
                    'pdf': "{{ route('warranty.export.pdf') }}",
                 }
             },
+            'service-offer': {
+               'delete': "{{ route('service-offer.delete') }}",
+               'status': "{{ route('service-offer.status') }}",
+               'add': "{{ route('service-offer.add.edit') }}",
+               'export': {
+                   'excel': "{{ route('service-offer.export.excel') }}",
+                   'pdf': "{{ route('service-offer.export.pdf') }}",
+                }
+            },
             
             
             
