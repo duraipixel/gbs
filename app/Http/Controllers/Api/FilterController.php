@@ -77,7 +77,8 @@ class FilterController extends Controller
     public function getProducts(Request $request)
     {
 
-        $page                   = $request->take ?? 0;
+        $page                   = $request->page ?? 0;
+        $take                   = $request->take ?? 0;
         $filter_category        = $request->category;
         $filter_sub_category    = $request->scategory;
         $filter_availability    = $request->availability;
@@ -121,7 +122,8 @@ class FilterController extends Controller
 
         $from   = 1 + ($page * $limit);        
 
-        $take_limit = $limit + ($page * $limit);
+        // $take_limit = $limit + ($page * $limit);
+        $take_limit = $take ?? 1;
         $total = Product::select('products.*')->where('products.status', 'published')
             ->join('product_categories', 'product_categories.id', '=', 'products.category_id')
             ->leftJoin('product_categories as parent', 'parent.id', '=', 'product_categories.parent_id')

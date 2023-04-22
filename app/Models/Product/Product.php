@@ -89,6 +89,11 @@ class Product extends Model
         return $this->hasMany(ProductWithAttributeSet::class, 'product_id', 'id')->select('id', 'title', 'attribute_values', 'product_attribute_set_id','is_overview');
     }
 
+    public function productOverviewAttributes()
+    {
+        return $this->hasMany(ProductWithAttributeSet::class, 'product_id', 'id')->where('is_overview', 'yes')->select('id', 'title', 'attribute_values', 'product_attribute_set_id','is_overview');
+    }
+
     public function productMeta()
     {
         return $this->hasOne(ProductMetaTag::class, 'product_id', 'id')->select('id', 'meta_title', 'meta_keyword', 'meta_description');

@@ -272,12 +272,12 @@ if (!function_exists('getSaleProductPrices')) {
 
 function getProductApiData($product_data, $customer_id = '')
 {
-   
+//    dd( $product_data->productCategory->name );
     $category               = $product_data->productCategory;
     $pro                    = [];
     $pro['id']              = $product_data->id;
     $pro['product_name']    = $product_data->product_name;
-    $pro['category_name']   = $category->name ?? '';
+    $pro['category_name']   = $product_data->productCategory->name ?? '';
     $pro['brand_name']      = $product_data->productBrand->brand_name ?? '';
     $pro['hsn_code']        = $product_data->hsn_code;
     $pro['product_url']     = $product_data->product_url;
@@ -330,6 +330,7 @@ function getProductApiData($product_data, $customer_id = '')
     }
 
     $pro['attributes']              = $product_data->productAttributes;
+    $pro['overview']                = $product_data->productOverviewAttributes;
     $related_arr                    = [];
     if (isset($product_data->productRelated) && !empty($product_data->productRelated)) {
         foreach ($product_data->productRelated as $related) {
