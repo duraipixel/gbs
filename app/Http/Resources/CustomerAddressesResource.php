@@ -10,8 +10,8 @@ class CustomerAddressesResource extends JsonResource
     public function toArray($request)
     {
         $response['customer_address_id'] = $this->id;
-        $response['address_type_id'] = $this->subCategory->name;
-        $response['address_type'] = $this->address_type_id;
+        $response['address_type'] = $this->subCategory->name;
+        $response['address_type_id'] = $this->address_type_id;
         $response['name'] = $this->name;
         $response['email'] = $this->email;
         $response['mobile_no'] = $this->mobile_no;
