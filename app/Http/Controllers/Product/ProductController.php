@@ -324,8 +324,7 @@ class ProductController extends Controller
                 $productInfo->base_image    = $fileNameThumb;
                 $productInfo->update();
 
-            }
-            
+            }            
             // ProductDiscount::where('product_id', $product_id )->delete();
             // if( isset( $request->discount_option ) && $request->discount_option != 1 ) {
             //     $disIns['product_id'] = $product_id;
@@ -334,7 +333,6 @@ class ProductController extends Controller
             //     $disIns['amount'] = $request->dicsounted_price ?? 0; //this only for fixed amount
             //     ProductDiscount::create($disIns);
             // }
-
             $request->session()->put('image_product_id', $product_id);
             
             //////////////////
