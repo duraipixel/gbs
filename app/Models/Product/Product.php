@@ -86,12 +86,12 @@ class Product extends Model
 
     public function productAttributes()
     {
-        return $this->hasMany(ProductWithAttributeSet::class, 'product_id', 'id');
+        return $this->hasMany(ProductWithAttributeSet::class, 'product_id', 'id')->select('id', 'title', 'attribute_values', 'product_attribute_set_id');
     }
 
     public function productMeta()
     {
-        return $this->hasOne(ProductMetaTag::class, 'product_id', 'id');
+        return $this->hasOne(ProductMetaTag::class, 'product_id', 'id')->select('id', 'meta_title', 'meta_keyword', 'meta_description');
     }
 
     public function userInfo()
