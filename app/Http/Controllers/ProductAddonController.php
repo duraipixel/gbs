@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\File;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Excel;
+use Image;
 
 class ProductAddonController extends Controller
 {
@@ -62,6 +63,7 @@ class ProductAddonController extends Controller
         $breadCrum              = array('Addons');
         return view('platform.product_addon.index', compact('title', 'breadCrum'));
     }
+
     public function modalAddEdit(Request $request)
     {
         $id                 = $request->id;
@@ -78,6 +80,7 @@ class ProductAddonController extends Controller
 
         return view('platform.product_addon.add_edit_modal', compact('info', 'modal_title', 'from','product'));
     }
+
     public function saveForm(Request $request,$id = null)
     {
         $id             = $request->id;
@@ -106,13 +109,19 @@ class ProductAddonController extends Controller
             $info                       = ProductAddon::updateOrCreate(['id' => $id], $ins);
             if ($request->hasFile('icon')) {
                
-                $filename       = time() . '_' . $request->icon->getClientOriginalName();
-                $directory      = 'public/product_addon/'.$info->id;
-                $filename       = $directory.'/'.$filename;
-                Storage::deleteDirectory($directory);
-                Storage::disk('public')->put($filename, File::get($request->icon));
+                $imageName               = time() . '_' . $request->icon->getClientOriginalName();
                 
-                $info->icon = $filename;
+                $directory              = 'products/'.$request->product_id.'/addons';
+                Storage::deleteDirectory('public/'.$directory);
+                
+                if (!is_dir(storage_path("app/public/products/".$request->product_id."/addons"))) {
+                    mkdir(storage_path("app/public/products/".$request->product_id."/addons"), 0775, true);
+                }
+
+                $fileNameThumb              = 'public/products/'.$request->product_id.'/addons/' . time() . '-' . $imageName;
+                Image::make($request->icon)->save(storage_path('app/' . $fileNameThumb));
+                
+                $info->icon = $fileNameThumb;
                 $info->save();
             }
             if(!empty($request->label))
@@ -142,6 +151,7 @@ class ProductAddonController extends Controller
         }
         return response()->json(['error' => $error, 'message' => $message]);
     }
+    
     public function changeStatus(Request $request)
     {
         $id             = $request->id;

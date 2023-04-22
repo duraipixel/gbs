@@ -424,7 +424,7 @@ function getProductApiData($product_data)
             $temp = [];
             $temp['title'] = $items->title;
             $temp['description'] = $items->description;
-
+            
             if (!Storage::exists($items->icon)) {
                 $path               = asset('assets/logo/no_Image.jpg');
             } else {
