@@ -271,33 +271,34 @@ class ProductController extends Controller
             $ins[ 'added_by' ]              = auth()->user()->id;
             
             $productInfo                    = Product::updateOrCreate(['id' => $id], $ins);
-            $product_id=$productInfo->id;
-            for ($i = 0; $i < count($request->title); $i++) {                     
+            $product_id = $productInfo->id;
+            if( isset( $request->title ) && !empty( $request->title ) ) {
+                for ($i = 0; $i < count($request->title); $i++) {                     
               
-                $imageName                  = uniqid().$request->home_image[$i]->getClientOriginalName();
-                $directory                  = 'products/'.$product_id.'/description';
-                //Storage::deleteDirectory('public/'.$directory);
-
-                if (!is_dir(storage_path("app/public/products/".$product_id."/description"))) {
-                    mkdir(storage_path("app/public/products/".$product_id."/description"), 0775, true);
+                    $imageName                  = uniqid().$request->home_image[$i]->getClientOriginalName();
+                    $directory                  = 'products/'.$product_id.'/description';
+                    //Storage::deleteDirectory('public/'.$directory);
+    
+                    if (!is_dir(storage_path("app/public/products/".$product_id."/description"))) {
+                        mkdir(storage_path("app/public/products/".$product_id."/description"), 0775, true);
+                    }
+    
+                  
+                    $fileNameThumb              = 'public/products/'.$product_id.'/description/' . time() . '-' . $imageName;
+                    Image::make($request->home_image[$i])->save(storage_path('app/' . $fileNameThumb));
+                
+                    $answers[] = [
+                        'product_id' => $product_id,
+                        'title' => $request->title[$i], 
+                        'description' => $request->desc[$i],
+                        'desc_image' => $fileNameThumb,
+                        'order_by' =>$request->sorting_order[$i]
+                    ];
+                    //HomepageSettingItems::updateOrCreate(['homepage_settings_id' => $id], $answers);              
                 }
-
-              
-                $fileNameThumb              = 'public/products/'.$product_id.'/description/' . time() . '-' . $imageName;
-                Image::make($request->home_image[$i])->save(storage_path('app/' . $fileNameThumb));
-               
-
+                ProductDescription::insert($answers);
+            }
             
-            $answers[] = [
-                'product_id' => $product_id,
-                'title' => $request->title[$i], 
-                'description' => $request->desc[$i],
-                'desc_image' => $fileNameThumb,
-                'order_by' =>$request->sorting_order[$i]
-            ];
-            //HomepageSettingItems::updateOrCreate(['homepage_settings_id' => $id], $answers);              
-        }
-        ProductDescription::insert($answers);
             if(!empty($id))
             {
                 $message                    = "Thank you! You've updated Products";

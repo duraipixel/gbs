@@ -28,17 +28,17 @@ class CustomerAddress extends Model
         'is_default',
     ];
     
-    public function country()
+    public function countries()
     {
-        return $this->hasOne(Country::class, 'id', 'country_id');
+        return $this->hasOne(Country::class, 'id', 'countryid');
     }
-    public function state()
+    public function states()
     {
-        return $this->hasOne(State::class, 'id', 'state_id');
+        return $this->hasOne(State::class, 'id', 'stateid');
     }
     public function city()
     {
-        return $this->hasOne(City::class, 'id', 'city_id');
+        return $this->hasOne(City::class, 'id', 'cityid');
     }
     public function pincode()
     {

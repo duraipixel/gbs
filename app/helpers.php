@@ -280,7 +280,6 @@ function getProductApiData($product_data)
     $pro['hsn_code']        = $product_data->hsn_code;
     $pro['product_url']     = $product_data->product_url;
     $pro['sku']             = $product_data->sku;
-    $pro['has_video_shopping'] = $product_data->has_video_shopping;
     $pro['stock_status']    = $product_data->stock_status;
     $pro['is_featured']     = $product_data->is_featured;
     $pro['is_best_selling'] = $product_data->is_best_selling;
@@ -326,7 +325,6 @@ function getProductApiData($product_data)
 
             $productInfo            = Product::find($related->to_product_id);
             $category               = $productInfo->productCategory;
-            $salePrices1            = getProductPrice($productInfo);
 
             $tmp2                    = [];
             $tmp2['id']              = $productInfo->id;
@@ -336,13 +334,14 @@ function getProductApiData($product_data)
             $tmp2['hsn_code']        = $productInfo->hsn_code;
             $tmp2['product_url']     = $productInfo->product_url;
             $tmp2['sku']             = $productInfo->sku;
-            $tmp2['has_video_shopping'] = $productInfo->has_video_shopping;
             $tmp2['stock_status']    = $productInfo->stock_status;
             $tmp2['is_featured']     = $productInfo->is_featured;
             $tmp2['is_best_selling'] = $productInfo->is_best_selling;
             $tmp2['is_new']          = $productInfo->is_new;
-            $tmp2['sale_prices']     = $salePrices1;
-            $tmp2['mrp_price']       = $productInfo->price;
+            $tmp2['price']           = $product_data->mrp;
+            $tmp2['strike_price']    = $product_data->strike_price;
+            $tmp2['save_price']      = $product_data->strike_price - $product_data->mrp;
+            $tmp2['discount_percentage'] = abs($product_data->discount_percentage);
             $tmp2['image']           = $productInfo->base_image;
 
             $imagePath              = $productInfo->base_image;
@@ -358,6 +357,92 @@ function getProductApiData($product_data)
             $related_arr[]          = $tmp2;
         }
     }
+
+    $frequently_purchased           = [];
+    if (isset($product_data->productCrossSale) && !empty($product_data->productCrossSale)) {
+        foreach ($product_data->productCrossSale as $related) {
+
+            $productInfo            = Product::find($related->to_product_id);
+            $category               = $productInfo->productCategory;
+
+            $tmp2                    = [];
+            $tmp2['id']              = $productInfo->id;
+            $tmp2['product_name']    = $productInfo->product_name;
+            $tmp2['category_name']   = $category->name ?? '';
+            $tmp2['brand_name']      = $productInfo->productBrand->brand_name ?? '';
+            $tmp2['hsn_code']        = $productInfo->hsn_code;
+            $tmp2['product_url']     = $productInfo->product_url;
+            $tmp2['sku']             = $productInfo->sku;
+            $tmp2['stock_status']    = $productInfo->stock_status;
+            $tmp2['is_featured']     = $productInfo->is_featured;
+            $tmp2['is_best_selling'] = $productInfo->is_best_selling;
+            $tmp2['is_new']          = $productInfo->is_new;
+            $tmp2['price']           = $product_data->mrp;
+            $tmp2['strike_price']    = $product_data->strike_price;
+            $tmp2['save_price']      = $product_data->strike_price - $product_data->mrp;
+            $tmp2['discount_percentage'] = abs($product_data->discount_percentage);
+            $tmp2['image']           = $productInfo->base_image;
+
+            $imagePath              = $productInfo->base_image;
+
+            if (!Storage::exists($imagePath)) {
+                $path               = asset('assets/logo/no-img-1.jpg');
+            } else {
+                $url                = Storage::url($imagePath);
+                $path               = asset($url);
+            }
+
+            $tmp2['image']           = $path;
+            $frequently_purchased[]  = $tmp2;
+        }
+    }
+
+    $description_arr = [];
+
+    if (isset($product_data->productDescription) && !empty($product_data->productDescription)) {
+        foreach ($product_data->productDescription as $items) {
+            $temp = [];
+            $temp['title'] = $items->title;
+            $temp['description'] = $items->description;
+
+            if (!Storage::exists($items->desc_image)) {
+                $path               = asset('assets/logo/no-img-1.jpg');
+            } else {
+                $url                = Storage::url($items->desc_image);
+                $path               = asset($url);
+            }
+
+            $temp['desc_image'] = $path;
+
+            $description_arr[] = $temp;
+        }
+    }
+
+    $addon_arr = [];
+    if (isset($product_data->productAddons) && !empty($product_data->productAddons)) {
+        foreach ($product_data->productAddons as $items) {
+            $temp = [];
+            $temp['title'] = $items->title;
+            $temp['description'] = $items->description;
+
+            if (!Storage::exists($items->icon)) {
+                $path               = asset('assets/logo/no-img-1.jpg');
+            } else {
+                $url                = Storage::url($items->icon);
+                $path               = asset($url);
+            }
+
+            $temp['icon'] = $path;
+
+            $temp['items'] = $items->items;
+
+            $addon_arr[] = $temp;
+        }
+    }
+
+    $pro['addons'] = $addon_arr;
+    $pro['description_products'] = $description_arr;
+    $pro['frequently_purchased'] = $frequently_purchased;
     $pro['related_products']    = $related_arr;
     $pro['meta'] = $product_data->productMeta;
 

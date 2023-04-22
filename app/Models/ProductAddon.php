@@ -21,7 +21,7 @@ class ProductAddon extends Model
 
     public function items()
     {
-        return $this->hasMany(ProductAddonItem::class,'product_addon_id','id')->where('status','published');
+        return $this->hasMany(ProductAddonItem::class,'product_addon_id','id')->select('id', 'label', 'amount')->where('status','published');
     }
 
 }

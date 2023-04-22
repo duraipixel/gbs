@@ -354,7 +354,7 @@ class CustomerController extends Controller
 
     public function addressList($customer_id)
     {
-        $address_details = CustomerAddress::where('customer_id', $customer_id)->orderBy('is_default', 'desc')->get();
+        $address_details = CustomerAddress::with(['countries', 'states'])->where('customer_id', $customer_id)->orderBy('is_default', 'desc')->get();
         return CustomerAddressesResource::collection($address_details);
     }
 

@@ -91,17 +91,15 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            {{-- <div class="col-md-4">
                                 <div class="mb-7">
-                                    <label class="fw-bold fs-6 mb-2"> Use in Product listing </label>
-                                    <div
-                                        class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
-                                        <input class="form-check-input" type="checkbox"
-                                            name="is_use_in_product_listing" value="1"
+                                    <label class="fw-bold fs-6 mb-2"> Use in Product Overview </label>
+                                    <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
+                                        <input class="form-check-input" type="checkbox" name="is_use_in_product_listing" value="1"
                                             @if (isset($info->is_use_in_product_listing) && $info->is_use_in_product_listing == '1') checked @endif />
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
 
                         <div class="fv-row mb-7">

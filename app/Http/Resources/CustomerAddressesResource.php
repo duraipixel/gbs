@@ -18,10 +18,10 @@ class CustomerAddressesResource extends JsonResource
         $response['address_line2'] = $this->address_line2;
         $response['landmark'] = $this->landmark;
         $response['countryid'] = $this->countryid;
-        $response['country'] = $this->country;
+        $response['country'] = $this->countries->name;
         $response['post_code'] = $this->post_code;
         $response['stateid'] = $this->stateid;
-        $response['state'] = $this->state;
+        $response['state'] = $this->states->state_name;
         $response['cityid'] = $this->cityid;
         $response['city'] = $this->city;
         $response['is_default'] = $this->is_default;

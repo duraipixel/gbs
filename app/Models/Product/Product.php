@@ -4,6 +4,7 @@ namespace App\Models\Product;
 
 use App\Models\Category\MainCategory;
 use App\Models\Master\Brands;
+use App\Models\ProductAddon;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -121,6 +122,16 @@ class Product extends Model
     public function productVideoLinks()
     {
         return $this->hasMany(ProductLink::class, 'product_id', 'id')->where('url_type', 'video_link');
+    }
+
+    public function productDescription()
+    {
+        return $this->hasMany(ProductDescription::class, 'product_id', 'id')->orderBy('order_by', 'asc');
+    }
+
+    public function productAddons()
+    {
+        return $this->hasMany(ProductAddon::class, 'product_id', 'id')->orderBy('order_by', 'asc');
     }
 
 
