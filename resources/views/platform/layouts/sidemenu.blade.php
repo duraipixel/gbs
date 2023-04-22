@@ -367,8 +367,8 @@
                     </div>
                 </div>
             @endif
-            @if (access()->hasAccess([ 'store-locator']))
-            <div data-kt-menu-trigger="click" class="menu-item menu-accordion mb-1 @if (request()->routeIs(['store-locator'])) hover show @endif">
+            @if (access()->hasAccess([ 'store-locator','store-offer']))
+            <div data-kt-menu-trigger="click" class="menu-item menu-accordion mb-1 @if (request()->routeIs(['store-locator','store-offer'])) hover show @endif">
                 <span class="menu-link">
                     <span class="menu-icon">
                         <span class="svg-icon svg-icon-2">
@@ -389,8 +389,8 @@
                         </a>
                     </div>
                     <div class="menu-item">
-                        <a class="menu-link @if (request()->routeIs(['service-offer'])) active @endif"
-                            href="{{ route('service-offer') }}">
+                        <a class="menu-link @if (request()->routeIs(['store-offer'])) active @endif"
+                            href="{{ route('store-offer') }}">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>

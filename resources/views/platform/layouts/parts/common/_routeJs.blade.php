@@ -386,6 +386,15 @@
                    'pdf': "{{ route('service-offer.export.pdf') }}",
                 }
             },
+            'store-offer': {
+               'delete': "{{ route('store-offer.delete') }}",
+               'status': "{{ route('store-offer.status') }}",
+               'add': "{{ route('store-offer.add.edit') }}",
+               'export': {
+                   'excel': "{{ route('store-offer.export.excel') }}",
+                   'pdf': "{{ route('store-offer.export.pdf') }}",
+                }
+            },
             
             
             
