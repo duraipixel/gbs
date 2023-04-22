@@ -42,8 +42,6 @@ class CustomerReviewController extends Controller
 
     public function listReviews(Request $request)
     {
-        $customer_id = $request->customer_id;
-        $product_id = $request->product_id;
         $take = $request->take ?? 4;
         
         $total = Review::where('product_id', $request->product_id)
