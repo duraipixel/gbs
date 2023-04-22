@@ -13,6 +13,7 @@ use App\Models\Master\Customer;
 use App\Models\Master\CustomerAddress;
 use App\Models\Master\EmailTemplate;
 use App\Models\Master\State;
+use App\Models\Product\Product;
 use App\Models\Wishlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -448,18 +449,20 @@ class CustomerController extends Controller
     public function getWishlist(Request $request)
     {
         $customer_id = $request->customer_id;
-        $product_id = $request->product_id;
 
         $wishlist = Wishlist::where('status', 1)
-                                ->where(['customer_id' => $customer_id, 'product_id' => $product_id])->get();
+                                ->where(['customer_id' => $customer_id])->get();
         $wishlist_arr = []; 
         if( isset( $wishlist ) && !empty( $wishlist ) ) {
             foreach ($wishlist as $items ) {
-                $tmp = [];
                 $product_data = Product::find($items->product_id);
+                $tmp['product'] = getProductApiData($product_data, $customer_id);
                 $tmp['date'] = date('d M Y', strtotime($items->created_at));
+                $wishlist_arr[] = $tmp;
             }
         }
+
+        return $wishlist_arr;
     }
 
 }
