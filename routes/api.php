@@ -56,7 +56,9 @@ Route::post('/add/cart', [App\Http\Controllers\Api\CartController::class, 'addTo
 Route::post('/get/cart', [App\Http\Controllers\Api\CartController::class, 'getCarts']);
 Route::post('/update/cart', [App\Http\Controllers\Api\CartController::class, 'updateCart']);
 Route::post('/delete/cart', [App\Http\Controllers\Api\CartController::class, 'deleteCart']);    
-Route::post('/clear/cart', [App\Http\Controllers\Api\CartController::class, 'clearCart']);  
+Route::post('/clear/cart', [App\Http\Controllers\Api\CartController::class, 'clearCart']); 
+
+Route::post('/list/customer/reviews', [App\Http\Controllers\Api\CustomerReviewController::class, 'listReviews']);
 
 Route::middleware(['client'])->group(function(){
     //get profile data
@@ -73,7 +75,7 @@ Route::middleware(['client'])->group(function(){
      * Customer Reviews
      */
     Route::post('/add/customer/reviews', [App\Http\Controllers\Api\CustomerReviewController::class, 'addReviews']);
-    Route::post('/list/customer/reviews', [App\Http\Controllers\Api\CustomerReviewController::class, 'listReviews']);
+    
     /**
      *  Add or Remove Whishlist
      */
