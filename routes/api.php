@@ -65,7 +65,9 @@ Route::middleware(['client'])->group(function(){
     Route::post('/get/profile', [App\Http\Controllers\Api\CustomerController::class, 'getProfileDetails']);
     Route::post('/update/profile', [App\Http\Controllers\Api\CustomerController::class, 'updateProfile']);
     Route::post('/change/password', [App\Http\Controllers\Api\CustomerController::class, 'changePassword']);
-
+    /**
+     * Customer Addresses
+     */
     Route::post('/get/addresses', [App\Http\Controllers\Api\CustomerController::class, 'getCustomerAddressDetails']);
     Route::post('/save/customer/address', [App\Http\Controllers\Api\CustomerController::class, 'addUpdateCustomerAddress']);
     Route::post('/set/default/address', [App\Http\Controllers\Api\CustomerController::class, 'setDefaultAddress']);
@@ -94,7 +96,6 @@ Route::middleware(['client'])->group(function(){
     Route::post('/cancel/request/orders', [App\Http\Controllers\Api\OrderController::class, 'requestCancelOrder']);
     Route::post('/get/orderByno', [App\Http\Controllers\Api\OrderController::class, 'getOrderByOrderNo']);
     Route::post('/get/recent/view', [App\Http\Controllers\Api\CollectionController::class, 'getRecentViews']);
-    Route::post('/wishlist', [App\Http\Controllers\Api\WishlistController::class, 'addWishlist']);
 
 });
 
