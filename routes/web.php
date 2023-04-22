@@ -178,6 +178,16 @@ Route::middleware(['auth'])->group(function(){
         Route::post('/view', [App\Http\Controllers\PaymentController::class, 'paymentView'])->name('payment.view');
         Route::post('/export/excel', [App\Http\Controllers\PaymentController::class, 'export'])->name('payment.export.excel')->middleware(['checkAccess:export']);
     });
+
+    Route::prefix('review')->group(function(){
+        Route::get('/', [App\Http\Controllers\ReviewController::class, 'index'])->name('review');
+        Route::post('/view', [App\Http\Controllers\ReviewController::class, 'paymentView'])->name('review.view');
+        Route::post('/status', [App\Http\Controllers\ReviewController::class, 'changeStatus'])->name('review.status')->middleware(['checkAccess:status']);
+        Route::post('/delete', [App\Http\Controllers\ReviewController::class, 'delete'])->name('review.delete')->middleware(['checkAccess:delete']);
+        Route::post('/export/excel', [App\Http\Controllers\ReviewController::class, 'export'])->name('review.export.excel')->middleware(['checkAccess:export']);
+    
+    });
+
    
 });
 

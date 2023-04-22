@@ -35,6 +35,9 @@ return [
                     'homepage-setting-field',
                     'homepage-setting',
                     'warranty',
+                    'wishlist',
+                    'review',
+                    
 
                 ),
     

@@ -395,6 +395,13 @@
                    'pdf': "{{ route('store-offer.export.pdf') }}",
                 }
             },
+            'review': {
+               'delete': "{{ route('review.delete') }}",
+               'status': "{{ route('review.status') }}",
+               'export': {
+                   'excel': "{{ route('review.export.excel') }}",
+                }
+            },
             
             
             
