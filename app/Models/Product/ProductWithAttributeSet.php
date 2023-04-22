@@ -14,6 +14,7 @@ class ProductWithAttributeSet extends Model
         'title',
         'tag_line',
         'attribute_values',
+        'is_overview',
         'order_by',
         'status',
     ];

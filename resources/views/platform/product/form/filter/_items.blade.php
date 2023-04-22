@@ -19,11 +19,9 @@
             <!--begin::Input-->
             <input type="text" class="form-control mw-100 w-250px required" name="filter_variation_title[]" value="{{ $attr->title ?? ''}}" placeholder="Title" required />
             <input type="text" class="form-control mw-100 w-300px required" name="filter_variation_value[]" value="{{ $attr->attribute_values ?? ''}}" placeholder="Values" required />
-            <div>
-                <input type="checkbox" name="is_overview">
-                <label for=""> Is Overview </label>
-            </div>
+            
             <!--end::Input-->
+            <input type="checkbox" name="is_overview_{{ $loop->iteration }}"  value="1"  @if((isset( $attr->is_overview) && $attr->is_overview == 'yes' )) checked @endif >
             <button type="button" data-repeater-delete="" class="btn btn-sm btn-icon btn-light-danger removeRow"  >
                 <!--begin::Svg Icon | path: icons/duotune/arrows/arr088.svg-->
                 <span class="svg-icon svg-icon-2">
@@ -58,6 +56,7 @@
     <!--begin::Input-->
     <input type="text" class="form-control mw-100 w-250px required" name="filter_variation_title[]" placeholder="Title" required />
     <input type="text" class="form-control mw-100 w-300px required" name="filter_variation_value[]" placeholder="Values" required />
+    <input type="checkbox" name="is_overview_1"  value="1"  @if((isset( $info->is_overview) && $info->is_overview == 'yes' ) ) checked @endif >
     <!--end::Input-->
     <button type="button" data-repeater-delete="" class="btn btn-sm btn-icon btn-light-danger removeRow" onclick="return removeRow(this)"  >
         <!--begin::Svg Icon | path: icons/duotune/arrows/arr088.svg-->

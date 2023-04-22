@@ -332,14 +332,12 @@ class ProductController extends Controller
             //     ProductDiscount::create($disIns);
             // }
             $request->session()->put('image_product_id', $product_id);
-            
-            //////////////////
             if( isset( $request->filter_variation ) && !empty( $request->filter_variation ) )  {
                 ProductMapAttribute::where('product_id', $product_id)->delete();
 
                 $filter_variation = $request->filter_variation;
                 $filter_variation_value = $request->filter_variation_value;
-                $filter_variation_title = $request->filter_variation_title;
+                $filter_variation_title = $request->filter_variation_title;                 
                 ProductWithAttributeSet::where('product_id', $product_id)->delete();
 
                 for ($i=0; $i < count($request->filter_variation); $i++) { 
@@ -358,6 +356,13 @@ class ProductController extends Controller
                     $insAttr['product_attribute_set_id']    = $filter_variation[$i];
                     $insAttr['attribute_values']            = $filter_variation_value[$i];
                     $insAttr['title']                       = $filter_variation_title[$i];
+                    if(isset($_POST['is_overview_'.$i+1]) && !empty($_POST['is_overview_'.$i+1]) && $_POST['is_overview_'.$i+1] == "1")
+                    {
+                        $insAttr['is_overview']      = 'yes';
+                    } else {
+                        $insAttr['is_overview']      = 'no';
+                    }
+
                     $insAttr['product_id']                  = $product_id;
 
                     ProductWithAttributeSet::create($insAttr);
