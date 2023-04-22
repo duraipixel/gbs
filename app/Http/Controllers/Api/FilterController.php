@@ -77,7 +77,7 @@ class FilterController extends Controller
     public function getProducts(Request $request)
     {
 
-        $page                   = $request->page ?? 0;
+        $page                   = $request->take ?? 0;
         $filter_category        = $request->category;
         $filter_sub_category    = $request->scategory;
         $filter_availability    = $request->availability;

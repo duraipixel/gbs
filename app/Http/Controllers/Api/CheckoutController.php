@@ -51,7 +51,6 @@ class CheckoutController extends Controller
                 $product_id = $item['id'];
                 $product_info = Product::find($product_id);
                 if ($product_info->quantity < $item['quantity']) {
-
                     $errors[]     = $item['product_name'] . ' is out of stock, Product will be removed from cart.Please choose another';
                     $response['error'] = $errors;
                 }

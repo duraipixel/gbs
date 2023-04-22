@@ -29,7 +29,7 @@ Route::get('/get/discount/collections', [App\Http\Controllers\Api\CommonControll
 Route::get('/get/product/collections/{order_by?}', [App\Http\Controllers\Api\CollectionController::class, 'getProductCollections']);
 Route::get('/get/product/collections/byorder/{order_by}', [App\Http\Controllers\Api\CollectionController::class, 'getProductCollectionByOrder']);
 Route::get('/get/filter/static/sidemenus', [App\Http\Controllers\Api\FilterController::class, 'getFilterStaticSideMenu']);
-Route::get('/get/products', [App\Http\Controllers\Api\FilterController::class, 'getProducts']);
+Route::post('/get/products', [App\Http\Controllers\Api\FilterController::class, 'getProducts']);
 Route::post('/get/products/by/slug', [App\Http\Controllers\Api\FilterController::class, 'getProductBySlug']);
 Route::get('/get/states', [App\Http\Controllers\Api\CommonController::class, 'getSates']);
 Route::post('/get/meta', [App\Http\Controllers\Api\CommonController::class, 'getMetaInfo']);
@@ -84,9 +84,9 @@ Route::middleware(['client'])->group(function(){
     Route::post('/get/whishlist', [App\Http\Controllers\Api\CustomerController::class, 'getWishlist']);
 
     
+    Route::post('/get/shipping/charges', [App\Http\Controllers\Api\CartController::class, 'getShippingCharges']);
     Route::post('/proceed/checkout', [App\Http\Controllers\Api\CheckoutController::class, 'proceedCheckout']);
     Route::post('/verify/payment/signature', [App\Http\Controllers\Api\CheckoutController::class, 'verifySignature']);
-    Route::post('/get/shipping/charges', [App\Http\Controllers\Api\CartController::class, 'getShippingCharges']);
     
     Route::post('/set/recent', [App\Http\Controllers\Api\CommonController::class, 'setRecentView']);
     
