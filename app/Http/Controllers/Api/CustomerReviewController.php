@@ -48,7 +48,7 @@ class CustomerReviewController extends Controller
         
         $total = Review::where('customer_id', $customer_id)->where('product_id', $request->product_id)
                 ->count();
-        $data = Review::with(['customer'])->where('customer_id', $customer_id)->where('product_id', $request->product_id)
+        $data = Review::select('id', 'comments', 'star', 'created_at', 'customer_id', 'product_id')->with(['customer', 'product'])->where('customer_id', $customer_id)->where('product_id', $request->product_id)
                 ->skip(0)->take($take)
                 ->get();
 
