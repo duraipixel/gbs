@@ -76,7 +76,7 @@
                                     <div class="input-group-prepend">
                                         <button class="btn btn-danger btn-sm" id="DeleteRowPincode" type="button">
                                             <i class="bi bi-trash"></i>
-                                            Delete
+                                            
                                         </button>
                                     </div>
                                 </div>
@@ -103,7 +103,7 @@
                                     <div class="input-group-prepend">
                                         <button class="btn btn-danger btn-sm" id="DeleteRowContact" type="button">
                                             <i class="bi bi-trash"></i>
-                                            Delete
+                                            
                                         </button>
                                     </div>
                                 </div>
@@ -130,7 +130,7 @@
                                     <div class="input-group-prepend">
                                         <button class="btn btn-danger btn-sm" id="DeleteRowEmail" type="button">
                                             <i class="bi bi-trash"></i>
-                                            Delete
+                                            
                                         </button>
                                     </div>
                                 </div>
@@ -285,7 +285,7 @@
                         '<div class="input-group-prepend">'+
                             '<button class="btn btn-danger btn-sm" id="DeleteRowPincode" type="button">'+
                                 '<i class="bi bi-trash"></i>'+
-                                'Delete'+
+                               
                             '</button>'+
                         '</div>'+                        
                     '</div>'+
@@ -309,7 +309,7 @@
                         '<div class="input-group-prepend">'+
                             '<button class="btn btn-danger btn-sm" id="DeleteRowContact" type="button">'+
                                 '<i class="bi bi-trash"></i>'+
-                                'Delete'+
+                               
                             '</button>'+
                         '</div>'+                        
                     '</div>'+
@@ -334,7 +334,7 @@
                         '<div class="input-group-prepend">'+
                             '<button class="btn btn-danger btn-sm" id="DeleteRowEmail" type="button">'+
                                 '<i class="bi bi-trash"></i>'+
-                                'Delete'+
+                                
                             '</button>'+
                         '</div>'+                        
                     '</div>'+

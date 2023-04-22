@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Exports\StoreLocatorExport;
 use App\Models\Master\Brands;
 use App\Models\StoreLocator;
+use App\Models\StoreLocatorContact;
+use App\Models\StoreLocatorEmail;
 use App\Models\StoreLocatorMetaTag;
+use App\Models\StoreLocatorPincode;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -33,7 +36,6 @@ class StoreLocatorController extends Controller
 
             $status     = $request->get('status');
             $keywords   = $request->get('search')['value'];
-            // dd($keywords);
             $datatables         =  Datatables::of($data)
             ->filter(function($query) use ($status,$keywords){
                 return $query->when($status !='', function($q) use ($status){
@@ -123,19 +125,91 @@ class StoreLocatorController extends Controller
             } else {
                 $ins['status']          = 'unpublished';
             }
-            if(!empty($request->email))
-            {
-                $email = explode(',',$request->email);
-                $ins['email'] = json_encode($email);
-            }
-            if(!empty($request->contact_no))
-            {
-                $contact_no = explode(',',$request->contact_no);
-                $ins['contact_no'] = json_encode($contact_no);
-            }
+            
             $error                      = 0;
             $storeLocatorInfo               = StoreLocator::updateOrCreate(['id' => $id], $ins);
             $storeLocatorId                 = $storeLocatorInfo->id;
+
+
+
+            if(!empty($request->near_pincode) && count($request->near_pincode) > 0)
+            {
+                $dataItem = StoreLocatorPincode::where('store_locator_id',$storeLocatorId)->get();
+                foreach($dataItem as $key=>$val)
+                {
+                    $val->delete();
+                }
+               
+                foreach($request->near_pincode as $key=>$val)
+                {
+                    $ins['store_locator_id']       = $storeLocatorId;
+                    $ins['pincode']                 = $val;
+                    // $ins['order_by']                = '' ;
+                    $ins['status']                  = Auth::id();
+                    $data = StoreLocatorPincode::create($ins);
+                }
+                
+                
+            }
+            else{
+                $dataItem = StoreLocatorPincode::where('store_locator_id',$storeLocatorId)->get();
+                foreach($dataItem as $key=>$val)
+                {
+                    $val->delete();
+                }
+            }
+
+            if(!empty($request->contact) && count($request->contact) > 0)
+            {
+                $dataItem = StoreLocatorContact::where('store_locator_id',$storeLocatorId)->get();
+                foreach($dataItem as $key=>$val)
+                {
+                    $val->delete();
+                }
+               
+                foreach($request->contact as $key=>$val)
+                {
+                    $ins['store_locator_id']       = $storeLocatorId;
+                    $ins['contact']                 = $val;
+                    $ins['status']                  = Auth::id();
+                    $data = StoreLocatorContact::create($ins);
+                }
+                
+                
+            }
+            else{
+                $dataItem = StoreLocatorContact::where('store_locator_id',$storeLocatorId)->get();
+                foreach($dataItem as $key=>$val)
+                {
+                    $val->delete();
+                }
+            }
+            if(!empty($request->email) && count($request->email) > 0)
+            {
+                $dataItem = StoreLocatorEmail::where('store_locator_id',$storeLocatorId)->get();
+                foreach($dataItem as $key=>$val)
+                {
+                    $val->delete();
+                }
+               
+                foreach($request->email as $key=>$val)
+                {
+                    $ins['store_locator_id']       = $storeLocatorId;
+                    $ins['email']                   = $val;
+                    $ins['status']                  = Auth::id();
+                    $data = StoreLocatorEmail::create($ins);
+                }
+                
+            }
+            else{
+                $dataItem = StoreLocatorEmail::where('store_locator_id',$storeLocatorId)->get();
+                foreach($dataItem as $key=>$val)
+                {
+                    $val->delete();
+                }
+            }
+
+
             if ($request->hasFile('banner')) {
                
                 $imagName               = time() . '_' . $request->banner->getClientOriginalName();

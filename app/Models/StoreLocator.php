@@ -33,4 +33,16 @@ class StoreLocator extends Model
     {
         return $this->hasOne(StoreLocatorMetaTag::class, 'store_locator_id', 'id');
     }
+    public function nearPincode()
+    {
+        return $this->hasMany(StoreLocatorPincode::class,'store_locator_id','id');
+    }
+    public function contact()
+    {
+        return $this->hasMany(StoreLocatorContact::class,'store_locator_id','id');
+    }
+    public function serviceEmail()
+    {
+        return $this->hasMany(StoreLocatorEmail::class,'store_locator_id','id');
+    }
 }
