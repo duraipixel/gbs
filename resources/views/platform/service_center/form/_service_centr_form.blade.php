@@ -176,6 +176,20 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-sm-12">
+                    <div class="fv-row mb-7 mt-3">
+                        <label class="fw-bold fs-7 mb-2">Map Link</label>
+                        <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Map Link" name="map_link"
+                            id="map_link" cols="30" rows="2">{{ $info->map_link ?? '' }}</textarea>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="fv-row mb-7">
+                        <label class="fw-bold fs-7 mb-2">360 Deg image Link</label>
+                        <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="360 Image Link" name="image_360_link"
+                            id="image_360_link" cols="30" rows="2">{{ $info->image_360_link ?? '' }}</textarea>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

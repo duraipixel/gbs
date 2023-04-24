@@ -93,6 +93,7 @@ class ServiceCenterController extends Controller
         }
         return view('platform.service_center.form.add_edit_modal', compact('modal_title', 'breadCrum', 'info', 'serviceCenter'));
     }
+    
     public function saveForm(Request $request)
     {
             
@@ -137,6 +138,8 @@ class ServiceCenterController extends Controller
             $ins['address'] = $request->address;
             $ins['pincode'] = $request->pincode;
             $ins['description'] = $request->description;
+            $ins['map_link'] = $request->map_link;
+            $ins['image_360_link'] = $request->image_360_link;
             $ins['order_by'] = $request->order_by ?? 0;
 
             if( $request->status )

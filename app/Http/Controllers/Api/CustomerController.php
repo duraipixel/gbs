@@ -153,9 +153,9 @@ class CustomerController extends Controller
 
                 if( $guest_token ) {
 
-                    $cartData = Cart::where('token', $guest_token)->get();
+                    $cartData = Cart::where('guest_token', $guest_token)->get();
                     if( isset( $cartData ) && count($cartData) > 0 ) {
-                        Cart::where('token', $guest_token)->update(['token' => null, 'customer_id' => $checkCustomer->id ]);
+                        Cart::where('guest_token', $guest_token)->update(['guest_token' => null, 'customer_id' => $checkCustomer->id ]);
                     }
                     
                 }
