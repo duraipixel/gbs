@@ -50,6 +50,8 @@ class CartController extends Controller
             if ($type == 'delete') {
                 $checkCart->delete();
             } else {
+                $error = 0;
+                $message = 'Cart added successfull';
                 $product_quantity = $checkCart->quantity + $quantity;
                 if ($product_info->quantity <= $product_quantity) {
                     $product_quantity = $product_info->quantity;
