@@ -259,7 +259,7 @@ class CartController extends Controller
                 $imagePath              = $items->base_image;
 
                 if (!Storage::exists($imagePath)) {
-                    $path               = asset('assets/logo/product-noimg.jpg');
+                    $path               = asset('assets/logo/no_Image.jpg');
                 } else {
                     $url                = Storage::url($imagePath);
                     $path               = asset($url);
