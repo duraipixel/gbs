@@ -9,6 +9,8 @@ Route::get('/upload-image', [App\Http\Controllers\ImageUploadController::class, 
 Route::get('/test', [App\Http\Controllers\TestController::class, 'index']);
 Route::get('/test-mail', [App\Http\Controllers\TestController::class, 'sendMail']);
 Route::get('/test-invoice', [App\Http\Controllers\TestController::class, 'invoiceSample']);
+Route::get('/test-payment', [App\Http\Controllers\TestController::class, 'payment']);
+Route::post('/razor/payment', [App\Http\Controllers\TestController::class, 'verifySignature'])->name('razorpay.payment');
 Auth::routes();
 Route::middleware(['auth'])->group(function(){
     Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

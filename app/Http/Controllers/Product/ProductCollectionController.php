@@ -54,6 +54,11 @@ class ProductCollectionController extends Controller
                 ->addColumn('no_of_products', function ($row) {
                     return count($row->collectionProducts);
                 })
+                ->addColumn('can_map_discount', function ($row) {
+
+                    $discount_name = $row->can_map_discount ?? 'No';
+                    return ucfirst($discount_name);
+                })
                 ->addColumn('action', function ($row) {
                     $edit_btn = '<a href="javascript:void(0);" onclick="return  openForm(\'product-collection\',' . $row->id . ')" class="btn btn-icon btn-active-primary btn-light-primary mx-1 w-30px h-30px" > 
                                     <i class="fa fa-edit"></i>
@@ -62,7 +67,7 @@ class ProductCollectionController extends Controller
                                 <i class="fa fa-trash"></i></a>';
                     return $edit_btn . $del_btn;
                 })
-                ->rawColumns(['action', 'status', 'no_of_products']);
+                ->rawColumns(['action', 'status', 'no_of_products', 'can_map_discount']);
             return $datatables->make(true);
         }
         return view('platform.product_collection.index', compact('title','breadCrum'));

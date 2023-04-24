@@ -25,7 +25,8 @@ Route::get('/get/banners', [App\Http\Controllers\Api\CommonController::class, 'g
 Route::get('/get/brands', [App\Http\Controllers\Api\CommonController::class, 'getAllBrands']);
 Route::get('/get/brands/all/{slug}', [App\Http\Controllers\Api\CommonController::class, 'getBrandInfo']);
 Route::get('/get/brands/alphabets', [App\Http\Controllers\Api\CommonController::class, 'getBrandByAlphabets']);
-Route::get('/get/discount/collections', [App\Http\Controllers\Api\CommonController::class, 'getDiscountCollections']);
+Route::post('/get/discount/collections', [App\Http\Controllers\Api\CommonController::class, 'getDiscountCollections']);
+Route::post('/get/subcategory/collections', [App\Http\Controllers\Api\CommonController::class, 'getSubCategoryCollections']);
 Route::get('/get/product/collections/{order_by?}', [App\Http\Controllers\Api\CollectionController::class, 'getProductCollections']);
 Route::get('/get/product/collections/byorder/{order_by}', [App\Http\Controllers\Api\CollectionController::class, 'getProductCollectionByOrder']);
 Route::get('/get/filter/static/sidemenus', [App\Http\Controllers\Api\FilterController::class, 'getFilterStaticSideMenu']);

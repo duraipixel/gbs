@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use PDF;
 use Mail;
+use Razorpay\Api\Api;
+use Exception;
 
 class TestController extends Controller
 {
@@ -137,5 +139,121 @@ class TestController extends Controller
         // return $send_mail->render();
         Mail::to("durairaj.pixel@gmail.com")->send($send_mail);
         
+    }
+
+    public function payment()
+    {
+        
+        $keyId = env('RAZORPAY_KEY');
+        $keySecret = env('RAZORPAY_SECRET');
+
+        $order_id = 'ORDE890980';
+        $pay_amount = 1;
+
+        $shipping_address = array(
+                                'name' => 'durairaj',
+                                'email' => 'durairaj.pixel@gmail.com',
+                                'mobile_no' => '9551706025'
+                            );
+        try {
+
+            $api = new Api($keyId, $keySecret);
+            $orderData = [
+                'receipt'         => $order_id,
+                'amount'          => $pay_amount * 100,
+                'currency'        => "INR",
+                'payment_capture' => 1 // auto capture
+            ];
+
+            $razorpayOrder = $api->order->create($orderData);
+            $razorpayOrderId = $razorpayOrder['id'];
+            
+            $amount = $orderData['amount'];
+            $displayCurrency        = "INR";
+            $data = [
+                "key"               => $keyId,
+                "amount"            => round($amount),
+                "currency"          => "INR",
+                "name"              => 'GBS ',
+                "image"             => asset(gSetting('logo')),
+                "description"       => "Secure Payment",
+                "prefill"           => [
+                    "name"              => $shipping_address['name'],
+                    "email"             => $shipping_address['email'],
+                    "contact"           => $shipping_address['mobile_no'],
+                ],
+                "notes"             => [
+                    "address"           => "",
+                    "merchant_order_id" => $order_id,
+                ],
+                "theme"             => [
+                    "color"             => "#F37254"
+                ],
+                "order_id"          => $razorpayOrderId,
+            ];
+            
+            return view('test.razor_pay', ['data' => $data]);
+        } catch (Exception $e) {
+            dd($e);
+        }
+
+    }
+
+    public function verifySignature(Request $request)
+    {
+
+        $keyId = env('RAZORPAY_KEY');
+        $keySecret = env('RAZORPAY_SECRET');
+
+        $customer_id = $request->customer_id;
+        dd($request);
+        $razor_response = $request->razor_response;
+        $status = $request->status;
+
+        $success = true;
+        $error_message = "Payment Success";
+
+        if (isset($razor_response['razorpay_payment_id']) && empty($razor_response['razorpay_payment_id']) === false) {
+            $razorpay_order_id = $razor_response['razorpay_order_id'];
+            $razorpay_signature = $razor_response['razorpay_signature'];
+            // $razorpay_order_id = session()->get('razorpay_order_id');
+
+            $api = new Api($keyId, $keySecret);
+            $finalorder = $api->order->fetch($razorpay_order_id);
+
+            try {
+                $attributes = array(
+                    'razorpay_order_id' => $razorpay_order_id,
+                    'razorpay_payment_id' => $razor_response['razorpay_payment_id'],
+                    'razorpay_signature' => $razor_response['razorpay_signature']
+                );
+
+                $api->utility->verifyPaymentSignature($attributes);
+            } catch (SignatureVerificationError $e) {
+                $success = false;
+                $error_message = 'Razorpay Error : ' . $e->getMessage();
+            }
+
+           
+        } else {
+            $success = false;
+            $error_message = 'Payment Failed';
+
+            if (isset($request->razor_response['error']) && !empty($request->razor_response['error'])) {
+
+                $orderdata = $request->razor_response['error']['metadata'];
+                $razorpay_payment_id = $orderdata['payment_id'];
+                $razorpay_order_id = $orderdata['order_id'];
+                dump( $request );
+                $api = new Api($keyId, $keySecret);
+
+                $finalorder = $api->order->fetch($orderdata['order_id']);
+                dd( $finalorder );
+
+                
+            }
+        }
+
+        return  array('success' => $success, 'message' => $error_message);
     }
 }

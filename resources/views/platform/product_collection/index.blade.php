@@ -40,6 +40,7 @@
                             <tr class="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
                                 <th> Collection Name  </th>
                                 <th> No Of Products </th>
+                                <th> Is Discount Collection </th>
                                 <th> Show Homepage </th>
                                 <th> Status </th>
                                 <th style="width: 75px;"> Action </th>
@@ -76,6 +77,10 @@
                     name: 'no_of_products'
                 },
                 {
+                    data: 'can_map_discount',
+                    name: 'can_map_discount'
+                },
+                 {
                     data: 'show_home_page',
                     name: 'show_home_page'
                 },

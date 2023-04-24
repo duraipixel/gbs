@@ -224,8 +224,8 @@ class ServiceCenterController extends Controller
 
                 $serviceCenterInfo->banner_mb    = $bannerPath;
                 $serviceCenterInfo->save();
+                
             }
-
 
             $meta_title = $request->meta_title;
             $meta_keywords = $request->meta_keywords;

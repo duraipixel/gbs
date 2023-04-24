@@ -88,15 +88,15 @@
                                 @endforeach
                             @else
                                 <div class="col-sm-4">
-                                    <input type="text" name="near_pincode[]" class="form-control"
+                                    <input type="text" name="near_pincode[]" class="form-control mt-3"
                                         placeholder="Pincode">
                                 </div>
                                 <div class="col-sm-4">
-                                    <input type="text" name="near_pincode[]" class="form-control"
+                                    <input type="text" name="near_pincode[]" class="form-control mt-3"
                                         placeholder="Pincode">
                                 </div>
                                 <div class="col-sm-4">
-                                    <input type="text" name="near_pincode[]" class="form-control"
+                                    <input type="text" name="near_pincode[]" class="form-control mt-3"
                                         placeholder="Pincode">
                                 </div>
                             @endif
@@ -126,15 +126,15 @@
                                 @endforeach
                             @else
                                 <div class="col-sm-4">
-                                    <input type="text" name="contact[]" class="form-control"
+                                    <input type="text" name="contact[]" class="form-control mt-3"
                                         placeholder="Contact No">
                                 </div>
                                 <div class="col-sm-4">
-                                    <input type="text" name="contact[]" class="form-control"
+                                    <input type="text" name="contact[]" class="form-control mt-3"
                                         placeholder="Contact No">
                                 </div>
                                 <div class="col-sm-4">
-                                    <input type="text" name="contact[]" class="form-control"
+                                    <input type="text" name="contact[]" class="form-control mt-3"
                                         placeholder="Contact No">
                                 </div>
                             @endif
@@ -170,7 +170,7 @@
                                     <input type="text" name="email[]" class="form-control mt-3" placeholder="Email">
                                 </div>
                                 <div class="col-sm-4">
-                                    <input type="text" name="email[]" class="form-control mt-e" placeholder="Email">
+                                    <input type="text" name="email[]" class="form-control mt-3" placeholder="Email">
                                 </div>
                             @endif
                         </div>

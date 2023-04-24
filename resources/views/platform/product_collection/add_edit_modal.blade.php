@@ -122,7 +122,7 @@
                         <div class="row mb-7">
                             <div class="col-md-3">
                                 <div class="mb-7">
-                                    <label class="fw-bold fs-6 mb-2"> Can Map with Discount </label>
+                                    <label class="fw-bold fs-6 mb-2"> Show as Discount Collection </label>
                                     <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
                                         <input class="form-check-input" type="checkbox"  name="can_map_discount" value="yes"  @if(isset( $info->can_map_discount) && $info->can_map_discount == 'yes') checked @endif />
                                     </div>

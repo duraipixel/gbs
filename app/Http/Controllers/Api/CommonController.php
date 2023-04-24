@@ -235,4 +235,35 @@ class CommonController extends Controller
         }
         return $parent;
     }
+
+    public function getSubCategoryCollections(Request $request)
+    {
+        $category = Product::select('product_categories.*')->join('product_categories', 'product_categories.id', '=', 'products.category_id')
+                                ->where('product_categories.parent_id', '!=', 0)
+                                ->groupBy('products.category_id')
+                                ->get();
+        $response = [];
+        if( isset( $category ) && !empty( $category ) ) {
+            foreach ($category as $items) {
+                $tmp = [];
+                $tmp['id'] = $items->id;
+                $tmp['name'] = $items->name;
+                $tmp['parent_id'] = $items->parent_id;
+                $tmp['slug'] = $items->slug;
+                $tmp['description'] = $items->description;
+
+                if (!Storage::exists($items->image)) {
+                    $path               = asset('userImage/no_Image.jpg');
+                } else {
+                    $url                = Storage::url($items->image);
+                    $path               = asset($url);
+                }
+
+                $tmp['image'] = $path;
+                $response[] = $tmp;
+            }
+        }
+        return $response;
+        
+    }
 }
