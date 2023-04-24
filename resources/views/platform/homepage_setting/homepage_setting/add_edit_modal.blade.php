@@ -50,7 +50,7 @@
                         </div>
                         <div class="fv-row mb-7">
                             <label class="fw-bold fs-6 mb-2">Description</label>
-                            <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Description" name="description" id="description" cols="30" rows="5">{{ $info->description ?? '' }}</textarea>
+                            <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Description" name="description" id="description" cols="3" rows="2">{{ $info->description ?? '' }}</textarea>
 
                         </div>
                         <div class="fv-row mb-7">
