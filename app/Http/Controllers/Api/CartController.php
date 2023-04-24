@@ -60,6 +60,8 @@ class CartController extends Controller
                 $checkCart->quantity  = $product_quantity;
                 $checkCart->sub_total = $product_quantity * $checkCart->price;
                 $checkCart->update();
+
+                $data = $this->getCartListAll($customer_id, $guest_token);
             }
         } else {
             $customer_info = Customer::find($request->customer_id);
@@ -120,9 +122,20 @@ class CartController extends Controller
     public function deleteCart(Request $request)
     {
 
-        $cart_id        = $request->cart_id;    
+        $cart_id        = $request->cart_id;  
+        $customer_id = $request->customer_id;
+        $guest_token = $request->guest_token;
+        $product_id = $request->product_id;
+        
+        $checkCart = Cart::when( $customer_id != '', function($q) use($customer_id) {
+                            $q->where('customer_id', $customer_id);
+                        })->
+                        when( $customer_id == '' && $guest_token != '', function($q) use($guest_token) {
+                            $q->where('guest_token', $guest_token);
+                        })->where('product_id', $product_id)->first();
 
-        $checkCart      = Cart::find($cart_id);
+
+        // $checkCart      = Cart::find($cart_id);
         if( $checkCart ) {
 
             $customer_id    = $checkCart->customer_id;
