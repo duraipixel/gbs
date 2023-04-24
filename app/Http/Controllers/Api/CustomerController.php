@@ -130,10 +130,10 @@ class CustomerController extends Controller
 
     public function doLogin(Request $request)
     {
+        
         $email = $request->email;
         $password = $request->password;
         $guest_token = $request->guest_token;
-
         
         $checkCustomer = Customer::with(['customerAddress', 'customerAddress.subCategory'])->where('email', $email)->first();
         if ($checkCustomer) {

@@ -408,7 +408,7 @@
                             <i class="bi-chat-left fs-3"></i>
                         </span>
                     </span>
-                    <span class="menu-title"> Service Center </span>
+                    <span class="menu-title"> Service Centers </span>
                     <span class="menu-arrow"></span>
                 </span>
                 <div class="menu-sub menu-sub-accordion">
@@ -418,7 +418,7 @@
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
-                            <span class="menu-title">Services center</span>
+                            <span class="menu-title">Services Center</span>
                         </a>
                     </div>
                     <div class="menu-item">

@@ -24,7 +24,7 @@
             <div class="card-toolbar w-100">
                 <div class="d-flex justify-content-end w-100" data-kt-testimonials-table-toolbar="base">
                     @if( access()->hasAccess('tax', 'filter') )
-                        @include('platform.service_offer._filter')
+                        {{-- @include('platform.service_offer._filter') --}}
                     @endif
 
                     @include('platform.layouts.parts.common._export_button')
@@ -55,8 +55,7 @@
                     <thead>
                         <tr class="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
                             <th> Service Center  </th>
-                            <th> Title  </th>
-                            <th> Status </th>
+                            <th> Offers  </th>
                             <th style="width: 75px;">Action</th>
                         </tr>
                     </thead>
@@ -95,11 +94,6 @@
             {
                 data: 'title',
                 name: 'title'
-            },
-          
-            {
-                data: 'status',
-                name: 'status'
             },
             {
                 data: 'action',

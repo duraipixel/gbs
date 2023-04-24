@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Exports\Export;
 use App\Exports\ServiceCenterExport;
+use App\Models\Master\Brands;
 use App\Models\ServiceCenter;
+use App\Models\ServiceCenterBrand;
 use App\Models\ServiceCenterContact;
 use App\Models\ServiceCenterEmail;
 use App\Models\ServiceCenterMetaTag;
@@ -70,7 +72,6 @@ class ServiceCenterController extends Controller
             ->rawColumns(['action', 'status']);
             return $datatables->make(true);
 
-
         }
 
         return view('platform.service_center.index',compact('title','breadCrum'));
@@ -85,15 +86,20 @@ class ServiceCenterController extends Controller
         $id                 = $request->id;
         $info               = '';      
         $modal_title        = 'Add Service Center';
+        $brands             = Brands::where('status', 'published')->get();
         $serviceCenter    = ServiceCenter::where('status', 'published')->where('parent_id', 0)->get();
-
+        $usedBrands = [];
         if (isset($id) && !empty($id)) {
             $info           = ServiceCenter::find($id);
             $modal_title    = 'Update Service Center';
+            if( isset($info->brands) && !empty( $info->brands ) ){
+                $usedBrands = array_column($info->brands->toArray(), 'brand_id');
+                
+            }
         }
-        return view('platform.service_center.form.add_edit_modal', compact('modal_title', 'breadCrum', 'info', 'serviceCenter'));
+        return view('platform.service_center.form.add_edit_modal', compact('modal_title', 'breadCrum', 'info', 'serviceCenter', 'brands', 'usedBrands'));
     }
-    
+
     public function saveForm(Request $request)
     {
             
@@ -107,17 +113,17 @@ class ServiceCenterController extends Controller
                                                   });
                                               }),
                                               ],
-
+                            'brand_id' => 'required',
                           'description' => 'required',
                       ]);
         $serviceCenterId         = '';
 
-        if ($validator->passes()) {
+        if ($validator->passes()) {            
 
             $contact = array_filter($request->contact);
             $email = array_filter($request->email);
-            $near_pincode = array_filter($request->near_pincode);
-          
+            $near_pincode = array_filter($request->near_pincode); 
+            $brand_id = $request->brand_id;         
             
             if( !$request->is_parent ) {
                 $parent_slug = ServiceCenter::where('id',$parent_id)->select('slug')->first();
@@ -241,6 +247,21 @@ class ServiceCenterController extends Controller
                 $metaIns['service_center_id']         = $serviceCenterId;
                 ServiceCenterMetaTag::create($metaIns);
             }
+
+            /**
+             * insert multi brand here
+             */
+            if( isset($brand_id) && !empty($brand_id) ){
+                ServiceCenterBrand::where('service_center_id', $serviceCenterId)->update(['status' => 'inactive']);
+                foreach ($brand_id as $item) {
+                    $ins = [];
+                    $ins['service_center_id'] = $serviceCenterId;
+                    $ins['brand_id'] = $item;
+                    $ins['status'] = 'active';
+                    ServiceCenterBrand::create($ins);
+                }
+            }
+
             $message                    = (isset($id) && !empty($id)) ? 'Updated Successfully' : 'Added successfully';
 
         }
@@ -251,6 +272,7 @@ class ServiceCenterController extends Controller
         return response()->json(['error' => $error, 'message' => $message, 'serviceCenterId' => $serviceCenterId]);
 
     }
+
     public function changeStatus(Request $request)
     {
         
@@ -263,20 +285,22 @@ class ServiceCenterController extends Controller
         return response()->json(['message'=>"You changed the status!",'status'=>1]);
 
     }
+
     public function delete(Request $request)
     {
         $id         = $request->id;
         $info       = ServiceCenter::find($id);
         $info->delete();
-        $directory      = 'serviceCenter/banner/'.$id;
-        Storage::deleteDirectory($directory);
-        $directory      = 'serviceCenter/banner_mb/'.$id;
-        Storage::deleteDirectory($directory);
-        $directory      = 'serviceCenter/'.$id;
-        Storage::deleteDirectory($directory);
+        // $directory      = 'serviceCenter/banner/'.$id;
+        // Storage::deleteDirectory($directory);
+        // $directory      = 'serviceCenter/banner_mb/'.$id;
+        // Storage::deleteDirectory($directory);
+        // $directory      = 'serviceCenter/'.$id;
+        // Storage::deleteDirectory($directory);
         // echo 1;
         return response()->json(['message'=>"Successfully deleted!",'status'=>1]);
     }
+
     public function export()
     {
         return Excel::download(new ServiceCenterExport, 'service_center.xlsx');

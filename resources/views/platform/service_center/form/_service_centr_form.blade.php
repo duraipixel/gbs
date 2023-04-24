@@ -3,6 +3,21 @@
         <div class="fv-row mb-5">
             <div class="row">
                 <div class="col-md-6">
+                    
+                    <label class="required fw-bold fs-7 mb-2">Brand</label>
+                    <select name="brand_id[]" id="brand_id" class="form-control" multiple>
+                        <option value="">--select--</option>
+                        @isset($brands)
+                            @foreach ($brands as $item)
+                                <option value="{{ $item->id }}" @if(in_array($item->id, $usedBrands)) selected @endif>{{ $item->brand_name }}</option>
+                            @endforeach
+                        @endisset
+                    </select>
+                </div>
+
+            </div>
+            <div class="row mt-7">
+                <div class="col-md-6 ">
                     <label class="required fw-bold fs-7 mb-2">Title</label>
                     <input type="text" name="title" class="form-control form-control-solid mb-3 mb-lg-0"
                         placeholder="Title" value="{{ $info->title ?? '' }}" />
@@ -289,6 +304,8 @@
     </div>
 </div>
 <script>
+
+    $('#brand_id').select2();
     $('.numberonly').keypress(function(e) {
         var charCode = (e.which) ? e.which : event.keyCode
         if (String.fromCharCode(charCode).match(/[^0-9]/g))

@@ -55,4 +55,14 @@ class ServiceCenter extends Model
     {
         return $this->hasMany(ServiceCenterEmail::class,'service_center_id','id');
     }
+
+    public function brands()
+    {
+        return $this->hasMany(ServiceCenterBrand::class, 'service_center_id', 'id')->select('brand_id');
+    }
+
+    public function allBrands()
+    {
+        return $this->hasMany(ServiceCenterBrand::class, 'service_center_id', 'id');
+    }
 }
