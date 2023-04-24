@@ -88,7 +88,7 @@ class ServiceOfferController extends Controller
                             ]);
         if ($validator->passes()) {
           
-           
+            dd( $request->all() );
             $title = $request->title;
             $image  = $request->image;
 

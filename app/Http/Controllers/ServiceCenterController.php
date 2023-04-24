@@ -110,7 +110,14 @@ class ServiceCenterController extends Controller
                           'description' => 'required',
                       ]);
         $serviceCenterId         = '';
+
         if ($validator->passes()) {
+
+            $contact = array_filter($request->contact);
+            $email = array_filter($request->email);
+            $near_pincode = array_filter($request->near_pincode);
+          
+            
             if( !$request->is_parent ) {
                 $parent_slug = ServiceCenter::where('id',$parent_id)->select('slug')->first();
                 $parent_slug = $parent_slug->slug ?? '';
@@ -129,85 +136,53 @@ class ServiceCenterController extends Controller
             $ins['title'] = $request->title;
             $ins['address'] = $request->address;
             $ins['pincode'] = $request->pincode;
-            $ins['latitude'] = $request->latitude ?? '';
-            $ins['longitude'] = $request->longitude ?? '';
             $ins['description'] = $request->description;
             $ins['order_by'] = $request->order_by ?? 0;
-            if($request->status)
+
+            if( $request->status )
             {
                 $ins['status']          = 'published';
             } else {
                 $ins['status']          = 'unpublished';
             }
-           
-           
             $error                      = 0;
+            $serviceCenterInfo          = ServiceCenter::updateOrCreate(['id' => $id], $ins);
 
-            $serviceCenterInfo               = ServiceCenter::updateOrCreate(['id' => $id], $ins);
-            
+            $serviceCenterId            = $serviceCenterInfo->id;
 
-            $serviceCenterId                 = $serviceCenterInfo->id;
-
-            if(!empty($request->near_pincode) && count($request->near_pincode) > 0)
+            if( isset( $near_pincode ) && !empty( $near_pincode ) ) 
             {
-                $dataItem = ServiceCenterPincode::where('service_center_id',$serviceCenterId)->get();
-                foreach($dataItem as $key=>$val)
-                {
-                    $val->delete();
-                }
+                ServiceCenterPincode::where('service_center_id',$serviceCenterId)->delete();
                
-                foreach($request->near_pincode as $key=>$val)
+                foreach($near_pincode as $key=>$val)
                 {
                     $ins['service_center_id']       = $serviceCenterId;
                     $ins['pincode']                 = $val;
-                    // $ins['order_by']                = '' ;
                     $ins['status']                  = Auth::id();
-                    $data = ServiceCenterPincode::create($ins);
+                    ServiceCenterPincode::create($ins);
                 }
                 
-                
             }
-            else{
-                $dataItem = ServiceCenterPincode::where('service_center_id',$serviceCenterId)->get();
-                foreach($dataItem as $key=>$val)
-                {
-                    $val->delete();
-                }
-            }
-            if(!empty($request->contact) && count($request->contact) > 0)
+
+            if( isset( $contact ) && !empty( $contact ) ) 
             {
-                $dataItem = ServiceCenterContact::where('service_center_id',$serviceCenterId)->get();
-                foreach($dataItem as $key=>$val)
-                {
-                    $val->delete();
-                }
-               
-                foreach($request->contact as $key=>$val)
+                ServiceCenterContact::where('service_center_id',$serviceCenterId)->delete();
+                
+                foreach($contact as $key=>$val)
                 {
                     $ins['service_center_id']       = $serviceCenterId;
                     $ins['contact']                 = $val;
                     $ins['status']                  = Auth::id();
-                    $data = ServiceCenterContact::create($ins);
+                    ServiceCenterContact::create($ins);
                 }
                 
-                
             }
-            else{
-                $dataItem = ServiceCenterContact::where('service_center_id',$serviceCenterId)->get();
-                foreach($dataItem as $key=>$val)
-                {
-                    $val->delete();
-                }
-            }
-            if(!empty($request->email) && count($request->email) > 0)
+
+            if( isset( $email ) && !empty( $email ) ) 
             {
-                $dataItem = ServiceCenterEmail::where('service_center_id',$serviceCenterId)->get();
-                foreach($dataItem as $key=>$val)
-                {
-                    $val->delete();
-                }
+                ServiceCenterEmail::where('service_center_id',$serviceCenterId)->delete();
                
-                foreach($request->email as $key=>$val)
+                foreach($email as $key=>$val)
                 {
                     $ins['service_center_id']       = $serviceCenterId;
                     $ins['email']                   = $val;
@@ -216,67 +191,42 @@ class ServiceCenterController extends Controller
                 }
                 
             }
-            else{
-                $dataItem = ServiceCenterEmail::where('service_center_id',$serviceCenterId)->get();
-                foreach($dataItem as $key=>$val)
-                {
-                    $val->delete();
-                }
-            }
+
             if ($request->hasFile('banner')) {
                
                 $imagName               = time() . '_' . $request->banner->getClientOriginalName();
-                $directory              = 'serviceCenter/banner/'.$serviceCenterId;
-                $filename               = $directory.'/'.$imagName.'/';
+                $directory              = 'serviceCenter/'.$serviceCenterId.'/banner';
                 Storage::deleteDirectory('public/'.$directory);
-                Storage::disk('public')->put($filename, File::get($request->banner));
+               
+                if (!is_dir(storage_path("app/public/serviceCenter/".$serviceCenterId."/banner"))) {
+                    mkdir(storage_path("app/public/serviceCenter/".$serviceCenterId."/banner"), 0775, true);
+                }
                 
-                if (!is_dir(storage_path("app/public/serviceCenter/".$serviceCenterId."/thumbnail"))) {
-                    mkdir(storage_path("app/public/serviceCenter/".$serviceCenterId."/thumbnail"), 0775, true);
-                }
-                if (!is_dir(storage_path("app/public/serviceCenter/".$serviceCenterId."/carousel"))) {
-                    mkdir(storage_path("app/public/serviceCenter/".$serviceCenterId."/carousel"), 0775, true);
-                }
+                $thumbnailPath          = 'public/serviceCenter/'.$serviceCenterId.'/banner/' . $imagName;
+                Image::make($request->file('banner'))->save(storage_path('app/' . $thumbnailPath));
 
-                $thumbnailPath          = 'public/serviceCenter/'.$serviceCenterId.'/thumbnail/' . $imagName;
-                Image::make($request->file('banner'))->resize(350,690)->save(storage_path('app/' . $thumbnailPath));
-
-                $carouselPath          = 'public/serviceCenter/'.$serviceCenterId.'/carousel/' . $imagName;
-                Image::make($request->file('banner'))->resize(300,220)->save(storage_path('app/' . $carouselPath));
-
-                // $carouselPath          = $directory.'/carousel/'.$imagName;
-                // Storage::disk('public')->put( $carouselPath, Image::make($request->file('categoryImage'))->resize(300,220) );
-
-                $serviceCenterInfo->banner    = $filename;
+                $serviceCenterInfo->banner    = $thumbnailPath;
                 $serviceCenterInfo->save();
             }
+
             if ($request->hasFile('banner_mb')) {
               
                 $imagName               = time() . '_' . $request->banner_mb->getClientOriginalName();
-                $directory              = 'serviceCenter/banner_mb/'.$serviceCenterId;
-                $filename               = $directory.'/'.$imagName;
+                $directory              = 'serviceCenter/'.$serviceCenterId.'/banner_mb';
                 Storage::deleteDirectory('public/'.$directory);
-                Storage::disk('public')->put($filename, File::get($request->banner_mb));
                 
-                if (!is_dir(storage_path("app/public/serviceCenter/".$serviceCenterId."/thumbnail"))) {
-                    mkdir(storage_path("app/public/serviceCenter/".$serviceCenterId."/thumbnail"), 0775, true);
-                }
-                if (!is_dir(storage_path("app/public/serviceCenter/".$serviceCenterId."/carousel"))) {
-                    mkdir(storage_path("app/public/serviceCenter/".$serviceCenterId."/carousel"), 0775, true);
+                if (!is_dir(storage_path("app/public/serviceCenter/".$serviceCenterId."/banner_mb"))) {
+                    mkdir(storage_path("app/public/serviceCenter/".$serviceCenterId."/banner_mb"), 0775, true);
                 }
 
-                $thumbnailPath          = 'public/serviceCenter/'.$serviceCenterId.'/thumbnail/' . $imagName;
-                Image::make($request->file('banner_mb'))->resize(350,690)->save(storage_path('app/' . $thumbnailPath));
+                $bannerPath             = 'public/serviceCenter/'.$serviceCenterId.'/banner_mb/' . $imagName;
+                Image::make($request->file('banner_mb'))->save(storage_path('app/' . $bannerPath));
 
-                $carouselPath          = 'public/serviceCenter/'.$serviceCenterId.'/carousel/' . $imagName;
-                Image::make($request->file('banner_mb'))->resize(300,220)->save(storage_path('app/' . $carouselPath));
-
-                // $carouselPath          = $directory.'/carousel/'.$imagName;
-                // Storage::disk('public')->put( $carouselPath, Image::make($request->file('categoryImage'))->resize(300,220) );
-
-                $serviceCenterInfo->banner_mb    = $filename;
+                $serviceCenterInfo->banner_mb    = $bannerPath;
                 $serviceCenterInfo->save();
             }
+
+
             $meta_title = $request->meta_title;
             $meta_keywords = $request->meta_keywords;
             $meta_description = $request->meta_description;

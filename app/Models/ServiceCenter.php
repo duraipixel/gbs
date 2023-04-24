@@ -41,15 +41,15 @@ class ServiceCenter extends Model
     {
         return $this->hasMany(ServiceCenter::class, 'parent_id', 'id')->select('id','parent_id','title','slug','banner','banner_mb','description','pincode','address','latitude','longitude','email','contact_no','status','order_by');
     }
-    public function nearPincode()
+    public function nearPincodes()
     {
         return $this->hasMany(ServiceCenterPincode::class,'service_center_id','id');
     }
-    public function contact()
+    public function contacts()
     {
         return $this->hasMany(ServiceCenterContact::class,'service_center_id','id');
     }
-    public function serviceEmail()
+    public function emails()
     {
         return $this->hasMany(ServiceCenterEmail::class,'service_center_id','id');
     }
