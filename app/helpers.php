@@ -321,7 +321,7 @@ function getProductApiData($product_data, $customer_id = '')
     $pro['is_review'] = $reviews ? true : false;
     $pro['is_wishlist'] = $wishlist ? true : false;
     $pro['is_cart'] = $is_cart ? true : false;
-
+    $pro['cart_id'] = $is_cart->id ?? 0;
     $pro['description']             = $product_data->description;
 
     if (isset($product_data->productImages) && !empty($product_data->productImages)) {
