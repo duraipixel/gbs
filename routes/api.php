@@ -46,7 +46,7 @@ Route::post('/check/tokenValid', [App\Http\Controllers\Api\CustomerController::c
 Route::post('/verify/account', [App\Http\Controllers\Api\CustomerController::class, 'verifyAccount']);
 
 Route::post('/serviceCenter', [App\Http\Controllers\Api\ServiceController::class, 'getServiceCenter']);
-Route::get('/serviceCenterDetail/{slug}', [App\Http\Controllers\Api\ServiceController::class, 'getServiceCenterDetail']);
+Route::post('/serviceCenterDetail', [App\Http\Controllers\Api\ServiceController::class, 'getServiceCenterDetail']);
 Route::get('/storeLocator', [App\Http\Controllers\Api\StoreLocatorController::class, 'getStoreLocator']);
 Route::get('/storeLocatorDetail/{slug}', [App\Http\Controllers\Api\StoreLocatorController::class, 'getStoreLocatorDetail']);
 Route::get('/quickLink', [App\Http\Controllers\Api\QuickLinkController::class, 'index']);
