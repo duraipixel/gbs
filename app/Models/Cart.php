@@ -19,5 +19,11 @@ class Cart extends Model
         return $this->hasOne( Product::class, 'id', 'product_id' );
     }
 
+    public function addons()
+    {
+        return $this->hasMany(CartProductAddon::class, 'cart_id', 'id');
+    }
+
+
     
 }

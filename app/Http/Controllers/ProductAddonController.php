@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\ProductAddonExport;
 use App\Models\Product\Product;
+use App\Models\Product\ProductAddonProduct;
 use Illuminate\Http\Request;
 use App\Models\ProductAddon;
 use App\Models\ProductAddonItem;
@@ -90,10 +91,8 @@ class ProductAddonController extends Controller
                             ]);
         $banner_id      = '';
         if ($validator->passes()) {
-        
- 
+            
             $ins['title']               = $request->title;
-            $ins['product_id']          = $request->product_id;
             $ins['description']         = $request->description;
             $ins['order_by']            = $request->order_by ?? 0;
             $ins['added_by']            = auth()->user()->id;
@@ -141,6 +140,19 @@ class ProductAddonController extends Controller
                     $ins['amount']                  = $amount[$i] ?? '' ;
                     $ins['status']                  = 'published';
                     $data = ProductAddonItem::updateOrCreate(['product_addon_id' => $id,'label' => $label[$i],'amount' => $amount[$i]], $ins);
+                }
+            }
+            /**
+             * store products
+             */
+            if( $request->product_id ) {
+                ProductAddonProduct::where('product_addon_id', $info->id )->delete();
+                foreach ( $request->product_id as $item ) {
+                    $pro = [];
+                    $pro['product_addon_id'] = $info->id;
+                    $pro['product_id'] = $item;
+
+                    ProductAddonProduct::create($pro);
                 }
             }
         

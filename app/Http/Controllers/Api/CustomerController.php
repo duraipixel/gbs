@@ -456,9 +456,7 @@ class CustomerController extends Controller
         if( isset( $wishlist ) && !empty( $wishlist ) ) {
             foreach ($wishlist as $items ) {
                 $product_data = Product::find($items->product_id);
-                $tmp['product'] = getProductApiData($product_data, $customer_id);
-                $tmp['date'] = date('d M Y', strtotime($items->created_at));
-                $wishlist_arr[] = $tmp;
+                $wishlist_arr[] = getProductApiData($product_data, $customer_id);
             }
         }
 

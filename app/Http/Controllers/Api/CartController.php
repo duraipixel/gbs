@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\CartAddress;
+use App\Models\CartProductAddon;
 use App\Models\Master\Customer;
 use App\Models\Product\Product;
+use App\Models\ProductAddonItem;
 use App\Models\Settings\Tax;
 use App\Models\ShippingCharge;
 use Illuminate\Http\Request;
@@ -19,6 +21,7 @@ class CartController extends Controller
         
         $customer_id = $request->customer_id;
         $guest_token = $request->guest_token;
+        $addon_id = $request->addon_id;
         $product_id = $request->product_id;
         $quantity = $request->quantity ?? 1;
         $type = $request->type;
@@ -27,6 +30,7 @@ class CartController extends Controller
          * 1. check customer id and product exist if not insert
          * 2. if exist update quantiy
          */
+        
 
         $product_info = Product::find($product_id);
         $checkCart = Cart::when( $customer_id != '', function($q) use($customer_id) {
@@ -43,52 +47,54 @@ class CartController extends Controller
                             $q->where('guest_token', $guest_token);
                         })->first();
 
-        $salePrices = $request->sale_prices;
-        // dd($salePrices['price_original']);
+       
+            if (isset($checkCart) && !empty($checkCart)) {
+                if ($type == 'delete') {
+                    $checkCart->delete();
+                } else {
+                    $error = 0;
+                    $message = 'Cart added successfull';
+                    $product_quantity = $checkCart->quantity + $quantity;
+                    if ($product_info->quantity <= $product_quantity) {
+                        $product_quantity = $product_info->quantity;
+                    }
+                    
+                    $checkCart->quantity  = $product_quantity;
+                    $checkCart->sub_total = $product_quantity * $checkCart->price;
+                    $checkCart->update();
+    
+                    $data = $this->getCartListAll($customer_id, $guest_token);
+                }
+            } else {
+                $customer_info = Customer::find($request->customer_id);
+                
+                if( isset( $customer_info ) && !empty( $customer_info) || !empty($request->guest_token) ) {
+    
+                    if ($product_info->quantity <= $quantity) {
+                        $quantity = $product_info->quantity;
+                    }
+                    $ins['customer_id']     = $request->customer_id;
+                    $ins['product_id']      = $product_id;
+                    $ins['guest_token']     = $request->guest_token ?? null;
+                    $ins['quantity']        = $quantity ?? 1;
+                    $ins['price']           = (float)$product_info->mrp;
+                    $ins['sub_total']       = $product_info->mrp * $quantity ?? 1;
+                    $ins['cart_order_no']   = 'ORD' . date('ymdhis');
+                    
+                    $cart_id = Cart::create($ins)->id;
+                    $error = 0;
+                    $message = 'Cart added successfull';
+                    $data = $this->getCartListAll($customer_id, $guest_token);
+                } else {
+                    $error = 1;
+                    $message = 'Customer Data not available';
+                    $data = [];
+                }
+            }
         
-        if (isset($checkCart) && !empty($checkCart)) {
-            if ($type == 'delete') {
-                $checkCart->delete();
-            } else {
-                $error = 0;
-                $message = 'Cart added successfull';
-                $product_quantity = $checkCart->quantity + $quantity;
-                if ($product_info->quantity <= $product_quantity) {
-                    $product_quantity = $product_info->quantity;
-                }
-                
-                $checkCart->quantity  = $product_quantity;
-                $checkCart->sub_total = $product_quantity * $checkCart->price;
-                $checkCart->update();
-
-                $data = $this->getCartListAll($customer_id, $guest_token);
-            }
-        } else {
-            $customer_info = Customer::find($request->customer_id);
-            
-            if( isset( $customer_info ) && !empty( $customer_info) || !empty($request->guest_token) ) {
-
-                if ($product_info->quantity <= $quantity) {
-                    $quantity = $product_info->quantity;
-                }
-                $ins['customer_id']     = $request->customer_id;
-                $ins['product_id']      = $product_id;
-                $ins['guest_token']     = $request->guest_token ?? null;
-                $ins['quantity']        = $quantity ?? 1;
-                $ins['price']           = (float)$product_info->mrp;
-                $ins['sub_total']       = $product_info->mrp * $quantity ?? 1;
-                $ins['cart_order_no']   = 'ORD' . date('ymdhis');
-                
-                $cart_id = Cart::create($ins)->id;
-                $error = 0;
-                $message = 'Cart added successfull';
-                $data = $this->getCartListAll($customer_id, $guest_token);
-            } else {
-                $error = 1;
-                $message = 'Customer Data not available';
-                $data = [];
-            }
-        }
+        
+        
+        
         return array( 'error' => $error, 'message' => $message, 'data' => $data);
     }
 
@@ -99,13 +105,30 @@ class CartController extends Controller
         $guest_token    = $request->guest_token;
         $customer_id    = $request->customer_id;
         $quantity       = $request->quantity ?? 1;
+        $addon_id   = $request->addon_id;
+
+        $addon_items_info = ProductAddonItem::find($addon_id);
+       
             
         $checkCart      = Cart::where('id', $cart_id)->first();
         if( $checkCart ) {
+
+            if( isset( $addon_items_info ) && !empty( $addon_items_info ) ) {
+
+                $addon = [];
+                $addon['cart_id'] = $cart_id;
+                $addon['product_id'] = $checkCart->product_id;
+                $addon['addon_item_id'] = $addon_id;
+                $addon['title'] = $addon_items_info->addon_items_info;
+                $addon['amount'] = $addon_items_info->amount;
+                $addonCartItems = CartProductAddon::updateOrCreate(['cart_id' => $cart_id, 'product_id' => $checkCart->product_id, 'addon_item_id' => $addon_id], $addon);
+            } else {
+
+                $checkCart->quantity = $quantity;
+                $checkCart->sub_total = $checkCart->price * $quantity;
+                $checkCart->update();
+            }
           
-            $checkCart->quantity = $quantity;
-            $checkCart->sub_total = $checkCart->price * $quantity;
-            $checkCart->update();
             $error = 0;
             $message = 'Cart updated successfull';
             $data = $this->getCartListAll($checkCart->customer_id, $checkCart->guest_token);
