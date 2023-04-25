@@ -81,8 +81,8 @@ class ServiceController extends Controller
         $temp['description']    = $data->description;
         $temp['pincode']        = $data->pincode;
         $temp['address']        = $data->address;
-        $temp['latitude']       = $data->latitude;
-        $temp['langitude']      = $data->langitude;
+        $temp['map_link']       = $data->map_link;
+        $temp['image_360_link'] = $data->image_360_link;
 
         $usedBrands = [];
         $brandarr = [];
