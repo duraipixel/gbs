@@ -435,7 +435,6 @@ function getProductApiData($product_data, $customer_id = '')
     
     if (isset($product_data->productAddons) && !empty($product_data->productAddons)) {
         foreach ($product_data->productAddons as $items) {
-
             
             $addon_items = ProductAddon::find($items->product_addon_id);
             

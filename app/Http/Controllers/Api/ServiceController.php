@@ -51,15 +51,15 @@ class ServiceController extends Controller
     public function getServiceCenterDetail(Request $request)
     {
         
-        $center_id = $request->center_id;
+        $slug = $request->slug;
         $data = ServiceCenter::select('service_centers.*')
             ->join('service_center_brands', 'service_center_brands.service_center_id', '=', 'service_centers.id')
             ->join('service_center_pincodes', 'service_center_pincodes.service_center_id', '=', 'service_centers.id')
             ->join('brands', 'brands.id', '=', 'service_center_brands.brand_id')
             ->where('service_centers.status', 'published')
             // ->where('service_centers.parent_id', 0)
-            ->when($center_id != '', function ($query) use ($center_id) {
-                $query->where('service_centers.id', $center_id);
+            ->when($slug != '', function ($query) use ($slug) {
+                $query->where('service_centers.slug', $slug);
             })
             ->groupBy('service_centers.id')
             ->first();

@@ -240,8 +240,6 @@ class CartController extends Controller
         if (isset($checkCart) && !empty($checkCart)) {
             foreach ($checkCart as $citems) {
                 
-
-                
                 $items = $citems->products;
                 $tax = [];
                 $tax_percentage = 0;
@@ -271,7 +269,6 @@ class CartController extends Controller
                 $addon_total = 0;
                 if( isset( $addonItems ) && !empty( $addonItems ) ) {
                     foreach ($addonItems as $items) {
-                        
                         
                         $addons = [];
                         $addons['addon_id'] = $items->addonItem->addon->id;
