@@ -444,6 +444,7 @@ function getProductApiData($product_data, $customer_id = '')
             $addon_items = ProductAddon::find($items->product_addon_id);
             
             $temp = [];
+            $temp['id'] = $addon_items->id;
             $temp['title'] = $addon_items->title;
             $temp['description'] = $addon_items->description;
             

@@ -12,6 +12,7 @@ class CartProductAddon extends Model
     protected $fillable = [
         'cart_id',
         'product_id',
+        'addon_id',
         'addon_item_id',
         'title',
         'amount'

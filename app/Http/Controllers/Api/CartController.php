@@ -106,6 +106,7 @@ class CartController extends Controller
         $customer_id    = $request->customer_id;
         $quantity       = $request->quantity ?? 1;
         $addon_id   = $request->addon_id;
+        $addon_item_id   = $request->addon_item_id;
 
         $addon_items_info = ProductAddonItem::find($addon_id);
        
@@ -114,15 +115,17 @@ class CartController extends Controller
         if( $checkCart ) {
 
             if( isset( $addon_items_info ) && !empty( $addon_items_info ) ) {
-
+                CartProductAddon::where('cart_id', $cart_id)
+                                    ->where(['product_id' => $checkCart->product_id, 'addon_id' => $addon_id])->delete();
                 $addon = [];
                 $addon['cart_id'] = $cart_id;
                 $addon['product_id'] = $checkCart->product_id;
-                $addon['addon_item_id'] = $addon_id;
+                $addon['addon_id'] = $addon_id;
+                $addon['addon_item_id'] = $addon_item_id;
                 $addon['title'] = $addon_items_info->label;
                 $addon['amount'] = $addon_items_info->amount;
                 
-                CartProductAddon::updateOrCreate(['cart_id' => $cart_id, 'product_id' => $checkCart->product_id, 'addon_item_id' => $addon_id], $addon);
+                CartProductAddon::create($addon);
 
             } else {
 
