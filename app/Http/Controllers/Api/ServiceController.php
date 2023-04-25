@@ -83,7 +83,26 @@ class ServiceController extends Controller
         $temp['address']        = $data->address;
         $temp['map_link']       = $data->map_link;
         $temp['image_360_link'] = $data->image_360_link;
+        $offers = [];
+        if( isset( $data->offers ) && !empty($data->offers ) ) {
+            foreach ($data->offers as $item) {
+                $path = '';
+                $tmp =[];
+                $tmp['id'] = $item->id;
+                $tmp['title'] = $item->title;
+                $offerImagePath = $item->image;
+                if (!Storage::exists($offerImagePath) || $offerImagePath === null) {
+                    $path               = asset('assets/logo/no_Image.jpg');
+                } else {
+                    $url                    = Storage::url($offerImagePath);
+                    $path                   = asset($url);
+                }
 
+                $tmp['image'] = $path;
+                $offers[] = $tmp;
+            }
+        }
+        $temp['offers'] = $offers;
         $usedBrands = [];
         $brandarr = [];
         $near_pincodes = [];

@@ -65,4 +65,9 @@ class ServiceCenter extends Model
     {
         return $this->hasMany(ServiceCenterBrand::class, 'service_center_id', 'id');
     }
+
+    public function offers()
+    {
+        return $this->hasMany(ServiceCenterOffer::class, 'service_center_id', 'id');
+    }
 }
