@@ -129,11 +129,7 @@ class StoreLocatorController extends Controller
 
             if(!empty($request->near_pincode) && count($request->near_pincode) > 0)
             {
-                $dataItem = StoreLocatorPincode::where('store_locator_id',$storeLocatorId)->get();
-                foreach($dataItem as $key=>$val)
-                {
-                    $val->delete();
-                }
+                StoreLocatorPincode::where('store_locator_id',$storeLocatorId)->delete();
                
                 foreach($request->near_pincode as $key=>$val)
                 {
@@ -144,21 +140,11 @@ class StoreLocatorController extends Controller
                 }
                 
             }
-            else{
-                $dataItem = StoreLocatorPincode::where('store_locator_id',$storeLocatorId)->get();
-                foreach($dataItem as $key=>$val)
-                {
-                    $val->delete();
-                }
-            }
 
             if(!empty($request->contact) && count($request->contact) > 0)
             {
-                $dataItem = StoreLocatorContact::where('store_locator_id',$storeLocatorId)->get();
-                foreach($dataItem as $key=>$val)
-                {
-                    $val->delete();
-                }
+
+                StoreLocatorContact::where('store_locator_id',$storeLocatorId)->delete();
                
                 foreach($request->contact as $key=>$val)
                 {
@@ -168,22 +154,12 @@ class StoreLocatorController extends Controller
                     $data = StoreLocatorContact::create($ins);
                 }
                 
-                
             }
-            else{
-                $dataItem = StoreLocatorContact::where('store_locator_id',$storeLocatorId)->get();
-                foreach($dataItem as $key=>$val)
-                {
-                    $val->delete();
-                }
-            }
+
             if(!empty($request->email) && count($request->email) > 0)
             {
-                $dataItem = StoreLocatorEmail::where('store_locator_id',$storeLocatorId)->get();
-                foreach($dataItem as $key=>$val)
-                {
-                    $val->delete();
-                }
+
+                StoreLocatorEmail::where('store_locator_id',$storeLocatorId)->delete();
                
                 foreach($request->email as $key=>$val)
                 {
@@ -194,124 +170,44 @@ class StoreLocatorController extends Controller
                 }
                 
             }
-            else{
-                $dataItem = StoreLocatorEmail::where('store_locator_id',$storeLocatorId)->get();
-                foreach($dataItem as $key=>$val)
-                {
-                    $val->delete();
-                }
-            }
-
 
             if ($request->hasFile('banner')) {
                
                 $imagName               = time() . '_' . $request->banner->getClientOriginalName();
-                $directory              = 'storeLocator/banner/'.$storeLocatorId;
+                $directory              = 'storeLocator/'.$storeLocatorId.'/banner';
                 $filename               = $directory.'/'.$imagName.'/';
                 Storage::deleteDirectory('public/'.$directory);
-                Storage::disk('public')->put($filename, File::get($request->banner));
                 
-                if (!is_dir(storage_path("app/public/storeLocator/".$storeLocatorId."/thumbnail"))) {
-                    mkdir(storage_path("app/public/storeLocator/".$storeLocatorId."/thumbnail"), 0775, true);
-                }
-                if (!is_dir(storage_path("app/public/storeLocator/".$storeLocatorId."/carousel"))) {
-                    mkdir(storage_path("app/public/storeLocator/".$storeLocatorId."/carousel"), 0775, true);
+                if (!is_dir(storage_path("app/public/storeLocator/".$storeLocatorId."/banner"))) {
+                    mkdir(storage_path("app/public/storeLocator/".$storeLocatorId."/banner"), 0775, true);
                 }
 
-                $thumbnailPath          = 'public/storeLocator/'.$storeLocatorId.'/thumbnail/' . $imagName;
-                Image::make($request->file('banner'))->resize(350,690)->save(storage_path('app/' . $thumbnailPath));
+                $thumbnailPath          = 'public/storeLocator/'.$storeLocatorId.'/banner/' . $imagName;
+                Image::make($request->file('banner'))->save(storage_path('app/' . $thumbnailPath));
 
-                $carouselPath          = 'public/storeLocator/'.$storeLocatorId.'/carousel/' . $imagName;
-                Image::make($request->file('banner'))->resize(300,220)->save(storage_path('app/' . $carouselPath));
-
-                // $carouselPath          = $directory.'/carousel/'.$imagName;
-                // Storage::disk('public')->put( $carouselPath, Image::make($request->file('categoryImage'))->resize(300,220) );
-
-                $storeLocatorInfo->banner    = $filename;
+                $storeLocatorInfo->banner    = $thumbnailPath;
                 $storeLocatorInfo->save();
+
             }
-
-            if ($request->hasFile('banner_mb')) {
-              
-                $imagName               = time() . '_' . $request->banner_mb->getClientOriginalName();
-                $directory              = 'storeLocator/banner_mb/'.$storeLocatorId;
-                $filename               = $directory.'/'.$imagName;
-                Storage::deleteDirectory('public/'.$directory);
-                Storage::disk('public')->put($filename, File::get($request->banner_mb));
-                
-                if (!is_dir(storage_path("app/public/storeLocator/".$storeLocatorId."/thumbnail"))) {
-                    mkdir(storage_path("app/public/storeLocator/".$storeLocatorId."/thumbnail"), 0775, true);
-                }
-                if (!is_dir(storage_path("app/public/storeLocator/".$storeLocatorId."/carousel"))) {
-                    mkdir(storage_path("app/public/storeLocator/".$storeLocatorId."/carousel"), 0775, true);
-                }
-
-                $thumbnailPath          = 'public/storeLocator/'.$storeLocatorId.'/thumbnail/' . $imagName;
-                Image::make($request->file('banner_mb'))->resize(350,690)->save(storage_path('app/' . $thumbnailPath));
-
-                $carouselPath          = 'public/storeLocator/'.$storeLocatorId.'/carousel/' . $imagName;
-                Image::make($request->file('banner_mb'))->resize(300,220)->save(storage_path('app/' . $carouselPath));
-
-                // $carouselPath          = $directory.'/carousel/'.$imagName;
-                // Storage::disk('public')->put( $carouselPath, Image::make($request->file('categoryImage'))->resize(300,220) );
-
-                $storeLocatorInfo->banner_mb    = $filename;
-                $storeLocatorInfo->save();
-            }
+           
             if ($request->hasFile('store_image')) {
                
                 $imagName               = time() . '_' . $request->store_image->getClientOriginalName();
-                $directory              = 'storeLocator/store_image/'.$storeLocatorId;
+                $directory              = 'storeLocator/'.$storeLocatorId.'/store';
                 $filename               = $directory.'/'.$imagName.'/';
                 Storage::deleteDirectory('public/'.$directory);
-                Storage::disk('public')->put($filename, File::get($request->store_image));
                 
-                if (!is_dir(storage_path("app/public/storeLocator/".$storeLocatorId."/thumbnail"))) {
-                    mkdir(storage_path("app/public/storeLocator/".$storeLocatorId."/thumbnail"), 0775, true);
-                }
-                if (!is_dir(storage_path("app/public/storeLocator/".$storeLocatorId."/carousel"))) {
-                    mkdir(storage_path("app/public/storeLocator/".$storeLocatorId."/carousel"), 0775, true);
+                if (!is_dir(storage_path("app/public/storeLocator/".$storeLocatorId."/store"))) {
+                    mkdir(storage_path("app/public/storeLocator/".$storeLocatorId."/store"), 0775, true);
                 }
 
-                $thumbnailPath          = 'public/storeLocator/'.$storeLocatorId.'/thumbnail/' . $imagName;
-                Image::make($request->file('store_image'))->resize(350,690)->save(storage_path('app/' . $thumbnailPath));
+                $storeImagePath          = 'public/storeLocator/'.$storeLocatorId.'/store/' . $imagName;
+                Image::make($request->file('store_image'))->save(storage_path('app/' . $storeImagePath));
 
-                $carouselPath          = 'public/storeLocator/'.$storeLocatorId.'/carousel/' . $imagName;
-                Image::make($request->file('store_image'))->resize(300,220)->save(storage_path('app/' . $carouselPath));
-
-                // $carouselPath          = $directory.'/carousel/'.$imagName;
-                // Storage::disk('public')->put( $carouselPath, Image::make($request->file('categoryImage'))->resize(300,220) );
-
-                $storeLocatorInfo->store_image    = $filename;
+                $storeLocatorInfo->store_image    = $storeImagePath;
                 $storeLocatorInfo->save();
             }
-            if ($request->hasFile('store_image_mb')) {
-              
-                $imagName               = time() . '_' . $request->store_image_mb->getClientOriginalName();
-                $directory              = 'storeLocator/store_image_mb/'.$storeLocatorId;
-                $filename               = $directory.'/'.$imagName;
-                Storage::deleteDirectory('public/'.$directory);
-                Storage::disk('public')->put($filename, File::get($request->store_image_mb));
-                
-                if (!is_dir(storage_path("app/public/storeLocator/".$storeLocatorId."/thumbnail"))) {
-                    mkdir(storage_path("app/public/storeLocator/".$storeLocatorId."/thumbnail"), 0775, true);
-                }
-                if (!is_dir(storage_path("app/public/storeLocator/".$storeLocatorId."/carousel"))) {
-                    mkdir(storage_path("app/public/storeLocator/".$storeLocatorId."/carousel"), 0775, true);
-                }
-
-                $thumbnailPath          = 'public/storeLocator/'.$storeLocatorId.'/thumbnail/' . $imagName;
-                Image::make($request->file('store_image_mb'))->resize(350,690)->save(storage_path('app/' . $thumbnailPath));
-
-                $carouselPath          = 'public/storeLocator/'.$storeLocatorId.'/carousel/' . $imagName;
-                Image::make($request->file('store_image_mb'))->resize(300,220)->save(storage_path('app/' . $carouselPath));
-
-                // $carouselPath          = $directory.'/carousel/'.$imagName;
-                // Storage::disk('public')->put( $carouselPath, Image::make($request->file('categoryImage'))->resize(300,220) );
-
-                $storeLocatorInfo->store_image_mb    = $filename;
-                $storeLocatorInfo->save();
-            }
+            
             $meta_title = $request->meta_title;
             $meta_keywords = $request->meta_keywords;
             $meta_description = $request->meta_description;
@@ -333,6 +229,7 @@ class StoreLocatorController extends Controller
         return response()->json(['error' => $error, 'message' => $message, 'storeLocatorId' => $storeLocatorId]);
 
     }
+    
     public function changeStatus(Request $request)
     {
         

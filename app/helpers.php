@@ -459,6 +459,7 @@ function getProductApiData($product_data, $customer_id = '')
             // dd( $addon_items->items );
             if( isset( $addon_items->items ) && !empty( $addon_items->items ) ) {
                 foreach ($addon_items->items as $aitem) {
+
                     $is_selected = false;
                     if( isset( $is_cart->id ) && !empty( $is_cart->id ) ) {
 

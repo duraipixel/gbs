@@ -58,6 +58,7 @@ Route::post('/get/cart', [App\Http\Controllers\Api\CartController::class, 'getCa
 Route::post('/update/cart', [App\Http\Controllers\Api\CartController::class, 'updateCart']);
 Route::post('/delete/cart', [App\Http\Controllers\Api\CartController::class, 'deleteCart']);    
 Route::post('/clear/cart', [App\Http\Controllers\Api\CartController::class, 'clearCart']); 
+Route::post('/delete/addon', [App\Http\Controllers\Api\CartController::class, 'deleteAddonItems']); 
 
 Route::post('/list/customer/reviews', [App\Http\Controllers\Api\CustomerReviewController::class, 'listReviews']);
 

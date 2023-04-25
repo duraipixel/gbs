@@ -94,7 +94,6 @@
                                     <div class="input-group-prepend">
                                         <button class="btn btn-danger btn-sm" id="DeleteRowContact" type="button">
                                             <i class="bi bi-trash"></i>
-                                            
                                         </button>
                                     </div>
                                 </div>
@@ -184,55 +183,6 @@
                 </span>
             </div>
         </div>
-        <div class=" mb-7">
-            <div class="fv-row">
-                <label class="d-block fw-bold fs-6 mb-5">Banner Image Mobile</label>
-                <div class="form-text">
-                    Allowed file types: png, jpg,
-                    jpeg.
-                </div>
-            </div>
-            <input id="banner_mobile_remove_image" type="hidden" name="banner_mobile_remove_image" value="no">
-            <div class="image-input image-input-outline banner-mobile-image" data-kt-image-input="true"
-                style="background-image: url({{ asset('userImage/no_Image.jpg') }})">
-                @if ($info->banner_mb ?? '')
-                @php
-                    $url = Storage::url($info->banner_mb);
-                    // print_r( $url );
-                @endphp
-                    <div class="image-input-wrapper w-125px h-125px banner-mobile-image"
-                        id="banner-mobile-image"
-                        style="background-image: url({{ asset($url) }});">
-                    </div>
-                @else
-                    <div class="image-input-wrapper w-125px h-125px banner-mobile-image"
-                        id="banner-mobile-image"
-                        style="background-image: url({{ asset('userImage/no_Image.jpg') }});">
-                    </div>
-                @endif
-                <label
-                    class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                    data-kt-image-input-action="change" data-bs-toggle="tooltip"
-                    title="Change Icon">
-                    <i class="bi bi-pencil-fill fs-7"></i>
-                    <input type="file" name="banner_mb" id="bannerMobileUrl"
-                        accept=".png, .jpg, .jpeg" />
-                </label>
-
-                <span
-                    class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                    data-kt-image-input-action="cancel" data-bs-toggle="tooltip"
-                    title="Cancel avatar">
-                    <i class="bi bi-x fs-2"></i>
-                </span>
-                <span
-                    class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                    data-kt-image-input-action="remove" data-bs-toggle="tooltip"
-                    title="Remove avatar1">
-                    <i class="bi bi-x fs-2" id="banner_mobile_remove_logo"></i>
-                </span>
-            </div>
-        </div>
 
         <div class=" mb-7">
             <div class="fv-row">
@@ -282,57 +232,6 @@
                 </span>
             </div>
         </div>
-
-        <div class=" mb-7">
-            <div class="fv-row">
-                <label class="d-block fw-bold fs-6 mb-5">Store Image Mobile</label>
-                <div class="form-text">
-                    Allowed file types: png, jpg,
-                    jpeg.
-                </div>
-            </div>
-            <input id="store_mobile_remove_image" type="hidden" name="store_mobile_remove_image" value="no">
-            <div class="image-input image-input-outline store-mobile-image" data-kt-image-input="true"
-                style="background-image: url({{ asset('userImage/no_Image.jpg') }})">
-                @if ($info->store_image_mb ?? '')
-                @php
-                    $url = Storage::url($info->store_image_mb);
-                @endphp
-                    <div class="image-input-wrapper w-125px h-125px store-mobile-image"
-                        id="store-mobile-image"
-                        style="background-image: url({{ asset($url) }});">
-                    </div>
-                @else
-                    <div class="image-input-wrapper w-125px h-125px banner-mobile-image"
-                        id="store-mobile-image"
-                        style="background-image: url({{ asset('userImage/no_Image.jpg') }});">
-                    </div>
-                @endif
-                <label
-                    class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                    data-kt-image-input-action="change" data-bs-toggle="tooltip"
-                    title="Change Icon">
-                    <i class="bi bi-pencil-fill fs-7"></i>
-                    <input type="file" name="store_image_mb" id="storeMobileUrl"
-                        accept=".png, .jpg, .jpeg" />
-                </label>
-
-                <span
-                    class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                    data-kt-image-input-action="cancel" data-bs-toggle="tooltip"
-                    title="Cancel avatar">
-                    <i class="bi bi-x fs-2"></i>
-                </span>
-                <span
-                    class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                    data-kt-image-input-action="remove" data-bs-toggle="tooltip"
-                    title="Remove avatar1">
-                    <i class="bi bi-x fs-2" id="store_mobile_remove_logo"></i>
-                </span>
-            </div>
-        </div>
-       
-       
         
     </div>
 </div>

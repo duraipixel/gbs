@@ -266,6 +266,7 @@ class CartController extends Controller
                  * addon amount calculated here
                  */
                 $addonItems = CartProductAddon::where(['cart_id' => $citems->id, 'product_id' => $items->id ])->get();
+                
                 $addon_total = 0;
                 if( isset( $addonItems ) && !empty( $addonItems ) ) {
                     foreach ($addonItems as $addItems) {
@@ -281,7 +282,7 @@ class CartController extends Controller
                             $url                = Storage::url( $addItems->addonItem->addon->icon);
                             $path               = asset($url);
                         }
-            
+                        $addons['addon_item_id'] = $addItems->addonItem->id;
                         $addons['icon'] = $path;
                         $addons['addon_item_label'] = $addItems->addonItem->label;
                         $addons['amount'] = $addItems->addonItem->amount;
@@ -376,6 +377,21 @@ class CartController extends Controller
         $amount         = filter_var($request->amount, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
         $charges        = ShippingCharge::select('id', 'shipping_title', 'minimum_order_amount', 'charges', 'is_free')->where('status', 'published')->where('minimum_order_amount', '<', $amount )->get();
         return $charges;
+    }
+
+    public function deleteAddonItems(Request $request)
+    {
+        $addon_id   = $request->addon_id;
+        $cart_id    = $request->cart_id;
+        $product_id = $request->product_id;
+
+        CartProductAddon::where(['addon_item_id' => $addon_id, 'cart_id' => $cart_id, 'product_id' => $product_id ])->delete();
+
+        $cart_info = Cart::find($cart_id);
+        $data = $this->getCartListAll($cart_info->customer_id, $cart_info->guest_token);
+
+        return array( 'error' => 0, 'message' => 'Addon Deleted Successfully', 'data' => $data );
+
     }
    
 }
