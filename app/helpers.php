@@ -1,6 +1,7 @@
 <?php
 
 use App\Helpers\AccessGuard;
+use App\Models\Cart;
 use App\Models\Master\Customer;
 use App\Models\Order;
 use App\Models\Product\Product;
@@ -310,13 +311,16 @@ function getProductApiData($product_data, $customer_id = '')
      */
     $reviews = '';
     $wishlist = '';
+    $is_cart = '';
     if( $customer_id ) {
         $reviews = Review::where(['product_id' => $product_data->id, 'customer_id' => $customer_id ])->first();
         $wishlist = Wishlist::where(['product_id' => $product_data->id, 'customer_id' => $customer_id ])->first();
+        $is_cart = Cart::where(['product_id' => $product_data->id, 'customer_id' => $customer_id ])->first();
     }
     
     $pro['is_review'] = $reviews ? true : false;
     $pro['is_wishlist'] = $wishlist ? true : false;
+    $pro['is_cart'] = $is_cart ? true : false;
 
     $pro['description']             = $product_data->description;
 

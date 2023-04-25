@@ -172,7 +172,7 @@ class ServiceController extends Controller
         } else {
             $data->banner_mb = asset('userImage/no_Image.jpg');
         }
-        $temp['banner_mb']          = $data->banner_mb;
+        $temp['service_center_image']= $data->banner_mb;
         $temp['status']             = $data->status;
         $temp['meta_title']         = $data->meta->meta_title ?? "";
         $temp['meta_keyword']       = $data->meta->meta_keyword ?? "";
