@@ -82,6 +82,7 @@ Route::middleware(['client'])->group(function(){
      *  Add or Remove Whishlist
      */
     Route::post('/add/remove/whishlist', [App\Http\Controllers\Api\CustomerController::class, 'setWishlists']);
+    Route::post('/clear/whishlist', [App\Http\Controllers\Api\CustomerController::class, 'clearWishlist']);
     Route::post('/get/whishlist', [App\Http\Controllers\Api\CustomerController::class, 'getWishlist']);
 
     

@@ -446,6 +446,13 @@ class CustomerController extends Controller
         return array( 'error' => 0, 'message' => $message );
     }
 
+    public function clearWishlist(Request $request)
+    {
+        $customer_id = $request->customer_id;
+        Wishlist::where(['customer_id' => $customer_id])->delete();
+        return array( 'error' => 0, 'message' => 'Cleared Wishlist Successfully' );
+    }
+
     public function getWishlist(Request $request)
     {
         $customer_id = $request->customer_id;

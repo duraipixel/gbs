@@ -50,7 +50,7 @@
                                             @if (isset($product) && !empty($product))
                                                 @foreach ($product as $item)
                                                     <option value="{{ $item->id }}"
-                                                        @if (isset($info->product_id) && $info->product_id == $item->id) selected @endif>{{ $item->product_name }}
+                                                        @if (isset($usedProduct) && in_array($item->id, $usedProduct)) selected @endif>{{ $item->product_name }}
                                                     </option>
                                                 @endforeach
                                             @endif

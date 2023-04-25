@@ -119,9 +119,11 @@ class CartController extends Controller
                 $addon['cart_id'] = $cart_id;
                 $addon['product_id'] = $checkCart->product_id;
                 $addon['addon_item_id'] = $addon_id;
-                $addon['title'] = $addon_items_info->addon_items_info;
+                $addon['title'] = $addon_items_info->label;
                 $addon['amount'] = $addon_items_info->amount;
+                
                 $addonCartItems = CartProductAddon::updateOrCreate(['cart_id' => $cart_id, 'product_id' => $checkCart->product_id, 'addon_item_id' => $addon_id], $addon);
+                
             } else {
 
                 $checkCart->quantity = $quantity;

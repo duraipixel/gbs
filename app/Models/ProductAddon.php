@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Product\ProductAddonProduct;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -22,6 +23,10 @@ class ProductAddon extends Model
     public function items()
     {
         return $this->hasMany(ProductAddonItem::class,'product_addon_id','id')->select('id', 'label', 'amount')->where('status','published');
+    }
+
+    public function addonProducts() {
+        return $this->hasMany(ProductAddonProduct::class, 'product_addon_id', 'id');
     }
 
 }

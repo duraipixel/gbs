@@ -5,6 +5,7 @@ use App\Models\Master\Customer;
 use App\Models\Order;
 use App\Models\Product\Product;
 use App\Models\Product\Review;
+use App\Models\ProductAddon;
 use App\Models\SmsTemplate;
 use App\Models\User;
 use App\Models\Wishlist;
@@ -431,22 +432,27 @@ function getProductApiData($product_data, $customer_id = '')
     }
 
     $addon_arr = [];
+    
     if (isset($product_data->productAddons) && !empty($product_data->productAddons)) {
         foreach ($product_data->productAddons as $items) {
-            $temp = [];
-            $temp['title'] = $items->title;
-            $temp['description'] = $items->description;
+
             
-            if (!Storage::exists($items->icon)) {
+            $addon_items = ProductAddon::find($items->product_addon_id);
+            
+            $temp = [];
+            $temp['title'] = $addon_items->title;
+            $temp['description'] = $addon_items->description;
+            
+            if (!Storage::exists($addon_items->icon)) {
                 $path               = asset('assets/logo/no_Image.jpg');
             } else {
-                $url                = Storage::url($items->icon);
+                $url                = Storage::url($addon_items->icon);
                 $path               = asset($url);
             }
 
             $temp['icon'] = $path;
 
-            $temp['items'] = $items->items;
+            $temp['items'] = $addon_items->items;
 
             $addon_arr[] = $temp;
         }

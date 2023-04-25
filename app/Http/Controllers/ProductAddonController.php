@@ -72,14 +72,15 @@ class ProductAddonController extends Controller
         $info               = '';
         $modal_title        = 'Add Product Addon';
         $product = Product::select('id','product_name')->where('status','published')->get();
-
+        $usedProduct = [];
         if (isset($id) && !empty($id)) {
             $info           = ProductAddon::find($id);
-           
+            $usedProduct    = array_column($info->addonProducts->toArray(), 'product_id');
+            
             $modal_title    = 'Update Product Addon';
         }
 
-        return view('platform.product_addon.add_edit_modal', compact('info', 'modal_title', 'from','product'));
+        return view('platform.product_addon.add_edit_modal', compact('info', 'modal_title', 'from','product', 'usedProduct'));
     }
 
     public function saveForm(Request $request,$id = null)

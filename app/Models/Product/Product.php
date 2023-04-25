@@ -136,7 +136,9 @@ class Product extends Model
 
     public function productAddons()
     {
-        return $this->hasMany(ProductAddon::class, 'product_id', 'id')->orderBy('order_by', 'asc');
+        return $this->hasMany(ProductAddonProduct::class, 'product_id', 'id')
+                        ->join('product_addons', 'product_addons.id', '=', 'product_addon_products.product_addon_id');
+                        
     }
 
     public function reviews() {
