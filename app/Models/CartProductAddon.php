@@ -16,4 +16,11 @@ class CartProductAddon extends Model
         'title',
         'amount'
     ];
+
+    public function addonItem()
+    {
+        return $this->hasOne(ProductAddonItem::class,'id', 'addon_item_id');
+    }
+
+   
 }

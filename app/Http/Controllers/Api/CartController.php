@@ -122,8 +122,8 @@ class CartController extends Controller
                 $addon['title'] = $addon_items_info->label;
                 $addon['amount'] = $addon_items_info->amount;
                 
-                $addonCartItems = CartProductAddon::updateOrCreate(['cart_id' => $cart_id, 'product_id' => $checkCart->product_id, 'addon_item_id' => $addon_id], $addon);
-                
+                CartProductAddon::updateOrCreate(['cart_id' => $cart_id, 'product_id' => $checkCart->product_id, 'addon_item_id' => $addon_id], $addon);
+
             } else {
 
                 $checkCart->quantity = $quantity;
@@ -235,8 +235,12 @@ class CartController extends Controller
         $product_tax_exclusive_total = 0;
         $tax_percentage = 0;
         $cartTemp = [];
+        $used_addons = [];
+        $total_addon_amount = 0;
         if (isset($checkCart) && !empty($checkCart)) {
             foreach ($checkCart as $citems) {
+                
+
                 
                 $items = $citems->products;
                 $tax = [];
@@ -260,6 +264,38 @@ class CartController extends Controller
                     $product_tax_exclusive_total = $product_tax_exclusive_total + $citems->sub_total;
                 }
 
+                /**
+                 * addon amount calculated here
+                 */
+                $addonItems = CartProductAddon::where(['cart_id' => $citems->id, 'product_id' => $items->id ])->get();
+                $addon_total = 0;
+                if( isset( $addonItems ) && !empty( $addonItems ) ) {
+                    foreach ($addonItems as $items) {
+                        
+                        
+                        $addons = [];
+                        $addons['addon_id'] = $items->addonItem->addon->id;
+                        $addons['title'] = $items->addonItem->addon->title;
+                        $addons['description'] = $items->addonItem->addon->description;
+
+                        if (!Storage::exists( $items->addonItem->addon->icon)) {
+                            $path               = asset('assets/logo/no_Image.jpg');
+                        } else {
+                            $url                = Storage::url( $items->addonItem->addon->icon);
+                            $path               = asset($url);
+                        }
+            
+                        $addons['icon'] = $path;
+                        $addons['addon_item_label'] = $items->addonItem->label;
+                        $addons['amount'] = $items->addonItem->amount;
+                        $addon_total += $items->addonItem->amount;
+                        $used_addons[] = $addons;
+
+                    }
+                }
+
+                $total_addon_amount += $addon_total;
+              
                 $pro                    = [];
                 $pro['id']              = $items->id;
                 $pro['tax']             = $tax;
@@ -297,8 +333,9 @@ class CartController extends Controller
                 $pro['price']           = $citems->price;
                 $pro['quantity']        = $citems->quantity;
                 $pro['sub_total']       = $citems->sub_total;
-                
+                $pro['addons']          = $used_addons;
                 $grand_total            += $citems->sub_total;
+                $grand_total            += $addon_total;
                 $cartTemp[] = $pro;
                 
             }
@@ -328,7 +365,8 @@ class CartController extends Controller
                 'product_tax_exclusive_total_without_format' => round($product_tax_exclusive_total),
                 'tax_total' => number_format(round($tax_total), 2),
                 'tax_percentage' => number_format(round($tax_percentage), 2),
-                'shipping_charge' => $shipping_info->charges ?? 0
+                'shipping_charge' => $shipping_info->charges ?? 0,
+                'addon_amount' => $total_addon_amount
             );
         }
         
