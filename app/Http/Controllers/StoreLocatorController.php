@@ -70,6 +70,7 @@ class StoreLocatorController extends Controller
         return view('platform.store_locator.index',compact('title','breadCrum'));
 
     }
+
     public function modalAddEdit(Request $request)
     {
         
@@ -87,6 +88,7 @@ class StoreLocatorController extends Controller
         }
         return view('platform.store_locator.form.add_edit_modal', compact('modal_title', 'breadCrum', 'info', 'brand'));
     }
+
     public function saveForm(Request $request)
     {
         $id             = $request->id;
@@ -97,12 +99,7 @@ class StoreLocatorController extends Controller
                       ]);
         $storeId         = '';
         if ($validator->passes()) {
-            // if( !$request->is_parent ) {
-            //     $ins['parent_id'] = $request->parent_location;
-            // } else {
-
-            //     $ins['parent_id'] = 0;
-            // }
+          
             if( !$id ) {
                 $ins['added_by'] = Auth::id();
             } else {
@@ -130,8 +127,6 @@ class StoreLocatorController extends Controller
             $storeLocatorInfo               = StoreLocator::updateOrCreate(['id' => $id], $ins);
             $storeLocatorId                 = $storeLocatorInfo->id;
 
-
-
             if(!empty($request->near_pincode) && count($request->near_pincode) > 0)
             {
                 $dataItem = StoreLocatorPincode::where('store_locator_id',$storeLocatorId)->get();
@@ -144,11 +139,9 @@ class StoreLocatorController extends Controller
                 {
                     $ins['store_locator_id']       = $storeLocatorId;
                     $ins['pincode']                 = $val;
-                    // $ins['order_by']                = '' ;
                     $ins['status']                  = Auth::id();
-                    $data = StoreLocatorPincode::create($ins);
+                    StoreLocatorPincode::create($ins);
                 }
-                
                 
             }
             else{

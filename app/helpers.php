@@ -2,6 +2,7 @@
 
 use App\Helpers\AccessGuard;
 use App\Models\Cart;
+use App\Models\CartProductAddon;
 use App\Models\Master\Customer;
 use App\Models\Order;
 use App\Models\Product\Product;
@@ -306,7 +307,7 @@ function getProductApiData($product_data, $customer_id = '')
 
     $pro['image']                   = $path;
 
-     /**
+    /**
      * check product has customer reveiws
      */
     $reviews = '';
@@ -454,8 +455,24 @@ function getProductApiData($product_data, $customer_id = '')
             }
 
             $temp['icon'] = $path;
+            $addon_item_array = [];
+            // dd( $addon_items->items );
+            if( isset( $addon_items->items ) && !empty( $addon_items->items ) ) {
+                foreach ($addon_items->items as $aitem) {
+                    $is_selected = false;
+                    if( isset( $is_cart->id ) && !empty( $is_cart->id ) ) {
 
-            $temp['items'] = $addon_items->items;
+                        $is_selected = addonHasSelected($aitem->id, $product_data->id, $is_cart->id );
+                    }
+                    $tmp = [];
+                    $tmp['id'] = $aitem->id;
+                    $tmp['label'] = $aitem->label;
+                    $tmp['amount'] = $aitem->amount;
+                    $tmp['is_selected'] = $is_selected;
+                    $addon_item_array[] = $tmp;
+                }
+            }
+            $temp['items'] = $addon_item_array;
 
             $addon_arr[] = $temp;
         }
@@ -472,7 +489,7 @@ function getProductApiData($product_data, $customer_id = '')
 
 if (!function_exists('getProductPrice')) {
     function getProductPrice($productsObjects)
-    {
+    { // this function not used check all files confirm and delete it
 
         $strike_rate            = 0;
         $price                  = $productsObjects->mrp;
@@ -651,4 +668,13 @@ function getIndianCurrency(float $number)
 function getDiscountPercentage($mop, $mrp)
 {
     return round((($mop / $mrp) * 100) - 100);
+}
+
+function addonHasSelected($item_id, $product_id, $cart_id ) {
+    $cart_data = CartProductAddon::where(['cart_id' => $cart_id, 'product_id' => $product_id, 'addon_item_id' => $item_id])->first();
+    if( $cart_data ) {
+        return true;
+    } else {
+        return false;
+    }
 }

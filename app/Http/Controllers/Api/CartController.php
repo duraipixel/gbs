@@ -268,24 +268,24 @@ class CartController extends Controller
                 $addonItems = CartProductAddon::where(['cart_id' => $citems->id, 'product_id' => $items->id ])->get();
                 $addon_total = 0;
                 if( isset( $addonItems ) && !empty( $addonItems ) ) {
-                    foreach ($addonItems as $items) {
+                    foreach ($addonItems as $addItems) {
                         
                         $addons = [];
-                        $addons['addon_id'] = $items->addonItem->addon->id;
-                        $addons['title'] = $items->addonItem->addon->title;
-                        $addons['description'] = $items->addonItem->addon->description;
+                        $addons['addon_id'] = $addItems->addonItem->addon->id;
+                        $addons['title'] = $addItems->addonItem->addon->title;
+                        $addons['description'] = $addItems->addonItem->addon->description;
 
-                        if (!Storage::exists( $items->addonItem->addon->icon)) {
+                        if (!Storage::exists( $addItems->addonItem->addon->icon)) {
                             $path               = asset('assets/logo/no_Image.jpg');
                         } else {
-                            $url                = Storage::url( $items->addonItem->addon->icon);
+                            $url                = Storage::url( $addItems->addonItem->addon->icon);
                             $path               = asset($url);
                         }
             
                         $addons['icon'] = $path;
-                        $addons['addon_item_label'] = $items->addonItem->label;
-                        $addons['amount'] = $items->addonItem->amount;
-                        $addon_total += $items->addonItem->amount;
+                        $addons['addon_item_label'] = $addItems->addonItem->label;
+                        $addons['amount'] = $addItems->addonItem->amount;
+                        $addon_total += $addItems->addonItem->amount;
                         $used_addons[] = $addons;
 
                     }
