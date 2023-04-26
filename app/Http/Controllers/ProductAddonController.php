@@ -111,19 +111,20 @@ class ProductAddonController extends Controller
                
                 $imageName               = time() . '_' . $request->icon->getClientOriginalName();
                 
-                $directory              = 'products/'.$request->product_id.'/addons';
+                $directory              = 'addons/'.$info->id;
                 Storage::deleteDirectory('public/'.$directory);
                 
-                if (!is_dir(storage_path("app/public/products/".$request->product_id."/addons"))) {
-                    mkdir(storage_path("app/public/products/".$request->product_id."/addons"), 0775, true);
+                if (!is_dir(storage_path("app/public/addons/".$info->id))) {
+                    mkdir(storage_path("app/public/addons/".$info->id), 0775, true);
                 }
 
-                $fileNameThumb              = 'public/products/'.$request->product_id.'/addons/' . time() . '-' . $imageName;
+                $fileNameThumb              = 'public/addons/'.$info->id.'/' . time() . '-' . $imageName;
                 Image::make($request->icon)->save(storage_path('app/' . $fileNameThumb));
                 
                 $info->icon = $fileNameThumb;
                 $info->save();
             }
+            
             if(!empty($request->label))
             {
                 $dataItem = ProductAddonItem::where('product_addon_id',$id)->get();

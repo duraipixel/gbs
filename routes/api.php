@@ -85,9 +85,10 @@ Route::middleware(['client'])->group(function(){
     Route::post('/add/remove/whishlist', [App\Http\Controllers\Api\CustomerController::class, 'setWishlists']);
     Route::post('/clear/whishlist', [App\Http\Controllers\Api\CustomerController::class, 'clearWishlist']);
     Route::post('/get/whishlist', [App\Http\Controllers\Api\CustomerController::class, 'getWishlist']);
-
     
     Route::post('/get/shipping/charges', [App\Http\Controllers\Api\CartController::class, 'getShippingCharges']);
+    Route::post('/set/shipping/charges', [App\Http\Controllers\Api\CartController::class, 'setShippingCharges']);
+
     Route::post('/proceed/checkout', [App\Http\Controllers\Api\CheckoutController::class, 'proceedCheckout']);
     Route::post('/verify/payment/signature', [App\Http\Controllers\Api\CheckoutController::class, 'verifySignature']);
     
