@@ -103,50 +103,17 @@ class CommonController extends Controller
                 $tmp['slug']            = $item->slug;
                 $tmp['tag_line']        = $item->tag_line;
                 $tmp['order_by']        = $item->order_by;
+                $imagePath              = $item->image;
 
-                if (isset($item->collectionProducts) && !empty($item->collectionProducts)) {
-                    $i = 0;
-                    foreach ($item->collectionProducts as $proItem) {
-                        $pro                    = [];
-                        if ($i == 4) {
-                            break;
-                        }
-                        $productInfo            = Product::find($proItem->product_id);
-
-                        $salePrices             = getProductPrice($productInfo);
-
-                        $pro['id']              = $productInfo->id;
-                        $pro['product_name']    = $productInfo->product_name;
-                        $pro['hsn_code']        = $productInfo->hsn_code;
-                        $pro['product_url']     = $productInfo->product_url;
-                        $pro['sku']             = $productInfo->sku;
-                        $pro['has_video_shopping'] = $productInfo->has_video_shopping;
-                        $pro['stock_status']    = $productInfo->stock_status;
-                        $pro['is_featured']     = $productInfo->is_featured;
-                        $pro['is_best_selling'] = $productInfo->is_best_selling;
-                        $pro['is_new']          = $productInfo->is_new;
-                        $pro['sale_prices']     = $salePrices;
-                        $pro['mrp_price']       = $productInfo->price;
-                        $pro['image']           = $productInfo->base_image;
-                        $pro['category']        = $productInfo->ProductCategory->name ?? null;
-                        $pro['category_slug']   = $productInfo->ProductCategory->slug ?? null;
-
-                        $imagePath              = $productInfo->base_image;
-
-                        if (!Storage::exists($imagePath)) {
-                            $path               = asset('assets/logo/no_Image.jpg');
-                        } else {
-                            $url                = Storage::url($imagePath);
-                            $path               = asset($url);
-                        }
-
-                        $pro['image']           = $path;
-
-                        $tmp['products'][]      = $pro;
-
-                        $i++;
-                    }
+                if (!Storage::exists($imagePath)) {
+                    $path               = asset('assets/logo/no_Image.jpg');
+                } else {
+                    $url                = Storage::url($imagePath);
+                    $path               = asset($url);
                 }
+
+                $tmp['image']           = $path;
+               
 
                 $collection[] = $tmp;
             }

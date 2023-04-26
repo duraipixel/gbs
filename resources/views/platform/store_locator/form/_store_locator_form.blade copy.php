@@ -288,7 +288,7 @@
         $("body").on("click", "#DeleteRowContact", function() {
             $(this).parents("#row").remove();
         })
-
+ 
 
         $("#rowEmail").on("click", function() {
             newRowAdd =
