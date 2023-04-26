@@ -93,9 +93,9 @@ class HomepageSettingController extends Controller
                                 'homepage_setting_field_id' => 'required',
                             ]);
         if ($validator->passes()) {
-        
- 
+            
             $ins['title']                               = $request->title;
+            $ins['color']                               = $request->color ?? '';
             $ins['homepage_setting_field_id']           = $request->homepage_setting_field_id;
             $ins['description']                         = $request->description;
             $ins['order_by']                            = $request->order_by ?? 0;
@@ -110,42 +110,55 @@ class HomepageSettingController extends Controller
             
             $error                      = 0;
             $info                       = HomepageSetting::updateOrCreate(['id' => $id], $ins);
-            $home_settings_id=$info->id;
-            $answers = [];
-            for ($i = 0; $i < count($request->start); $i++) {                     
-              
-                    $imageName                  = uniqid().$request->home_image[$i]->getClientOriginalName();
-                    $directory                  = 'home_settings/';
-                  //  Storage::deleteDirectory('public/'.$directory);
+            $home_settings_id           = $info->id;
 
-                    if (!is_dir(storage_path("app/public/home_settings/"))) {
-                        mkdir(storage_path("app/public/home_settings/"), 0775, true);
-                    }    
-                  
-                    $fileNameThumb              = 'public/home_settings/' . time() . '-' . $imageName;
-                    Image::make($request->home_image[$i])->save(storage_path('app/' . $fileNameThumb));  
-                   
-    
-                
-                $answers[] = [
-                    'homepage_settings_id' => $home_settings_id,
-                    'start_size' => $request->start[$i],
-                    'end_size' => $request->end[$i],
-                    'setting_image_name' =>$fileNameThumb
-                ];
-                //HomepageSettingItems::updateOrCreate(['homepage_settings_id' => $id], $answers);              
+            $item_id = $request->item_id;
+            if( isset($item_id) && count($item_id) > 0 ){
+                HomepageSettingItems::where('homepage_settings_id', $home_settings_id)->whereNotIn('id', $item_id)->delete();
             }
-            HomepageSettingItems::insert($answers);
-            
-       
+
+            $answers = [];
+            if( isset( $request->start ) && !empty( $request->start ) ) {
+
+                for ($i = 0; $i < count($request->start); $i++) {  
+                    $sett = [];
+                    $id = $item_id[$i];
+                    if( isset( $request->home_image[$i] ) && !empty( $request->home_image[$i] ) ) {
+                        $fileNameThumb = '';
+                        $imageName                  = uniqid().$request->home_image[$i]->getClientOriginalName();
+                        $directory                  = 'home_settings/';
+    
+                        if (!is_dir(storage_path("app/public/home_settings/".$home_settings_id))) {
+                            mkdir(storage_path("app/public/home_settings/".$home_settings_id), 0775, true);
+                        }    
+                      
+                        $fileNameThumb              = 'public/home_settings/'.$home_settings_id.'/' . time() . '-' . $imageName;
+                        Image::make($request->home_image[$i])->save(storage_path('app/' . $fileNameThumb));  
+                        $sett['setting_image_name'] = $fileNameThumb;
+                    }
+
+                    $sett['homepage_settings_id'] = $home_settings_id;
+                    $sett['start_size'] = $request->start[$i];
+                    $sett['end_size'] = $request->end[$i];
+                    
+                    HomepageSettingItems::updateOrCreate(['homepage_settings_id' => $home_settings_id, 'id' => $id], $sett);              
+                   
+                }
+            }
             
             $message                    = (isset($id) && !empty($id)) ? 'Updated Successfully' : 'Added successfully';
+
         } else {
+
             $error                      = 1;
             $message                    = $validator->errors()->all();
+
         }
+
         return response()->json(['error' => $error, 'message' => $message]);
+
     }
+
     public function changeStatus(Request $request)
     {
         $id             = $request->id;

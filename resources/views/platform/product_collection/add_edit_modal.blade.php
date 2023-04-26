@@ -130,6 +130,14 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="mb-7">
+                                    <label class="fw-bold fs-6 mb-2"> Handpicked Collection </label>
+                                    <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
+                                        <input class="form-check-input" type="checkbox"  name="is_handpicked_collection" value="yes"  @if(isset( $info->is_handpicked_collection) && $info->is_handpicked_collection == 'yes') checked @endif />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-7">
                                     <label class="fw-bold fs-6 mb-2"> Show on Home Page </label>
                                     <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
                                         <input class="form-check-input" type="checkbox"  name="show_home_page" value="yes"  @if(isset( $info->show_home_page) && $info->show_home_page == 'yes') checked @endif />

@@ -15,7 +15,8 @@ class ProductCollection extends Model
         'order_by',
         'status',
         'show_home_page',
-        'can_map_discount'
+        'can_map_discount',
+        'is_handpicked_collection'
     ];
 
     public function collectionProducts()

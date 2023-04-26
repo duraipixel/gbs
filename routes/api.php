@@ -25,10 +25,14 @@ Route::get('/get/banners', [App\Http\Controllers\Api\CommonController::class, 'g
 Route::get('/get/brands', [App\Http\Controllers\Api\CommonController::class, 'getAllBrands']);
 Route::get('/get/brands/all/{slug}', [App\Http\Controllers\Api\CommonController::class, 'getBrandInfo']);
 Route::get('/get/brands/alphabets', [App\Http\Controllers\Api\CommonController::class, 'getBrandByAlphabets']);
+
 Route::post('/get/discount/collections', [App\Http\Controllers\Api\CommonController::class, 'getDiscountCollections']);
+Route::post('/get/handpicked/collections', [App\Http\Controllers\Api\CommonController::class, 'getHandPickedCollections']);
 Route::post('/get/subcategory/collections', [App\Http\Controllers\Api\CommonController::class, 'getSubCategoryCollections']);
 Route::get('/get/product/collections/{order_by?}', [App\Http\Controllers\Api\CollectionController::class, 'getProductCollections']);
 Route::get('/get/product/collections/byorder/{order_by}', [App\Http\Controllers\Api\CollectionController::class, 'getProductCollectionByOrder']);
+Route::get('/browseHome', [App\Http\Controllers\Api\BrowseController::class, 'index']);
+
 Route::get('/get/filter/static/sidemenus', [App\Http\Controllers\Api\FilterController::class, 'getFilterStaticSideMenu']);
 Route::post('/get/products', [App\Http\Controllers\Api\FilterController::class, 'getProducts']);
 Route::post('/get/products/by/slug', [App\Http\Controllers\Api\FilterController::class, 'getProductBySlug']);
@@ -51,7 +55,7 @@ Route::post('/serviceCenterDetail', [App\Http\Controllers\Api\ServiceController:
 Route::post('/store-locator', [App\Http\Controllers\Api\StoreLocatorController::class, 'getStoreLocator']);
 Route::post('/storeLocatorDetail', [App\Http\Controllers\Api\StoreLocatorController::class, 'getStoreLocatorDetail']);
 Route::get('/quickLink', [App\Http\Controllers\Api\QuickLinkController::class, 'index']);
-Route::get('/browseHome', [App\Http\Controllers\Api\BrowseController::class, 'index']);
+
 Route::post('/check/product/availability', [App\Http\Controllers\Api\ProductAvailCheckController::class, 'index']);
 
 Route::post('/add/cart', [App\Http\Controllers\Api\CartController::class, 'addToCart']);

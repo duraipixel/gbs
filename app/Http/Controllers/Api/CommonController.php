@@ -121,6 +121,41 @@ class CommonController extends Controller
         return $collection;
     }
 
+
+    public function getHandPickedCollections()
+    {
+
+        $details        = ProductCollection::where(['show_home_page' => 'yes', 'status' => 'published', 'is_handpicked_collection' => 'yes'])
+            ->orderBy('order_by', 'desc')->limit(4)->get();
+
+        $collection     = [];
+
+        if (isset($details) && !empty($details)) {
+            foreach ($details as $item) {
+                $tmp                    = [];
+                $tmp['id']              = $item->id;
+                $tmp['collection_name'] = $item->collection_name;
+                $tmp['slug']            = $item->slug;
+                $tmp['tag_line']        = $item->tag_line;
+                $tmp['order_by']        = $item->order_by;
+                $imagePath              = $item->image;
+
+                if (!Storage::exists($imagePath)) {
+                    $path               = asset('assets/logo/no_Image.jpg');
+                } else {
+                    $url                = Storage::url($imagePath);
+                    $path               = asset($url);
+                }
+
+                $tmp['image']           = $path;
+               
+
+                $collection[] = $tmp;
+            }
+        }
+        return $collection;
+    }
+
     public function setRecentView(Request $request)
     {
         $ins['customer_id'] = $request->customer_id;

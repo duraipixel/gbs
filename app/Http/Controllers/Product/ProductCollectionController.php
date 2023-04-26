@@ -120,6 +120,7 @@ class ProductCollectionController extends Controller
             $ins['tag_line']            = $request->tag_line;
             $ins['show_home_page']      = $request->show_home_page ?? 'no';
             $ins['can_map_discount']    = $request->can_map_discount ?? 'no';
+            $ins['is_handpicked_collection'] = $request->is_handpicked_collection ?? 'no';
             $ins['slug']                = Str::slug($request->collection_name);
 
             if($request->status)
