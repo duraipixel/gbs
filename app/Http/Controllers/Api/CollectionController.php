@@ -16,7 +16,7 @@ class CollectionController extends Controller
     {
         $order_by = $request->order_by;
 
-        $details = ProductCollection::where(['show_home_page' => 'yes', 'status' => 'published', 'can_map_discount' => 'no'])
+        $details = ProductCollection::where(['show_home_page' => 'yes', 'is_handpicked_collection' => 'no', 'status' => 'published', 'can_map_discount' => 'no'])
             ->when($order_by != '', function ($q) use ($order_by) {
                 return $q->where('order_by', $order_by);
             })
@@ -29,8 +29,7 @@ class CollectionController extends Controller
     {
         $order_by = $request->order_by;
 
-
-        $details = ProductCollection::where(['show_home_page' => 'yes', 'status' => 'published', 'can_map_discount' => 'no'])
+        $details = ProductCollection::where(['show_home_page' => 'yes', 'status' => 'published', 'is_handpicked_collection' => 'no', 'can_map_discount' => 'no'])
             ->when($order_by != '', function ($q) use ($order_by) {
                 return $q->where('order_by', $order_by);
             })

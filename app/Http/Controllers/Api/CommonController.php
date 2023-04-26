@@ -90,7 +90,7 @@ class CommonController extends Controller
     public function getDiscountCollections()
     {
 
-        $details        = ProductCollection::where(['show_home_page' => 'yes', 'status' => 'published', 'can_map_discount' => 'yes'])
+        $details        = ProductCollection::where(['show_home_page' => 'yes', 'status' => 'published','is_handpicked_collection' => 'no', 'can_map_discount' => 'yes'])
             ->orderBy('order_by', 'asc')->limit(4)->get();
 
         $collection     = [];
