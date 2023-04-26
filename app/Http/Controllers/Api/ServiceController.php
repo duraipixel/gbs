@@ -114,6 +114,31 @@ class ServiceController extends Controller
         }
 
         $temp['near_pincodes'] = $near_pincodes;
+        $contacts = '';
+        
+        if( isset( $data->contacts ) && !empty($data->contacts ) ) {
+
+            $d_contact = array_column($data->contacts->toArray(), 'contact' );
+
+            if( isset( $d_contact ) && !empty( $d_contact ) ) {
+                $contacts = implode(",", $d_contact);
+            }
+          
+        }
+
+        $temp['group_contacts'] = $contacts; 
+        $emails = '';
+        if( isset( $data->emails ) && !empty($data->emails ) ) {
+
+            $d_contact = array_column($data->emails->toArray(), 'email' );
+
+            if( isset( $d_contact ) && !empty( $d_contact ) ) {
+                $emails = implode(",", $d_contact);
+            }
+          
+        }
+        $temp['group_emails'] = $emails; 
+        
         if (isset($data->brands) && !empty($data->brands)) {
 
             $usedBrands = array_column($data->brands->toArray(), 'brand_id');
