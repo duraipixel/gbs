@@ -22,15 +22,15 @@
         <div class="card-header">
             <ul class="nav nav-custom nav-tabs nav-line-tabs nav-line-tabs-2x border-0 fs-4 fw-bold mb-0 align-items-center">
                 <li class="nav-item">
-                    <a class="nav-link text-active-primary active" data-bs-toggle="tab" href="#kt_ecommerce_add_store_locator_general">General</a>
+                    <a class="nav-link text-active-primary active" data-bs-toggle="tab" href="#kt_ecommerce_add_service_center_general">General</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-active-primary" data-bs-toggle="tab" href="#kt_ecommerce_add_store_locator_meta">Meta</a>
+                    <a class="nav-link text-active-primary" data-bs-toggle="tab" href="#kt_ecommerce_add_service_center_meta">Meta</a>
                 </li>
             </ul>
         </div>
         <div class="card-body">
-            <form id="add_store_locator_form" class="form" enctype="multipart/form-data">
+            <form id="add_service_center_form" class="form" enctype="multipart/form-data">
                 <div id="kt_activities_body">
                     <div id="kt_activities_scroll" class="position-relative scroll-y me-n5 pe-5" data-kt-scroll="true"
                         data-kt-scroll-height="auto" data-kt-scroll-wrappers="#kt_activities_body"
@@ -45,10 +45,10 @@
                                     <input type="hidden" name="from" id="from" value="{{ $from ?? '' }}">
         
                                     <div class="tab-content">
-                                        <div class="tab-pane fade show active" id="kt_ecommerce_add_store_locator_general" role="tab-panel">
+                                        <div class="tab-pane fade show active" id="kt_ecommerce_add_service_center_general" role="tab-panel">
                                             @include('platform.store_locator.form._store_locator_form')
                                         </div>
-                                        <div class="tab-pane fade" id="kt_ecommerce_add_store_locator_meta" role="tab-panel">
+                                        <div class="tab-pane fade" id="kt_ecommerce_add_service_center_meta" role="tab-panel">
                                             @include('platform.common.form._meta_form')
                                         </div>
                                     </div>
@@ -59,7 +59,7 @@
                     <div class="card-footer py-5 text-center" id="kt_activities_footer">
                         <div class="text-end px-8">
                             <button type="reset" class="btn btn-light me-3" id="discard">Discard</button>
-                            <button type="submit" class="btn btn-primary" data-kt-store_locator-modal-action="submit">
+                            <button type="submit" class="btn btn-primary" data-kt-service_center-modal-action="submit">
                                 <span class="indicator-label">Submit</span>
                                 <span class="indicator-progress">Please wait...
                                     <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
@@ -116,7 +116,6 @@
         });
     });
 
-    
     // banner mobile image
 
     document.getElementById('bannerMobileUrl').addEventListener('change', function() {
@@ -141,59 +140,16 @@
     });
    
     
-//store image
-
-document.getElementById('storeUrl').addEventListener('change', function() {
-        if (this.files[0]) {
-            var picture = new FileReader();
-            picture.readAsDataURL(this.files[0]);
-            picture.addEventListener('load', function(event) {
-                console.log(event.target);
-                let img_url = event.target.result;
-                $('#store-image').css({
-                    'background-image': 'url(' + event.target.result + ')'
-                });
-            });
-        }
-    });
-    document.getElementById('store_remove_logo').addEventListener('click', function() {
-        $('#store_remove_image').val("yes");
-        $('#store-image').css({
-            'background-image': ''
-        });
-    });
-
-// store mobile image
-
-document.getElementById('storeMobileUrl').addEventListener('change', function() {
-        // console.log("111");
-        if (this.files[0]) {
-            var picture = new FileReader();
-            picture.readAsDataURL(this.files[0]);
-            picture.addEventListener('load', function(event) {
-                console.log(event.target);
-                let img_url = event.target.result;
-                $('#store-mobile-image').css({
-                    'background-image': 'url(' + event.target.result + ')'
-                });
-            });
-        }
-    });
-    document.getElementById('store_mobile_remove_logo').addEventListener('click', function() {
-        $('#store_mobile_remove_image').val("yes");
-        $('#store-mobile-image').css({
-            'background-image': ''
-        });
-    });
 
 
-    $('#brand_id').select2();
+
+    $('#parent_location').select2();
     var add_url = "{{ route('store-locator.save') }}";
     // Class definition
     var KTProductCategory = function() {
         // Shared variables
         const element = document.getElementById('kt_common_add_form');
-        const form = element.querySelector('#add_store_locator_form');
+        const form = element.querySelector('#add_service_center_form');
         const modal = new bootstrap.Modal(element);
 
         const drawerEl = document.querySelector("#kt_common_add_form");
@@ -204,13 +160,6 @@ document.getElementById('storeMobileUrl').addEventListener('change', function() 
             var validator = FormValidation.formValidation(
                 form, {
                     fields: {
-                        'brand_id': {
-                            validators: {
-                                notEmpty: {
-                                    message: 'Brand is required'
-                                }
-                            }
-                        },
                         'title': {
                             validators: {
                                 notEmpty: {
@@ -218,7 +167,14 @@ document.getElementById('storeMobileUrl').addEventListener('change', function() 
                                 }
                             }
                         },
-                       
+                        'pincode': {
+                            validators: {
+                                notEmpty: {
+                                    message: 'Pincode is required'
+                                }
+                            }
+                        },
+                        
                         'description': {
                             validators: {
                                 notEmpty: {
@@ -268,7 +224,7 @@ document.getElementById('storeMobileUrl').addEventListener('change', function() 
             });
 
             // Submit button handler
-            const submitButton = element.querySelector('[data-kt-store_locator-modal-action="submit"]');
+            const submitButton = element.querySelector('[data-kt-service_center-modal-action="submit"]');
             // submitButton.addEventListener('click', function(e) {
             submitButton.addEventListener('click', function (e) {
                 // Prevent default button action
@@ -279,7 +235,7 @@ document.getElementById('storeMobileUrl').addEventListener('change', function() 
                         
                         if (status == 'Valid') {
                             var from = $('#from').val();
-                            var form = $('#add_store_locator_form')[0]; 
+                            var form = $('#add_service_center_form')[0]; 
                             var formData = new FormData(form);
                             submitButton.setAttribute('data-kt-indicator', 'on');
                             submitButton.disabled = true;

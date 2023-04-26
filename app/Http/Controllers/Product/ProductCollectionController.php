@@ -144,7 +144,7 @@ class ProductCollectionController extends Controller
                 $collectionImage           = 'public/productCollection/'.$collection_id .'/' .$imageName;
                 Image::make($file)->save(storage_path('app/' . $collectionImage));
 
-                $collectionInfo->image     = $imageName;
+                $collectionInfo->image     = $collectionImage;
                 $collectionInfo->save();
             }
             
