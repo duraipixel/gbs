@@ -24,6 +24,8 @@ class StoreLocator extends Model
         'longitude',
         'email',
         'contact_no',
+        'map_link',
+        'image_360_link',
         'status',
         'added_by',
         'order_by',
@@ -33,16 +35,31 @@ class StoreLocator extends Model
     {
         return $this->hasOne(StoreLocatorMetaTag::class, 'store_locator_id', 'id');
     }
-    public function nearPincode()
+    public function nearPincodes()
     {
         return $this->hasMany(StoreLocatorPincode::class,'store_locator_id','id');
     }
-    public function contact()
+    public function contacts()
     {
         return $this->hasMany(StoreLocatorContact::class,'store_locator_id','id');
     }
-    public function serviceEmail()
+    public function emails()
     {
         return $this->hasMany(StoreLocatorEmail::class,'store_locator_id','id');
+    }
+
+    public function brands()
+    {
+        return $this->hasMany(StoreLocatorBrand::class, 'store_locator_id', 'id')->select('brand_id');
+    }
+
+    public function allBrands()
+    {
+        return $this->hasMany(StoreLocatorBrand::class, 'store_locator_id', 'id');
+    }
+
+    public function offers()
+    {
+        return $this->hasMany(StoreLocatorOffer::class, 'store_locator_id', 'id');
     }
 }

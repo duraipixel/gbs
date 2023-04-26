@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\File;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Excel;
+use Illuminate\Support\Facades\DB;
 use Image;
 
 class StoreLocatorOfferController extends Controller
@@ -20,8 +21,9 @@ class StoreLocatorOfferController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data       = StoreLocatorOffer::select('store_locator_offers.*','store_locators.title as store_locator')
-            ->leftJoin('store_locators','store_locators.id','=','store_locator_offers.store_locator_id');
+
+            $data       = StoreLocatorOffer::select(DB::raw("group_concat(gbs_store_locator_offers.title) AS title, gbs_store_locators.title as store_locator, gbs_store_locator_offers.store_locator_id, gbs_store_locator_offers.status, gbs_store_locator_offers.id"))
+            ->leftJoin('store_locators','store_locators.id','=','store_locator_offers.store_locator_id')->groupBy('store_locator_id');
            
             $status     = $request->get('status');
             $keywords   = $request->get('search')['value'];
@@ -39,14 +41,6 @@ class StoreLocatorOfferController extends Controller
                     }
                 })
                 ->addIndexColumn()
-                ->editColumn('status', function ($row) {
-                    $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ',\''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'store-offer\')">'.ucfirst($row->status).'</a>';
-                    return $status;
-                })
-                ->editColumn('created_at', function ($row) {
-                    $created_at = Carbon::createFromFormat('Y-m-d H:i:s', $row['created_at'])->format('d-m-Y');
-                    return $created_at;
-                })
     
                 ->addColumn('action', function ($row) {
                     $edit_btn = '<a href="javascript:void(0);" onclick="return  openForm(\'store-offer\',' . $row->store_locator_id . ')" class="btn btn-icon btn-active-primary btn-light-primary mx-1 w-30px h-30px" > 
@@ -57,7 +51,7 @@ class StoreLocatorOfferController extends Controller
               
                     return $edit_btn.$del_btn;
                 })
-                ->rawColumns(['action', 'status', 'created_at']);
+                ->rawColumns(['action']);
             return $datatables->make(true);
         }
         $title                  = "Store Locators";
@@ -78,61 +72,64 @@ class StoreLocatorOfferController extends Controller
         }
         return view('platform.store_locator_offer.add_edit_modal', compact('info', 'modal_title', 'from','storeLocator'));
     }
+
     public function saveForm(Request $request,$id = null)
     {
         $id             = $request->id;
         $validator      = Validator::make($request->all(), [
                                 'store_locator_id' => 'required',
                             ]);
+
         if ($validator->passes()) {
-          
-           
-            $title = $request->title;
+            
+            $title = array_filter($request->title);
             $image  = $request->image;
+            $offer_id  = $request->offer_id;
+            $store_locator_id = $request->store_locator_id;
 
-            // $dataItem = ServiceCenterOffer::where('service_center_id',$request->service_center_id)->get();
-            // foreach($dataItem as $key=>$val)
-            // {
-
-            //     $directory              = 'serviceCenter/offer/'.$val->id;
-            //     $val->delete();
-            // }
-// dd($request->all());
-            for($i = 0 ; $i < count($title) ; $i++)
-            {
-                $ins['store_locator_id']        = $request->store_locator_id;
-
-                $ins['status']                  = 'published';
-                $ins['title']                   = $title[$i] ?? '';
-                $ins['added_by']                = Auth::id();
-                $storeLocator                 = StoreLocatorOffer::updateOrCreate(['store_locator_id'=>$request->service_center_id,'title'=>$title[$i]],$ins);
-                $storeLocatorId                = $storeLocator->id;
-               
-                if(!empty($image[$i])) {
-
-                    $directory              = 'storeLocator/offer/'.$storeLocatorId;
-                    Storage::deleteDirectory('public/'.$directory);
-
-                    $imageName                  = uniqid().$image[$i]->getClientOriginalName();
-
-                    if (!is_dir(storage_path("app/public/storeLocator/offer/".$storeLocatorId))) {
-                        mkdir(storage_path("app/public/storeLocator/offer/".$storeLocatorId), 0775, true);
-                    }
+            if( isset($offer_id) && count($offer_id) > 0 ) {
+                StoreLocatorOffer::where('store_locator_id', $store_locator_id)->whereNotIn('id', $offer_id)->delete();
+            }
+            
+            if( isset( $title ) && !empty($title)) {
+                
+                for($i = 0 ; $i < count($title) ; $i++)
+                {
+                    $id = $offer_id[$i] ?? '';
+                    $ins['store_locator_id']        = $store_locator_id;
+    
+                    $ins['status']                  = 'published';
+                    $ins['title']                   = $title[$i] ?? '';
+                    $ins['added_by']                = Auth::id();
                     
-                    $fileNameThumb              = 'public/storeLocator/offer/'.$storeLocatorId.'/' . time() . '-' . $imageName;
-                    Image::make($image[$i])->save(storage_path('app/' . $fileNameThumb));
+                    if ( isset( $image[$i] ) && !empty( $image[$i] ) ) {
+    
+                        $imageName                  = uniqid().$image[$i]->getClientOriginalName();
+                        
+                        if (!is_dir(storage_path("app/public/store/".$store_locator_id."/offer"))) {
+                            mkdir(storage_path("app/public/store/".$store_locator_id."/offer"), 0775, true);
+                        }
+                        
+                        $fileNameThumb              = 'public/store/'.$store_locator_id.'/offer/' . time() . '-' . $imageName;
+                        Image::make($image[$i])->save(storage_path('app/' . $fileNameThumb));
+    
+                        $ins['image']    = $fileNameThumb;
+                        
+                    }
 
-                    $storeLocator->image    = $fileNameThumb;
-                    $storeLocator->update();
+                    StoreLocatorOffer::updateOrCreate(['store_locator_id'=>$request->store_locator_id,'id'=> $id],$ins);
+                   
                 }
             }
+
             $error                      = 0;
-          
-        
             $message                    = (isset($id) && !empty($id)) ? 'Updated Successfully' : 'Added successfully';
+
         } else {
+
             $error                      = 1;
             $message                    = $validator->errors()->all();
+
         }
         return response()->json(['error' => $error, 'message' => $message]);
     }

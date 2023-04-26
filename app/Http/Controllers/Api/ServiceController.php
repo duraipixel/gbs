@@ -63,6 +63,7 @@ class ServiceController extends Controller
             })
             ->groupBy('service_centers.id')
             ->first();
+            
         $response = [];
         if (isset($data) && !empty($data)) {
             $response = $this->getList($data);

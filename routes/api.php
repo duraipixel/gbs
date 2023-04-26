@@ -47,8 +47,9 @@ Route::post('/verify/account', [App\Http\Controllers\Api\CustomerController::cla
 
 Route::post('/serviceCenter', [App\Http\Controllers\Api\ServiceController::class, 'getServiceCenter']);
 Route::post('/serviceCenterDetail', [App\Http\Controllers\Api\ServiceController::class, 'getServiceCenterDetail']);
-Route::get('/storeLocator', [App\Http\Controllers\Api\StoreLocatorController::class, 'getStoreLocator']);
-Route::get('/storeLocatorDetail/{slug}', [App\Http\Controllers\Api\StoreLocatorController::class, 'getStoreLocatorDetail']);
+
+Route::post('/store-locator', [App\Http\Controllers\Api\StoreLocatorController::class, 'getStoreLocator']);
+Route::post('/storeLocatorDetail', [App\Http\Controllers\Api\StoreLocatorController::class, 'getStoreLocatorDetail']);
 Route::get('/quickLink', [App\Http\Controllers\Api\QuickLinkController::class, 'index']);
 Route::get('/browseHome', [App\Http\Controllers\Api\BrowseController::class, 'index']);
 Route::post('/check/product/availability', [App\Http\Controllers\Api\ProductAvailCheckController::class, 'index']);

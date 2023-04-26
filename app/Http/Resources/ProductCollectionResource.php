@@ -40,7 +40,6 @@ class ProductCollectionResource extends JsonResource
                 $pro['hsn_code']        = $items->product->hsn_code;
                 $pro['product_url']     = $items->product->product_url;
                 $pro['sku']             = $items->product->sku;
-                $pro['has_video_shopping'] = $items->product->has_video_shopping;
                 $pro['stock_status']    = $items->product->stock_status;
                 $pro['is_featured']     = $items->product->is_featured;
                 $pro['is_best_selling'] = $items->product->is_best_selling;

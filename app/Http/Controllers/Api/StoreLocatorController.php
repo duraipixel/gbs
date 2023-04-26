@@ -11,181 +11,172 @@ use Illuminate\Support\Facades\Storage;
 class StoreLocatorController extends Controller
 {
 
-    public function getStoreLocator()
+    public function getStoreLocator(Request $request)
     {
 
-        $brand = Brands::where('status','published')->get();
-        $data = StoreLocator::where('status','published')->get();
+        $brand_id = $request->brand_id ?? '';
+        $post_code = $request->post_code ?? '';
+        $center_id = $request->center_id ?? '';
+
+        $data = StoreLocator::select('store_locators.*')
+            ->join('store_locator_brands', 'store_locator_brands.store_locator_id', '=', 'store_locators.id')
+            ->join('store_locator_pincodes', 'store_locator_pincodes.store_locator_id', '=', 'store_locators.id')
+            ->join('brands', 'brands.id', '=', 'store_locator_brands.brand_id')
+            ->where('store_locators.status', 'published')
+            // ->where('store_locators.parent_id', 0)
+            ->when($brand_id != '', function ($query) use ($brand_id) {
+                $query->where('brands.id', $brand_id);
+            })
+            ->when($post_code != '', function ($query) use ($post_code) {
+                $query->where('store_locator_pincodes.pincode', $post_code);
+                $query->orWhere('store_locators.pincode', $post_code);
+            })
+            ->when($center_id != '', function ($query) use ($center_id) {
+                $query->where('store_locators.id', $center_id);
+            })
+            ->groupBy('store_locators.id')
+            ->get();
+
         $params = [];
-        if( isset( $brand ) && !empty( $brand ) ) {
-            foreach($brand as $key=>$val)
-            {
-                $temp = [];
-                $temp['id']                 = $val->id;
-                $temp['brand_name']         = $val->brand_name;
-                $temp['slug']               = $val->slug;
-                $temp['short_description']  = $val->short_description;
-                $temp['status']             = $val->status;
 
-                if($val->brand_logo )
-                {
-                    $url = Storage::url($val->brand_logo );
-                    $val->brand_logo = asset($url);
-                }
-                else{
-                    $val->brand_logo = asset('userImage/no_Image.jpg');
-                }
-                $temp['brand_logo']         = $val->brand_logo;
-                if(isset($val->storeLocator) && !empty($val->storeLocator) && count($val->storeLocator) > 0)
-                {
-                    foreach($val->storeLocator as $store)
-                    {
-                        $temp1['id']            = $store->id;
-                        $temp1['parent_id']     = $store->parent_id;
-                        $temp1['brand_id']      = $store->brand_id;
-                        $temp1['title']         = $store->title;
-                        $temp1['slug']          = $store->slug;
-                        $temp1['description']   = $store->description;
-                        $temp1['address']       = $store->address;
-                        $temp1['latitude']      = $store->latitude;
-                        $temp1['longitude']     = $store->longitude;
-                        
-                        if(isset($store->email) && !empty($store->email))
-                        {
-                            $arrEmail = json_decode( $store->email );
-                            $store->email = implode(',',$arrEmail);
-                            $temp1['email']         = $store->email;
-                        }
-                        else{
-                            $temp1['email']         = '' ;
-                        }
-                            
-                        if(isset($store->contact_no) && !empty($store->contact_no))
-                        {
-                            $arrContact             = json_decode( $store->contact_no );
-                            $store->contact_no      = implode(',',$arrContact);
-                            $temp1['contact_no']    = $store->contact_no;
-                        }
-                        else{
-                            $temp1['contact_no']         = '' ;
-                        }
-
-                        if($store->banner )
-                        {
-                            $url = Storage::url($store->banner );
-                            $store->banner = asset($url);
-                        }
-                        else{
-                            $store->banner = asset('userImage/no_Image.jpg');
-                        }
-                        $temp1['banner']         = $store->banner;
-
-                        if($store->banner_mb )
-                        {
-                            $url = Storage::url($store->banner_mb );
-                            $store->banner_mb = asset($url);
-                        }
-                        else{
-                            $store->banner_mb = asset('userImage/no_Image.jpg');
-                        }
-                        $temp1['banner_mb']         = $store->banner_mb;
-
-                        if($store->store_image )
-                        {
-                            $url = Storage::url($store->store_image );
-                            $store->store_image = asset($url);
-                        }
-                        else{
-                            $store->store_image = asset('userImage/no_Image.jpg');
-                        }
-                        $temp1['store_image']         = $store->store_image;
-
-                        if($store->store_image_mb )
-                        {
-                            $url = Storage::url($store->store_image_mb );
-                            $store->store_image_mb = asset($url);
-                        }
-                        else{
-                            $store->store_image_mb = asset('userImage/no_Image.jpg');
-                        }
-                        $temp1['store_image_mb']            = $store->store_image_mb;
-                        $temp1['meta_title']                = $store->meta->meta_title ?? '';
-                        $temp1['meta_keyword']              = $store->meta->meta_keyword ?? '';
-                        $temp1['meta_description']          = $store->meta->meta_description ?? '';
-
-                        $temp1['status']    = $store->status;
-                        $temp['child'][]    = $temp1;
-                    }
-                }
-                $params[] = $temp;
+        if (isset($data) && !empty($data)) {
+            foreach ($data as $item) {
+                $params[] = $this->getList($item);
             }
         }
-        return response()->json(['data'=>$params]);
+
+        return response()->json(['data' => $params]);
     }
 
     public function getStoreLocatorDetail(Request $request)
     {
-        $slug = $request->slug;
-        $data = StoreLocator::where('status','published')
-                ->where('slug',$slug)
-                ->select('id','brand_id','parent_id','title','slug','banner','banner_mb','store_image','store_image_mb','description','address','latitude','longitude','email','contact_no','status','order_by')
-                ->first();
 
-        if(isset($data->banner) && !empty($data->banner))
-        {
-            $url = Storage::url($data->banner );
-            $data->banner = asset($url);
+        $slug = $request->slug;
+        $data = StoreLocator::select('store_locators.*')
+            ->join('store_locator_brands', 'store_locator_brands.store_locator_id', '=', 'store_locators.id')
+            ->join('store_locator_pincodes', 'store_locator_pincodes.store_locator_id', '=', 'store_locators.id')
+            ->join('brands', 'brands.id', '=', 'store_locator_brands.brand_id')
+            ->where('store_locators.status', 'published')
+            // ->where('store_locators.parent_id', 0)
+            ->when($slug != '', function ($query) use ($slug) {
+                $query->where('store_locators.slug', $slug);
+            })
+            ->groupBy('store_locators.id')
+            ->first();
+
+        $response = [];
+        if (isset($data) && !empty($data)) {
+            $response = $this->getList($data);
         }
-        else{
+        return $response;
+    }
+
+    public function getList($data)
+    {
+
+        $temp['id']             = $data->id;
+        $temp['title']          = $data->title;
+        $temp['slug']           = $data->slug;
+        $temp['parent_id']      = $data->parent_id;
+        $temp['description']    = $data->description;
+        $temp['pincode']        = $data->pincode;
+        $temp['address']        = $data->address;
+        $temp['map_link']       = $data->map_link;
+        $temp['image_360_link'] = $data->image_360_link;
+        $offers = [];
+        if (isset($data->offers) && !empty($data->offers)) {
+            foreach ($data->offers as $item) {
+                $path = '';
+                $tmp = [];
+                $tmp['id'] = $item->id;
+                $tmp['title'] = $item->title;
+                $offerImagePath = $item->image;
+                if (!Storage::exists($offerImagePath) || $offerImagePath === null) {
+                    $path               = asset('assets/logo/no_Image.jpg');
+                } else {
+                    $url                    = Storage::url($offerImagePath);
+                    $path                   = asset($url);
+                }
+
+                $tmp['image'] = $path;
+                $offers[] = $tmp;
+            }
+        }
+        $temp['offers'] = $offers;
+        $usedBrands = [];
+        $brandarr = [];
+        $near_pincodes = [];
+        if (isset($data->nearPincodes) && !empty($data->nearPincodes)) {
+            foreach ($data->nearPincodes as $items) {
+                $near_pincodes[] = $items->pincode;
+            }
+        }
+
+        $temp['near_pincodes'] = $near_pincodes;
+        if (isset($data->brands) && !empty($data->brands)) {
+
+            $usedBrands = array_column($data->brands->toArray(), 'brand_id');
+            $brandall = Brands::whereIn('id', $usedBrands)->get();
+
+            if (isset($brandall) && !empty($brandall)) {
+                foreach ($brandall as $item) {
+                    $parent = [];
+                    $parent['id'] = $item->id;
+                    $parent['name'] = $item->brand_name;
+                    $parent['slug'] = $item->slug;
+
+                    $brandLogoPath          = 'public/brands/' . $item->id . '/default/' . $item->brand_logo;
+
+                    if (!Storage::exists($brandLogoPath) || $item->brand_logo === null) {
+                        $path               = asset('assets/logo/no_Image.jpg');
+                    } else {
+                        $url                    = Storage::url($brandLogoPath);
+                        $path                   = asset($url);
+                    }
+
+                    $parent['image'] = $path;
+                    $brandarr[] = $parent;
+                }
+            }
+        }
+
+        $temp['brands'] = $brandarr;
+
+        if (isset($data->email) && !empty($data->email)) {
+            $arrEmail = json_decode($data->email);
+            $data->email = implode(',', $arrEmail);
+            $temp['email']          = $data->email;
+        } else {
+            $temp['email']       = '';
+        }
+
+        if (isset($data->contact_no) && !empty($data->contact_no)) {
+            $arrContact             = json_decode($data->contact_no);
+            $data->contact_no      = implode(',', $arrContact);
+            $temp['contact_no']     = $data->contact_no;
+        } else {
+            $temp['contact_no']       = '';
+        }
+
+        if ($data->banner) {
+            $url = Storage::url($data->banner);
+            $data->banner = asset($url);
+        } else {
             $data->banner = asset('userImage/no_Image.jpg');
         }
-        if(isset($data->banner_mb) && !empty($data->banner_mb))
-        {
-            $url = Storage::url($data->banner_mb );
+        $temp['banner'] = $data->banner;
+
+        if ($data->banner_mb) {
+            $url = Storage::url($data->banner_mb);
             $data->banner_mb = asset($url);
-        }
-        else{
+        } else {
             $data->banner_mb = asset('userImage/no_Image.jpg');
         }
-
-        if(isset($data->store_image) && !empty($data->store_image))
-        {
-            $url = Storage::url($data->store_image );
-            $data->store_image = asset($url);
-        }
-        else{
-            $data->store_image = asset('userImage/no_Image.jpg');
-        }
-        if(isset($data->store_image_mb) && !empty($data->store_image_mb))
-        {
-            $url = Storage::url($data->store_image_mb );
-            $data->store_image_mb = asset($url);
-        }
-        else{
-            $data->store_image_mb = asset('userImage/no_Image.jpg');
-        }
-
-
-        if(isset($data->email) && !empty($data->email))
-        {
-            $arrEmail = json_decode( $data->email );
-            $data->email = implode(',',$arrEmail);
-        }
-        else{
-            $data->email        = '' ;
-        }
-         
-        if(isset($data->contact_no) && !empty($data->contact_no))
-        {
-            $arrContact             = json_decode( $data->contact_no );
-            $data->contact_no      = implode(',',$arrContact);
-        }
-        else{
-            $data->contact_no       = '' ;
-        }
-        $data->meta                = $data->meta;
-
-        return response()->json(['data'=>$data]);
-
+        $temp['store_image']        = $data->banner_mb;
+        $temp['status']             = $data->status;
+        $temp['meta_title']         = $data->meta->meta_title ?? "";
+        $temp['meta_keyword']       = $data->meta->meta_keyword ?? "";
+        $temp['meta_description']   = $data->meta->meta_description ?? "";
+        return $temp;
     }
 }

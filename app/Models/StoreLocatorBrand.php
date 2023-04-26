@@ -10,7 +10,7 @@ class StoreLocatorBrand extends Model
     use HasFactory;
 
     protected $fillable = [
-        'service_center_id',
+        'store_locator_id',
         'brand_id',
         'status'
     ];

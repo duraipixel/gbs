@@ -96,11 +96,7 @@
                 data: 'title',
                 name: 'title'
             },
-          
-            {
-                data: 'status',
-                name: 'status'
-            },
+           
             {
                 data: 'action',
                 name: 'action',

@@ -67,6 +67,7 @@
                                     <div class="col-sm-2">
                                         <input type="text" name="title[]" class="form-control" value="{{ $info[$i]->title ?? '' }}">
                                     </div>
+                                    <input type="hidden" name="offer_id[]" value="{{ $info[$i]->id ?? '' }}">
                                     <div class="col-sm-5">
                                         <input type="file" name="image[]" class="form-control numberonly" value="{{ $info[$i]->image ?? '' }}">
                                     </div>
