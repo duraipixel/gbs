@@ -25,9 +25,9 @@ class BrowseController extends Controller
                 $tmp = [];
                 $tmp['start_size'] = $data_field->start_size;
                 $tmp['end_size'] = $data_field->end_size;
-                $image           = 'public/home_settings/' . $data_field->setting_image_name;
-                $mobUrl                 = Storage::url($image);
-                $pathbrowse             = asset($mobUrl);
+                $image           = $data_field->setting_image_name;
+                $mobUrl          = Storage::url($image);
+                $pathbrowse      = asset($mobUrl);
                 $tmp['path'] = $pathbrowse;
 
                 $items[] = $tmp;
