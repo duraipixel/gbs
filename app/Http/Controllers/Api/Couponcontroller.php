@@ -17,9 +17,9 @@ class Couponcontroller extends Controller
     {
         $coupon_code = $request->coupon_code;
         $customer_id = $request->customer_id;
-        $selected_shipping = $request->selected_shipping ?? '';
+        $shipping_fee_id = $request->shipping_fee_id ?? '';
         $carts          = Cart::where('customer_id', $customer_id)->get();
-       
+        
         if ($carts) {
             $coupon = Coupons::where('coupon_code', $coupon_code)
                 ->where('is_discount_on', 'no')
@@ -88,7 +88,7 @@ class Couponcontroller extends Controller
                                             $response['coupon_code'] = $coupon->coupon_code;
                                             $response['status'] = 'success';
                                             $response['message'] = 'Coupon applied';
-                                            $response['cart_info'] = $this->getCartListAll($customer_id, null, null, null, $selected_shipping, $response);
+                                            $response['cart_info'] = $this->getCartListAll($customer_id, null, null, null, $shipping_fee_id, $response['coupon_amount']);
                                         }
                                     } else {
                                         $has_product_error++;
@@ -163,7 +163,7 @@ class Couponcontroller extends Controller
                                     $response['coupon_code'] = $coupon->coupon_code;
                                     $response['status'] = 'success';
                                     $response['message'] = 'Coupon applied';
-                                    $response['cart_info'] = $this->getCartListAll($customer_id, null, null, null, $selected_shipping, $response);
+                                    $response['cart_info'] = $this->getCartListAll($customer_id, null, null, null, $shipping_fee_id, $response['coupon_amount']);
                                 }
                             } else {
                                 $response['status'] = 'error';
@@ -191,9 +191,14 @@ class Couponcontroller extends Controller
     }
 
 
-    function getCartListAll($customer_id = null, $guest_token = null,  $shipping_info = null, $shipping_type = null, $selected_shipping = null, $coupon_data = null)
+    function getCartListAll($customer_id = null, $guest_token = null,  $shipping_info = null, $shipping_type = null, $selected_shipping = null, $coupon_amount = null)
     {
         // dd( $coupon_data );
+        if( $selected_shipping ) {
+            $shippingfee_info = ShippingCharge::select('id', 'shipping_title', 'minimum_order_amount', 'charges', 'is_free')->find($selected_shipping);
+            
+        }
+        
         $checkCart          = Cart::with(['products', 'products.productCategory'])->when( $customer_id != '', function($q) use($customer_id) {
                                         $q->where('customer_id', $customer_id);
                                     })->
@@ -277,17 +282,17 @@ class Couponcontroller extends Controller
 
             $tmp['carts'] = $cartTemp;
             $tmp['cart_count'] = count($cartTemp);
-            if (isset($shipping_info) && !empty($shipping_info) || (isset( $selected_shipping ) && !empty( $selected_shipping )) ) {
+            if (isset( $shippingfee_info ) && !empty( $shippingfee_info ) ) {
                 $tmp['selected_shipping_fees'] = array(
-                                                'shipping_id' => $shipping_info->id ?? $selected_shipping['shipping_id'],
-                                                'shipping_charge_order' => $shipping_info->charges ?? $selected_shipping['shipping_charge_order'],
-                                                'shipping_type' => $shipping_type ?? $selected_shipping['shipping_type'] ?? 'fees'
+                                                'id' => $shippingfee_info->id,
+                                                'charges' => $shippingfee_info->charges,
+                                                'shipping_title' => $shippingfee_info->shipping_title
                                                 );
                 
-                $grand_total                = $grand_total + ($shipping_info->charges ?? $selected_shipping['shipping_charge_order'] ?? 0);
+                $grand_total                = $grand_total + ($shippingfee_info->charges ?? 0);
             }
-            if( isset( $coupon_data ) && !empty( $coupon_data ) ) {
-                $grand_total = $grand_total - $coupon_data['coupon_amount'] ?? 0;
+            if( isset( $coupon_amount ) && !empty( $coupon_amount ) ) {
+                $grand_total = $grand_total - $coupon_amount ?? 0;
             }
 
             $amount         = filter_var($grand_total, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
@@ -300,10 +305,39 @@ class Couponcontroller extends Controller
                 'product_tax_exclusive_total_without_format' => round($product_tax_exclusive_total),
                 'tax_total' => number_format(round($tax_total), 2),
                 'tax_percentage' => number_format(round($tax_percentage), 2),
-                'shipping_charge' => $shipping_info->charges ?? 0
+                'shipping_charge' => $shippingfee_info->charges ?? 0,
+                'coupon_amount' => $coupon_amount ?? 0
+                
             );
         }
         
         return $tmp;
+    }
+
+    public function setShippingCharges(Request $request)
+    {
+
+        $customer_id = $request->customer_id;
+        $shipping_fee_id = $request->shipping_fee_id;
+        $coupon_amount = $request->coupon_amount ?? 0;
+        
+        $fee_info = ShippingCharge::select('id', 'shipping_title', 'minimum_order_amount', 'charges', 'is_free')->find($shipping_fee_id);
+        if( $fee_info ) {
+            
+            $data = $this->getCartListAll($customer_id, null, null, null, $shipping_fee_id, $coupon_amount);
+            $response['data'] = $data;
+            $response['error'] = '0';
+            $response['message'] = 'Shipping Fee Applied';
+
+        } else {
+
+            $response['data'] = [];
+            $response['error'] = '1';
+            $response['message'] = 'There is no products on the cart';
+
+        }
+        
+        return $response;
+
     }
 }
