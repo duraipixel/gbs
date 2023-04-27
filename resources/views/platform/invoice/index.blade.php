@@ -6,10 +6,11 @@
     <style>
         body {
             border: 1px solid #ddd;
+            font-size: 11px;
         }
 
         table td {
-            font-size: 11px;
+            font-size: 10px;
         }
 
         .header-table,
