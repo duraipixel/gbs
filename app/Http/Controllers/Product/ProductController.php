@@ -241,7 +241,7 @@ class ProductController extends Controller
         $validator      = Validator::make( $request->all(), $validate_array );
 
         if ($validator->passes()) {
-            dd( $request->all() );
+            
             if( isset( $request->avatar_remove ) && !empty($request->avatar_remove) ) {
                 $ins['base_image']          = null;
             }

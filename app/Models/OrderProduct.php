@@ -14,10 +14,13 @@ class OrderProduct extends Model
         'order_id',
         'product_id',
         'product_name',
+        'image',
         'hsn_code' ,
         'sku',
         'quantity',
         'price',
+        'strice_price',
+        'discount_price',
         'tax_amount',
         'tax_percentage',
         'sub_total'
