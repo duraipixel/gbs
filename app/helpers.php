@@ -444,34 +444,37 @@ function getProductApiData($product_data, $customer_id = '')
             $addon_items = ProductAddon::find($items->product_addon_id);
             
             $temp = [];
-            $temp['id'] = $addon_items->id;
-            $temp['title'] = $addon_items->title;
-            $temp['description'] = $addon_items->description;
-            
-            if (!Storage::exists($addon_items->icon)) {
-                $path               = asset('assets/logo/no_Image.jpg');
-            } else {
-                $url                = Storage::url($addon_items->icon);
-                $path               = asset($url);
-            }
+            if( $addon_items ) {
 
-            $temp['icon'] = $path;
-            $addon_item_array = [];
-            // dd( $addon_items->items );
-            if( isset( $addon_items->items ) && !empty( $addon_items->items ) ) {
-                foreach ($addon_items->items as $aitem) {
-
-                    $is_selected = false;
-                    if( isset( $is_cart->id ) && !empty( $is_cart->id ) ) {
-
-                        $is_selected = addonHasSelected($aitem->id, $product_data->id, $is_cart->id );
+                $temp['id'] = $addon_items->id;
+                $temp['title'] = $addon_items->title;
+                $temp['description'] = $addon_items->description;
+                
+                if (!Storage::exists($addon_items->icon)) {
+                    $path               = asset('assets/logo/no_Image.jpg');
+                } else {
+                    $url                = Storage::url($addon_items->icon);
+                    $path               = asset($url);
+                }
+    
+                $temp['icon'] = $path;
+                $addon_item_array = [];
+                // dd( $addon_items->items );
+                if( isset( $addon_items->items ) && !empty( $addon_items->items ) ) {
+                    foreach ($addon_items->items as $aitem) {
+    
+                        $is_selected = false;
+                        if( isset( $is_cart->id ) && !empty( $is_cart->id ) ) {
+    
+                            $is_selected = addonHasSelected($aitem->id, $product_data->id, $is_cart->id );
+                        }
+                        $tmp = [];
+                        $tmp['id'] = $aitem->id;
+                        $tmp['label'] = $aitem->label;
+                        $tmp['amount'] = $aitem->amount;
+                        $tmp['is_selected'] = $is_selected;
+                        $addon_item_array[] = $tmp;
                     }
-                    $tmp = [];
-                    $tmp['id'] = $aitem->id;
-                    $tmp['label'] = $aitem->label;
-                    $tmp['amount'] = $aitem->amount;
-                    $tmp['is_selected'] = $is_selected;
-                    $addon_item_array[] = $tmp;
                 }
             }
             $temp['items'] = $addon_item_array;
@@ -678,5 +681,23 @@ function addonHasSelected($item_id, $product_id, $cart_id ) {
         return true;
     } else {
         return false;
+    }
+}
+
+function getEndWarrantyDate($warranty_period, $warranty_type) {
+    if( $warranty_period && $warranty_type ) {
+        switch ($warranty_type) {
+            case 'Year':
+                return date('Y-m-d', strtotime('+'.$warranty_period.' year'));
+                break;
+            case 'Month':
+                return date("Y-m-d", strtotime("+".$warranty_period." month"));
+                break;
+        
+            default:
+                //for day case
+                return date("Y-m-d", strtotime("+".$warranty_period." day"));
+                break;
+        }
     }
 }

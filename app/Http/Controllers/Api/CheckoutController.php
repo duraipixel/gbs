@@ -11,9 +11,12 @@ use App\Models\Master\OrderStatus;
 use App\Models\Order;
 use App\Models\OrderHistory;
 use App\Models\OrderProduct;
+use App\Models\OrderProductWarranty;
 use App\Models\Payment;
+use App\Models\Product\OrderProductAddon;
 use App\Models\Product\Product;
 use App\Models\ShippingCharge;
+use App\Models\Warranty;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -30,6 +33,7 @@ class CheckoutController extends Controller
         $keySecret = env('RAZORPAY_SECRET');
         
         $checkout_infomation = json_decode($request->checkout_infomation);
+        dd( $checkout_infomation );
         dump( $checkout_infomation->checkout_data );
         dd( $checkout_infomation->cart_items );
         /***
@@ -42,10 +46,28 @@ class CheckoutController extends Controller
         $order_status           = OrderStatus::where('status', 'published')->where('order', 1)->first();
         $shipping_method        = $checkout_infomation->shipping_method;
 
-        $cart_total             = $checkout_infomation->cart_total;
+        $checkout_data          = $checkout_infomation->checkout_data;
         $cart_items             = $checkout_infomation->cart_items;
         $shipping_address       = $checkout_infomation->shipping_address;
         $billing_address        = $checkout_infomation->billing_address;
+        $coupon_data            = $checkout_infomation->coupon_data;
+        $pickup_store_address   = $checkout_infomation->pickup_store_address;
+
+        $coupon_details = '';
+        $coupon_code = '';
+        $coupon_amount = 0;
+        $coupon_id = 0;
+        if( isset( $coupon_data ) && !empty( $coupon_data ) ){
+            $coupon_code = $coupon_data->coupon_code;
+            $coupon_id = $coupon_data->coupon_id;
+            $coupon_amount = $coupon_data->coupon_amount;
+            $coupon_details = serialize($coupon_data);
+        }
+
+        $pickup_address_details = '';
+        if( isset( $pickup_store_address ) && !empty( $pickup_store_address ) ){
+            $pickup_address_details = serialize($pickup_store_address);
+        }
 
         #check product is out of stock
         $errors                 = [];
@@ -53,8 +75,8 @@ class CheckoutController extends Controller
             foreach ($cart_items as $item) {
                 $product_id = $item['id'];
                 $product_info = Product::find($product_id);
-                if ($product_info->quantity < $item['quantity']) {
-                    $errors[]     = $item['product_name'] . ' is out of stock, Product will be removed from cart.Please choose another';
+                if ($product_info->quantity < $item->quantity) {
+                    $errors[]     = $item->product_name . ' is out of stock, Product will be removed from cart.Please choose another';
                     $response['error'] = $errors;
                 }
             }
@@ -74,32 +96,29 @@ class CheckoutController extends Controller
             return $response;
         }
 
-        $shipping_amount        = 0;
-        $discount_amount        = 0;
-        $coupon_amount          = 0;
-        $pay_amount             = filter_var($request->cart_total['total'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-
-        $shipping_type_info = ShippingCharge::find($shipping_id);
+        $checkout_total = str_replace(',', '', $checkout_data->total);
+        $pay_amount  = filter_var($checkout_total, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+        
 
         $order_ins['customer_id'] = $customer_id;
         $order_ins['customer_id'] = $customer_id;
         $order_ins['order_no'] = getOrderNo();
-        $order_ins['shipping_options'] = $shipping_id;
-        $order_ins['shipping_type'] = $shipping_type_info->shipping_title ?? 'Free';
+        
+       
         $order_ins['amount'] = $pay_amount;
-        $order_ins['tax_amount'] = $cart_total['tax_total'];
-        $order_ins['tax_percentage'] = $cart_total['tax_percentage'];
-        $order_ins['shipping_amount'] = $shipping_type_info->charges ?? $shipping_amount;
-        $order_ins['discount_amount'] = $discount_amount;
-        $order_ins['coupon_amount'] = $coupon_amount;
-        $order_ins['coupon_code'] = '';
-        $order_ins['sub_total'] = $cart_total['product_tax_exclusive_total_without_format'];
+        $order_ins['tax_amount'] = $checkout_data->tax_total ? str_replace(',', '', $checkout_data->tax_total) : 0;
+        $order_ins['tax_percentage'] = $checkout_data->tax_percentage ?? 0;
+        $order_ins['shipping_amount'] = $checkout_data->shipping_charge ?? 0;
+        
+        $order_ins['coupon_amount'] = $coupon_amount ?? 0;
+        $order_ins['coupon_code'] = $coupon_code ?? '';
+        $order_ins['coupon_details'] = $coupon_details ?? '';
+        $order_ins['sub_total'] = $checkout_data->product_tax_exclusive_total_without_format;
         $order_ins['description'] = '';
         $order_ins['order_status_id'] = $order_status->id;
         $order_ins['status'] = 'pending';
-
-        if( isset( $billing_address ) && !empty( $billing_address ) ) {
-        }
+        $order_ins['pickup_store_details'] = $pickup_address_details;
+        
         $order_ins['billing_name'] = $billing_address->name;
         $order_ins['billing_email'] = $billing_address->email;
         $order_ins['billing_mobile_no'] = $billing_address->mobile_no;
@@ -111,42 +130,72 @@ class CheckoutController extends Controller
         $order_ins['billing_state'] = $billing_address->state ?? null;
         $order_ins['billing_city'] = $billing_address->city ?? null;
 
+        $order_ins['shipping_name'] = $shipping_address->name ?? $billing_address->name;
+        $order_ins['shipping_email'] = $shipping_address->email ?? $billing_address->email;
+        $order_ins['shipping_mobile_no'] = $shipping_address->mobile_no ?? $billing_address->mobile_no;
+        $order_ins['shipping_address_line1'] = $shipping_address->address_line1 ?? $billing_address->address_line1;
+        $order_ins['shipping_address_line2'] = $shipping_address->address_line2 ?? $billing_address->address_line2 ?? null;
+        $order_ins['shipping_landmark'] = $shipping_address->landmark ?? $billing_address->landmark ?? null;
+        $order_ins['shipping_country'] = $shipping_address->country ?? $billing_address->country ?? null;
+        $order_ins['shipping_post_code'] = $shipping_address->post_code ?? $billing_address->post_code;
+        $order_ins['shipping_state'] = $shipping_address->state ?? $billing_address->state ?? null;
+        $order_ins['shipping_city'] = $shipping_address->city ?? $billing_address->city ?? null;
+
         if( isset( $shipping_method ) && $shipping_method != 'PICKUP_FROM_STORE' && isset( $shipping_address ) && !empty( $shipping_address ) ) {
 
-            $order_ins['shipping_name'] = $shipping_address->name;
-            $order_ins['shipping_email'] = $shipping_address->email;
-            $order_ins['shipping_mobile_no'] = $shipping_address->mobile_no;
-            $order_ins['shipping_address_line1'] = $shipping_address->address_line1;
-            $order_ins['shipping_address_line2'] = $shipping_address->address_line2 ?? null;
-            $order_ins['shipping_landmark'] = $shipping_address->landmark ?? null;
-            $order_ins['shipping_country'] = $shipping_address->country ?? null;
-            $order_ins['shipping_post_code'] = $shipping_address->post_code;
-            $order_ins['shipping_state'] = $shipping_address->state ?? null;
-            $order_ins['shipping_city'] = $shipping_address->city ?? null;
+            $shipping_type_info = ShippingCharge::find($checkout_infomation->standard_shipping_charge_id);
+
+            $order_ins['shipping_options'] = $checkout_infomation->standard_shipping_charge_id ?? 0;
+            if( $shipping_type_info ) {
+                $order_ins['shipping_type'] = $shipping_type_info->shipping_title ?? 'Free';
+            }
 
         } else {
 
             $order_ins['pickup_store_id'] = $checkout_infomation->pickup_store_id;
+
         }
 
-
-        $order_id = Order::create($order_ins)->id;
+        $order_info = Order::create($order_ins);
+        $order_id = $order_info->id;
 
         if (isset($cart_items) && !empty($cart_items)) {
             foreach ($cart_items as $item) {
+                $product_info = Product::find($item->id);
 
                 $items_ins['order_id'] = $order_id;
-                $items_ins['product_id'] = $item['id'];
-                $items_ins['product_name'] = $item['product_name'];
-                $items_ins['hsn_code'] = $item['hsn_no'];
-                $items_ins['sku'] = $item['sku'];
-                $items_ins['quantity'] = $item['quantity'];
-                $items_ins['price'] = $item['price'];
-                $items_ins['tax_amount'] = $item['tax']['gstAmount'] ?? 0;
-                $items_ins['tax_percentage'] = $item['tax_percentage'] ?? 0;
-                $items_ins['sub_total'] = $item['sub_total'];
+                $items_ins['product_id'] = $item->id;
+                $items_ins['product_name'] = $item->product_name;
+                $items_ins['image'] = $item->image;
+                $items_ins['hsn_code'] = $item->hsn_no;
+                $items_ins['sku'] = $item->sku;
+                $items_ins['quantity'] = $item->quantity;
+                $items_ins['price'] = $item->price;
+                $items_ins['strice_price'] = $item->strike_price;
+                $items_ins['save_price'] = $item->save_price;
+                $items_ins['base_price'] = $item->tax->basePrice;
+                $items_ins['tax_amount'] = ($item->tax->gstAmount ?? 0 ) * $item->quantity;
+                $items_ins['tax_percentage'] = $item->tax->tax_percentage ?? 0;
+                $items_ins['sub_total'] = $item->sub_total;
 
-                OrderProduct::create($items_ins);
+                $order_product_info = OrderProduct::create($items_ins);
+                if( isset( $product_info->warranty_id ) && !empty($product_info->warranty_id ) ) {
+                    $warranty_info = Warranty::find($product_info->warranty_id);
+                    if($warranty_info){
+                        $war = [];
+                        $war['order_product_id']= $order_product_info->id;
+                        $war['product_id']= $order_product_info->product_id;
+                        $war['warranty_id']= $warranty_info->id;
+                        $war['warranty_name']= $warranty_info->name;
+                        $war['description']= $warranty_info->description;
+                        $war['warranty_period']= $warranty_info->warranty_period;
+                        $war['warranty_period_type']= $warranty_info->warranty_period_type;
+                        $war['warranty_start_date']= date('Y-m-d');
+                        $war['warranty_end_date']= getEndWarrantyDate($warranty_info->warranty_period, $warranty_info->warranty_period_type);
+                        $war['status']= 'active';
+                        OrderProductWarranty::create($war);
+                    }
+                } 
             }
         }
 
@@ -154,7 +203,7 @@ class CheckoutController extends Controller
 
             $api = new Api($keyId, $keySecret);
             $orderData = [
-                'receipt'         => $order_id,
+                'receipt'         => $order_info->order_no,
                 'amount'          => $pay_amount * 100,
                 'currency'        => "INR",
                 'payment_capture' => 1 // auto capture
@@ -171,17 +220,17 @@ class CheckoutController extends Controller
                 "key"               => $keyId,
                 "amount"            => round($amount),
                 "currency"          => "INR",
-                "name"              => 'Musee Musical',
+                "name"              => 'GBS Systems & Services Private Limited',
                 "image"             => asset(gSetting('logo')),
                 "description"       => "Secure Payment",
                 "prefill"           => [
-                    "name"              => $shipping_address['name'],
-                    "email"             => $shipping_address['email'],
-                    "contact"           => $shipping_address['mobile_no'],
+                    "name"              => $billing_address->name,
+                    "email"             => $billing_address->email,
+                    "contact"           => $billing_address->mobile_no,
                 ],
                 "notes"             => [
                     "address"           => "",
-                    "merchant_order_id" => $order_id,
+                    "merchant_order_id" => $order_info->order_no,
                 ],
                 "theme"             => [
                     "color"             => "#F37254"

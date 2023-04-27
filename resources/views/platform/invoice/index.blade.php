@@ -67,24 +67,24 @@
             padding: 5px;
         }
     </style>
+    <div style="text-align:center"> TAX INVOICE </div>
     <table class="header-table" cellspacing="0" padding="0">
-
-        {{-- {{ dd($globalInfo) }} --}}
         <tr>
             <td colspan="2">
                 <table class="no-border" style="width: 100%">
                     <tr>
-                        <td class="w-30"> <span><img src="{{ public_path('assets/logo/logo.png') }}" alt=""
-                                    height="100"></span> </td>
-                        <td class="w-30">
+                        <td class="w-30"> <span>
+                            <img src="{{ public_path('assets/logo/logo.png') }}" alt=""
+                                    height="75"></span> </td>
+                        <td class="w-40">
                             <h3> {{ $globalInfo->site_name }} </h3>
                             <div> {{ $globalInfo->address }} </div>
                             <div> {{ $globalInfo->site_email }} </div>
                             <div> {{ $globalInfo->site_mobile_no }} </div>
-                            {{-- <div> GSTIN: 33334DS22SD34FHJ63A </div> --}}
+                            <div> <b> GSTIN: 33AACCG8423L1ZH | PAN AACCG8243L</b></div>
                         </td>
-                        <td class="w-40">
-                            <h1>Tax Invoice</h1>
+                        <td class="w-30">
+                            
                         </td>
                     </tr>
                 </table>
@@ -95,8 +95,8 @@
             <td class="w-70">
                 <table class="no-border" style="width: 100%">
                     <tr>
-                        <td class="w-50">
-                            <h3> Billing Details </h3>
+                        <td class="w-35">
+                            <h3> Bill To: </h3>
                             <div><b>{{ $order_info->billing_name  }}</b></div>
                             <div>{{ $order_info->billing_address_line1 }}</div>
                             <div>{{ $order_info->billing_city }}</div>
@@ -105,14 +105,39 @@
                             <div>{{ $order_info->billing_email }}</div>
                         </td>
 
-                        <td class="w-50">
-                            <h3> Shipping Details </h3>
+                        <td class="w-35">
+                            <h3> Ship To: </h3>
                             <div><b>{{ $order_info->shipping_name  }}</b></div>
                             <div>{{ $order_info->shipping_address_line1 }}</div>
                             <div>{{ $order_info->shipping_city }}</div>
                             <div>{{ $order_info->shipping_state }}</div>
                             <div>{{ $order_info->shipping_mobile_no }}</div>
                             <div>{{ $order_info->shipping_email }}</div>
+                        </td>
+                        <td class="w-40">
+                            <h3> Shipping Details </h3>
+                            <table>
+                                <tr>
+                                    <td>Invoice No</td>
+                                    <td>{{ $order_info->order_no }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Invoice Date</td>
+                                    <td>{{ date('d/m/Y', strtotime($order_info->created_at)) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Order No</td>
+                                    <td>{{ $order_info->order_no }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Customer ID</td>
+                                    <td>{{ $order_info->customer->customer_no }}</td>
+                                </tr>
+                                <tr>
+                                    <td> Payment Status </td>
+                                    <td> {{ $order_info->payments->status }} </td>
+                                </tr>
+                            </table>
                         </td>
                     </tr>
                 </table>
@@ -122,15 +147,15 @@
                 <table class="no-border w-100" >
                     <tr>
                         <td class="w-50"> Invoice Date </td>
-                        <td class="w-50"> {{ date('d/m/Y', strtotime($order_info->created_at)) }} </td>
+                        <td class="w-50">  </td>
                     </tr>
                     <tr>
                         <td class="w-50"> Invoice No </td>
-                        <td class="w-50"> {{ $order_info->order_no }} </td>
+                        <td class="w-50">  </td>
                     </tr>
                     <tr>
                         <td class="w-50"> Payment Status </td>
-                        <td class="w-50"> {{ $order_info->payments->status }} </td>
+                        <td class="w-50"></td>
                     </tr>
                 </table>
             </td>
@@ -141,15 +166,15 @@
     <table class="item-table" cellspacing="0" padding="0">
         <tr>
             <th style="width: 10px;" rowspan="2">S.No</th>
-            <th rowspan="2" style="width: 140px;"> Items</th>
+            <th rowspan="2"> ITEM CODE</th>
+            <th rowspan="2"> ITEM DESCRIPTION </th>
             <th rowspan="2"> HSN</th>
-            <th rowspan="2"> Reference</th>
-            <th rowspan="2"> Qty</th>
-            <th rowspan="2"> Rate </th>
-            <th rowspan="2"> Discount </th>
+            <th rowspan="2"> QTY</th>
+            <th rowspan="2"> RATE </th>
+            <th rowspan="2"> TAXABLE VALUE </th>
             <th colspan="2"> CGST </th>
             <th colspan="2"> SGST </th>
-            <th rowspan="2"> Amount </th>
+            <th rowspan="2"> NET Amount </th>
         </tr>
         <tr>
             <th>%</th>
@@ -165,10 +190,10 @@
                 <tr>
                     <td>{{ $i }}</td>
                     <td>
-                       {{ $item->product_name }}
+                        {{ $item->sku }}
                     </td>
-                    <td>15200</td>
-                    <td> {{ $item->sku }} </td>
+                    <td>{{ $item->product_name }}</td>
+                    <td> {{ $item->hsn_code }} </td>
                     <td> {{ $item->quantity }} nos</td>
                     <td> {{ number_format($item->price, 2) }} </td>
                     <td>0%</td>

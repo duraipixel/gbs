@@ -11,8 +11,11 @@ class OrderProductAddon extends Model
 
     protected $fillable = [
         'order_id',
+        'product_id',
         'addon_item_id',
         'title',
-        'amount'
+        'amount',
+        'description',
+        'icon'
     ];
 }

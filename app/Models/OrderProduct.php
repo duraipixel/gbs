@@ -20,6 +20,8 @@ class OrderProduct extends Model
         'quantity',
         'price',
         'strice_price',
+        'save_price',
+        'base_price',
         'discount_price',
         'tax_amount',
         'tax_percentage',
