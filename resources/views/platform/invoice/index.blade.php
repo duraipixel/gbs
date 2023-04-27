@@ -189,10 +189,10 @@
                             {{ $item->product_name }}
                         </div>
                         <div>
-                            Warranty-15-02-2024
+                            {{-- Warranty-15-02-2024 --}}
                         </div>
                         <div>
-                            S/R : 12220317926
+                            {{-- S/R : 12220317926 --}}
                         </div>
                     </td>
                     <td> {{ $item->hsn_code ?? '85044030' }} </td>
