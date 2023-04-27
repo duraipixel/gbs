@@ -15,6 +15,7 @@ class AddItemLabelToOrderProductAddons extends Migration
     {
         Schema::table('order_product_addons', function (Blueprint $table) {
             $table->string('addon_item_label')->nullable()->after('title');
+            $table->unsignedBigInteger('addon_id')->after('product_id')->nullable();
         });
     }
 
@@ -26,7 +27,8 @@ class AddItemLabelToOrderProductAddons extends Migration
     public function down()
     {
         Schema::table('order_product_addons', function (Blueprint $table) {
-            //
+            $table->dropColumn('addon_item_label');
+            $table->dropColumn('addon_id');
         });
     }
 }

@@ -72,11 +72,11 @@ class CheckoutController extends Controller
         #check product is out of stock
         $errors                 = [];
         if (isset($cart_items) && !empty($cart_items)) {
-            foreach ($cart_items as $item) {
-                $product_id = $item['id'];
+            foreach ($cart_items as $citem) {
+                $product_id = $citem->id;
                 $product_info = Product::find($product_id);
-                if ($product_info->quantity < $item->quantity) {
-                    $errors[]     = $item->product_name . ' is out of stock, Product will be removed from cart.Please choose another';
+                if ($product_info->quantity < $citem->quantity) {
+                    $errors[]     = $citem->product_name . ' is out of stock, Product will be removed from cart.Please choose another';
                     $response['error'] = $errors;
                 }
             }
@@ -196,6 +196,26 @@ class CheckoutController extends Controller
                         OrderProductWarranty::create($war);
                     }
                 } 
+
+                /**
+                 * insert addons data
+                 */
+                if( isset( $item->addons ) && !empty( $item->addons ) ) {
+                    foreach ($item->addons as $aitems ) {
+                        $add_ins = [];
+                        $add_ins['order_id'] = $order_id;
+                        $add_ins['product_id'] = $item->id;
+                        $add_ins['addon_id'] = $aitems->addon_id;
+                        $add_ins['addon_item_id'] = $aitems->addon_item_id;
+                        $add_ins['title'] = $aitems->title;
+                        $add_ins['addon_item_label'] = $aitems->addon_item_label;
+                        $add_ins['amount'] = $aitems->amount;
+                        $add_ins['icon'] = $aitems->icon;
+                        $add_ins['description'] = $aitems->description;
+
+                        OrderProductAddon::create($add_ins);
+                    }
+                }
             }
         }
 
@@ -379,7 +399,7 @@ class CheckoutController extends Controller
                         'payment_through' => 'Razorpay online payment',
                         'mobile_no' => [$order_info->billing_mobile_no]
                     );
-                    sendMuseeSms('new_order', $sms_params);
+                    // sendMuseeSms('new_order', $sms_params);
 
                     #send sms for notification
                     $sms_params = array(
@@ -388,7 +408,7 @@ class CheckoutController extends Controller
                         'reference_no' => '',
                         'mobile_no' => [$order_info->billing_mobile_no]
                     );
-                    sendMuseeSms('confirm_order', $sms_params);
+                    // sendMuseeSms('confirm_order', $sms_params);
                 }
             }
         } else {
