@@ -215,7 +215,7 @@
                     <b>{{ ucwords( getIndianCurrency($order_info->amount) ) }}</b>
                 </div>
             </td>
-            <td colspan="6" style="text-align:right">
+            <td colspan="6" style="text-align:right;width:100%;">
                 <table class="w-100 no-border" style="text-align:right" >
                     <tr>
                         <td style="text-align: right;width:50%">
@@ -223,14 +223,13 @@
                             <small>(Tax Exclusive)</small>
                         </td>
                         <td style="text-align: right;width:50%">
-                            <span style="font-family: DejaVu Sans; sans-serif;">₹</span> 
+                            <span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span> 
                             {{ number_format($order_info->sub_total, 2) }}
                         </td>
                     </tr>
                     <tr>
                         <td style="text-align: right;width:50%">Tax (%{{ (int)$order_info->tax_percentage }}) </td>
-                        <td style="text-align: right;width:50%">
-                            <span >&#8377;</span>{{ number_format($order_info->tax_amount, 2) }}</td>
+                        <td style="text-align: right;width:50%"><span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>{{ number_format($order_info->tax_amount, 2) }}</td>
                     </tr>
                     @if ($order_info->coupon_amount > 0)
                         <tr>
@@ -238,8 +237,7 @@
                                 <div>Coupon Amount </div>
                                 <small>( {{ $order_info->coupon_code }})</small>
                             </td>
-                            <td style="text-align: right;width:50%">
-                                <span >&#8377;</span>{{ number_format($order_info->coupon_amount, 2) }}</td>
+                            <td style="text-align: right;width:50%"><span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>{{ number_format($order_info->coupon_amount, 2) }}</td>
                         </tr>
                     @endif
                   
