@@ -223,7 +223,7 @@
                         </td>
                         <td style="text-align: right"><span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span> {{ number_format($order_info->sub_total, 2) }}</td>
                     </tr>
-                    <tr>
+                    {{-- <tr>
                         <td style="text-align: right">Tax (%{{ (int)$order_info->tax_percentage }}) </td>
                         <td style="text-align: right"><span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>{{ number_format($order_info->tax_amount, 2) }}</td>
                     </tr>
@@ -236,15 +236,7 @@
                             <td style="text-align: right"><span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>{{ number_format($order_info->coupon_amount, 2) }}</td>
                         </tr>
                     @endif
-
-                    @if ($order_info->discount_amount > 0)
-                        <tr>
-                            <td style="text-align: right">
-                                <div>Discount Amount </div>
-                            </td>
-                            <td style="text-align: right"><span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>{{ number_format($order_info->discount_amount, 2) }}</td>
-                        </tr>
-                    @endif
+                  
                     @if ($order_info->shipping_amount > 0)
                         <tr>
                             <td style="text-align: right">
@@ -253,7 +245,7 @@
                             </td>
                             <td style="text-align: right"><span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>{{ number_format($order_info->shipping_amount, 2) }}</td>
                         </tr>
-                    @endif
+                    @endif --}}
                     <tr>
                         <td style="text-align: right;font-weight:700;font-size:15px;">Total</td>
                         <td style="text-align: right;font-weight:700;font-size:15px;">
