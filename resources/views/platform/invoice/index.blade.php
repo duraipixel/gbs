@@ -92,7 +92,7 @@
 
         </tr>
         <tr>
-            <td class="w-70">
+            <td colspan="2">
                 <table class="no-border" style="width: 100%">
                     <tr>
                         <td class="w-35">
@@ -135,32 +135,14 @@
                                 </tr>
                                 <tr>
                                     <td> Payment Status </td>
-                                    <td> {{ $order_info->payments->status }} </td>
+                                    <td> {{ $order_info->payments->status ?? '' }} </td>
                                 </tr>
                             </table>
                         </td>
                     </tr>
                 </table>
             </td>
-            <td class="w-30">
-
-                <table class="no-border w-100" >
-                    <tr>
-                        <td class="w-50"> Invoice Date </td>
-                        <td class="w-50">  </td>
-                    </tr>
-                    <tr>
-                        <td class="w-50"> Invoice No </td>
-                        <td class="w-50">  </td>
-                    </tr>
-                    <tr>
-                        <td class="w-50"> Payment Status </td>
-                        <td class="w-50"></td>
-                    </tr>
-                </table>
-            </td>
         </tr>
-
 
     </table>
     <table class="item-table" cellspacing="0" padding="0">
