@@ -18,6 +18,10 @@
             width: 100%;
         }
 
+        .invoice-table td, th {
+            padding: 0px !important;
+        }
+
         .header-table td,
         th {
             border: 1px solid #ddd;
@@ -48,9 +52,6 @@
         .w-70 {
             width: 70%;
         }
-        .w-60 {
-            width: 60%;
-        }
         .w-50 {
             width: 50%;
         }
@@ -69,9 +70,6 @@
 
         .p-5 {
             padding: 5px;
-        }
-        .inline {
-            display: inline-block;
         }
     </style>
     <div style="text-align:center"> TAX INVOICE </div>
@@ -122,26 +120,29 @@
                             <div>{{ $order_info->shipping_email }}</div>
                         </td>
                         <td class="w-40">
-                            <div class="w-100 inline">
-                                <div class="w-40">Invoice No</div>
-                                <div class="w-60">{{ $order_info->order_no }}</div>
-                            </div>
-                            <div class="w-100 inline">
-                                <div class="w-40">Invoice Date</div>
-                                <div class="w-60">{{ date('d/m/Y', strtotime($order_info->created_at)) }}</div>
-                            </div>
-                            <div class="w-100 inline">
-                                <div class="w-40">Order No</div>
-                                <div class="w-60">{{ $order_info->order_no }}</div>
-                            </div>
-                            <div class="w-100 inline">
-                                <div class="w-40">Customer ID</div>
-                                <div class="w-60">{{ $order_info->customer->customer_no }}</div>
-                            </div>
-                            <div class="w-100 inline">
-                                <div class="w-40"> Payment Status </div>
-                                <div class="w-60"> {{ $order_info->payments->status ?? '' }}</div>
-                            </div>
+                            
+                            <table class="invoice-table">
+                                <tr>
+                                    <td>Invoice No</td>
+                                    <td>{{ $order_info->order_no }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Invoice Date</td>
+                                    <td>{{ date('d/m/Y', strtotime($order_info->created_at)) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Order No</td>
+                                    <td>{{ $order_info->order_no }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Customer ID</td>
+                                    <td>{{ $order_info->customer->customer_no }}</td>
+                                </tr>
+                                <tr>
+                                    <td> Payment Status </td>
+                                    <td> {{ $order_info->payments->status ?? '' }} </td>
+                                </tr>
+                            </table>
                         </td>
                     </tr>
                 </table>
