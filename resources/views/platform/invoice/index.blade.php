@@ -214,15 +214,7 @@
                     <b>{{ ucwords( getIndianCurrency($order_info->amount) ) }}</b>
                 </div>
             </td>
-            <td colspan="2"></td>
-            <td colspan="2"></td>
-           
-        </tr>
-        <tr>
-            <td colspan="5">
-                
-            </td>
-            <td colspan="5">
+            <td colspan="4">
                 <table class="w-100" >
                     <tr>
                         <td style="text-align: right">
@@ -275,7 +267,9 @@
 
                 </table>
             </td>
+           
         </tr>
+        
     </table>
    
 </body>
