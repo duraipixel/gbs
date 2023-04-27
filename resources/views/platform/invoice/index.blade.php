@@ -155,8 +155,8 @@
             <th rowspan="2" style="width: 50px;"> ITEM CODE</th>
             <th rowspan="2" style="width: 150px;"> ITEM DESCRIPTION </th>
             <th rowspan="2"> HSN</th>
-            <th rowspan="2"> QTY</th>
-            <th rowspan="2"> RATE </th>
+            <th rowspan="2" style="width: 30px;"> QTY</th>
+            <th rowspan="2" style="width: 30px;"> RATE </th>
             <th rowspan="2"> TAXABLE VALUE </th>
             <th colspan="2"> CGST </th>
             <th colspan="2"> SGST </th>
