@@ -33,9 +33,9 @@ class CheckoutController extends Controller
         $keySecret = env('RAZORPAY_SECRET');
         
         $checkout_infomation = json_decode($request->checkout_infomation);
-        dd( $checkout_infomation );
-        dump( $checkout_infomation->checkout_data );
-        dd( $checkout_infomation->cart_items );
+        // dd( $checkout_infomation );
+        // dump( $checkout_infomation->checkout_data );
+        // dd( $checkout_infomation->cart_items );
         /***
          * Check order product is out of stock before proceed, if yes remove from cart and notify user
          * 1.insert in order table with status init
