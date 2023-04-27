@@ -313,16 +313,28 @@ function getProductApiData($product_data, $customer_id = '')
     $reviews = '';
     $wishlist = '';
     $is_cart = '';
+    $has_purchased = false;
     if( $customer_id ) {
         $reviews = Review::where(['product_id' => $product_data->id, 'customer_id' => $customer_id ])->first();
         $wishlist = Wishlist::where(['product_id' => $product_data->id, 'customer_id' => $customer_id ])->first();
         $is_cart = Cart::where(['product_id' => $product_data->id, 'customer_id' => $customer_id ])->first();
+        $purchased_data = Order::join('order_products', 'order_products.order_id', '=', 'orders.id')
+                            ->where('orders.customer_id', $customer_id)
+                            ->where('orders.status', 'delivered')
+                            ->where('order_products.product_id', $product_data->id)->first();
+
+        if( $purchased_data ) {
+            $has_purchased = true;
+        }
     }
-    
+    $pro['has_purchased'] = $has_purchased;
     $pro['is_review'] = $reviews ? true : false;
     $pro['is_wishlist'] = $wishlist ? true : false;
     $pro['is_cart'] = $is_cart ? true : false;
     $pro['cart_id'] = $is_cart->id ?? 0;
+
+    
+
     $pro['description']             = $product_data->description;
 
     if (isset($product_data->productImages) && !empty($product_data->productImages)) {
