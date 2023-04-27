@@ -206,20 +206,21 @@
             @endforeach
         @endif
         <tr>
-            <td colspan="8">2</td>
-            <td>dsdfs</td>
-            <td>d%</td>
-            <td>sdfs</td>
-            <td>dddd</td>
-        </tr>
-        <tr>
-            <td colspan="5">
+            <td colspan="8">
                 <div>
                     <label for="">Total in words </label>
                 </div>
                 <div>
                     <b>{{ ucwords( getIndianCurrency($order_info->amount) ) }}</b>
                 </div>
+            </td>
+            <td colspan="2"></td>
+            <td colspan="2"></td>
+           
+        </tr>
+        <tr>
+            <td colspan="5">
+                
             </td>
             <td colspan="5">
                 <table class="w-100" >
