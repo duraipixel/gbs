@@ -92,7 +92,7 @@ class TestController extends Controller
         $globalInfo = GlobalSettings::first();
         // $pdf = PDF::loadView('platform.invoice.index', compact('order_info', 'globalInfo'));    
         // Storage::put('public/invoice_order/'.$order_info->order_no.'.pdf', $pdf->output());
-        $pdf = PDF::loadView('platform.invoice.index', compact('order_info', 'globalInfo'))->setPaper('a4', 'portrait');
+        $pdf = PDF::loadView('platform.invoice.index', compact('order_info', 'globalInfo'))->setPaper('a4', 'landscape');
         return $pdf->stream('test.pdf');
     }
 

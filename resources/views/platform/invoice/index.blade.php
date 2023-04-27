@@ -115,7 +115,7 @@
                             <div>{{ $order_info->shipping_email }}</div>
                         </td>
                         <td class="w-40">
-                            <h3> Shipping Details </h3>
+                            
                             <table>
                                 <tr>
                                     <td>Invoice No</td>
