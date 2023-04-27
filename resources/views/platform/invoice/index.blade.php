@@ -152,8 +152,8 @@
     <table class="item-table" cellspacing="0" padding="0">
         <tr>
             <th style="width: 10px;" rowspan="2">S.No</th>
-            <th rowspan="2"> ITEM CODE</th>
-            <th rowspan="2"> ITEM DESCRIPTION </th>
+            <th rowspan="2" style="width: 50px;"> ITEM CODE</th>
+            <th rowspan="2" style="width: 150px;"> ITEM DESCRIPTION </th>
             <th rowspan="2"> HSN</th>
             <th rowspan="2"> QTY</th>
             <th rowspan="2"> RATE </th>
