@@ -74,6 +74,10 @@
         .p-5 {
             padding: 5px;
         }
+        #header-part {
+            position: fixed;
+            top: -7;
+        }
     </style>
     <div style="text-align:center"> TAX INVOICE </div>
     <table class="header-table" id="header-part" cellspacing="0" padding="0">
