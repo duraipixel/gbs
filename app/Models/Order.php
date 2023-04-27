@@ -23,6 +23,7 @@ class Order extends Model
         'discount_amount',
         'coupon_amount',
         'coupon_code',
+        'coupon_percentage',
         'sub_total',
         'billing_name',
         'billing_email',
@@ -48,7 +49,10 @@ class Order extends Model
         'order_status_id',
         'status',
         'payment_id',
-        'payment_response_id'        
+        'payment_response_id',
+        'shipping_method_type',
+        'pickup_store_id',
+        'pickup_store_details'        
     ];
 
     public function orderItems()

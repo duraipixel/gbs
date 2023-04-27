@@ -29,21 +29,23 @@ class CheckoutController extends Controller
         $keyId = env('RAZORPAY_KEY');
         $keySecret = env('RAZORPAY_SECRET');
         
-        dd( $request->all() );
+        $checkout_infomation = json_decode($request->checkout_infomation);
+        dump( $checkout_infomation->checkout_data );
+        dd( $checkout_infomation->cart_items );
         /***
          * Check order product is out of stock before proceed, if yes remove from cart and notify user
          * 1.insert in order table with status init
          * 2.INSERT IN Order Products
          * 
          */
-        $order_status           = OrderStatus::where('status', 'published')->where('order', 1)->first();
-
         $customer_id            = $request->customer_id;
-        $cart_total             = $request->cart_total;
-        $cart_items             = $request->cart_items;
-        $shipping_address       = $request->shipping_address;
-        $billing_address        = $request->billing_address;
-        $shipping_id            = $request->shipping_id ?? 1;
+        $order_status           = OrderStatus::where('status', 'published')->where('order', 1)->first();
+        $shipping_method        = $checkout_infomation->shipping_method;
+
+        $cart_total             = $checkout_infomation->cart_total;
+        $cart_items             = $checkout_infomation->cart_items;
+        $shipping_address       = $checkout_infomation->shipping_address;
+        $billing_address        = $checkout_infomation->billing_address;
 
         #check product is out of stock
         $errors                 = [];
@@ -57,8 +59,8 @@ class CheckoutController extends Controller
                 }
             }
         }
-        if( !$shipping_address ) {
-            $message     = 'Shipping address not selected';
+        if( !$shipping_method ) {
+            $message     = 'Shipping Method not selected';
             $error = 1;
             $response['error'] = $error;
             $response['message'] = $message;
@@ -95,27 +97,38 @@ class CheckoutController extends Controller
         $order_ins['description'] = '';
         $order_ins['order_status_id'] = $order_status->id;
         $order_ins['status'] = 'pending';
-        $order_ins['billing_name'] = $billing_address['name'];
-        $order_ins['billing_email'] = $billing_address['email'];
-        $order_ins['billing_mobile_no'] = $billing_address['mobile_no'];
-        $order_ins['billing_address_line1'] = $billing_address['address_line1'];
-        $order_ins['billing_address_line2'] = $billing_address['address_line2'] ?? null;
-        $order_ins['billing_landmark'] = $billing_address['landmark'] ?? null;
-        $order_ins['billing_country'] = $billing_address['country'] ?? null;
-        $order_ins['billing_post_code'] = $billing_address['post_code'] ?? null;
-        $order_ins['billing_state'] = $billing_address['state'] ?? null;
-        $order_ins['billing_city'] = $billing_address['city'] ?? null;
 
-        $order_ins['shipping_name'] = $shipping_address['name'];
-        $order_ins['shipping_email'] = $shipping_address['email'];
-        $order_ins['shipping_mobile_no'] = $shipping_address['mobile_no'];
-        $order_ins['shipping_address_line1'] = $shipping_address['address_line1'];
-        $order_ins['shipping_address_line2'] = $shipping_address['address_line2'] ?? null;
-        $order_ins['shipping_landmark'] = $shipping_address['landmark'] ?? null;
-        $order_ins['shipping_country'] = $shipping_address['country'] ?? null;
-        $order_ins['shipping_post_code'] = $shipping_address['post_code'];
-        $order_ins['shipping_state'] = $shipping_address['state'] ?? null;
-        $order_ins['shipping_city'] = $shipping_address['city'] ?? null;
+        if( isset( $billing_address ) && !empty( $billing_address ) ) {
+        }
+        $order_ins['billing_name'] = $billing_address->name;
+        $order_ins['billing_email'] = $billing_address->email;
+        $order_ins['billing_mobile_no'] = $billing_address->mobile_no;
+        $order_ins['billing_address_line1'] = $billing_address->address_line1;
+        $order_ins['billing_address_line2'] = $billing_address->address_line2 ?? null;
+        $order_ins['billing_landmark'] = $billing_address->landmark ?? null;
+        $order_ins['billing_country'] = $billing_address->country ?? null;
+        $order_ins['billing_post_code'] = $billing_address->post_code ?? null;
+        $order_ins['billing_state'] = $billing_address->state ?? null;
+        $order_ins['billing_city'] = $billing_address->city ?? null;
+
+        if( isset( $shipping_method ) && $shipping_method != 'PICKUP_FROM_STORE' && isset( $shipping_address ) && !empty( $shipping_address ) ) {
+
+            $order_ins['shipping_name'] = $shipping_address->name;
+            $order_ins['shipping_email'] = $shipping_address->email;
+            $order_ins['shipping_mobile_no'] = $shipping_address->mobile_no;
+            $order_ins['shipping_address_line1'] = $shipping_address->address_line1;
+            $order_ins['shipping_address_line2'] = $shipping_address->address_line2 ?? null;
+            $order_ins['shipping_landmark'] = $shipping_address->landmark ?? null;
+            $order_ins['shipping_country'] = $shipping_address->country ?? null;
+            $order_ins['shipping_post_code'] = $shipping_address->post_code;
+            $order_ins['shipping_state'] = $shipping_address->state ?? null;
+            $order_ins['shipping_city'] = $shipping_address->city ?? null;
+
+        } else {
+
+            $order_ins['pickup_store_id'] = $checkout_infomation->pickup_store_id;
+        }
+
 
         $order_id = Order::create($order_ins)->id;
 

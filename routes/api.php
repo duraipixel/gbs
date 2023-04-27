@@ -100,6 +100,7 @@ Route::middleware(['client'])->group(function(){
     Route::post('/set/recent', [App\Http\Controllers\Api\CommonController::class, 'setRecentView']);
     
     Route::post('/apply/coupon', [App\Http\Controllers\Api\Couponcontroller::class, 'applyCoupon']);    
+    Route::post('/remove/coupon', [App\Http\Controllers\Api\Couponcontroller::class, 'removeCoupon']);    
 
     Route::post('/get/orders', [App\Http\Controllers\Api\OrderController::class, 'getOrders']);
     Route::post('/cancel/request/orders', [App\Http\Controllers\Api\OrderController::class, 'requestCancelOrder']);

@@ -187,7 +187,7 @@ if (!function_exists('getOrderNo')) {
     {
 
         $countNumber    = '000001';
-        $order_no    = 'MM-ORD-' . $countNumber;
+        $order_no    = 'GSB-ORD-' . $countNumber;
 
         $checkCustomer  = Order::orderBy('id', 'desc')->first();
 
@@ -204,7 +204,7 @@ if (!function_exists('getOrderNo')) {
                 }
                 $ord = $new_no . $old_no;
 
-                $order_no =  'MM-ORD-' . $ord;
+                $order_no =  'GSB-ORD-' . $ord;
             }
         }
 

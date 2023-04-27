@@ -190,6 +190,18 @@ class Couponcontroller extends Controller
         return $response;
     }
 
+    public function removeCoupon(Request $request)
+    {
+        $customer_id = $request->customer_id;
+        $shipping_fee_id = $request->shipping_fee_id ?? '';
+        $carts          = Cart::where('customer_id', $customer_id)->get();
+        $response['cart_info'] = $this->getCartListAll($customer_id, null, null, null, $shipping_fee_id);
+        $response['status'] = 'success';
+        $response['message'] = 'Coupon removed successfully';
+
+        return $response;
+    }
+
 
     function getCartListAll($customer_id = null, $guest_token = null,  $shipping_info = null, $shipping_type = null, $selected_shipping = null, $coupon_amount = null)
     {
