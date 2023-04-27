@@ -163,10 +163,10 @@
             <th rowspan="2" style="width: 40px;"> NET Amount </th>
         </tr>
         <tr>
-            <th>%</th>
-            <th>Amt</th>
-            <th>%</th>
-            <th>Amt</th>
+            <th style="width: 40px;">%</th>
+            <th style="width: 40px;">Amt</th>
+            <th style="width: 40px;">%</th>
+            <th style="width: 40px;">Amt</th>
         </tr>
         @if (isset($order_info->orderItems) && !empty($order_info->orderItems))
         @php
