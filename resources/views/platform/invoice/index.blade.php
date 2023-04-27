@@ -206,6 +206,33 @@
             @endforeach
         @endif
         <tr>
+            <td>2</td>
+            <td>
+                123456
+            </td>
+            <td>
+                <div>
+
+                   12345
+                </div>
+                <div>
+                    Warranty-15-02-2024
+                </div>
+                <div>
+                    S/R : 12220317926
+                </div>
+            </td>
+            <td>1234 </td>
+            <td> 1234 nos</td>
+            <td> 123456 </td>
+            <td>jhgfd</td>
+            <td>dsdsf%</td>
+            <td>dsdfs</td>
+            <td>d%</td>
+            <td>sdfs</td>
+            <td>dddd</td>
+        </tr>
+        <tr>
             <td colspan="5">
                 <div>
                     <label for="">Total in words </label>
@@ -215,7 +242,7 @@
                 </div>
             </td>
             <td colspan="5">
-                <table class="invoice-table w-100" cellspacing="0" padding="0" >
+                <table class="w-100" >
                     <tr>
                         <td style="text-align: right">
                             <div>Sub Total </div>
