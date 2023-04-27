@@ -205,26 +205,21 @@
                 @endphp
             @endforeach
         @endif
-    </table>
-    <table class="item-table" cellspacing="0" padding="0">
         <tr>
-            <td style="padding-top:10px;width:50%;border-bottom:none;">
+            <td colspan="5">
                 <div>
                     <label for="">Total in words </label>
                 </div>
                 <div>
                     <b>{{ ucwords( getIndianCurrency($order_info->amount) ) }}</b>
                 </div>
-                <div style="margin-top: 10px;">
-                    Thank you for the payment. You just made our day
-                </div>
             </td>
-            <td style="width: 50%;">
+            <td colspan="5">
                 <table class="no-border" cellspacing="0" padding="0" style="width: 100%;">
                     <tr>
                         <td style="text-align: right">
                             <div>Sub Total </div>
-                            <small>(Tax inclusive)</small>
+                            <small>(Tax Exclusive)</small>
                         </td>
                         <td style="text-align: right"><span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span> {{ number_format($order_info->sub_total, 2) }}</td>
                     </tr>
@@ -274,6 +269,9 @@
                 </table>
             </td>
         </tr>
+    </table>
+    <table class="item-table" cellspacing="0" padding="0">
+       
     </table>
 </body>
 
