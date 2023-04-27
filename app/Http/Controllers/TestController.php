@@ -88,12 +88,12 @@ class TestController extends Controller
     {
         $info = 'teste';
         
-        $order_info = Order::find(5);
+        $order_info = Order::find(2);
         $globalInfo = GlobalSettings::first();
-        $pdf = PDF::loadView('platform.invoice.index', compact('order_info', 'globalInfo'));    
-        Storage::put('public/invoice_order/'.$order_info->order_no.'.pdf', $pdf->output());
-        // $pdf = PDF::loadView('platform.invoice.index', compact('order_info', 'globalInfo'))->setPaper('a4', 'portrait');
-        // return $pdf->stream('test.pdf');
+        // $pdf = PDF::loadView('platform.invoice.index', compact('order_info', 'globalInfo'));    
+        // Storage::put('public/invoice_order/'.$order_info->order_no.'.pdf', $pdf->output());
+        $pdf = PDF::loadView('platform.invoice.index', compact('order_info', 'globalInfo'))->setPaper('a4', 'portrait');
+        return $pdf->stream('test.pdf');
     }
 
     public function sendMail()
