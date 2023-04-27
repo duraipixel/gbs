@@ -20,6 +20,7 @@
 
         .invoice-table td, th {
             padding: 0px !important;
+            font-weight: bold;
         }
 
         .header-table td,
@@ -121,26 +122,26 @@
                         </td>
                         <td class="w-40">
                             
-                            <table class="invoice-table">
+                            <table class="invoice-table w-100">
                                 <tr>
-                                    <td>Invoice No</td>
-                                    <td>{{ $order_info->order_no }}</td>
+                                    <td class="w-50">Invoice No</td>
+                                    <td class="w-50">{{ $order_info->order_no }}</td>
                                 </tr>
                                 <tr>
-                                    <td>Invoice Date</td>
-                                    <td>{{ date('d/m/Y', strtotime($order_info->created_at)) }}</td>
+                                    <td class="w-50">Invoice Date</td>
+                                    <td class="w-50">{{ date('d/m/Y', strtotime($order_info->created_at)) }}</td>
                                 </tr>
                                 <tr>
-                                    <td>Order No</td>
-                                    <td>{{ $order_info->order_no }}</td>
+                                    <td class="w-50">Order No</td>
+                                    <td class="w-50">{{ $order_info->order_no }}</td>
                                 </tr>
                                 <tr>
-                                    <td>Customer ID</td>
-                                    <td>{{ $order_info->customer->customer_no }}</td>
+                                    <td class="w-50">Customer ID</td>
+                                    <td class="w-50">{{ $order_info->customer->customer_no }}</td>
                                 </tr>
                                 <tr>
-                                    <td> Payment Status </td>
-                                    <td> {{ $order_info->payments->status ?? '' }} </td>
+                                    <td class="w-50"> Payment Status </td>
+                                    <td class="w-50"> {{ $order_info->payments->status ?? '' }} </td>
                                 </tr>
                             </table>
                         </td>
