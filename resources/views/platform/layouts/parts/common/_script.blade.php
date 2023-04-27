@@ -269,6 +269,32 @@
 
     }
 
+    function getProductWarrantyDropdown(id = '' ) {
+        
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $.ajax({
+            url: '{{ route("common.warranty.dropdown") }}',
+            type: 'POST',
+            data: {id:id},
+            success: function(res) {
+                const drawerEl = document.querySelector("#kt_common_add_form");
+                const commonDrawer = KTDrawer.getInstance(drawerEl);
+                commonDrawer.hide();
+                
+                $( '#product-warranty-pane' ).html(res);
+            
+                return false;
+            }
+            
+        });
+
+    }
+
     function getProductDynamicDropdown( id = '', tag = '' ) {
         
         $.ajaxSetup({

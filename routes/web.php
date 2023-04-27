@@ -149,6 +149,7 @@ Route::middleware(['auth'])->group(function(){
 
     Route::post('/getProduct/category/list', [App\Http\Controllers\CommonController::class, 'getProductCategoryList'])->name('common.category.dropdown');
     Route::post('/getProduct/brand/list', [App\Http\Controllers\CommonController::class, 'getProductBrandList'])->name('common.brand.dropdown');
+    Route::post('/getProduct/warranty/list', [App\Http\Controllers\CommonController::class, 'getProductWarrantyList'])->name('common.warranty.dropdown');
     Route::post('/getProduct/dynamic/list', [App\Http\Controllers\CommonController::class, 'getProductDynamicList'])->name('common.dynamic.dropdown');
 
     Route::prefix('customer')->group(function(){

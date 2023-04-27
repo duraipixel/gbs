@@ -103,14 +103,14 @@ class WarrantyController extends Controller
             
             $error                      = 0;
             $info                       = Warranty::updateOrCreate(['id' => $id], $ins);
-          
         
             $message                    = (isset($id) && !empty($id)) ? 'Updated Successfully' : 'Added successfully';
+            
         } else {
             $error                      = 1;
             $message                    = $validator->errors()->all();
         }
-        return response()->json(['error' => $error, 'message' => $message]);
+        return response()->json(['error' => $error, 'message' => $message, 'id' => $id ?? '']);
     }
     public function changeStatus(Request $request)
     {

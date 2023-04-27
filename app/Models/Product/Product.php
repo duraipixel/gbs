@@ -46,7 +46,8 @@ class Product extends Model
         'base_image',
         'approved_by',
         'approved_at',
-        'added_by'
+        'added_by',
+        'warranty_id'
     ];
 
     public function productCategory()

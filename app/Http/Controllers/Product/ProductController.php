@@ -20,6 +20,7 @@ use App\Models\Product\ProductMapAttribute;
 use App\Models\Product\ProductMetaTag;
 use App\Models\Product\ProductRelatedRelation;
 use App\Models\Product\ProductWithAttributeSet;
+use App\Models\Warranty;
 use App\Repositories\ProductRepository;
 use Illuminate\Support\Str;
 use DataTables;
@@ -170,7 +171,7 @@ class ProductController extends Controller
                                         })->get();
         $productCategory        = ProductCategory::where('status', 'published')->get();
         $attributes             = ProductAttributeSet::where('status', 'published')->orderBy('order_by','ASC')->get();
-
+        $warranties             = Warranty::where('status', 'published')->get();
         $productLabels          = MainCategory::where(['slug' => 'product-labels', 'status' => 'published'])->first();
         
         $productTags            = MainCategory::where(['slug' => 'product-tags', 'status' => 'published'])->first();
@@ -192,10 +193,12 @@ class ProductController extends Controller
                                     'brochures' => $brochures,
                                     'attributes' => $attributes,
                                     'otherProducts' => $otherProducts,
+                                    'warranties' => $warranties
                                     
                                 );
         
         return view('platform.product.form.add_edit_form', $params);
+
     }
 
     public function saveForm(Request $request)
@@ -238,7 +241,7 @@ class ProductController extends Controller
         $validator      = Validator::make( $request->all(), $validate_array );
 
         if ($validator->passes()) {
-           
+            dd( $request->all() );
             if( isset( $request->avatar_remove ) && !empty($request->avatar_remove) ) {
                 $ins['base_image']          = null;
             }
@@ -258,6 +261,7 @@ class ProductController extends Controller
             $ins[ 'is_featured' ]           = $request->is_featured ?? 0;
             $ins[ 'has_video_shopping' ]    = $request->has_video_shopping ?? 'no';
             $ins[ 'quantity' ]              = $request->qty;
+            $ins['warranty_id']             = $request->warranty_id;
             $ins[ 'stock_status' ]          = $request->stock_status;
             // $ins[ 'sale_price' ]            = $request->sale_price ?? 0;
             // $ins[ 'sale_start_date' ]       = $request->sale_start_date ?? null;

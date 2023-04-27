@@ -97,6 +97,7 @@ class CommonController extends Controller
 
         if (isset($details) && !empty($details)) {
             foreach ($details as $item) {
+
                 $tmp                    = [];
                 $tmp['id']              = $item->id;
                 $tmp['collection_name'] = $item->collection_name;
@@ -112,13 +113,13 @@ class CommonController extends Controller
                     $path               = asset($url);
                 }
 
-                $tmp['image']           = $path;
-               
+                $tmp['image']           = $path;             
 
                 $collection[] = $tmp;
             }
         }
         return $collection;
+        
     }
 
 

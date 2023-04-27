@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category\MainCategory;
 use App\Models\Master\Brands;
 use App\Models\Product\ProductCategory;
+use App\Models\Warranty;
 use Illuminate\Http\Request;
 
 class CommonController extends Controller
@@ -21,6 +22,13 @@ class CommonController extends Controller
         $brand_id      = $request->id;
         $brands        = Brands::where('status', 'published')->get();
         return view('platform.product.form.parts._brand', compact('brands', 'brand_id'));
+    }
+
+    public function getProductWarrantyList(Request $request)
+    {
+        $warranty_id = $request->id;
+        $warranties = Warranty::where('status', 'published')->get();
+        return view('platform.product.form.parts._warranty', compact('warranties', 'warranty_id'));
     }
 
     public function getProductDynamicList(Request $request)

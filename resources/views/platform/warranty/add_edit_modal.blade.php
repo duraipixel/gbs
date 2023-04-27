@@ -39,7 +39,7 @@
                                     <label class="required fw-bold fs-6 mb-2">Warranty Name</label>
                                     <input type="text" name="name" class="form-control form-control-solid mb-3 mb-lg-0"
                                         placeholder="Name" value="{{ $info->name ?? '' }}" />
-                              
+                            <input type="hidden" name="from" id="from" value="{{ $from ?? '' }}">
                             </div>
                         </div>
                        
@@ -253,12 +253,12 @@ $('#warranty_period_type').select2();
                                     
                                 },
                                 success: function(res) {
-
+                                    submitButton.disabled = false;
                                     if (res.error == 1) {
                                         // Remove loading indication
                                      
                                         // Enable button
-                                        submitButton.disabled = false;
+                                       
                                         let error_msg = res.message
                                         Swal.fire({
                                             text: res.message,
@@ -270,25 +270,29 @@ $('#warranty_period_type').select2();
                                             }
                                         });
                                     } else { 
-                                        
-                                     
-                                        dtTable.ajax.reload();
-                                        Swal.fire({
-                                            text: res.message,
-                                            icon: "success",
-                                            buttonsStyling: false,
-                                            confirmButtonText: "Ok, got it!",
-                                            customClass: {
-                                                confirmButton: "btn btn-primary"
-                                            }
-                                        }).then(function(result) {
-                                            if (result
-                                                .isConfirmed) {
-                                                commonDrawer
-                                                    .hide();
+                                        if( from ) {
+                                            getProductWarrantyDropdown(res.id);
+                                        } else {
 
-                                            }
-                                        });
+                                            dtTable.ajax.reload();
+                                            Swal.fire({
+                                                text: res.message,
+                                                icon: "success",
+                                                buttonsStyling: false,
+                                                confirmButtonText: "Ok, got it!",
+                                                customClass: {
+                                                    confirmButton: "btn btn-primary"
+                                                }
+                                            }).then(function(result) {
+                                                if (result
+                                                    .isConfirmed) {
+                                                    commonDrawer
+                                                        .hide();
+    
+                                                }
+                                            });
+                                        }
+                                     
                                     }
                                 }
                             });
