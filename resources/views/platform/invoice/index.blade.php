@@ -215,7 +215,7 @@
                 </div>
             </td>
             <td colspan="5">
-                <table class="no-border" cellspacing="0" padding="0" style="width: 100%;">
+                <table class="invoice-table w-100" cellspacing="0" padding="0" >
                     <tr>
                         <td style="text-align: right">
                             <div>Sub Total </div>
@@ -260,8 +260,7 @@
                             <span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>{{ number_format($order_info->amount, 2) }}</td>
                     </tr>
                     <tr>
-
-                        <td colspan="2 " style="text-align: center;border-top:1px solid #ddd">
+                        <td colspan="2" style="text-align: center;border-top:1px solid #ddd">
                             <div style="margin-top: 100px">Authorized Signature</div>
                         </td>
                     </tr>
@@ -270,9 +269,7 @@
             </td>
         </tr>
     </table>
-    <table class="item-table" cellspacing="0" padding="0">
-       
-    </table>
+   
 </body>
 
 </html>
