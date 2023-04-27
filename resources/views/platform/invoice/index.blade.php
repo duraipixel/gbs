@@ -259,11 +259,6 @@
                         <td style="text-align: right;font-weight:700;font-size:15px;">
                             <span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>{{ number_format($order_info->amount, 2) }}</td>
                     </tr>
-                    <tr>
-                        <td colspan="2" style="text-align: center;border-top:1px solid #ddd">
-                            <div style="margin-top: 100px">Authorized Signature</div>
-                        </td>
-                    </tr>
 
                 </table>
             </td>
