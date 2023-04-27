@@ -70,6 +70,9 @@
         .p-5 {
             padding: 5px;
         }
+        .inline {
+            display: inline-block;
+        }
     </style>
     <div style="text-align:center"> TAX INVOICE </div>
     <table class="header-table" cellspacing="0" padding="0">
@@ -119,23 +122,23 @@
                             <div>{{ $order_info->shipping_email }}</div>
                         </td>
                         <td class="w-40">
-                            <div class="w-100">
+                            <div class="w-100 inline">
                                 <div class="w-40">Invoice No</div>
                                 <div class="w-60">{{ $order_info->order_no }}</div>
                             </div>
-                            <div class="w-100">
+                            <div class="w-100 inline">
                                 <div class="w-40">Invoice Date</div>
                                 <div class="w-60">{{ date('d/m/Y', strtotime($order_info->created_at)) }}</div>
                             </div>
-                            <div class="w-100">
+                            <div class="w-100 inline">
                                 <div class="w-40">Order No</div>
                                 <div class="w-60">{{ $order_info->order_no }}</div>
                             </div>
-                            <div class="w-100">
+                            <div class="w-100 inline">
                                 <div class="w-40">Customer ID</div>
                                 <div class="w-60">{{ $order_info->customer->customer_no }}</div>
                             </div>
-                            <div class="w-100">
+                            <div class="w-100 inline">
                                 <div class="w-40"> Payment Status </div>
                                 <div class="w-60"> {{ $order_info->payments->status ?? '' }}</div>
                             </div>
