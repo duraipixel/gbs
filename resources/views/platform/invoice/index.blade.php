@@ -214,6 +214,20 @@
                 <div>
                     <b>{{ ucwords( getIndianCurrency($order_info->amount) ) }}</b>
                 </div>
+                <div>
+
+                    <h3>
+                        TERMS & CONDITIONS:
+                    </h3>
+                    <div>
+                        1. Branded Systems,Printers,Invertors and Batteries Warranty From Manufacturer Only. 
+                        2. Laptops Carry in Warranty From Manufacturer Only. 
+                        3.GBS PCS Onsite Warranty From GBS. 
+                        4. Interest @ 24% P.A. Will Be Charged for Delayed Payments. 
+                        5. Physical Damage / Mis-Handling of Products Does Not Cover Warranty. 
+                        6. Once Invoice Made Cannot Be Modified / Cancelled
+                    </div>
+                </div>
             </td>
             <td colspan="5" style="text-align:right;width:100%;">
                 <table class="w-100 no-border" style="text-align:right" >
