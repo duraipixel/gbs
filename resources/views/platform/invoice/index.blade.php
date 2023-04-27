@@ -209,38 +209,6 @@
                     $i++;
                 @endphp
             @endforeach
-            @foreach ($order_info->orderItems as $item)
-            <tr>
-                <td>{{ $i }}</td>
-                <td>
-                    {{ $item->sku }}
-                </td>
-                <td>
-                    <div>
-
-                        {{ $item->product_name }}
-                    </div>
-                    <div>
-                        Warranty-15-02-2024
-                    </div>
-                    <div>
-                        S/R : 12220317926
-                    </div>
-                </td>
-                <td> {{ $item->hsn_code ?? '85044030' }} </td>
-                <td> {{ $item->quantity }} nos</td>
-                <td> {{ number_format($item->base_price, 2) }} </td>
-                <td>{{ number_format($item->base_price, 2) }}</td>
-                <td>{{ $item->tax_percentage / 2 }}%</td>
-                <td>{{ number_format($item->tax_amount / 2, 2) }}</td>
-                <td>{{ $item->tax_percentage / 2 }}%</td>
-                <td>{{ number_format($item->tax_amount / 2, 2) }}</td>
-                <td>{{ number_format($item->sub_total, 2) }}</td>
-            </tr>
-            @php
-                $i++;
-            @endphp
-        @endforeach
         @endif
         <tr>
             <td colspan="7">
