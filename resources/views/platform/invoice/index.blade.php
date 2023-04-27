@@ -222,14 +222,14 @@
                             <div>Sub Total </div>
                             <small>(Tax Exclusive)</small>
                         </td>
-                        <td style="text-align: right;">
+                        <td class="w-100" style="text-align: right;">
                             <span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span> 
                             {{ number_format($order_info->sub_total, 2) }}
                         </td>
                     </tr>
                     <tr>
                         <td style="text-align: right;">Tax (%{{ (int)$order_info->tax_percentage }}) </td>
-                        <td style="text-align: right;;float:right">
+                        <td class="w-100" style="text-align: right;;float:right">
                             <span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>{{ number_format($order_info->tax_amount, 2) }}</td>
                     </tr>
                     @if ($order_info->coupon_amount > 0)
@@ -238,7 +238,7 @@
                                 <div>Coupon Amount </div>
                                 <small>( {{ $order_info->coupon_code }})</small>
                             </td>
-                            <td style="text-align: right;"><span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>{{ number_format($order_info->coupon_amount, 2) }}</td>
+                            <td class="w-100" style="text-align: right;"><span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>{{ number_format($order_info->coupon_amount, 2) }}</td>
                         </tr>
                     @endif
                   
@@ -248,12 +248,12 @@
                                 <div>Shipping Fee </div>
                                 <small>( {{ $order_info->shipping_type }})</small>
                             </td>
-                            <td style="text-align: right;"><span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>{{ number_format($order_info->shipping_amount, 2) }}</td>
+                            <td class="w-100" style="text-align: right;"><span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>{{ number_format($order_info->shipping_amount, 2) }}</td>
                         </tr>
                     @endif
                     <tr>
                         <td style="text-align: right;font-weight:700;font-size:14px;">Total</td>
-                        <td style="text-align: right;font-weight:700;font-size:14px;">
+                        <td class="w-100" style="text-align: right;font-weight:700;font-size:14px;">
                             <span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>
                             {{ number_format($order_info->amount, 2) }}
                         </td>
