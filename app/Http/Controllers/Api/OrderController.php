@@ -204,7 +204,6 @@ class OrderController extends Controller
                 $orderInfo->order_status_id = $order_status->id;
                 $orderInfo->save();
 
-
                 /**** order history */
                 $his['order_id'] = $orderInfo->id;
                 $his['action'] = 'Order Cancel Requested';
