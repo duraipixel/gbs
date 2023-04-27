@@ -207,7 +207,7 @@
             @endforeach
         @endif
         <tr>
-            <td colspan="6">
+            <td colspan="7">
                 <div>
                     <label for="">Total in words </label>
                 </div>
@@ -215,7 +215,7 @@
                     <b>{{ ucwords( getIndianCurrency($order_info->amount) ) }}</b>
                 </div>
             </td>
-            <td colspan="6" style="text-align:right;width:100%;">
+            <td colspan="5" style="text-align:right;width:100%;">
                 <table class="w-100 no-border" style="text-align:right" >
                     <tr>
                         <td style="text-align: right;width:50%">
