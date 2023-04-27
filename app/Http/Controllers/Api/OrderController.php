@@ -58,6 +58,9 @@ class OrderController extends Controller
                         $tmp1['sku'] = $pro->sku;
                         $tmp1['quantity'] = $pro->quantity;
                         $tmp1['price'] = $pro->price;
+                        $tmp1['strice_price'] = $pro->strice_price;
+                        $tmp1['save_price'] = $pro->save_price;
+                        $tmp1['base_price'] = $pro->base_price;
                         $tmp1['tax_amount'] = $pro->tax_amount;
                         $tmp1['tax_percentage'] = $pro->tax_percentage;
                         $tmp1['quantity'] = $pro->quantity;
