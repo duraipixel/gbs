@@ -72,6 +72,7 @@
         .p-5 {
             padding: 5px;
         }
+       
     </style>
     <div style="text-align:center"> TAX INVOICE </div>
     <table class="header-table" cellspacing="0" padding="0">
@@ -215,7 +216,7 @@
                 </div>
             </td>
             <td colspan="4">
-                <table class="w-100" >
+                <table class="w-100 no-border" >
                     <tr>
                         <td style="text-align: right">
                             <div>Sub Total </div>
