@@ -206,27 +206,7 @@
             @endforeach
         @endif
         <tr>
-            <td>2</td>
-            <td>
-                123456
-            </td>
-            <td>
-                <div>
-
-                   12345
-                </div>
-                <div>
-                    Warranty-15-02-2024
-                </div>
-                <div>
-                    S/R : 12220317926
-                </div>
-            </td>
-            <td>1234 </td>
-            <td> 1234 nos</td>
-            <td> 123456 </td>
-            <td>jhgfd</td>
-            <td>dsdsf%</td>
+            <td colspan="8">2</td>
             <td>dsdfs</td>
             <td>d%</td>
             <td>sdfs</td>
