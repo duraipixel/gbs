@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
 <body>
     <style>
@@ -18,7 +18,8 @@
             width: 100%;
         }
 
-        .invoice-table td, th {
+        .invoice-table td,
+        th {
             padding: 0px !important;
             font-weight: bold;
         }
@@ -53,6 +54,7 @@
         .w-70 {
             width: 70%;
         }
+
         .w-50 {
             width: 50%;
         }
@@ -72,7 +74,6 @@
         .p-5 {
             padding: 5px;
         }
-       
     </style>
     <div style="text-align:center"> TAX INVOICE </div>
     <table class="header-table" cellspacing="0" padding="0">
@@ -81,7 +82,7 @@
                 <table class="no-border" style="width: 100%">
                     <tr>
                         <td class="w-30"> <span>
-                            <img src="{{ public_path('assets/logo/logo.webp') }}" alt=""
+                                <img src="{{ public_path('assets/logo/logo.webp') }}" alt=""
                                     height="75"></span> </td>
                         <td class="w-70">
                             <h2> {{ $globalInfo->site_name }} </h2>
@@ -90,7 +91,7 @@
                             <div> {{ $globalInfo->site_mobile_no }} </div>
                             <div> <b> GSTIN: 33AACCG8423L1ZH | PAN AACCG8243L</b></div>
                         </td>
-                        
+
                     </tr>
                 </table>
             </td>
@@ -102,7 +103,7 @@
                     <tr>
                         <td class="w-35">
                             <div><b> Bill To: </b></div>
-                            <div><b>{{ $order_info->billing_name  }}</b></div>
+                            <div><b>{{ $order_info->billing_name }}</b></div>
                             <div>{{ $order_info->billing_address_line1 }}</div>
                             <div>{{ $order_info->billing_city }}</div>
                             <div>{{ $order_info->billing_state }}</div>
@@ -112,7 +113,7 @@
 
                         <td class="w-35">
                             <div><b> Ship To: </b></div>
-                            <div><b>{{ $order_info->shipping_name  }}</b></div>
+                            <div><b>{{ $order_info->shipping_name }}</b></div>
                             <div>{{ $order_info->shipping_address_line1 }}</div>
                             <div>{{ $order_info->shipping_city }}</div>
                             <div>{{ $order_info->shipping_state }}</div>
@@ -120,7 +121,7 @@
                             <div>{{ $order_info->shipping_email }}</div>
                         </td>
                         <td class="w-40">
-                            
+
                             <table class="invoice-table w-100">
                                 <tr>
                                     <td class="w-50">Invoice No</td>
@@ -154,7 +155,7 @@
         <tr>
             <th style="width: 10px;" rowspan="2">S.No</th>
             <th rowspan="2" style="width: 50px;"> ITEM CODE</th>
-            <th rowspan="2" > ITEM DESCRIPTION </th>
+            <th rowspan="2"> ITEM DESCRIPTION </th>
             <th rowspan="2" style="width: 40px;"> HSN</th>
             <th rowspan="2" style="width: 30px;"> QTY</th>
             <th rowspan="2" style="width: 30px;"> RATE </th>
@@ -170,9 +171,9 @@
             <th style="width: 40px;">Amt</th>
         </tr>
         @if (isset($order_info->orderItems) && !empty($order_info->orderItems))
-        @php
-            $i = 1;
-        @endphp
+            @php
+                $i = 1;
+            @endphp
             @foreach ($order_info->orderItems as $item)
                 <tr>
                     <td>{{ $i }}</td>
@@ -196,9 +197,9 @@
                     <td> {{ number_format($item->base_price, 2) }} </td>
                     <td>{{ number_format($item->base_price, 2) }}</td>
                     <td>{{ $item->tax_percentage / 2 }}%</td>
-                    <td>{{ number_format(($item->tax_amount / 2), 2) }}</td>
+                    <td>{{ number_format($item->tax_amount / 2, 2) }}</td>
                     <td>{{ $item->tax_percentage / 2 }}%</td>
-                    <td>{{ number_format(($item->tax_amount / 2), 2) }}</td>
+                    <td>{{ number_format($item->tax_amount / 2, 2) }}</td>
                     <td>{{ number_format($item->sub_total, 2) }}</td>
                 </tr>
                 @php
@@ -212,7 +213,7 @@
                     <label for="">Total in words </label>
                 </div>
                 <div>
-                    <b>{{ ucwords( getIndianCurrency($order_info->amount) ) }}</b>
+                    <b>{{ ucwords(getIndianCurrency($order_info->amount)) }}</b>
                 </div>
                 <div>
 
@@ -220,31 +221,55 @@
                         TERMS & CONDITIONS:
                     </h3>
                     <div>
-                        1. Branded Systems,Printers,Invertors and Batteries Warranty From Manufacturer Only. 
-                        2. Laptops Carry in Warranty From Manufacturer Only. 
-                        3.GBS PCS Onsite Warranty From GBS. 
-                        4. Interest @ 24% P.A. Will Be Charged for Delayed Payments. 
-                        5. Physical Damage / Mis-Handling of Products Does Not Cover Warranty. 
-                        6. Once Invoice Made Cannot Be Modified / Cancelled
+                        <small>
+                            1. Branded Systems,Printers,Invertors and Batteries Warranty From Manufacturer Only.
+                        </small>
+                    </div>
+                    <div>
+                        <small>
+                            2. Laptops Carry in Warranty From Manufacturer Only.
+                        </small>
+                    </div>
+                    <div>
+                        <small>
+                            3.GBS PCS Onsite Warranty From GBS.
+                        </small>
+                    </div>
+                    <div>
+                        <small>
+                            4. Interest @ 24% P.A. Will Be Charged for Delayed Payments.
+                        </small>
+                    </div>
+                    <div>
+                        <small>
+                            5. Physical Damage / Mis-Handling of Products Does Not Cover Warranty.
+                        </small>
+                    </div>
+                    <div>
+                        <small>
+                            6. Once Invoice Made Cannot Be Modified / Cancelled
+                        </small>
                     </div>
                 </div>
             </td>
             <td colspan="5" style="text-align:right;width:100%;">
-                <table class="w-100 no-border" style="text-align:right" >
+                <table class="w-100 no-border" style="text-align:right">
                     <tr>
                         <td style="text-align: right;">
                             <div>Sub Total </div>
                             <small>(Tax Exclusive)</small>
                         </td>
                         <td class="w-100" style="text-align: right;">
-                            <span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span> 
+                            <span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>
                             {{ number_format($order_info->sub_total, 2) }}
                         </td>
                     </tr>
                     <tr>
-                        <td style="text-align: right;">Tax (%{{ (int)$order_info->tax_percentage }}) </td>
+                        <td style="text-align: right;">Tax (%{{ (int) $order_info->tax_percentage }}) </td>
                         <td class="w-100" style="text-align: right;;float:right">
-                            <span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>{{ number_format($order_info->tax_amount, 2) }}</td>
+                            <span
+                                style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>{{ number_format($order_info->tax_amount, 2) }}
+                        </td>
                     </tr>
                     @if ($order_info->coupon_amount > 0)
                         <tr>
@@ -252,17 +277,21 @@
                                 <div>Coupon Amount </div>
                                 <small>( {{ $order_info->coupon_code }})</small>
                             </td>
-                            <td class="w-100" style="text-align: right;"><span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>{{ number_format($order_info->coupon_amount, 2) }}</td>
+                            <td class="w-100" style="text-align: right;"><span
+                                    style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>{{ number_format($order_info->coupon_amount, 2) }}
+                            </td>
                         </tr>
                     @endif
-                  
+
                     @if ($order_info->shipping_amount > 0)
                         <tr>
                             <td style="text-align: right;">
                                 <div>Shipping Fee </div>
                                 <small>( {{ $order_info->shipping_type }})</small>
                             </td>
-                            <td class="w-100" style="text-align: right;"><span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>{{ number_format($order_info->shipping_amount, 2) }}</td>
+                            <td class="w-100" style="text-align: right;"><span
+                                    style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>{{ number_format($order_info->shipping_amount, 2) }}
+                            </td>
                         </tr>
                     @endif
                     <tr>
@@ -275,11 +304,11 @@
 
                 </table>
             </td>
-           
+
         </tr>
-        
+
     </table>
-   
+
 </body>
 
 </html>
