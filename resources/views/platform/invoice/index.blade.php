@@ -82,16 +82,14 @@
                         <td class="w-30"> <span>
                             <img src="{{ public_path('assets/logo/logo.webp') }}" alt=""
                                     height="75"></span> </td>
-                        <td class="w-40">
-                            <h3> {{ $globalInfo->site_name }} </h3>
+                        <td class="w-70">
+                            <h2> {{ $globalInfo->site_name }} </h2>
                             <div> {{ $globalInfo->address }} </div>
                             <div> {{ $globalInfo->site_email }} </div>
                             <div> {{ $globalInfo->site_mobile_no }} </div>
                             <div> <b> GSTIN: 33AACCG8423L1ZH | PAN AACCG8243L</b></div>
                         </td>
-                        <td class="w-30">
-                            
-                        </td>
+                        
                     </tr>
                 </table>
             </td>
@@ -102,7 +100,7 @@
                 <table class="no-border" style="width: 100%">
                     <tr>
                         <td class="w-35">
-                            <b> Bill To: </b>
+                            <div><b> Bill To: </b></div>
                             <div><b>{{ $order_info->billing_name  }}</b></div>
                             <div>{{ $order_info->billing_address_line1 }}</div>
                             <div>{{ $order_info->billing_city }}</div>
@@ -112,7 +110,7 @@
                         </td>
 
                         <td class="w-35">
-                            <b> Ship To: </b>
+                            <div><b> Ship To: </b></div>
                             <div><b>{{ $order_info->shipping_name  }}</b></div>
                             <div>{{ $order_info->shipping_address_line1 }}</div>
                             <div>{{ $order_info->shipping_city }}</div>
