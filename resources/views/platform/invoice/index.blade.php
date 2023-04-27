@@ -41,12 +41,15 @@
         th {
             border: none;
             width: 100%;
-            font-size: 13px;
+            font-size: 12px;
             color: #000000;
         }
 
         .w-70 {
             width: 70%;
+        }
+        .w-60 {
+            width: 60%;
         }
         .w-50 {
             width: 50%;
@@ -97,7 +100,7 @@
                 <table class="no-border" style="width: 100%">
                     <tr>
                         <td class="w-35">
-                            <h3> Bill To: </h3>
+                            <b> Bill To: </b>
                             <div><b>{{ $order_info->billing_name  }}</b></div>
                             <div>{{ $order_info->billing_address_line1 }}</div>
                             <div>{{ $order_info->billing_city }}</div>
@@ -107,7 +110,7 @@
                         </td>
 
                         <td class="w-35">
-                            <h3> Ship To: </h3>
+                            <b> Ship To: </b>
                             <div><b>{{ $order_info->shipping_name  }}</b></div>
                             <div>{{ $order_info->shipping_address_line1 }}</div>
                             <div>{{ $order_info->shipping_city }}</div>
@@ -116,29 +119,26 @@
                             <div>{{ $order_info->shipping_email }}</div>
                         </td>
                         <td class="w-40">
-                            
-                            <table>
-                                <tr>
-                                    <td>Invoice No</td>
-                                    <td>{{ $order_info->order_no }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Invoice Date</td>
-                                    <td>{{ date('d/m/Y', strtotime($order_info->created_at)) }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Order No</td>
-                                    <td>{{ $order_info->order_no }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Customer ID</td>
-                                    <td>{{ $order_info->customer->customer_no }}</td>
-                                </tr>
-                                <tr>
-                                    <td> Payment Status </td>
-                                    <td> {{ $order_info->payments->status ?? '' }} </td>
-                                </tr>
-                            </table>
+                            <div class="w-100">
+                                <div class="w-40">Invoice No</div>
+                                <div class="w-60">{{ $order_info->order_no }}</div>
+                            </div>
+                            <div class="w-100">
+                                <div class="w-40">Invoice Date</div>
+                                <div class="w-60">{{ date('d/m/Y', strtotime($order_info->created_at)) }}</div>
+                            </div>
+                            <div class="w-100">
+                                <div class="w-40">Order No</div>
+                                <div class="w-60">{{ $order_info->order_no }}</div>
+                            </div>
+                            <div class="w-100">
+                                <div class="w-40">Customer ID</div>
+                                <div class="w-60">{{ $order_info->customer->customer_no }}</div>
+                            </div>
+                            <div class="w-100">
+                                <div class="w-40"> Payment Status </div>
+                                <div class="w-60"> {{ $order_info->payments->status ?? '' }}</div>
+                            </div>
                         </td>
                     </tr>
                 </table>
