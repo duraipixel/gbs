@@ -207,7 +207,7 @@
             @endforeach
         @endif
         <tr>
-            <td colspan="8">
+            <td colspan="6">
                 <div>
                     <label for="">Total in words </label>
                 </div>
@@ -215,16 +215,19 @@
                     <b>{{ ucwords( getIndianCurrency($order_info->amount) ) }}</b>
                 </div>
             </td>
-            <td colspan="4">
+            <td colspan="6">
                 <table class="w-100 no-border" >
                     <tr>
-                        <td style="text-align: right">
+                        <td style="text-align: right;width:50%">
                             <div>Sub Total </div>
                             <small>(Tax Exclusive)</small>
                         </td>
-                        <td style="text-align: right"><span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span> {{ number_format($order_info->sub_total, 2) }}</td>
+                        <td style="text-align: right;width:50%">
+                            <span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span> 
+                            {{ number_format($order_info->sub_total, 2) }}
+                        </td>
                     </tr>
-                    {{-- <tr>
+                    <tr>
                         <td style="text-align: right">Tax (%{{ (int)$order_info->tax_percentage }}) </td>
                         <td style="text-align: right"><span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>{{ number_format($order_info->tax_amount, 2) }}</td>
                     </tr>
@@ -246,10 +249,10 @@
                             </td>
                             <td style="text-align: right"><span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>{{ number_format($order_info->shipping_amount, 2) }}</td>
                         </tr>
-                    @endif --}}
+                    @endif
                     <tr>
-                        <td style="text-align: right;font-weight:700;font-size:15px;">Total</td>
-                        <td style="text-align: right;font-weight:700;font-size:15px;">
+                        <td style="text-align: right;font-weight:700;font-size:14px;">Total</td>
+                        <td style="text-align: right;font-weight:700;font-size:14px;">
                             <span style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>{{ number_format($order_info->amount, 2) }}</td>
                     </tr>
 
