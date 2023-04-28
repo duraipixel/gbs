@@ -97,7 +97,10 @@ class OrderController extends Controller
         $customer_id        = $request->customer_id ?? 1;
         $order_no           = $request->order_no;
         $info           = Order::where('order_no', $order_no)->first();
-        $orderTracking  = OrderStatus::select('id', 'status_name')->where('order', '!=', 6)->get();
+        $orderTracking  = OrderStatus::select('id', 'status_name')
+                            ->where('order', '!=', 6)
+                            ->where('order', '!=', 3)
+                            ->get();
         $orders = [];
         if( isset( $info ) && !empty( $info ) ) {
            
