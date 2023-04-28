@@ -113,7 +113,7 @@ class CustomerController extends Controller
                     'mobile_no' => [$request->mobile_no]
                 );
 
-                // sendMuseeSms('register', $sms_params);
+                sendGBSSms('register', $sms_params);
             }
 
             $error = 0;

@@ -34,7 +34,7 @@ if (!function_exists('errorArrays')) {
     }
 }
 
-function sendMuseeSms($sms_type, $details)
+function sendGBSSms($sms_type, $details)
 {
     $info                   = SmsTemplate::where('sms_type', $sms_type)->first();
 
@@ -64,11 +64,11 @@ function sendSMS($numbers, $msg, $params)
 {
 
     extract($params);
-    $uid = "museemusical";
-    $pwd = urlencode("18870");
+    $uid = "gbssystems";
+    $pwd = urlencode("18585");
     // $entityid = "1001409933589317661";
     // $tempid = "1607100000000238808";
-    $sid = urlencode("MUSEEM");
+    $sid = urlencode("GBSCOM");
 
     $message = rawurlencode($msg);
     $numbers = implode(',', $numbers);

@@ -109,7 +109,7 @@ class OrderController extends Controller
         $info = Order::find($order_id);
         $order_status_info = OrderStatus::where('status', 'published')->get();
 
-        return view('platform.order.order_status_modal', compact('info', 'order_status_info') );
+        return view('platform.order.order_status_modal', compact('info', 'ordchrer_status_info') );
 
     }
 
@@ -118,8 +118,7 @@ class OrderController extends Controller
         $id             = $request->id;
         $validator      = Validator::make($request->all(), [
                                 'order_status_id' => 'required|string',
-                                'description' => 'required|string',
-                             
+                                'description' => 'required|string',                             
                             ]);
         if ($validator->passes()) {
 
@@ -189,7 +188,7 @@ class OrderController extends Controller
                         'tracking_url' => env('WEBSITE_LOGIN_URL'),                        
                         'mobile_no' => [$info->billing_mobile_no]
                     );
-                    sendMuseeSms('shipping', $sms_params);
+                    // sendMuseeSms('shipping', $sms_params);
 
                     $info->status = 'shipped';
 
