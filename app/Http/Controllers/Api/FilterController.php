@@ -241,73 +241,35 @@ class FilterController extends Controller
 
         $searchData = [];
         $error = 1;
-        if( !empty( $query ) ) {
+        if (!empty($query)) {
 
-                $productInfo = Product::where(function($qr) use($query){
-                    $qr ->where('product_name', 'like', "%{$query}%")
+            $productInfo = Product::where(function ($qr) use ($query) {
+                $qr->where('product_name', 'like', "%{$query}%")
+                    ->orWhere('hsn_code', 'like',"%{$query}%")
                     ->orWhere('sku', 'like', "%{$query}%");
-                })->where('status', 'published')->get();
-
-                if( count( $productInfo ) == 0) {
-                    $productInfo = Product::where(function($qr) use($query){
-                        $qr->whereRaw("MATCH (gbs_products.product_name) AGAINST ('".$query."' IN BOOLEAN MODE)")
+            })->where('status', 'published')->get();
+            
+            if (count($productInfo) == 0) {
+                $productInfo = Product::where(function ($qr) use ($query) {
+                    $qr->whereRaw("MATCH (mm_products.product_name) AGAINST ('" . $query . "' IN BOOLEAN MODE)")
                         ->orWhere('sku', 'like', "%{$query}%");
-                    })->where('status', 'published')->get();
+                })->where('status', 'published')->get();
+            }
+
+            if (isset($productInfo) && !empty($productInfo) && count($productInfo) > 0) {
+                $error = 0;
+                foreach ($productInfo as $items) {
+                    $searchData[] = getProductApiData($items);
                 }
+            } else {
+                $pro = [];
+                $pro['has_data']        = 'no';
+                $pro['message']         = 'No record found';
 
-                
-                if (isset($productInfo) && !empty($productInfo) && count( $productInfo ) > 0 ) {
-                    $error = 0;
-                    foreach ($productInfo as $items) {
-                        
-                        $category               = $items->productCategory;
-                        $salePrices             = getProductPrice($items);
-
-                        $pro                    = [];
-                        $pro['has_data']        = 'yes';
-                        $pro['id']              = $items->id;
-                        $pro['product_name']    = $items->product_name;
-                        $pro['category_name']   = $category->name ?? '';
-                        $pro['category_slug']   = $category->slug ?? '';
-                        $pro['parent_category_name']   = $category->parent->name ?? '';
-                        $pro['parent_category_slug']   = $category->parent->slug ?? '';
-                        $pro['brand_name']      = $items->productBrand->brand_name ?? '';
-                        $pro['hsn_code']        = $items->hsn_code;
-                        $pro['product_url']     = $items->product_url;
-                        $pro['sku']             = $items->sku;
-                        $pro['has_video_shopping'] = $items->has_video_shopping;
-                        $pro['stock_status']    = $items->stock_status;
-                        $pro['is_featured']     = $items->is_featured;
-                        $pro['is_best_selling'] = $items->is_best_selling;
-                        $pro['is_new']          = $items->is_new;
-                        $pro['sale_prices']     = $salePrices;
-                        $pro['mrp_price']       = $items->price;
-                        $pro['videolinks']      = $items->productVideoLinks;
-                        $pro['links']           = $items->productLinks;
-                        $pro['image']           = $items->base_image;
-                        $pro['max_quantity']    = $items->quantity;
-
-                        $imagePath              = $items->base_image;
-
-                        if (!Storage::exists($imagePath)) {
-                            $path               = asset('assets/logo/no_Image.jpg');
-                        } else {
-                            $url                = Storage::url($imagePath);
-                            $path               = asset($url);
-                        }
-
-                        $pro['image']                   = $path;
-                        $searchData[] = $pro;
-                    }
-                } else {
-                    $pro = [];
-                    $pro['has_data']        = 'no';
-                    $pro['message']         = 'No record found';
-                    
-                    $searchData[] = $pro;
-                }
+                $searchData[] = $pro;
+            }
         }
-        
+
         return array('products' => $searchData, 'status' => $error);
     }
 
