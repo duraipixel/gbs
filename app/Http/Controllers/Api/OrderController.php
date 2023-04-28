@@ -166,19 +166,7 @@ class OrderController extends Controller
             #customers
             $tmp['customer'] = $info->customer;
             $tracking = [];
-            if( isset( $info->tracking ) && !empty( $info->tracking ) ) {
-                foreach ( $info->tracking as $track ) {
-                    $tra = [];
-                    $tra['id'] = $track->id;
-                    $tra['action'] = $track->action;
-                    $tra['description'] = $track->description;
-                    $tra['order_id'] = $track->order_id;
-                    $tra['description'] = $track->description;
-                    $tra['created_at'] = date('H:i A - d M Y', strtotime($track->created_at) );
-
-                    $tracking[] = $tra;
-                }
-            }
+            
             $tmp['tracking'] = $tracking;
 
             $orderTracking  = OrderStatus::select('id', 'status_name')
@@ -186,20 +174,43 @@ class OrderController extends Controller
                                 ->where('order', '!=', 3)
                                 ->get();
             $tracking_info = [];
-            if( isset( $orderTracking ) && !empty($orderTracking) ) {
-                foreach ($orderTracking as $oritem ) {
+            if( $info->status == 'cancel_requested') {
+                if( isset( $info->tracking ) && !empty( $info->tracking ) ) {
+                    foreach ( $info->tracking as $track ) {
+                        $tra = [];
+                        $track_data = [];
+                        $tra['id'] = $track->id;
+                        $tra['status_name'] = $track->action;
 
-                    $tmp_order = [];
-                    $tmp_order['id'] = $oritem->id;
-                    $tmp_order['status_name'] = $oritem->status_name;
+                        $track_data['id'] = $track->id;
+                        $track_data['action'] = $track->action;
+                        $track_data['description'] = $track->description;
+                        $track_data['order_id'] = $track->order_id;
+                        $track_data['created_at'] = date('H:i A - d M Y', strtotime($track->created_at) );
 
-                    $has_key =  array_search($oritem->status_name, array_column($tracking, 'action'));
-                    if( is_int($has_key) ) {
-                        $tmp_order['has_tracking'] = $tracking[$has_key];
+                        $tra['has_tracking'] = $track_data;
+    
+                        $tracking_info[] = $tra;
                     }
-                    $tracking_info[] = $tmp_order;
-
                 }
+            } else {
+
+                if( isset( $orderTracking ) && !empty($orderTracking) ) {
+                    foreach ($orderTracking as $oritem ) {
+    
+                        $tmp_order = [];
+                        $tmp_order['id'] = $oritem->id;
+                        $tmp_order['status_name'] = $oritem->status_name;
+    
+                        $has_key =  array_search($oritem->status_name, array_column($tracking, 'action'));
+                        if( is_int($has_key) ) {
+                            $tmp_order['has_tracking'] = $tracking[$has_key];
+                        }
+                        $tracking_info[] = $tmp_order;
+    
+                    }
+                }
+
             }
 
             $tmp['orderTracking'] = $tracking_info;
