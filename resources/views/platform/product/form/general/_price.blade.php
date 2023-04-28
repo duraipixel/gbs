@@ -156,7 +156,11 @@
     function getBaseMrpPrice(inputField, price) {
         
         let category_id = $('#category_id').val();
-
+        $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                }); 
         $.ajax({
             url: "{{ route('get.product.base_mrp_prce') }}",
             type: 'POST',

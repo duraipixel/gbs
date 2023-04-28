@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category\SubCategory;
+use App\Models\HomePageSetting\HomepageSetting;
+use App\Models\HomePageSetting\HomepageSettingItems;
 use App\Models\Product\Product;
 use App\Models\Product\ProductAttributeSet;
 use App\Models\Product\ProductCategory;
@@ -28,28 +30,76 @@ class FilterController extends Controller
             array('id' => null, 'name' => 'Price: Low to High', 'slug' => 'price_low_to_high'),
         );
 
-        $discounts              = ProductCollection::select('id', 'collection_name', 'slug')
-            ->where('can_map_discount', 'yes')
-            ->where('status', 'published')
-            ->orderBy('order_by', 'asc')
-            ->get()->toArray();
-
-        $collection             = ProductCollection::select('id', 'collection_name', 'slug')
+        $discounts              = ProductCollection::select('product_collections.id', 'product_collections.collection_name', 'product_collections.slug')
             ->join('product_collections_products', 'product_collections_products.product_collection_id', '=', 'product_collections.id')
             ->join('products', 'products.id', '=', 'product_collections_products.product_id')
-            ->where('products')
-            ->where('can_map_discount', 'no')
-            ->where('show_home_page', 'yes')
-            ->where('status', 'published')
-            ->orderBy('order_by', 'asc')
+            ->where('products.stock_status', 'in_stock')
+            ->where('products.status', 'published')
+            ->where('product_collections.is_handpicked_collection', 'no')
+            ->where('product_collections.can_map_discount', 'yes')
+            ->where('product_collections.status', 'published')
+            ->orderBy('product_collections.order_by', 'asc')
             ->groupBy('product_collections.id')
             ->get()->toArray();
+
+        $collection             = ProductCollection::select('product_collections.id', 'product_collections.collection_name', 'product_collections.slug')
+            ->join('product_collections_products', 'product_collections_products.product_collection_id', '=', 'product_collections.id')
+            ->join('products', 'products.id', '=', 'product_collections_products.product_id')
+            ->where('products.stock_status', 'in_stock')
+            ->where('products.status', 'published')
+            ->where('product_collections.can_map_discount', 'no')
+            ->where('product_collections.show_home_page', 'yes')
+            ->where('product_collections.is_handpicked_collection', 'no')
+            ->where('product_collections.status', 'published')
+            ->orderBy('product_collections.order_by', 'asc')
+            ->groupBy('product_collections.id')
+            ->get()->toArray();
+
+        $handpicked = ProductCollection::select('product_collections.id', 'product_collections.collection_name', 'product_collections.slug')
+            ->join('product_collections_products', 'product_collections_products.product_collection_id', '=', 'product_collections.id')
+            ->join('products', 'products.id', '=', 'product_collections_products.product_id')
+            ->where('products.stock_status', 'in_stock')
+            ->where('products.status', 'published')
+            ->where('product_collections.is_handpicked_collection', 'yes')
+            ->where('product_collections.show_home_page', 'yes')
+            ->where('product_collections.status', 'published')
+            ->orderBy('product_collections.order_by', 'asc')
+            ->groupBy('product_collections.id')
+            ->get()->toArray();
+
+        $browse                     = [];
+        $browse_filed_data          = HomepageSetting::select('id', 'title', 'color')->where('status', 'published')->orderBy('order_by', 'asc')->get();
+
+        foreach ($browse_filed_data as $key => $data) {
+            $parent = [];
+            $parent['id']             = $data->id;
+            $parent['title']          = $data->title;
+            $parent['color']          = $data->color;
+            $items_field = HomepageSettingItems::where('homepage_settings_id', $data->id)->get();
+            $items = [];
+            foreach ($items_field as $key => $data_field) {
+                $tmp = [];
+                $tmp['start'] = $data_field->start_size;
+                $tmp['end'] = $data_field->end_size;
+                $image           = $data_field->setting_image_name;
+                $mobUrl          = Storage::url($image);
+                $pathbrowse      = asset($mobUrl);
+                $tmp['path'] = $pathbrowse;
+
+                $items[] = $tmp;
+            }
+            $parent['children'] = $items;
+
+            $browse[] = $parent;
+        }
 
         $response               = array(
             'product_availability' => $product_availability,
             'sory_by' => $sory_by,
             'discounts' => $discounts,
-            'collection' => $collection
+            'collection' => $collection,
+            'handpicked' => $handpicked,
+            'browse_by' => $browse
         );
 
         return $response;
@@ -67,14 +117,14 @@ class FilterController extends Controller
         $filter_discount        = $request->discount;
         $filter_attribute       = $request->attributes_category;
         $sort                   = $request->sort;
-        
+
         $filter_availability_array = [];
         $filter_attribute_array = [];
         $filter_brand_array = [];
         $filter_discount_array = [];
         $filter_booking     = $request->booking;
         if (isset($filter_attribute) && !empty($filter_attribute)) {
-            
+
             $filter_attribute_array = explode("-", $filter_attribute);
         }
         if (isset($filter_availability) && !empty($filter_availability)) {
@@ -89,10 +139,10 @@ class FilterController extends Controller
         }
 
         $productAttrNames = [];
-        if( isset( $filter_attribute_array ) && !empty( $filter_attribute_array ) ) {
+        if (isset($filter_attribute_array) && !empty($filter_attribute_array)) {
             $productWithData = ProductWithAttributeSet::whereIn('id', $filter_attribute_array)->get();
-            if( isset( $productWithData ) && !empty( $productWithData ) ) {
-                foreach ( $productWithData as $attr ) {
+            if (isset($productWithData) && !empty($productWithData)) {
+                foreach ($productWithData as $attr) {
                     $productAttrNames[] = $attr->title;
                 }
             }
@@ -101,7 +151,7 @@ class FilterController extends Controller
         $limit = 12;
         $skip = (isset($page) && !empty($page)) ? ($page * $limit) : 0;
 
-        $from   = 1 + ($page * $limit);        
+        $from   = 1 + ($page * $limit);
 
         // $take_limit = $limit + ($page * $limit);
         $take_limit = $take ?? 1;
@@ -195,7 +245,7 @@ class FilterController extends Controller
                 $tmp[] = getProductApiData($items);
             }
         }
-        
+
         // if ($total < $limit) {
         //     $to = $total;
         // }
@@ -209,7 +259,7 @@ class FilterController extends Controller
         $product_url = $request->product_url;
         $customer_id = $request->customer_id;
         $items = Product::where('product_url', $product_url)->first();
-        if( $items ) {
+        if ($items) {
             $return = getProductApiData($items, $customer_id);
         }
         return $return ?? [];
@@ -222,16 +272,16 @@ class FilterController extends Controller
         $take = $request->take ?? 10;
 
         $searchData = [];
-        $error = 1;
+        $error = 0;
         if (!empty($query)) {
 
             $productInfo = Product::where(function ($qr) use ($query) {
                 $qr->where('product_name', 'like', "%{$query}%")
-                    ->orWhere('hsn_code', 'like',"%{$query}%")
+                    ->orWhere('hsn_code', 'like', "%{$query}%")
                     ->orWhere('sku', 'like', "%{$query}%");
             })->where('status', 'published')
-            ->skip(0)->take($take)->get();
-            
+                ->skip(0)->take($take)->get();
+
             if (count($productInfo) == 0) {
                 $productInfo = Product::where(function ($qr) use ($query) {
                     $qr->whereRaw("MATCH (gbs_products.product_name) AGAINST ('" . $query . "' IN BOOLEAN MODE)")
@@ -240,7 +290,7 @@ class FilterController extends Controller
             }
 
             if (isset($productInfo) && !empty($productInfo) && count($productInfo) > 0) {
-                $error = 0;
+                $error = 1;
                 foreach ($productInfo as $items) {
                     $searchData[] = getProductApiData($items);
                 }
@@ -262,14 +312,14 @@ class FilterController extends Controller
         $category       = $request->category;
 
         $otherCategory   = ProductCategory::select('id', 'name', 'slug')
-                        ->when($category != '', function ($q) use ($category) {
-                            $q->where('slug', '!=', $category);
-                        })
-                        ->where(['status' => 'published', 'parent_id' => 0])
-                        ->orderBy('order_by', 'asc')
-                        ->get();
+            ->when($category != '', function ($q) use ($category) {
+                $q->where('slug', '!=', $category);
+            })
+            ->where(['status' => 'published', 'parent_id' => 0])
+            ->orderBy('order_by', 'asc')
+            ->get();
         $data = [];
-        if( isset( $otherCategory ) && !empty( $otherCategory ) ) {
+        if (isset($otherCategory) && !empty($otherCategory)) {
             foreach ($otherCategory as $item) {
 
                 $tmp = [];
@@ -279,7 +329,7 @@ class FilterController extends Controller
                 $tmp['description'] = $item->description;
 
                 $imagePath              = $item->image;
-    
+
                 if (!Storage::exists($imagePath)) {
                     $path               = asset('assets/logo/no_Image.jpg');
                 } else {
@@ -290,59 +340,113 @@ class FilterController extends Controller
                 $tmp['image'] = $path;
 
                 $data[] = $tmp;
-
             }
-        } 
+        }
         return $data;
-        
     }
 
-    public function getDynamicFilterCategory(Request $request)
+    public function getAttributeFilter($category_slug = '')
     {
-        $category_slug = $request->category_slug;
-        // $category_slug = 'keyboard-keyboard';
-
-        $productCategory = ProductCategory::where('slug', $category_slug)->first();
-        if( isset( $productCategory ) && !empty( $productCategory ) ) {
-
-            $whereIn = [];
-            $whereIn[] = $productCategory->id;
-            if( isset( $productCategory->childCategory ) && !empty( $productCategory->childCategory ) ) {
-                foreach ( $productCategory->childCategory  as $items ) {
-                    $whereIn[] = $items->id; 
-                }
-            }
-            
-            $data = [];
-            // $attributeInfo = ProductAttributeSet::whereIn('product_category_id', $whereIn)->where('is_searchable', '1')->get();
-
-            $filterData = ProductAttributeSet::select('product_attribute_sets.*')
-                            ->join('product_categories', 'product_categories.id', '=', 'product_attribute_sets.product_category_id')
-                            ->join('products', function($join){
-                                $join->on('products.category_id', '=', 'product_categories.id');
-                                $join->orOn('products.category_id', '=', 'product_categories.parent_id');
-                            })
-                            // ->join('product_with_attribute_sets', 'product_attribute_sets.id', '=', 'product_with_attribute_sets.product_attribute_set_id')
-                            ->where('product_categories.slug', $category_slug )
-                            // ->where('product_with_attribute_sets.status','published')
-                            ->groupBy('product_attribute_sets.id')
-                            ->get();
-            
-            if( isset( $filterData ) && !empty( $filterData ) ) {
-                foreach ( $filterData as $item ) {
-                                       
-                    $tmp = [];
-                    $tmp['filter_title'] = $item->title;
-                    $tmp['filter_slug'] = $item->slug;
-                    $tmp['filter_id'] = $item->id;
-                    $tmp['child'] = $item->attributesFieldsByTitle ?? [];
-                    $data[] = $tmp;
-                    //get filter attributes
-                }
-            }
-            return $data;
-
-            
+        
+        if( $category_slug ) {
+            $productCategory = ProductCategory::where('slug', $category_slug)->first();
         }
+        
+        $cat_id = $productCategory->id ?? '' ;
+        $brands = Product::select('brands.id', 'brands.brand_name', 'brands.slug')
+            ->join('brands', 'brands.id', '=', 'products.brand_id')
+            ->join('product_categories', function ($join) {
+                $join->on('product_categories.id', '=', 'products.category_id');
+                $join->orOn('product_categories.parent_id', '=', 'products.category_id');
+            })
+            ->when($cat_id != '', function($query) use($cat_id) {
+                $query->where(function ($query) use ($cat_id) {
+                    return $query->where('product_categories.id', $cat_id)->orWhere('product_categories.parent_id', $cat_id);
+                });
+            })
+            ->where('products.stock_status', 'in_stock')
+            ->where('products.status', 'published')->groupBy('products.brand_id')
+            ->get();
+
+        $whereIn = [];
+        $whereIn[] = $productCategory->id;
+        if (isset($productCategory->childCategory) && !empty($productCategory->childCategory)) {
+            foreach ($productCategory->childCategory  as $items) {
+                $whereIn[] = $items->id;
+            }
+        }
+
+        $data = [];
+        $attributes = [];
+        $topLevelData = Product::select('product_attribute_sets.id', 'product_attribute_sets.title', 'product_attribute_sets.slug')
+            ->whereIn('category_id', $whereIn)
+            ->join('product_map_attributes', 'product_map_attributes.product_id', '=', 'products.id')
+            ->join('product_attribute_sets', 'product_attribute_sets.id', '=', 'product_map_attributes.attribute_id')
+            ->where('products.stock_status', 'in_stock')
+            ->where('product_attribute_sets.is_searchable', '1')
+            ->groupBy('title')->get();
+
+        if (isset($topLevelData) && !empty($topLevelData)) {
+            foreach ($topLevelData as $vals) {
+                $tmp = [];
+                $tmp['id'] = $vals->id;
+                $tmp['title'] = $vals->title;
+                $tmp['slug'] = $vals->slug;
+                $child = [];
+                $secondLevelData = Product::select('product_with_attribute_sets.id', 'product_with_attribute_sets.title', 'product_with_attribute_sets.attribute_values')
+                    ->join('product_map_attributes', 'product_map_attributes.product_id', '=', 'products.id')
+                    ->join('product_with_attribute_sets', 'product_with_attribute_sets.product_attribute_set_id', '=', 'product_map_attributes.id')
+                    ->where('products.stock_status', 'in_stock')
+                    ->whereIn('category_id', $whereIn)
+                    ->where('product_map_attributes.attribute_id', $vals->id)
+                    ->groupBy('title')->get();
+                if (isset($secondLevelData) && !empty($secondLevelData)) {
+
+                    foreach ($secondLevelData as $sec) {
+                        $fValues = [];
+                        $fValues['id'] = $sec->id;
+                        $fValues['title'] = $sec->title;
+                        // $fValues['attribute_values'] = $sec->attribute_values;
+
+                        $filterDatas = Product::select('product_with_attribute_sets.id', 'product_with_attribute_sets.title', 'product_with_attribute_sets.attribute_values')
+                            ->join('product_map_attributes', 'product_map_attributes.product_id', '=', 'products.id')
+                            ->join('product_with_attribute_sets', 'product_with_attribute_sets.product_attribute_set_id', '=', 'product_map_attributes.id')
+                            ->where('products.stock_status', 'in_stock')
+                            ->whereIn('category_id', $whereIn)
+                            ->where('product_map_attributes.attribute_id', $vals->id)
+                            ->where('product_with_attribute_sets.title', $sec->title)
+                            ->groupBy('product_with_attribute_sets.title')
+                            ->get();
+                        if (isset($filterDatas) && !empty($filterDatas)) {
+
+                            foreach ($filterDatas as $filvalues) {
+                                $childValues = [];
+                                $childValues['id']  = $filvalues->id;
+                                $childValues['attribute_name']  = $filvalues->title;
+                                $childValues['attribute_values']  = $filvalues->attribute_values;
+
+                                $fValues['child'][] = $childValues;
+                            }
+                        }
+
+                        $tmp['child'][] = $fValues;
+                    }
+                }
+
+                $attributes[] = $tmp;
+            }
+        }
+        
+        // $brands = Product::select('brands.id', 'brands.brand_name', 'brands.slug')
+        //     ->join('brands', 'brands.id', '=', 'products.brand_id')
+        //     ->join('product_categories', function ($join) {
+        //         $join->on('product_categories.id', '=', 'products.category_id');
+        //         $join->orOn('product_categories.parent_id', '=', 'products.category_id');
+        //     })
+        //     ->where('products.stock_status', 'in_stock')
+        //     ->where('products.status', 'published')->groupBy('products.brand_id')
+        //     ->get();
+        
+        return array('attributes' => $attributes ?? [], 'brands' => $brands ?? []);
     }
 }
