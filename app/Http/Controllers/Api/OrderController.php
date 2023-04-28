@@ -97,10 +97,8 @@ class OrderController extends Controller
         $customer_id        = $request->customer_id ?? 1;
         $order_no           = $request->order_no;
         $info           = Order::where('order_no', $order_no)->first();
-        $orderTracking  = OrderStatus::select('id', 'status_name')
-                            ->where('order', '!=', 6)
-                            ->where('order', '!=', 3)
-                            ->get();
+       
+
         $orders = [];
         if( isset( $info ) && !empty( $info ) ) {
            
@@ -182,7 +180,26 @@ class OrderController extends Controller
                 }
             }
             $tmp['tracking'] = $tracking;
-            $tmp['orderTracking'] = isset($orderTracking) && !empty($orderTracking) ? $orderTracking->toArray() : [] ;
+
+            $orderTracking  = OrderStatus::select('id', 'status_name')
+                                ->where('order', '!=', 6)
+                                ->where('order', '!=', 3)
+                                ->get();
+            $tracking_info = [];
+            if( isset( $orderTracking ) && !empty($orderTracking) ) {
+                foreach ($orderTracking as $oritem ) {
+                    $tmp = [];
+                    $tmp['id'] = $oritem->id;
+                    $tmp['status_name'] = $oritem->status_name;
+
+                    $has_key =  array_search($oritem->status_name, array_column($tracking, 'action'));
+                    $tmp['has_tracking'] = $tracking[$has_key];
+                    $tracking_info[] = $tmp;
+
+                }
+            }
+
+            $tmp['orderTracking'] = $tracking_info;
             $orders = $tmp;
         }
 
