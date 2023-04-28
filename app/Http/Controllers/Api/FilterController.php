@@ -108,7 +108,6 @@ class FilterController extends Controller
 
     public function getProducts(Request $request)
     {
-
         $page                   = $request->page ?? 0;
         $take                   = $request->take ?? 0;
         $filter_category        = $request->category;
@@ -150,11 +149,7 @@ class FilterController extends Controller
         }
 
         $limit = 12;
-        $skip = (isset($page) && !empty($page)) ? ($page * $limit) : 0;
-
-        $from   = 1 + ($page * $limit);
-
-        // $take_limit = $limit + ($page * $limit);
+        
         $take_limit = $take ?? 12;
         $total = Product::select('products.*')->where('products.status', 'published')
             ->join('product_categories', 'product_categories.id', '=', 'products.category_id')
