@@ -166,7 +166,19 @@ class OrderController extends Controller
             #customers
             $tmp['customer'] = $info->customer;
             $tracking = [];
-            
+            if( isset( $info->tracking ) && !empty( $info->tracking ) ) {
+                foreach ( $info->tracking as $track ) {
+                    $tra = [];
+                    $tra['id'] = $track->id;
+                    $tra['action'] = $track->action;
+                    $tra['description'] = $track->description;
+                    $tra['order_id'] = $track->order_id;
+                    $tra['description'] = $track->description;
+                    $tra['created_at'] = date('H:i A - d M Y', strtotime($track->created_at) );
+
+                    $tracking[] = $tra;
+                }
+            }
             $tmp['tracking'] = $tracking;
 
             $orderTracking  = OrderStatus::select('id', 'status_name')
