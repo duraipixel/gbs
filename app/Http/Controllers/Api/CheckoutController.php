@@ -390,16 +390,7 @@ class CheckoutController extends Controller
                     $send_mail = new OrderMail($templateMessage, $title, $filePath);
                     // return $send_mail->render();
                     Mail::to($order_info->billing_email)->send($send_mail);
-
-                    #send sms for notification
-                    $sms_params = array(
-                        'name' => $order_info->billing_name,
-                        'order_no' => $order_info->order_no,
-                        'amount' => $order_info->amount,
-                        'payment_through' => 'Razorpay online payment',
-                        'mobile_no' => [$order_info->billing_mobile_no]
-                    );
-                    // sendMuseeSms('new_order', $sms_params);
+                                   
 
                     #send sms for notification
                     $sms_params = array(
@@ -408,7 +399,7 @@ class CheckoutController extends Controller
                         'reference_no' => '',
                         'mobile_no' => [$order_info->billing_mobile_no]
                     );
-                    // sendMuseeSms('confirm_order', $sms_params);
+                    sendGBSSms('confirm_order', $sms_params);
                 }
             }
         } else {
@@ -463,12 +454,7 @@ class CheckoutController extends Controller
                     $error_message = $request->razor_response['error']['description'];
 
                     Payment::create($pay_ins);
-
-                    // /**** order history */
-                    // $his['order_id'] = $order_info->id;
-                    // $his['action'] = 'Order Placed';
-                    // $his['description'] = 'Order has been placed successfully';
-                    // OrderHistory::create($his);
+                 
                 }
             }
         }

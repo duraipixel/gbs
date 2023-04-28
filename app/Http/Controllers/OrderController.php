@@ -109,7 +109,7 @@ class OrderController extends Controller
         $info = Order::find($order_id);
         $order_status_info = OrderStatus::where('status', 'published')->get();
 
-        return view('platform.order.order_status_modal', compact('info', 'ordchrer_status_info') );
+        return view('platform.order.order_status_modal', compact('info', 'order_status_info') );
 
     }
 
@@ -188,7 +188,7 @@ class OrderController extends Controller
                         'tracking_url' => env('WEBSITE_LOGIN_URL'),                        
                         'mobile_no' => [$info->billing_mobile_no]
                     );
-                    // sendMuseeSms('shipping', $sms_params);
+                    sendGBSSms('order_shipping', $sms_params);
 
                     $info->status = 'shipped';
 
@@ -197,6 +197,16 @@ class OrderController extends Controller
                 case '5':
                     $action = 'Order Delivered';
                     $info->status = 'delivered';
+
+                    #send sms for notification
+                    $sms_params = array(
+                        'name' => $info->billing_name,
+                        'order_no' => $info->order_no,
+                        'tracking_url' => env('WEBSITE_LOGIN_URL'),                        
+                        'mobile_no' => [$info->billing_mobile_no]
+                    );
+                    sendGBSSms('delivery_sms', $sms_params);
+
                     break;
                 
                 default:
