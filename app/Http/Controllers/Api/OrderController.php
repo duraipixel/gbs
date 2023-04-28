@@ -188,13 +188,14 @@ class OrderController extends Controller
             $tracking_info = [];
             if( isset( $orderTracking ) && !empty($orderTracking) ) {
                 foreach ($orderTracking as $oritem ) {
-                    $tmp = [];
-                    $tmp['id'] = $oritem->id;
-                    $tmp['status_name'] = $oritem->status_name;
+                    
+                    $tmp_order = [];
+                    $tmp_order['id'] = $oritem->id;
+                    $tmp_order['status_name'] = $oritem->status_name;
 
                     $has_key =  array_search($oritem->status_name, array_column($tracking, 'action'));
-                    $tmp['has_tracking'] = $tracking[$has_key];
-                    $tracking_info[] = $tmp;
+                    $tmp_order['has_tracking'] = $tracking[$has_key];
+                    $tracking_info[] = $tmp_order;
 
                 }
             }
