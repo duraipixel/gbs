@@ -20,11 +20,7 @@ class FilterController extends Controller
         $product_availability = array(
             'in_stock' => 'In Stock',
             'coming_soon' => 'Upcoming',
-            'out_of_stock' => 'Out Of Stock'
-
         );
-
-        $video_shopping         = array('video_shopping' => 'Video Shopping is available');
 
         $sory_by                = array(
             array('id' => null, 'name' => 'Featured', 'slug' => 'is_featured'),
@@ -32,40 +28,25 @@ class FilterController extends Controller
             array('id' => null, 'name' => 'Price: Low to High', 'slug' => 'price_low_to_high'),
         );
 
-        $tags                   = SubCategory::select('sub_categories.id', 'sub_categories.name', 'sub_categories.slug')
-            ->join('main_categories', 'main_categories.id', '=', 'sub_categories.parent_id')
-            ->where('sub_categories.status', 'published')
-            ->where('main_categories.slug', 'product-tags')
-            ->orderBy('sub_categories.order_by', 'asc')
-            ->get()->toArray();
-
-
-        $labels                   = SubCategory::select('sub_categories.id', 'sub_categories.name', 'sub_categories.slug')
-            ->join('main_categories', 'main_categories.id', '=', 'sub_categories.parent_id')
-            ->where('sub_categories.status', 'published')
-            ->where('main_categories.slug', 'product-labels')
-            ->orderBy('sub_categories.order_by', 'asc')
-            ->get()->toArray();
-        // dd( $tags );                       
-        // $sory_by                = array_merge($tags, $labels, $sory_by);
-        // $sory_by                = array_merge($tags, $labels, $sory_by);
-
         $discounts              = ProductCollection::select('id', 'collection_name', 'slug')
             ->where('can_map_discount', 'yes')
             ->where('status', 'published')
             ->orderBy('order_by', 'asc')
             ->get()->toArray();
 
-        $collection              = ProductCollection::select('id', 'collection_name', 'slug')
+        $collection             = ProductCollection::select('id', 'collection_name', 'slug')
+            ->join('product_collections_products', 'product_collections_products.product_collection_id', '=', 'product_collections.id')
+            ->join('products', 'products.id', '=', 'product_collections_products.product_id')
+            ->where('products')
             ->where('can_map_discount', 'no')
             ->where('show_home_page', 'yes')
             ->where('status', 'published')
             ->orderBy('order_by', 'asc')
+            ->groupBy('product_collections.id')
             ->get()->toArray();
 
         $response               = array(
             'product_availability' => $product_availability,
-            'video_shopping' => $video_shopping,
             'sory_by' => $sory_by,
             'discounts' => $discounts,
             'collection' => $collection
@@ -238,6 +219,7 @@ class FilterController extends Controller
     {
         $search_type = $request->search_type;
         $query = $request->search_field;
+        $take = $request->take ?? 10;
 
         $searchData = [];
         $error = 1;
@@ -247,13 +229,14 @@ class FilterController extends Controller
                 $qr->where('product_name', 'like', "%{$query}%")
                     ->orWhere('hsn_code', 'like',"%{$query}%")
                     ->orWhere('sku', 'like', "%{$query}%");
-            })->where('status', 'published')->get();
+            })->where('status', 'published')
+            ->skip(0)->take($take)->get();
             
             if (count($productInfo) == 0) {
                 $productInfo = Product::where(function ($qr) use ($query) {
                     $qr->whereRaw("MATCH (gbs_products.product_name) AGAINST ('" . $query . "' IN BOOLEAN MODE)")
                         ->orWhere('sku', 'like', "%{$query}%");
-                })->where('status', 'published')->get();
+                })->where('status', 'published')->skip(0)->take($take)->get();
             }
 
             if (isset($productInfo) && !empty($productInfo) && count($productInfo) > 0) {
