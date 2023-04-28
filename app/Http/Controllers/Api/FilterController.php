@@ -251,7 +251,7 @@ class FilterController extends Controller
             
             if (count($productInfo) == 0) {
                 $productInfo = Product::where(function ($qr) use ($query) {
-                    $qr->whereRaw("MATCH (mm_products.product_name) AGAINST ('" . $query . "' IN BOOLEAN MODE)")
+                    $qr->whereRaw("MATCH (gbs_products.product_name) AGAINST ('" . $query . "' IN BOOLEAN MODE)")
                         ->orWhere('sku', 'like', "%{$query}%");
                 })->where('status', 'published')->get();
             }
