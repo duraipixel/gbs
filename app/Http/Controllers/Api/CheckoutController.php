@@ -219,6 +219,12 @@ class CheckoutController extends Controller
             }
         }
 
+        /**** order history */
+        $his['order_id'] = $order_info->id;
+        $his['action'] = 'Order Initiate';
+        $his['description'] = 'Order has been Initiated successfully';
+        OrderHistory::create($his);
+
         try {
 
             $api = new Api($keyId, $keySecret);
