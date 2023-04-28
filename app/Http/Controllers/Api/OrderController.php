@@ -200,7 +200,8 @@ class OrderController extends Controller
                         $track_data['order_id'] = $track->order_id;
                         $track_data['created_at'] = date('H:i A - d M Y', strtotime($track->created_at) );
 
-                        $tra['has_tracking'] = $track_data;
+                        $tra['tracking_info'] = $track_data;
+                        $tra['has_tracking'] = true;
     
                         $tracking_info[] = $tra;
                     }
@@ -216,8 +217,9 @@ class OrderController extends Controller
     
                         $has_key =  array_search($oritem->status_name, array_column($tracking, 'action'));
                         if( is_int($has_key) ) {
-                            $tmp_order['has_tracking'] = $tracking[$has_key];
+                            $tmp_order['tracking_info'] = $tracking[$has_key];
                         }
+                        $tmp_order['has_tracking'] = isset($tmp_order['tracking_info']) ? true: false;
                         $tracking_info[] = $tmp_order;
     
                     }
