@@ -155,7 +155,7 @@ class FilterController extends Controller
         $from   = 1 + ($page * $limit);
 
         // $take_limit = $limit + ($page * $limit);
-        $take_limit = $take ?? 1;
+        $take_limit = $take ?? 12;
         $total = Product::select('products.*')->where('products.status', 'published')
             ->join('product_categories', 'product_categories.id', '=', 'products.category_id')
             ->leftJoin('product_categories as parent', 'parent.id', '=', 'product_categories.parent_id')
@@ -174,9 +174,7 @@ class FilterController extends Controller
             ->when($filter_brand != '', function ($q) use ($filter_brand_array) {
                 return $q->whereIn('brands.slug', $filter_brand_array);
             })
-            ->when($filter_booking == 'video_shopping', function ($q) {
-                return $q->where('products.has_video_shopping', 'yes');
-            })
+           
             ->when($filter_discount != '', function ($q) use ($filter_discount_array) {
                 $q->join('product_collections_products', 'product_collections_products.product_id', '=', 'products.id');
                 $q->join('product_collections', 'product_collections.id', '=', 'product_collections_products.product_collection_id');
