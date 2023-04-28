@@ -97,6 +97,7 @@ class OrderController extends Controller
         $customer_id        = $request->customer_id ?? 1;
         $order_no           = $request->order_no;
         $info           = Order::where('order_no', $order_no)->first();
+        $orderTracking  = OrderStatus::select('id', 'status_name')->where('order', '!=', 6)->get();
         $orders = [];
         if( isset( $info ) && !empty( $info ) ) {
            
@@ -111,19 +112,23 @@ class OrderController extends Controller
             $tmp['coupon_amount'] = $info->coupon_amount;
             $tmp['coupon_code'] = $info->coupon_code;
             $tmp['sub_total'] = $info->sub_total;
-            $tmp['billing_name'] = $info->billing_name;
-            $tmp['billing_email'] = $info->billing_email;
-            $tmp['billing_mobile_no'] = $info->billing_mobile_no;
-            $tmp['billing_address_line1'] = $info->billing_address_line1;
-            $tmp['billing_address_line2'] = $info->billing_address_line2;
-            $tmp['billing_landmark'] = $info->billing_landmark;
-            $tmp['billing_country'] = $info->billing_country;
-            $tmp['billing_post_code'] = $info->billing_post_code;
-            $tmp['billing_state'] = $info->billing_state;
-            $tmp['billing_city'] = $info->billing_city;
+            
+            $bill_tmp['name'] = $info->billing_name;
+            $bill_tmp['email'] = $info->billing_email;
+            $bill_tmp['mobile_no'] = $info->billing_mobile_no;
+            $bill_tmp['address'] = $info->billing_address_line1 . ' '. $info->billing_address_line2.' '. $info->billing_landmark .' '.$info->billing_city.' '.$info->billing_state .' '.$info->billing_country. ' ' .$info->billing_post_code;
+            $tmp['billing'] = $bill_tmp;
+
+            $ship_tmp['name'] = $info->shipping_name;
+            $ship_tmp['email'] = $info->shipping_email;
+            $ship_tmp['mobile_no'] = $info->shipping_mobile_no;
+            $ship_tmp['address'] = $info->shipping_address_line1 . ' '. $info->shipping_address_line2.' '. $info->shipping_landmark .' '.$info->shipping_city.' '.$info->shipping_state .' '.$info->shipping_country. ' ' .$info->shipping_post_code;
+            $tmp['shipping'] = $ship_tmp;
+
             $tmp['status'] = $info->status;
             $tmp['invoice_file'] = asset('storage/invoice_order/'.$info->order_no.'.pdf');
             $tmp['order_date'] = date( 'd M Y H:i A', strtotime( $info->created_at ));
+
             $itemArray = [];
             if( isset( $info->orderItems ) && !empty( $info->orderItems ) ) {
                 foreach ($info->orderItems as $pro) {
@@ -174,7 +179,7 @@ class OrderController extends Controller
                 }
             }
             $tmp['tracking'] = $tracking;
-
+            $tmp['orderTracking'] = isset($orderTracking) && !empty($orderTracking) ? $orderTracking->toArray() : [] ;
             $orders = $tmp;
         }
 

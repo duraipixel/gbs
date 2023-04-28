@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Master\Customer;
+use App\Models\Master\OrderStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -74,5 +75,7 @@ class Order extends Model
     {
         return $this->hasMany(OrderHistory::class, 'order_id', 'id');
     }
+
+   
 
 }
