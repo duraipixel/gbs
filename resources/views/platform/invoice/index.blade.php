@@ -75,7 +75,7 @@
             padding: 5px;
         }
     </style>
-    <div style="text-align:center"> TAX INVOICE </div>
+    <div style="text-align:center"> SALE ORDER </div>
     <table class="header-table" cellspacing="0" padding="0">
         <tr>
             <td colspan="2">
@@ -220,9 +220,9 @@
                 </div>
                 <div>
 
-                    <h3>
+                    <h4>
                         TERMS & CONDITIONS:
-                    </h3>
+                    </h4>
                     <div>
                         <small>
                             1. Branded Systems,Printers,Invertors and Batteries Warranty From Manufacturer Only.
