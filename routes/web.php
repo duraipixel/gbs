@@ -113,6 +113,8 @@ Route::middleware(['auth'])->group(function(){
     });
     Route::post('discount/get/discount-type/data', [App\Http\Controllers\Offers\DiscountController::class, 'getDiscountTypeData'])->name('discount.coupon-apply'); 
 
+    Route::post('/upload/pincode', [App\Http\Controllers\ChargesController::class, 'doBulkUpload'])->name('pincode.bulk.upload')->middleware(['checkAccess:editable']); 
+
     Route::prefix('products')->group(function(){
         Route::get('/', [App\Http\Controllers\Product\ProductController::class, 'index'])->name('products')->middleware(['checkAccess:visible']); 
         Route::get('/upload', [App\Http\Controllers\Product\ProductController::class, 'bulkUpload'])->name('products.upload')->middleware(['checkAccess:editable']); 

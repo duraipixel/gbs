@@ -35,6 +35,19 @@
                             <input type="text" name="title" class="form-control form-control-solid mb-3 mb-lg-0"
                                 placeholder="Shipping Title" value="{{ $info->shipping_title ?? '' }}" />
                         </div>
+                        <div class="fv-row mb-7">
+                            <label class="required fw-bold fs-6 mb-2">Pincodes
+                                <input type="checkbox" role="button" class="ms-3" name="select_all_pincode" id="select_all_pincode" onchange="changeSelection(this)"> 
+                                <span for="select_all_pincode" role="button">Select All</span>
+                            </label>
+                            <select name="pincodes[]" id="pincode" class="form-control" multiple>
+                                @isset($pincodes)
+                                    @foreach ($pincodes as $item)
+                                        <option value="{{ $item->id }}" @if(in_array($item->id, $usedpincodes)) selected @endif>{{ $item->pincode }}</option>
+                                    @endforeach
+                                @endisset
+                            </select>
+                        </div>
 
                         <br>
                         <div class="fv-row mb-7">
@@ -93,6 +106,18 @@
     }
 </style>
 <script>
+
+    function changeSelection(value){
+        if( value.checked ) {
+            $("#pincode > option").prop("selected", true);
+            $("#pincode").trigger("change");
+        } else {
+            $("#pincode > option").prop("selected", false);
+            $("#pincode").trigger("change");
+        }
+    }
+    
+    $('#pincode').select2();
     var add_url = "{{ route('charges.save') }}";
     $('.float-number').keypress(function(event) {
         if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {

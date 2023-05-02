@@ -17,4 +17,9 @@ class ShippingCharge extends Model
         'description',
         'status'
     ];
+
+    public function pincodes()
+    {
+        return $this->hasMany(ShippingChargePincode::class, 'shipping_charge_id', 'id')->select('pincode_id');
+    }
 }

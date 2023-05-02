@@ -42,6 +42,22 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <form id="importform" method="POST" action="{{ route('pincode.bulk.upload')}}" enctype="multipart/form-data">
+                                @csrf
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Select Pincode Import File</label>
+                                            <input type="file" name="file" class="form-control" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 mt-3 pt-5">
+                                        <button type="submit"  class="btn btn-primary mb-2">Import</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

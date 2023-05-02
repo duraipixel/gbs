@@ -11,6 +11,7 @@ return [
                     'product-collection',                
                     'product-labels',
                     'tax',
+                    'charges',
                     'coupon', 
                     'store-locator',
                     'service-center',

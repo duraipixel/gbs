@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ChargesExport;
+use App\Imports\PincodeImport;
+use App\Models\Master\Pincode;
 use App\Models\ShippingCharge;
+use App\Models\ShippingChargePincode;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -74,6 +77,7 @@ class ChargesController extends Controller
 
     public function modalAddEdit(Request $request)
     {
+
         $title              = "Add Shipping Charges";
         $breadCrum          = array('Taxes & charges', 'Add Shipping Charges');
 
@@ -81,11 +85,19 @@ class ChargesController extends Controller
         $from               = $request->from;
         $info               = '';
         $modal_title        = 'Add Shipping Charges';
+        $pincodes           = Pincode::where('status', 1)->get();
+        $usedpincodes = [];
+
         if (isset($id) && !empty($id)) {
             $info           = ShippingCharge::find($id);
             $modal_title    = 'Update Shipping Charges';
+            if (isset($info->pincodes) && !empty($info->pincodes)) {
+                $usedpincodes = array_column($info->pincodes->toArray(), 'pincode_id');
+            }
         }
-        return view('platform.shipping_charges.add_edit_modal', compact('modal_title', 'breadCrum', 'info', 'from'));
+
+        return view('platform.shipping_charges.add_edit_modal', compact('modal_title', 'breadCrum', 'info', 'from', 'pincodes', 'usedpincodes'));
+
     }
 
     public function saveForm(Request $request, $id = null)
@@ -98,7 +110,8 @@ class ChargesController extends Controller
         ]);
 
         if ($validator->passes()) {
-
+            
+            $pincodes = $request->pincodes;
             $ins['shipping_title']  = $request->title;
             $ins['minimum_order_amount'] = $request->minimum_order_amount;
             $ins['charges']         = $request->charges ?? 0;
@@ -113,6 +126,23 @@ class ChargesController extends Controller
             $error                  = 0;
 
             $info                   = ShippingCharge::updateOrCreate(['id' => $id], $ins);
+
+            if( isset( $pincodes ) && !empty($pincodes) ) {
+
+                ShippingChargePincode::where('shipping_charge_id', $info->id)->delete();
+                foreach ($pincodes as $pin_items) {
+
+                    $pincode_info = Pincode::find($pin_items);
+                    $ins_pin  = [];
+                    $ins_pin['pincode_id'] = $pincode_info->id;
+                    $ins_pin['shipping_charge_id'] = $info->id;
+                    $ins_pin['pincode'] = $pincode_info->pincode;
+                    ShippingChargePincode::create($ins_pin);
+
+                }
+
+            }
+
             $message                = (isset($id) && !empty($id)) ? 'Updated Successfully' : 'Added successfully';
         } else {
             $error      = 1;
@@ -139,14 +169,22 @@ class ChargesController extends Controller
         $info->update();
         return response()->json(['message' => "You changed the status!", 'status' => 1]);
     }
+    
     public function export()
     {
         return Excel::download(new ChargesExport, 'charges.xlsx');
     }
+
     public function exportPdf()
     {
         $list       = ShippingCharge::select('shipping_charges.*')->get();
         $pdf        = PDF::loadView('platform.exports.charges.charges', array('list' => $list, 'from' => 'pdf'))->setPaper('a4', 'landscape');;
         return $pdf->download('charges.pdf');
+    }
+
+    public function doBulkUpload(Request $request)
+    {
+        Excel::import( new PincodeImport, request()->file('file') );
+        return response()->json(['error'=> 0, 'message' => 'Imported successfully']);
     }
 }
