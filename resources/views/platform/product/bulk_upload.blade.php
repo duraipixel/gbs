@@ -42,7 +42,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        {{-- <div class="row">
                             <form id="importform" method="POST" action="{{ route('pincode.bulk.upload')}}" enctype="multipart/form-data">
                                 @csrf
                                 <div class="row">
@@ -57,7 +57,7 @@
                                     </div>
                                 </div>
                             </form>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
