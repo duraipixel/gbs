@@ -276,6 +276,7 @@ if (!function_exists('getSaleProductPrices')) {
 function getProductApiData($product_data, $customer_id = '')
 {
 //    dd( $product_data->productCategory->name );
+    
     $category               = $product_data->productCategory;
     $pro                    = [];
     $pro['id']              = $product_data->id;
@@ -332,7 +333,7 @@ function getProductApiData($product_data, $customer_id = '')
     $pro['is_wishlist'] = $wishlist ? true : false;
     $pro['is_cart'] = $is_cart ? true : false;
     $pro['cart_id'] = $is_cart->id ?? 0;
-
+    $pro['warranty_available'] = $product_data->warranty ? $product_data->warranty->toArray() : [];
     
 
     $pro['description']             = $product_data->description;

@@ -6,6 +6,7 @@ use App\Models\Category\MainCategory;
 use App\Models\Master\Brands;
 use App\Models\ProductAddon;
 use App\Models\User;
+use App\Models\Warranty;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -144,6 +145,11 @@ class Product extends Model
 
     public function reviews() {
         return $this->hasMany(Review::class, 'product_id', 'id');
+    }
+
+    public function warranty()
+    {
+        return $this->hasOne(Warranty::class, 'id', 'warranty_id')->select('id', 'name', 'warranty_period', 'warranty_period_type', 'description');
     }
 
 

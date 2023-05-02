@@ -98,46 +98,47 @@ class TestController extends Controller
 
     public function sendMail()
     {
-        // $email = 'duraibytes@gmail.com';
+        $email = 'duraibytes@gmail.com';
    
-        // $mailData = [
-        //     'title' => 'Demo Email',
-        //     'url' => 'https://www.positronx.io'
-        // ];
-  
-        // Mail::to($email)->send(new TestMail($mailData));
-   
-        // return response()->json([
-        //     'message' => 'Email has been sent.'
-        // ]);
-
-        $emailTemplate = EmailTemplate::select('email_templates.*')
-                                ->join('sub_categories', 'sub_categories.id', '=', 'email_templates.type_id')
-                                ->where('sub_categories.slug', 'new-registration')->first();
-        
-        $globalInfo = GlobalSettings::first();
-        
-
-        $extract = array(
-                        'name' => 'Durairaj', 
-                        'regards' => $globalInfo->site_name, 
-                        'company_website' => '',
-                        'company_mobile_no' => $globalInfo->site_mobile_no,
-                        'company_address' => $globalInfo->address 
-                    );
-        $templateMessage = $emailTemplate->message;
-        $templateMessage = str_replace("{","",addslashes($templateMessage));
-        $templateMessage = str_replace("}","",$templateMessage);
-        extract($extract);
-        eval("\$templateMessage = \"$templateMessage\";");
-
-        $body = [
-            'content' => $templateMessage,
-            'title' => $emailTemplate->title
+        $mailData = [
+            'title' => 'Demo Email',
+            'url' => 'https://www.positronx.io'
         ];
-        $send_mail = new TestMail($templateMessage, $emailTemplate->title);
-        // return $send_mail->render();
-        Mail::to("durairaj.pixel@gmail.com")->send($send_mail);
+        $data = 'Durairaj mail is testing';
+  
+        Mail::to($email)->send(new TestMail($data, 'Test Mail From Durariaj'));
+   
+        return response()->json([
+            'message' => 'Email has been sent.'
+        ]);
+
+        // $emailTemplate = EmailTemplate::select('email_templates.*')
+        //                         ->join('sub_categories', 'sub_categories.id', '=', 'email_templates.type_id')
+        //                         ->where('sub_categories.slug', 'new-registration')->first();
+        
+        // $globalInfo = GlobalSettings::first();
+        
+
+        // $extract = array(
+        //                 'name' => 'Durairaj', 
+        //                 'regards' => $globalInfo->site_name, 
+        //                 'company_website' => '',
+        //                 'company_mobile_no' => $globalInfo->site_mobile_no,
+        //                 'company_address' => $globalInfo->address 
+        //             );
+        // $templateMessage = $emailTemplate->message;
+        // $templateMessage = str_replace("{","",addslashes($templateMessage));
+        // $templateMessage = str_replace("}","",$templateMessage);
+        // extract($extract);
+        // eval("\$templateMessage = \"$templateMessage\";");
+
+        // $body = [
+        //     'content' => $templateMessage,
+        //     'title' => $emailTemplate->title
+        // ];
+        // $send_mail = new TestMail($templateMessage, $emailTemplate->title);
+        // // return $send_mail->render();
+        // Mail::to("durairaj.pixel@gmail.com")->send($send_mail);
         
     }
 
