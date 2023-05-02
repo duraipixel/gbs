@@ -97,21 +97,21 @@
                             @if (isset($info->nearPincodes))
                                 @foreach ($info->nearPincodes as $item)
                                     <div class="col-sm-4">
-                                        <input type="text" name="near_pincode[]" class="form-control mt-3"
+                                        <input type="text" name="near_pincode[]" class="numberonly form-control mt-3"
                                             placeholder="Pincode" value="{{ $item->pincode }}">
                                     </div>
                                 @endforeach
                             @else
                                 <div class="col-sm-4">
-                                    <input type="text" name="near_pincode[]" class="form-control mt-3"
+                                    <input type="text" name="near_pincode[]" class="numberonly form-control mt-3"
                                         placeholder="Pincode">
                                 </div>
                                 <div class="col-sm-4">
-                                    <input type="text" name="near_pincode[]" class="form-control mt-3"
+                                    <input type="text" name="near_pincode[]" class="numberonly form-control mt-3"
                                         placeholder="Pincode">
                                 </div>
                                 <div class="col-sm-4">
-                                    <input type="text" name="near_pincode[]" class="form-control mt-3"
+                                    <input type="text" name="near_pincode[]" class="numberonly form-control mt-3"
                                         placeholder="Pincode">
                                 </div>
                             @endif
@@ -125,7 +125,7 @@
                                 <label>Add Contacts</label>
                             </div>
                             <div class="col-sm-4 text-end">
-                                <button id="add_new_contact" type="button" class="btn btn-info btn-sm">
+                                <button id="add_new_contact" type="button"  class="btn btn-info btn-sm">
                                     <span class="bi bi-plus-square-dotted">
                                     </span> Add New
                                 </button>
@@ -135,21 +135,21 @@
                             @if (isset($info->contacts))
                                 @foreach ($info->contacts as $item)
                                     <div class="col-sm-4">
-                                        <input type="text" name="contact[]" class="form-control mt-3"
+                                        <input type="text" name="contact[]" maxlength="10" class="numberonly form-control mt-3"
                                             placeholder="Contact No" value="{{ $item->contact }}">
                                     </div>
                                 @endforeach
                             @else
                                 <div class="col-sm-4">
-                                    <input type="text" name="contact[]" class="form-control mt-3"
+                                    <input type="text" name="contact[]" maxlength="10" class="numberonly form-control mt-3"
                                         placeholder="Contact No">
                                 </div>
                                 <div class="col-sm-4">
-                                    <input type="text" name="contact[]" class="form-control mt-3"
+                                    <input type="text" name="contact[]" maxlength="10" class="numberonly form-control mt-3"
                                         placeholder="Contact No">
                                 </div>
                                 <div class="col-sm-4">
-                                    <input type="text" name="contact[]" class="form-control mt-3"
+                                    <input type="text" name="contact[]" maxlength="10" class="numberonly form-control mt-3"
                                         placeholder="Contact No">
                                 </div>
                             @endif
