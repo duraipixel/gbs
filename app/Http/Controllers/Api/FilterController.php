@@ -109,22 +109,21 @@ class FilterController extends Controller
     public function getProducts(Request $request)
     {
         $page                   = $request->page ?? 0;
-        $take                   = $request->take ?? 0;
+        $take                   = $request->take ?? 12;
         $filter_category        = $request->category;
         $filter_sub_category    = $request->scategory;
         $filter_availability    = $request->availability;
-        $filter_brand           = $request->brand;
-        $filter_discount        = $request->discount;
-        $filter_attribute       = $request->attributes_category;
-        $sort                   = $request->sort;
-
+        $filter_brand           = $request->brands;
+        $filter_discount        = $request->discounts;
+        $filter_attribute       = $request->attribute_category ?? '';
+        $sort                   = $request->sory_by;
+        
         $filter_availability_array = [];
         $filter_attribute_array = [];
         $filter_brand_array = [];
         $filter_discount_array = [];
-        $filter_booking     = $request->booking;
-        if (isset($filter_attribute) && !empty($filter_attribute)) {
-
+        
+        if (isset($filter_attribute) && !empty($filter_attribute)) {            
             $filter_attribute_array = explode("-", $filter_attribute);
         }
         if (isset($filter_availability) && !empty($filter_availability)) {
@@ -207,9 +206,6 @@ class FilterController extends Controller
             })
             ->when($filter_brand != '', function ($q) use ($filter_brand_array) {
                 return $q->whereIn('brands.slug', $filter_brand_array);
-            })
-            ->when($filter_booking == 'video_shopping', function ($q) {
-                return $q->where('products.has_video_shopping', 'yes');
             })
             ->when($filter_discount != '', function ($q) use ($filter_discount_array) {
                 $q->join('product_collections_products', 'product_collections_products.product_id', '=', 'products.id');
