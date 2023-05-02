@@ -18,4 +18,9 @@ class HomepageSetting extends Model
         'order_by',
         'added_by'
     ];
+
+    public function fields()
+    {
+        return $this->hasOne(HomepageSettingField::class, 'id', 'homepage_setting_field_id');
+    }
 }

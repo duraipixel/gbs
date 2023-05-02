@@ -11,6 +11,7 @@ class HomepageSettingField extends Model
     use HasFactory,SoftDeletes;
     protected $fillable = [
         'title',
+        'slug',
         'description',
         'status',
         'order_by',
