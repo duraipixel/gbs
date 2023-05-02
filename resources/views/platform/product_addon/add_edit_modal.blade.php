@@ -69,8 +69,8 @@
                                     
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <label class="fw-bold fs-6 mb-2">Sorting Order</label>
-                                            <input type="text" name="order_by" class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
+                                            <label class="required fw-bold fs-6 mb-2">Sorting Order</label>
+                                            <input type="text" name="order_by" id="order_by" class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
                                             placeholder="Sorting Order" value="{{ $info->order_by ?? '' }}" />
                                         </div>
                                         <div class="col-md-6">
@@ -287,7 +287,7 @@
             $(this).parents("#row").remove();
         })
     var add_url = "{{ route('product-addon.save') }}";
-$('#product_id').select2();
+    $('#product_id').select2();
     // Class definition
     var KTUsersAddProductAddon = function() {
         // Shared variables
@@ -319,6 +319,13 @@ $('#product_id').select2();
                                 }
                             }
                         },
+                        'order_by':{
+                            validators: {
+                                notEmpty: {
+                                    message: 'Sorting order is required'
+                                }
+                            }
+                        }
                     },
 
                     plugins: {
@@ -382,12 +389,14 @@ $('#product_id').select2();
                                     
                                 },
                                 success: function(res) {
-
+                                    console.log(res,'output');
+                                    submitButton.disabled = false;
+                                    submitButton.setAttribute('data-kt-indicator', 'off');
                                     if (res.error == 1) {
                                         // Remove loading indication
                                      
                                         // Enable button
-                                        submitButton.disabled = false;
+                                        
                                         let error_msg = res.message
                                         Swal.fire({
                                             text: res.message,
@@ -423,6 +432,7 @@ $('#product_id').select2();
                             });
 
                         } else {
+                            submitButton.disabled = false;
                             // Show popup warning. For more info check the plugin's official documentation: https://sweetalert2.github.io/
                             Swal.fire({
                                 text: "Sorry, looks like there are some errors detected, please try again.",

@@ -44,27 +44,23 @@ class PincodeController extends Controller
                     return $status;
                 })
 
-                ->editColumn('created_at', function ($row) {
-                    $created_at = Carbon::createFromFormat('Y-m-d H:i:s', $row['created_at'])->format('d-m-Y');
-                    return $created_at;
-                })
-
                 ->addColumn('action', function ($row) {
                     $edit_btn = '<a href="javascript:void(0);" onclick="return  openForm(\'pincode\',' . $row->id . ')" class="btn btn-icon btn-active-primary btn-light-primary mx-1 w-30px h-30px" > 
-                    <i class="fa fa-edit"></i>
-                </a>';
-                    $del_btn = '<a href="javascript:void(0);" onclick="return commonDelete(' . $row->id . ', \'pincode\')" class="btn btn-icon btn-active-danger btn-light-danger mx-1 w-30px h-30px" > 
-                <i class="fa fa-trash"></i></a>';
+                                    <i class="fa fa-edit"></i>
+                                </a>';
+                                    $del_btn = '<a href="javascript:void(0);" onclick="return commonDelete(' . $row->id . ', \'pincode\')" class="btn btn-icon btn-active-danger btn-light-danger mx-1 w-30px h-30px" > 
+                                <i class="fa fa-trash"></i></a>';
 
                     return $edit_btn . $del_btn;
                 })
-                ->rawColumns(['action', 'status', 'image']);
+                ->rawColumns(['action', 'status']);
             return $datatables->make(true);
         }
         $breadCrum  = array('Deliverable pincode management', 'Pincode');
         $title      = 'Deliverable pincode management';
         return view('platform.master.pincode.index', compact('breadCrum', 'title'));
     }
+
     public function modalAddEdit(Request $request)
     {
         $id                 = $request->id;

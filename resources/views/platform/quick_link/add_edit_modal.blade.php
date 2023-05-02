@@ -44,8 +44,8 @@
                                 <input type="text" name="url" id="url" class="form-control form-control-solid mb-3 mb-lg-0" value="{{ $info->url ?? '' }}">
                         </div>
                         <div class="fv-row mb-7">
-                                <label class="fw-bold fs-6 mb-2">Sorting Order</label>
-                                <input type="text" name="order_by" class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
+                                <label class="required fw-bold fs-6 mb-2">Sorting Order</label>
+                                <input type="text" name="order_by" id="order_by" class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
                                 placeholder="Sorting Order" value="{{ $info->order_by ?? '' }}" />
                         </div>
                         <div class="fv-row">
@@ -133,6 +133,13 @@
                                 }
                             }
                         },
+                        'order_by': {
+                            validators: {
+                                notEmpty: {
+                                    message: 'Sorting Order is required'
+                                }
+                            }
+                        }
                     },
 
                     plugins: {
@@ -196,12 +203,13 @@
                                     
                                 },
                                 success: function(res) {
+                                    submitButton.setAttribute('data-kt-indicator', 'off');
+                                    submitButton.disabled = false;
 
                                     if (res.error == 1) {
                                         // Remove loading indication
                                      
                                         // Enable button
-                                        submitButton.disabled = false;
                                         let error_msg = res.message
                                         Swal.fire({
                                             text: res.message,

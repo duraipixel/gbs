@@ -49,11 +49,10 @@ class MyProfileController extends Controller
             ]);
 
             if ($validator->passes()) {
-            
-                $ins['name']            = $request->name;
-                $ins['mobile_no']       = $request->mobile_number;
-                $ins['address']         = $request->address;
+
+                $user = Auth::user();
                 $path = '';
+
                 if ($request->hasFile('profile_image')) {
                     $filename       = time() . '_' . $request->profile_image->getClientOriginalName();
                     $folder_name    = 'user/' . $request->email . '/profile/';
@@ -74,18 +73,16 @@ class MyProfileController extends Controller
                    
                     $path           = $folder_name . $filename;
                     $request->profile_image->move(public_path($folder_name), $filename);
-                    $ins['image']   = $path;
-                }
-                if ($request->image_remove_image == "yes") {
-                    $ins['image'] = '';
+                    $user->image = $path;
                 }
     
                 $error = 0;
-                $user = Auth::user();
+              
                 $user->name = $request->name;
                 $user->email = $request->email;
                 $user->mobile_no = $request->mobile_number;
-                $user->image = $path;
+                $user->address = $request->address;
+                
                 $user->save();
                 // User::updateOrCreate(['id' => $id],$ins);
                 $message = (isset($id) && !empty($id)) ? 'Updated Successfully' :'Added successfully';

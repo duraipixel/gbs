@@ -26,8 +26,7 @@
                 </a>
             </div>
             @if (access()->hasAccess([
-                    'product-category',
-                    'product-tags',
+                    'product-category',                    
                     'combo',
                     'product-labels',
                     'products',
@@ -37,8 +36,7 @@
                 <div data-kt-menu-trigger="click"
                     class="menu-item menu-accordion @if (request()->routeIs([
                             'product-category',
-                            'combo',
-                            'product-tags',
+                            'combo',                            
                             'product-labels',
                             'products',
                             'products.*',
@@ -79,18 +77,7 @@
                                     <span class="menu-title">Product Categories</span>
                                 </a>
                             </div>
-                        @endif
-                        @if (access()->hasAccess(['product-tags']))
-                            <div class="menu-item">
-                                <a class="menu-link @if (request()->routeIs(['product-tags'])) active @endif"
-                                    href="{{ route('product-tags') }}">
-                                    <span class="menu-bullet">
-                                        <span class="bullet bullet-dot"></span>
-                                    </span>
-                                    <span class="menu-title">Product Tags</span>
-                                </a>
-                            </div>
-                        @endif
+                        @endif                        
                         @if (access()->hasAccess(['product-labels']))
                             <div class="menu-item">
                                 <a class="menu-link @if (request()->routeIs(['product-labels'])) active @endif"
@@ -507,27 +494,7 @@
                     </a>
                 </div>
             @endif
-            @if (access()->hasAccess(['newsletter']))
-                <div class="menu-item">
-                    <a class="menu-link @if (request()->routeIs(['newsletter'])) active @endif"
-                        href="{{ route('newsletter') }}">
-                        <span class="menu-icon">
-                            <span class="svg-icon svg-icon-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                    viewBox="0 0 24 24" fill="none">
-                                    <path d="M6 21C6 21.6 6.4 22 7 22H17C17.6 22 18 21.6 18 21V20H6V21Z"
-                                        fill="currentColor" />
-                                    <path opacity="0.3" d="M17 2H7C6.4 2 6 2.4 6 3V20H18V3C18 2.4 17.6 2 17 2Z"
-                                        fill="currentColor" />
-                                    <path d="M12 4C11.4 4 11 3.6 11 3V2H13V3C13 3.6 12.6 4 12 4Z"
-                                        fill="currentColor" />
-                                </svg>
-                            </span>
-                        </span>
-                        <span class="menu-title">NewsLetter</span>
-                    </a>
-                </div>
-            @endif
+           
             @if (access()->hasAccess(['global', 'my-profile', 'users', 'roles']))
                 <div data-kt-menu-trigger="click"
                     class="menu-item menu-accordion mb-1 @if (request()->routeIs(['global', 'my-profile', 'my-profile.*', 'users', 'roles'])) hover show @endif">

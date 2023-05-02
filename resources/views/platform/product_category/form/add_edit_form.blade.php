@@ -20,12 +20,15 @@
 <div class="d-flex flex-column flex-row-fluid gap-7 gap-lg-10">
     <div class="card">
         <div class="card-header">
-            <ul class="nav nav-custom nav-tabs nav-line-tabs nav-line-tabs-2x border-0 fs-4 fw-bold mb-0 align-items-center">
+            <ul
+                class="nav nav-custom nav-tabs nav-line-tabs nav-line-tabs-2x border-0 fs-4 fw-bold mb-0 align-items-center">
                 <li class="nav-item">
-                    <a class="nav-link text-active-primary active" data-bs-toggle="tab" href="#kt_ecommerce_add_category_general">General</a>
+                    <a class="nav-link text-active-primary active" data-bs-toggle="tab"
+                        href="#kt_ecommerce_add_category_general">General</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-active-primary" data-bs-toggle="tab" href="#kt_ecommerce_add_category_meta">Meta</a>
+                    <a class="nav-link text-active-primary" data-bs-toggle="tab"
+                        href="#kt_ecommerce_add_category_meta">Meta</a>
                 </li>
             </ul>
         </div>
@@ -34,18 +37,21 @@
                 <div id="kt_activities_body">
                     <div id="kt_activities_scroll" class="position-relative scroll-y me-n5 pe-5" data-kt-scroll="true"
                         data-kt-scroll-height="auto" data-kt-scroll-wrappers="#kt_activities_body"
-                        data-kt-scroll-dependencies="#kt_activities_header, #kt_activities_footer" data-kt-scroll-offset="5px">
+                        data-kt-scroll-dependencies="#kt_activities_header, #kt_activities_footer"
+                        data-kt-scroll-offset="5px">
                         <div class="d-flex flex-column scroll-y me-n7 pe-7 " id="kt_modal_update_role_scroll">
                             <div class="fv-row mb-1">
                                 <div class="d-flex flex-column scroll-y me-n7 pe-7 py-4" id="kt_modal_add_user_scroll"
                                     data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}"
-                                    data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_user_header"
+                                    data-kt-scroll-max-height="auto"
+                                    data-kt-scroll-dependencies="#kt_modal_add_user_header"
                                     data-kt-scroll-wrappers="#kt_modal_add_user_scroll" data-kt-scroll-offset="300px">
                                     <input type="hidden" name="id" value="{{ $info->id ?? '' }}">
                                     <input type="hidden" name="from" id="from" value="{{ $from ?? '' }}">
-        
+
                                     <div class="tab-content">
-                                        <div class="tab-pane fade show active" id="kt_ecommerce_add_category_general" role="tab-panel">
+                                        <div class="tab-pane fade show active" id="kt_ecommerce_add_category_general"
+                                            role="tab-panel">
                                             @include('platform.product_category.form._category_form')
                                         </div>
                                         <div class="tab-pane fade" id="kt_ecommerce_add_category_meta" role="tab-panel">
@@ -69,34 +75,36 @@
                 </div>
             </form>
         </div>
-    </div> 
+    </div>
 </div>
 <script>
+   
 
-    $('.numberonly').keypress(function (e) {    
-        var charCode = (e.which) ? e.which : event.keyCode    
-        if (String.fromCharCode(charCode).match(/[^0-9]/g))    
-            return false;                        
-    });  
 
-    $('#is_parent').change(function(){
-        if($("#is_parent").prop('checked') == true){
+    $('.numberonly').keypress(function(e) {
+        var charCode = (e.which) ? e.which : event.keyCode
+        if (String.fromCharCode(charCode).match(/[^0-9]/g))
+            return false;
+    });
+
+    $('#is_parent').change(function() {
+        if ($("#is_parent").prop('checked') == true) {
             $('#parent-tab').addClass('d-none');
         } else {
             $('#parent-tab').removeClass('d-none');
         }
     });
 
-    $('#is_tax').change(function(){
-        if($("#is_tax").prop('checked') == true){
+    $('#is_tax').change(function() {
+        if ($("#is_tax").prop('checked') == true) {
             $('#tax-tab').removeClass('d-none');
         } else {
             $('#tax-tab').addClass('d-none');
         }
     });
-   
+
     //image image script
-     document.getElementById('readUrl').addEventListener('change', function() {
+    document.getElementById('readUrl').addEventListener('change', function() {
         // console.log("111");
         if (this.files[0]) {
             var picture = new FileReader();
@@ -116,7 +124,7 @@
             'background-image': ''
         });
     });
-   
+
     $('#parent_category').select2();
     var add_url = "{{ route('product-category.save') }}";
     // Class definition
@@ -141,6 +149,13 @@
                                 }
                             }
                         },
+                        'order_by': {
+                            validators: {
+                                notEmpty: {
+                                    message: 'Sorting Order is required'
+                                }
+                            }
+                        }
                     },
                     plugins: {
                         trigger: new FormValidation.plugins.Trigger(),
@@ -184,16 +199,16 @@
             // Submit button handler
             const submitButton = element.querySelector('[data-kt-order_status-modal-action="submit"]');
             // submitButton.addEventListener('click', function(e) {
-            submitButton.addEventListener('click', function (e) {
+            submitButton.addEventListener('click', function(e) {
                 // Prevent default button action
                 e.preventDefault();
                 // Validate form before submit
                 if (validator) {
                     validator.validate().then(function(status) {
-                        
+
                         if (status == 'Valid') {
                             var from = $('#from').val();
-                            var form = $('#add_product_category_form')[0]; 
+                            var form = $('#add_product_category_form')[0];
                             var formData = new FormData(form);
                             submitButton.setAttribute('data-kt-indicator', 'on');
                             submitButton.disabled = true;
@@ -208,7 +223,8 @@
                                 success: function(res) {
                                     if (res.error == 1) {
                                         // Remove loading indication
-                                        submitButton.removeAttribute('data-kt-indicator');
+                                        submitButton.removeAttribute(
+                                            'data-kt-indicator');
                                         // Enable button
                                         submitButton.disabled = false;
                                         let error_msg = res.message
@@ -222,8 +238,9 @@
                                             }
                                         });
                                     } else {
-                                        if( from != '' ) {
-                                            getProductCategoryDropdown(res.categoryId);
+                                        if (from != '') {
+                                            getProductCategoryDropdown(res
+                                                .categoryId);
                                             return false;
                                         }
                                         dtTable.ajax.reload();
@@ -274,6 +291,4 @@
     KTUtil.onDOMContentLoaded(function() {
         KTProductCategory.init();
     });
-
-   
 </script>

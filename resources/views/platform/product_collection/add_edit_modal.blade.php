@@ -154,8 +154,8 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="mb-7">
-                                    <label class="fw-bold fs-6 mb-2">Sorting Order</label>
-                                    <input type="text" name="order_by" class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
+                                    <label class="required fw-bold fs-6 mb-2">Sorting Order</label>
+                                    <input type="text" name="order_by" id="order_by" class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
                                         placeholder="Sorting Order" value="{{ $info->order_by ?? '' }}" />
                                 </div>
                             </div>
@@ -185,6 +185,18 @@
     }
 </style>
 <script>
+
+$(document).ready(function() {
+        $.fn.select2.amd.require(['select2/selection/search'], function(Search) {
+            var oldRemoveChoice = Search.prototype.searchRemoveChoice;
+
+            Search.prototype.searchRemoveChoice = function() {
+                oldRemoveChoice.apply(this, arguments);
+                this.$search.val('');
+            };
+            $('#collection_product').select2();
+        });
+    });
     document.getElementById('readUrl').addEventListener('change', function() {
     
       if (this.files[0]) {
@@ -207,9 +219,7 @@
   });
 </script>
 <script>
-    $(document).ready(function() {
-        $('#collection_product').select2();
-    });
+  
  $('.mobile_num').keypress(
         function(event) {
             if (event.keyCode == 46 || event.keyCode == 8) {
@@ -255,6 +265,13 @@
                                 }
                             }
                         },
+                        'order_by': {
+                            validators: {
+                                notEmpty: {
+                                    message: 'Sorting Order is required'
+                                }
+                            } 
+                        }
                     },
 
                     plugins: {

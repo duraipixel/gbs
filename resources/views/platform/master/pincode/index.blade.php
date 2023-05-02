@@ -95,9 +95,8 @@
                         <thead>
                             <tr class="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
                                 <th> Pincode </th>
+                                <th> Shipping Info </th>
                                 <th> Description  </th>
-                                <th> Created By </th>
-                                <th> Created Date </th>
                                 <th> Status </th>
                                 <th style="width: 75px;">Action</th>
                             </tr>
@@ -134,19 +133,16 @@
                   
                 },
                 {
+                    data: 'shipping_information',
+                    name: 'shipping_information',
+                  
+                },
+                {
                     data: 'description',
                     name: 'description',
                   
                 },
-                
-                {
-                    data: 'users_name',
-                    name: 'users_name'
-                },
-                {
-                    data: 'created_at',
-                    name: 'created_at'
-                },
+               
                 {
                     data: 'status',
                     name: 'status'
