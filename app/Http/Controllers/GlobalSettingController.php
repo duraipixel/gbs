@@ -148,7 +148,7 @@ class GlobalSettingController extends Controller
                 $ins['link_url']    = $link_url[$i] ?? '' ;
                 $ins['status']      = 'published';
 
-                $info = GlobalSiteLinks::create($ins);
+                $info = GlobalSiteLinks::create($ins); 
             }
         
             $error = 0;

@@ -22,7 +22,8 @@ class DatabaseSeeder extends Seeder
             EmailTemplateSeeder::class,
             BrandSeeder::class,
             TaxSeeder::class,
-            CategorySeeder::class
+            CategorySeeder::class,
+            SocialLinkSeeder::class
             
         ]);
     }
