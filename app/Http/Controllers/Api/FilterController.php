@@ -26,7 +26,7 @@ class FilterController extends Controller
         );
 
         $sory_by                = array(
-            array('id' => null, 'name' => 'Featured', 'slug' => 'is-featured'),
+            // array('id' => null, 'name' => 'Featured', 'slug' => 'is-featured'),
             array('id' => null, 'name' => 'Price: High to Low', 'slug' => 'price-high-to-low'),
             array('id' => null, 'name' => 'Price: Low to High', 'slug' => 'price-low-to-high'),
         );
@@ -178,10 +178,10 @@ class FilterController extends Controller
                 $q->join('product_with_attribute_sets', 'product_with_attribute_sets.product_id', '=', 'products.id');
                 return $q->whereIn('product_with_attribute_sets.title', $productAttrNames);
             })
-            ->when($sort == 'price_high_to_low', function ($q) {
+            ->when($sort == 'price-high-to-low', function ($q) {
                 $q->orderBy('products.price', 'desc');
             })
-            ->when($sort == 'price_low_to_high', function ($q) {
+            ->when($sort == 'price-low-to-high', function ($q) {
                 $q->orderBy('products.price', 'asc');
             })
             ->when($sort == 'is_featured', function ($q) {
@@ -216,10 +216,10 @@ class FilterController extends Controller
                 $q->join('product_with_attribute_sets', 'product_with_attribute_sets.product_id', '=', 'products.id');
                 return $q->whereIn('product_with_attribute_sets.title', $productAttrNames);
             })
-            ->when($sort == 'price_high_to_low', function ($q) {
+            ->when($sort == 'price-high-to-low', function ($q) {
                 $q->orderBy('products.mrp', 'desc');
             })
-            ->when($sort == 'price_low_to_high', function ($q) {
+            ->when($sort == 'price-low-to-high', function ($q) {
                 $q->orderBy('products.mrp', 'asc');
             })
             ->when($sort == 'is_featured', function ($q) {
