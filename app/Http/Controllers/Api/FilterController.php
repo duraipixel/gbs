@@ -347,7 +347,7 @@ class FilterController extends Controller
         }
         
         $cat_id = $productCategory->id ?? '' ;
-        $brands = Product::select('brands.id', 'brands.brand_name', 'brands.slug')
+        $brands = Product::select('brands.id', 'brands.brand_name as name', 'brands.slug')
             ->join('brands', 'brands.id', '=', 'products.brand_id')
             ->join('product_categories', function ($join) {
                 $join->on('product_categories.id', '=', 'products.category_id');
