@@ -14,12 +14,13 @@ class BrowseController extends Controller
     {
       
         $browse                   = [];
-        $browse_filed_data = HomepageSetting::select('id', 'title', 'color')->where('status', 'published')->orderBy('order_by', 'asc')->get();
+        $browse_filed_data = HomepageSetting::where('status', 'published')->orderBy('order_by', 'asc')->get();
         foreach ($browse_filed_data as $key => $data) {
             $parent = [];
             $parent['id']             = $data->id;
             $parent['title']          = $data->title;
             $parent['color']          = $data->color;
+            $parent['type']           = $data->fields->slug;
             $items_field = HomepageSettingItems::where('homepage_settings_id', $data->id)->get();
             $items = [];
             foreach ($items_field as $key => $data_field) {

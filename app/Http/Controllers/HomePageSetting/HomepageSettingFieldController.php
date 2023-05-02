@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\File;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Excel;
+use Illuminate\Support\Str;
 
 class HomepageSettingFieldController extends Controller
 {
@@ -74,6 +75,7 @@ class HomepageSettingFieldController extends Controller
 
         return view('platform.homepage_setting.homepage_setting_field.add_edit_modal', compact('info', 'modal_title', 'from'));
     }
+
     public function saveForm(Request $request,$id = null)
     {
         $id             = $request->id;
@@ -85,6 +87,7 @@ class HomepageSettingFieldController extends Controller
         
  
             $ins['title']               = $request->title;
+            $ins['slug']                = Str::slug($request->title);
             $ins['product_id']          = $request->product_id;
             $ins['description']         = $request->description;
             $ins['order_by']            = $request->order_by ?? 0;
