@@ -97,21 +97,21 @@
                             @if (isset($info->nearPincodes))
                                 @foreach ($info->nearPincodes as $item)
                                     <div class="col-sm-4">
-                                        <input type="text" name="near_pincode[]" class="form-control mt-3"
+                                        <input type="text" name="near_pincode[]" class="numberonly form-control mt-3"
                                             placeholder="Pincode" value="{{ $item->pincode }}">
                                     </div>
                                 @endforeach
                             @else
                                 <div class="col-sm-4">
-                                    <input type="text" name="near_pincode[]" class="form-control mt-3"
+                                    <input type="text" name="near_pincode[]" class="numberonly form-control mt-3"
                                         placeholder="Pincode">
                                 </div>
                                 <div class="col-sm-4">
-                                    <input type="text" name="near_pincode[]" class="form-control mt-3"
+                                    <input type="text" name="near_pincode[]" class="numberonly form-control mt-3"
                                         placeholder="Pincode">
                                 </div>
                                 <div class="col-sm-4">
-                                    <input type="text" name="near_pincode[]" class="form-control mt-3"
+                                    <input type="text" name="near_pincode[]" class="numberonly form-control mt-3"
                                         placeholder="Pincode">
                                 </div>
                             @endif
@@ -135,21 +135,21 @@
                             @if (isset($info->contacts))
                                 @foreach ($info->contacts as $item)
                                     <div class="col-sm-4">
-                                        <input type="text" name="contact[]" class="form-control mt-3"
+                                        <input type="text" name="contact[]" maxlength="10" class="numberonly form-control mt-3"
                                             placeholder="Contact No" value="{{ $item->contact }}">
                                     </div>
                                 @endforeach
                             @else
                                 <div class="col-sm-4">
-                                    <input type="text" name="contact[]" class="form-control mt-3"
+                                    <input type="text" name="contact[]" maxlength="10" class="numberonly form-control mt-3"
                                         placeholder="Contact No">
                                 </div>
                                 <div class="col-sm-4">
-                                    <input type="text" name="contact[]" class="form-control mt-3"
+                                    <input type="text" name="contact[]" maxlength="10"  class="numberonly form-control mt-3"
                                         placeholder="Contact No">
                                 </div>
                                 <div class="col-sm-4">
-                                    <input type="text" name="contact[]" class="form-control mt-3"
+                                    <input type="text" name="contact[]" maxlength="10" class="numberonly form-control mt-3"
                                         placeholder="Contact No">
                                 </div>
                             @endif
@@ -325,14 +325,14 @@
 
     add_new_contact.addEventListener('click', function() {
         let contact_html = `<div class="col-sm-4">
-                                <input type="text" name="contact[]" class="form-control mt-3" placeholder="Contact No">
+                                <input type="text" name="contact[]" class="numberonly form-control mt-3" placeholder="Contact No">
                             </div>`;
         $('#contant_panes').append(contact_html);
     })
 
     add_new_pincode.addEventListener('click', function() {
         let pincode_html = `<div class="col-sm-4">
-                                <input type="text" name="near_pincode[]" class="form-control mt-3" placeholder="Pincode">
+                                <input type="text" name="near_pincode[]" maxlength="10" class="numberonly form-control mt-3" placeholder="Pincode">
                             </div>`;
         $('#pincode_panes').append(pincode_html);
     })

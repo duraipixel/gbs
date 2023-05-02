@@ -35,7 +35,7 @@ Route::get('/browseHome', [App\Http\Controllers\Api\BrowseController::class, 'in
 
 Route::post('/get/filter/sidemenus', [App\Http\Controllers\Api\FilterController::class, 'getFilterStaticSideMenu']);
 
-Route::post('/get/products', [App\Http\Controllers\Api\FilterController::class, 'getProducts']);
+Route::get('/get/products', [App\Http\Controllers\Api\FilterController::class, 'getProducts']);
 Route::post('/get/products/by/slug', [App\Http\Controllers\Api\FilterController::class, 'getProductBySlug']);
 Route::get('/get/states', [App\Http\Controllers\Api\CommonController::class, 'getSates']);
 Route::post('/get/meta', [App\Http\Controllers\Api\CommonController::class, 'getMetaInfo']);

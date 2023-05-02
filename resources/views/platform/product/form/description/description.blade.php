@@ -30,7 +30,6 @@
                 <div id="newinput">
                     @isset($info->productDescription)
                         @foreach ($info->productDescription as $item)
-                        
                             <div class="card border border-2 p-5" id='new_row_add'>
                                 <div class="row">
                                     <div class="col-md-7">
@@ -72,8 +71,8 @@
                                     </div>
 
                                     <div class="col-md-1">
-                                        <button type="button" id="DeleteRow" data-repeater-delete=""
-                                            class="btn btn-sm btn-icon btn-light-danger removeRow mt-10">
+                                        <button type="button" onclick="return removeDescritionRow(this)"
+                                            class="btn btn-sm btn-icon btn-light-danger mt-10">
                                             <!--begin::Svg Icon | path: icons/duotune/arrows/arr088.svg-->
                                             <span class="svg-icon svg-icon-2">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -137,8 +136,8 @@
                     </div>
                     
                     <div class="col-md-1">
-                        <button type="button" id="DeleteRow" data-repeater-delete=""
-                            class="btn btn-sm btn-icon btn-light-danger removeRow mt-10">
+                        <button type="button" onclick="return removeDescritionRow(this)" 
+                            class="btn btn-sm btn-icon btn-light-danger mt-10">
                             <!--begin::Svg Icon | path: icons/duotune/arrows/arr088.svg-->
                             <span class="svg-icon svg-icon-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -160,4 +159,9 @@
 
         $('#newinput').append(newRowAdd);
     });
+
+    function removeDescritionRow(event) {
+        alert();
+        console.log( this );
+    }
 </script>
