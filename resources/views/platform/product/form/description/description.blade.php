@@ -71,8 +71,8 @@
                                     </div>
 
                                     <div class="col-md-1">
-                                        <button type="button" onclick="return removeDescritionRow(this)"
-                                            class="btn btn-sm btn-icon btn-light-danger mt-10">
+                                        <button type="button"
+                                            class="btn btn-sm btn-icon btn-light-danger removeDescRow mt-10">
                                             <!--begin::Svg Icon | path: icons/duotune/arrows/arr088.svg-->
                                             <span class="svg-icon svg-icon-2">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -105,7 +105,7 @@
     $("#btnAdd").click(function() {
 
         newRowAdd =
-            `<div class="card border border-2 p-5" id='new_row_add'>
+            `<div class="card border border-2 p-5 new_row_add" id='new_row_add'>
                 <div class="row" >
                     <div class="col-md-7">
                         <div class="row">
@@ -136,8 +136,8 @@
                     </div>
                     
                     <div class="col-md-1">
-                        <button type="button" onclick="return removeDescritionRow(this)" 
-                            class="btn btn-sm btn-icon btn-light-danger mt-10">
+                        <button type="button"  
+                            class="btn btn-sm btn-icon btn-light-danger removeDescRow mt-10">
                             <!--begin::Svg Icon | path: icons/duotune/arrows/arr088.svg-->
                             <span class="svg-icon svg-icon-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -160,8 +160,15 @@
         $('#newinput').append(newRowAdd);
     });
 
-    function removeDescritionRow(event) {
-        alert();
-        console.log( this );
-    }
+    // function removeDescritionRow(event) {
+    //     alert();
+    //     console.log(this);
+    //     console.log($(this).parent('#new_row_add'));
+    //     // $(this).parent('#new_row_add').remove();
+
+    // }
+
+    $(document).on("click", ".removeDescRow", function() {
+        $(this).parents('#new_row_add').remove();
+    });
 </script>
