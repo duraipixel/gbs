@@ -25,7 +25,7 @@ class FilterController extends Controller
             'coming_soon' => 'Upcoming',
         );
 
-        $sory_by                = array(
+        $sort_by                = array(
             // array('id' => null, 'name' => 'Featured', 'slug' => 'is-featured'),
             array('id' => null, 'name' => 'Price: High to Low', 'slug' => 'price-high-to-low'),
             array('id' => null, 'name' => 'Price: Low to High', 'slug' => 'price-low-to-high'),
@@ -99,7 +99,7 @@ class FilterController extends Controller
         $response = $this->getAttributeFilter($category_slug);
         
         // $response['product_availability'] =  $product_availability;          
-        $response['sory_by'] =  $sory_by;          
+        $response['sort_by'] =  $sort_by;          
         $response['discounts'] = $discounts;          
         $response['collection'] = $collection;          
         $response['handpicked'] = $handpicked;
@@ -118,7 +118,7 @@ class FilterController extends Controller
         $filter_brand           = $request->brands;
         $filter_discount        = $request->discounts;
         $filter_attribute       = $request->attribute_category ?? '';
-        $sort                   = $request->sory_by;
+        $sort                   = $request->sort_by;
         
         $filter_availability_array = [];
         $filter_attribute_array = [];
