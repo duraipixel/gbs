@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Storage;
 
 class FilterController extends Controller
 {
-    public function getFilterStaticSideMenu()
+    public function getFilterStaticSideMenu(Request $request)
     {
         $category_slug = $request->category_slug ?? '';
 
@@ -31,7 +31,7 @@ class FilterController extends Controller
             array('id' => null, 'name' => 'Price: Low to High', 'slug' => 'price_low_to_high'),
         );
 
-        $discounts              = ProductCollection::select('product_collections.id', 'product_collections.collection_name', 'product_collections.slug')
+        $discounts              = ProductCollection::select('product_collections.id', 'product_collections.collection_name as name', 'product_collections.slug')
             ->join('product_collections_products', 'product_collections_products.product_collection_id', '=', 'product_collections.id')
             ->join('products', 'products.id', '=', 'product_collections_products.product_id')
             ->where('products.stock_status', 'in_stock')
@@ -43,7 +43,7 @@ class FilterController extends Controller
             ->groupBy('product_collections.id')
             ->get()->toArray();
 
-        $collection             = ProductCollection::select('product_collections.id', 'product_collections.collection_name', 'product_collections.slug')
+        $collection             = ProductCollection::select('product_collections.id', 'product_collections.collection_name as name', 'product_collections.slug')
             ->join('product_collections_products', 'product_collections_products.product_collection_id', '=', 'product_collections.id')
             ->join('products', 'products.id', '=', 'product_collections_products.product_id')
             ->where('products.stock_status', 'in_stock')
@@ -56,7 +56,7 @@ class FilterController extends Controller
             ->groupBy('product_collections.id')
             ->get()->toArray();
 
-        $handpicked = ProductCollection::select('product_collections.id', 'product_collections.collection_name', 'product_collections.slug')
+        $handpicked = ProductCollection::select('product_collections.id', 'product_collections.collection_name as name', 'product_collections.slug')
             ->join('product_collections_products', 'product_collections_products.product_collection_id', '=', 'product_collections.id')
             ->join('products', 'products.id', '=', 'product_collections_products.product_id')
             ->where('products.stock_status', 'in_stock')
@@ -96,7 +96,7 @@ class FilterController extends Controller
 
         $response = $this->getAttributeFilter($category_slug);
         
-        $response['product_availability'] =  $product_availability;          
+        // $response['product_availability'] =  $product_availability;          
         $response['sory_by'] =  $sory_by;          
         $response['discounts'] = $discounts;          
         $response['collection'] = $collection;          

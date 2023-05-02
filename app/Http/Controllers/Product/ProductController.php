@@ -274,31 +274,39 @@ class ProductController extends Controller
             
             $productInfo                    = Product::updateOrCreate(['id' => $id], $ins);
             $product_id = $productInfo->id;
+            
+            $desc_id = $request->desc_id ?? '';
             if( isset( $request->title ) && !empty( $request->title ) ) {
-                for ($i = 0; $i < count($request->title); $i++) {                     
-              
-                    $imageName                  = uniqid().$request->home_image[$i]->getClientOriginalName();
-                    $directory                  = 'products/'.$product_id.'/description';
-                    //Storage::deleteDirectory('public/'.$directory);
-    
-                    if (!is_dir(storage_path("app/public/products/".$product_id."/description"))) {
-                        mkdir(storage_path("app/public/products/".$product_id."/description"), 0775, true);
+                for ($i = 0; $i < count($request->title); $i++) {    
+                    $ins_desc_array = [];
+                    $pro_desc_id = $desc_id[$i] ?? '';
+                    if( isset( $desc_id ) && !empty( $desc_id ) ) {
+
+                        ProductDescription::where('product_id', $product_id)->whereNotIn('id', $desc_id)->delete();
                     }
-    
-                  
-                    $fileNameThumb              = 'public/products/'.$product_id.'/description/' . time() . '-' . $imageName;
-                    Image::make($request->home_image[$i])->save(storage_path('app/' . $fileNameThumb));
+                    if( isset( $request->home_image[$i] ) && !empty($request->home_image[$i]) ) {
+
+                        $imageName                  = uniqid().$request->home_image[$i]->getClientOriginalName();
+                        $directory                  = 'products/'.$product_id.'/description';
+                        //Storage::deleteDirectory('public/'.$directory);
+        
+                        if (!is_dir(storage_path("app/public/products/".$product_id."/description"))) {
+                            mkdir(storage_path("app/public/products/".$product_id."/description"), 0775, true);
+                        }
+                      
+                        $fileNameThumb              = 'public/products/'.$product_id.'/description/' . time() . '-' . $imageName;
+                        Image::make($request->home_image[$i])->save(storage_path('app/' . $fileNameThumb));
+                        $ins_desc_array['desc_image'] = $fileNameThumb;
+                    }
+
+                    $ins_desc_array['product_id'] = $product_id;
+                    $ins_desc_array['title'] = $request->title[$i];
+                    $ins_desc_array['description'] = $request->desc[$i];
+                    $ins_desc_array['order_by'] = $request->sorting_order[$i];
                 
-                    $answers[] = [
-                        'product_id' => $product_id,
-                        'title' => $request->title[$i], 
-                        'description' => $request->desc[$i],
-                        'desc_image' => $fileNameThumb,
-                        'order_by' =>$request->sorting_order[$i]
-                    ];
-                    //HomepageSettingItems::updateOrCreate(['homepage_settings_id' => $id], $answers);              
+                    ProductDescription::updateOrCreate(['id' => $pro_desc_id], $ins_desc_array);              
                 }
-                ProductDescription::insert($answers);
+                
             }
             
             if(!empty($id))
