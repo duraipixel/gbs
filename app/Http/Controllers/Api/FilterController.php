@@ -26,9 +26,9 @@ class FilterController extends Controller
         );
 
         $sory_by                = array(
-            array('id' => null, 'name' => 'Featured', 'slug' => 'is_featured'),
-            array('id' => null, 'name' => 'Price: High to Low', 'slug' => 'price_high_to_low'),
-            array('id' => null, 'name' => 'Price: Low to High', 'slug' => 'price_low_to_high'),
+            array('id' => null, 'name' => 'Featured', 'slug' => 'is-featured'),
+            array('id' => null, 'name' => 'Price: High to Low', 'slug' => 'price-high-to-low'),
+            array('id' => null, 'name' => 'Price: Low to High', 'slug' => 'price-low-to-high'),
         );
 
         $discounts              = ProductCollection::select('product_collections.id', 'product_collections.collection_name as name', 'product_collections.slug')
