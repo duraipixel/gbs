@@ -33,7 +33,6 @@ class ProductCollectionResource extends JsonResource
                 // dd( $category->id );
                 // $salePrices             = getProductPrice( $items->product );
                 $pro = getProductApiData($items->product);
-
                 $tmp['products'][]      = $pro; 
             }
         }

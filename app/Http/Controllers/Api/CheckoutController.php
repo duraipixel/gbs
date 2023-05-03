@@ -323,7 +323,6 @@ class CheckoutController extends Controller
 
                     $order_info->status = 'placed';
                     $order_info->order_status_id = $order_status->id;
-
                     $order_info->save();
 
                     $order_items = OrderProduct::where('order_id', $order_info->id)->get();
@@ -363,7 +362,13 @@ class CheckoutController extends Controller
                      */
                     #generate invoice
                     $globalInfo = GlobalSettings::first();
-                    $pdf = PDF::loadView('platform.invoice.index', compact('order_info', 'globalInfo'));
+                    $pickup_details = [];
+                    if( isset( $order_info->pickup_store_id ) && !empty( $order_info->pickup_store_id) && !empty($order_info->pickup_store_details )) {
+                        $pickup = unserialize($order_info->pickup_store_details);
+                        
+                        $pickup_details = $pickup;
+                    }
+                    $pdf = PDF::loadView('platform.invoice.index', compact('order_info', 'globalInfo', 'pickup_details'));
                     Storage::put('public/invoice_order/' . $order_info->order_no . '.pdf', $pdf->output());
                     #send mail
                     $emailTemplate = EmailTemplate::select('email_templates.*')

@@ -12,6 +12,9 @@
         table td {
             font-size: 10px;
         }
+        ml-3 {
+            margin-left: 3px;
+        }
 
         .header-table,
         .item-table {
@@ -99,7 +102,7 @@
         </tr>
     </table>
     <table class="header-table" cellspacing="0" padding="0">
-        
+
         <tr>
             <td colspan="2">
                 <table class="no-border" style="width: 100%">
@@ -113,16 +116,27 @@
                             <div>{{ $order_info->billing_mobile_no }}</div>
                             <div>{{ $order_info->billing_email }}</div>
                         </td>
+                        @if (isset($pickup_details) && !empty($pickup_details))
+                            <td class="w-35">
+                                <div><b> Pickup from Store: </b></div>
+                                <div><b>{{ $pickup_details->title }}</b></div>
+                                <div>{{ $pickup_details->address }}</div>
+                                <div>{{ $pickup_details->group_contacts }}</div>
+                                <div>{{ $pickup_details->group_emails }}</div>
+                            </td>
+                        @else
+                            <td class="w-35">
+                                <div><b> Ship To: </b></div>
+                                <div><b>{{ $order_info->shipping_name }}</b></div>
+                                <div>{{ $order_info->shipping_address_line1 }}</div>
+                                <div>{{ $order_info->shipping_city }}</div>
+                                <div>{{ $order_info->shipping_state }}</div>
+                                <div>{{ $order_info->shipping_mobile_no }}</div>
+                                <div>{{ $order_info->shipping_email }}</div>
+                            </td>
+                        @endif
 
-                        <td class="w-35">
-                            <div><b> Ship To: </b></div>
-                            <div><b>{{ $order_info->shipping_name }}</b></div>
-                            <div>{{ $order_info->shipping_address_line1 }}</div>
-                            <div>{{ $order_info->shipping_city }}</div>
-                            <div>{{ $order_info->shipping_state }}</div>
-                            <div>{{ $order_info->shipping_mobile_no }}</div>
-                            <div>{{ $order_info->shipping_email }}</div>
-                        </td>
+
                         <td class="w-40">
 
                             <table class="invoice-table w-100">

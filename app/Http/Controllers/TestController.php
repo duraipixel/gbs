@@ -88,11 +88,18 @@ class TestController extends Controller
     {
         $info = 'teste';
         
-        $order_info = Order::find(2);
+        $order_info = Order::find(5);
         $globalInfo = GlobalSettings::first();
         // $pdf = PDF::loadView('platform.invoice.index', compact('order_info', 'globalInfo'));    
         // Storage::put('public/invoice_order/'.$order_info->order_no.'.pdf', $pdf->output());
-        $pdf = PDF::loadView('platform.invoice.index', compact('order_info', 'globalInfo'))->setPaper('a4', 'landscape');
+        $pickup_details = [];
+        if( isset( $order_info->pickup_store_id ) && !empty( $order_info->pickup_store_id) && !empty($order_info->pickup_store_details )) {
+            $pickup = unserialize($order_info->pickup_store_details);
+            
+            $pickup_details = $pickup;
+        }
+        
+        $pdf = PDF::loadView('platform.invoice.index', compact('order_info', 'globalInfo', 'pickup_details'))->setPaper('a4', 'landscape');
         return $pdf->stream('test.pdf');
     }
 
