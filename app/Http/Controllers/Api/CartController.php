@@ -240,6 +240,8 @@ class CartController extends Controller
         $cartTemp = [];
         $used_addons = [];
         $total_addon_amount = 0;
+        $has_pickup_store = true;
+        $brand_array = [];
         if (isset($checkCart) && !empty($checkCart)) {
             foreach ($checkCart as $citems) {
                 
@@ -320,6 +322,8 @@ class CartController extends Controller
                 $pro['max_quantity']    = $items->quantity;
                 $imagePath              = $items->base_image;
 
+                $brand_array[] = $items->brand_id;
+
                 if (!Storage::exists($imagePath)) {
                     $path               = asset('assets/logo/no_Image.jpg');
                 } else {
@@ -356,6 +360,10 @@ class CartController extends Controller
                 $grand_total = $grand_total - $coupon_data['discount_amount'] ?? 0;
             }
 
+            if( count(array_unique($brand_array)) > 1 ) {
+                $has_pickup_store = false;
+            } 
+
             $amount         = filter_var($grand_total, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
             $charges        = ShippingCharge::select('id', 'shipping_title', 'minimum_order_amount', 'charges', 'is_free')->where('status', 'published')->where('minimum_order_amount', '<', $amount)->get();
 
@@ -367,7 +375,8 @@ class CartController extends Controller
                 'tax_total' => number_format(round($tax_total), 2),
                 'tax_percentage' => number_format(round($tax_percentage), 2),
                 'shipping_charge' => $shipping_info->charges ?? 0,
-                'addon_amount' => $total_addon_amount
+                'addon_amount' => $total_addon_amount,
+                'has_pickup_store' => $has_pickup_store
             );
         }
         
