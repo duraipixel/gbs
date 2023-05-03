@@ -119,6 +119,8 @@ class FilterController extends Controller
         $filter_discount        = $request->discounts;
         $filter_attribute       = $request->attribute_category ?? '';
         $sort                   = $request->sort_by;
+        $price                  = $request->price;
+        $size                   = $request->size;
         
         $filter_availability_array = [];
         $filter_attribute_array = [];
@@ -149,8 +151,6 @@ class FilterController extends Controller
             }
         }
 
-        $limit = 12;
-        
         $take_limit = $take ?? 12;
         $total = Product::select('products.*')->where('products.status', 'published')
             ->join('product_categories', 'product_categories.id', '=', 'products.category_id')
