@@ -36,9 +36,12 @@ class TestMail extends Mailable
         //     "data" => $this->data
         // ])->subject($this->title)->attach( public_path('storage/invoice_order/MM-ORD-000005.pdf'));
 
-        return $this->view('email.testEmail', [
-            "data" => $this->data
-        ])->subject($this->title);
+        // return $this->view('email.testEmail', [
+        //     "data" => $this->data
+        // ])->subject($this->title);
+
+        return $this->markdown('email.common.dynamicContent', ["data" => $this->data])->subject($this->title);
+
         // return $this->markdown('email.testEmail');
     }
 }

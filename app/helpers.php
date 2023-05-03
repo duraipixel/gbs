@@ -317,8 +317,8 @@ function getProductApiData($product_data, $customer_id = '')
     $is_cart = '';
     $has_purchased = false;
     $common_reviews = Review::select(DB::raw( 'count(*) as total, CAST(AVG(star) as Decimal(10,1) ) AS rating'))->where(['product_id' => $product_data->id, 'status' => 'approved'])->first();
-
-    if( $customer_id ) {
+    $has_pickup_store = true;
+    if( isset($customer_id) && !empty( $customer_id) ) {
         $reviews = Review::where(['product_id' => $product_data->id, 'customer_id' => $customer_id ])->first();
         $wishlist = Wishlist::where(['product_id' => $product_data->id, 'customer_id' => $customer_id ])->first();
         $is_cart = Cart::where(['product_id' => $product_data->id, 'customer_id' => $customer_id ])->first();
@@ -336,7 +336,7 @@ function getProductApiData($product_data, $customer_id = '')
         $checkCart          = Cart::with(['products', 'products.productCategory'])->when( $customer_id != '', function($q) use($customer_id) {
                                 $q->where('customer_id', $customer_id);
                             })->get();
-        $has_pickup_store = true;
+        
         $brand_array = [];
         if (isset($checkCart) && !empty($checkCart)) {
             foreach ($checkCart as $cartitems) {
