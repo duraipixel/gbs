@@ -315,9 +315,9 @@ function getProductApiData($product_data, $customer_id = '')
     $wishlist = '';
     $is_cart = '';
     $has_purchased = false;
+    $common_reviews = Review::where(['product_id' => $product_data->id])->get();
     if( $customer_id ) {
-        $reviews = Review::where(['product_id' => $product_data->id, 'customer_id' => $customer_id ])->count();
-        dd( $reviews );
+        $reviews = Review::where(['product_id' => $product_data->id, 'customer_id' => $customer_id ])->first();
         $wishlist = Wishlist::where(['product_id' => $product_data->id, 'customer_id' => $customer_id ])->first();
         $is_cart = Cart::where(['product_id' => $product_data->id, 'customer_id' => $customer_id ])->first();
         $purchased_data = Order::join('order_products', 'order_products.order_id', '=', 'orders.id')
@@ -331,6 +331,7 @@ function getProductApiData($product_data, $customer_id = '')
     }
     $pro['has_purchased'] = $has_purchased;
     $pro['is_review'] = $reviews ? true : false;
+    $pro['common_review_count'] = count($common_reviews);
     $pro['is_wishlist'] = $wishlist ? true : false;
     $pro['is_cart'] = $is_cart ? true : false;
     $pro['cart_id'] = $is_cart->id ?? 0;
