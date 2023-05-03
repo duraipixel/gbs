@@ -105,7 +105,7 @@ class TestController extends Controller
 
     public function sendMail()
     {
-        $email = 'duraibytes@gmail.com';
+        $email = 'durairaj.pixel@gmail.com';
    
         $mailData = [
             'title' => 'Demo Email',
