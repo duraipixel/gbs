@@ -330,7 +330,34 @@ function getProductApiData($product_data, $customer_id = '')
         if( $purchased_data ) {
             $has_purchased = true;
         }
+        /**
+         * check cart has different brand
+         */
+        $checkCart          = Cart::with(['products', 'products.productCategory'])->when( $customer_id != '', function($q) use($customer_id) {
+                                $q->where('customer_id', $customer_id);
+                            })->get();
+        $has_pickup_store = true;
+        $brand_array = [];
+        if (isset($checkCart) && !empty($checkCart)) {
+            foreach ($checkCart as $cartitems) {
+                $proitems = $cartitems->products;
+                $brand_array[] = $proitems->brand_id;
+            }
+        }
+        
+        if( count(array_unique($brand_array)) > 1 ) {
+            $has_pickup_store = false;
+        } else {
+            if( !empty( $brand_array ) ) {
+                $current_cart_brand_id = current($brand_array);
+
+                if( $product_data->brand_id != $current_cart_brand_id ){
+                    $has_pickup_store = false;
+                }
+            }
+        }
     }
+    $pro['has_pickup_store'] = $has_pickup_store;
     $pro['has_purchased'] = $has_purchased;
     $pro['is_review'] = $reviews ? true : false;
     $pro['common_review'] = $common_reviews;
