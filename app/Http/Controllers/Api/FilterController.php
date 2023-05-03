@@ -126,6 +126,31 @@ class FilterController extends Controller
         $filter_attribute_array = [];
         $filter_brand_array = [];
         $filter_discount_array = [];
+        $filter_price_array = [];
+        $filter_size_array = [];
+
+        $price_start = 0;
+        $price_end = 0;
+
+        if (isset($price) && !empty($price)) {            
+            $filter_price_array = explode("_", $price);
+            
+            $tmp_price = [];
+            if( isset( $filter_price_array ) && !empty( $filter_price_array )) {
+                foreach ($filter_price_array as $itemsPrice ) {
+                    # code...
+                    $tmp_price = array_merge(explode('-', $itemsPrice), $tmp_price);
+                }
+            }
+            if( $tmp_price ) {
+
+                asort($tmp_price);
+                $price_start = current($tmp_price);
+                $price_end = end($tmp_price);
+
+            }
+           
+        }
         
         if (isset($filter_attribute) && !empty($filter_attribute)) {            
             $filter_attribute_array = explode("-", $filter_attribute);
@@ -136,7 +161,6 @@ class FilterController extends Controller
         if (isset($filter_brand) && !empty($filter_brand)) {
             $filter_brand_array     = explode("_", $filter_brand);
         }
-
         if (isset($filter_discount) && !empty($filter_discount)) {
             $filter_discount_array     = explode("_", $filter_discount);
         }
@@ -180,11 +204,17 @@ class FilterController extends Controller
                 $q->join('product_with_attribute_sets', 'product_with_attribute_sets.product_id', '=', 'products.id');
                 return $q->whereIn('product_with_attribute_sets.title', $productAttrNames);
             })
+            ->when($price_start || $price_end, function ($q) use ($price_start, $price_end) {
+                $q->where(function ($query) use ($price_start, $price_end) {
+                    return $query->where('products.mrp', '>=', $price_start)
+                                ->where('products.mrp','<=', $price_end);
+                });
+            })
             ->when($sort == 'price-high-to-low', function ($q) {
-                $q->orderBy('products.price', 'desc');
+                $q->orderBy('products.mrp', 'desc');
             })
             ->when($sort == 'price-low-to-high', function ($q) {
-                $q->orderBy('products.price', 'asc');
+                $q->orderBy('products.mrp', 'asc');
             })
             ->when($sort == 'is_featured', function ($q) {
                 $q->orderBy('products.is_featured', 'desc');
@@ -217,6 +247,12 @@ class FilterController extends Controller
             ->when($filter_attribute != '', function ($q) use ($productAttrNames) {
                 $q->join('product_with_attribute_sets', 'product_with_attribute_sets.product_id', '=', 'products.id');
                 return $q->whereIn('product_with_attribute_sets.title', $productAttrNames);
+            })
+            ->when($price_start || $price_end, function ($q) use ($price_start, $price_end) {
+                $q->where(function ($query) use ($price_start, $price_end) {
+                    return $query->where('products.mrp', '>=', $price_start)
+                                ->where('products.mrp','<=', $price_end);
+                });
             })
             ->when($sort == 'price-high-to-low', function ($q) {
                 $q->orderBy('products.mrp', 'desc');
