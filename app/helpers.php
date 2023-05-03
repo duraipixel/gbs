@@ -11,6 +11,7 @@ use App\Models\ProductAddon;
 use App\Models\SmsTemplate;
 use App\Models\User;
 use App\Models\Wishlist;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 if (!function_exists('gSetting')) {
@@ -315,7 +316,8 @@ function getProductApiData($product_data, $customer_id = '')
     $wishlist = '';
     $is_cart = '';
     $has_purchased = false;
-    $common_reviews = Review::where(['product_id' => $product_data->id])->get();
+    $common_reviews = Review::select(DB::raw( 'count(*) as total, CAST(AVG(star) as Decimal(10,1) ) AS rating'))->where(['product_id' => $product_data->id, 'status' => 'approved'])->first();
+
     if( $customer_id ) {
         $reviews = Review::where(['product_id' => $product_data->id, 'customer_id' => $customer_id ])->first();
         $wishlist = Wishlist::where(['product_id' => $product_data->id, 'customer_id' => $customer_id ])->first();
@@ -331,7 +333,7 @@ function getProductApiData($product_data, $customer_id = '')
     }
     $pro['has_purchased'] = $has_purchased;
     $pro['is_review'] = $reviews ? true : false;
-    $pro['common_review_count'] = count($common_reviews);
+    $pro['common_review'] = $common_reviews;
     $pro['is_wishlist'] = $wishlist ? true : false;
     $pro['is_cart'] = $is_cart ? true : false;
     $pro['cart_id'] = $is_cart->id ?? 0;
