@@ -32,32 +32,7 @@ class ProductCollectionResource extends JsonResource
                 $category = $items->product->productCategory;
                 // dd( $category->id );
                 // $salePrices             = getProductPrice( $items->product );
-
-                $pro                    = [];
-                $pro['id']              = $items->product->id;
-                $pro['product_name']    = $items->product->product_name;
-                $pro['category_name']   = $category->name ?? '';
-                $pro['hsn_code']        = $items->product->hsn_code;
-                $pro['product_url']     = $items->product->product_url;
-                $pro['sku']             = $items->product->sku;
-                $pro['stock_status']    = $items->product->stock_status;
-                $pro['is_featured']     = $items->product->is_featured;
-                $pro['is_best_selling'] = $items->product->is_best_selling;
-                $pro['is_new']          = $items->product->is_new;
-                $pro['price']           = $items->product->mrp;
-                $pro['strike_price']    = $items->product->strike_price;
-                $pro['thumbnail']       = $items->product->base_image;
-
-                $imagePath              = $items->product->base_image;
-
-                if(!Storage::exists( $imagePath)) {
-                    $path               = asset('assets/logo/no_Image.jpg');
-                } else {
-                    $url                = Storage::url($imagePath);
-                    $path               = asset($url);
-                }
-
-                $pro['thumbnail']           = $path;
+                $pro = getProductApiData($items->product);
 
                 $tmp['products'][]      = $pro; 
             }
