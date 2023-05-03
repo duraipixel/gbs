@@ -317,6 +317,7 @@ function getProductApiData($product_data, $customer_id = '')
     $has_purchased = false;
     if( $customer_id ) {
         $reviews = Review::where(['product_id' => $product_data->id, 'customer_id' => $customer_id ])->count();
+        dd( $reviews );
         $wishlist = Wishlist::where(['product_id' => $product_data->id, 'customer_id' => $customer_id ])->first();
         $is_cart = Cart::where(['product_id' => $product_data->id, 'customer_id' => $customer_id ])->first();
         $purchased_data = Order::join('order_products', 'order_products.order_id', '=', 'orders.id')
