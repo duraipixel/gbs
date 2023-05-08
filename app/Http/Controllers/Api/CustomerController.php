@@ -12,6 +12,7 @@ use App\Models\Master\Country;
 use App\Models\Master\Customer;
 use App\Models\Master\CustomerAddress;
 use App\Models\Master\EmailTemplate;
+use App\Models\Master\Pincode;
 use App\Models\Master\State;
 use App\Models\Product\Product;
 use App\Models\Wishlist;
@@ -336,11 +337,13 @@ class CustomerController extends Controller
 
     public function getCustomerAddressDetails(Request $request)
     {
+
         $customer_id = $request->customer_id;
         $address_array  = $this->addressList($customer_id);
         $address_type   = MainCategory::with('subCategory')->where('slug', 'address-type')->first();
         $country    = Country::where('status', 1)->get();
         $state    = State::where('status', 1)->get();
+        $pincode = Pincode::where('status', 1)->get();
 
         $response = array(
                         'status' => 'success', 
@@ -348,7 +351,8 @@ class CustomerController extends Controller
                         'addresses' => $address_array, 
                         'address_type' => $address_type->subCategory,
                         'country' => $country,
-                        'state' => $state
+                        'state' => $state,
+                        'pincode' => $pincode
                     );
         
         return $response;
