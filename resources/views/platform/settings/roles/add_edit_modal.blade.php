@@ -102,7 +102,7 @@
                                                             type="checkbox"
                                                             @if (isset($perms[$item][$item . '_editable']) && $perms[$item][$item . '_editable'] == 'on') checked @endif
                                                             name="{{ $item }}_editable"
-                                                            id="{{ $item }}_editable"  @if (isset($perms[$item][$item . '_visible']) && $perms[$item][$item . '_visible'] == 'on') @else disabled @end />
+                                                            id="{{ $item }}_editable"  @if (isset($perms[$item][$item . '_visible']) && $perms[$item][$item . '_visible'] == 'on') @else disabled @endif />
                                                         <span class="form-check-label">Write</span>
                                                     </label>
 
@@ -112,7 +112,7 @@
                                                             type="checkbox"
                                                             @if (isset($perms[$item][$item . '_delete']) && $perms[$item][$item . '_delete'] == 'on') checked @endif
                                                             name="{{ $item }}_delete"
-                                                            id="{{ $item }}_delete" @if (isset($perms[$item][$item . '_visible']) && $perms[$item][$item . '_visible'] == 'on') @else disabled @end />
+                                                            id="{{ $item }}_delete" @if (isset($perms[$item][$item . '_visible']) && $perms[$item][$item . '_visible'] == 'on') @else disabled @endif />
                                                         <span class="form-check-label">Delete</span>
                                                     </label>
 
@@ -122,7 +122,7 @@
                                                             type="checkbox"
                                                             @if (isset($perms[$item][$item . '_export']) && $perms[$item][$item . '_export'] == 'on') checked @endif
                                                             name="{{ $item }}_export"
-                                                            id="{{ $item }}_export" @if (isset($perms[$item][$item . '_visible']) && $perms[$item][$item . '_visible'] == 'on') @else disabled @end />
+                                                            id="{{ $item }}_export" @if (isset($perms[$item][$item . '_visible']) && $perms[$item][$item . '_visible'] == 'on') @else disabled @endif />
                                                         <span class="form-check-label">Export</span>
                                                     </label>
 
@@ -131,7 +131,7 @@
                                                             type="checkbox"
                                                             @if (isset($perms[$item][$item . '_status']) && $perms[$item][$item . '_status'] == 'on') checked @endif
                                                             name="{{ $item }}_status"
-                                                            id="{{ $item }}_status" @if (isset($perms[$item][$item . '_visible']) && $perms[$item][$item . '_visible'] == 'on') @else disabled @end />
+                                                            id="{{ $item }}_status" @if (isset($perms[$item][$item . '_visible']) && $perms[$item][$item . '_visible'] == 'on') @else disabled @endif />
                                                         <span class="form-check-label">Status Change</span>
                                                     </label>
 

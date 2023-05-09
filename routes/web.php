@@ -93,6 +93,7 @@ Route::middleware(['auth'])->group(function(){
     }
     Route::prefix('customer')->group(function(){
         Route::get('/customer-wishlist', [App\Http\Controllers\CustomerController::class, 'wishlist'])->name('customer-wishlist'); 
+        Route::get('/customer/order', [App\Http\Controllers\CustomerController::class, 'orderList'])->name('customer.order'); 
     });    
 
     Route::prefix('wishlist')->group(function() {

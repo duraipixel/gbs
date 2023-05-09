@@ -10,6 +10,7 @@ use App\Models\Master\Customer;
 use App\Models\Master\CustomerAddress;
 use App\Models\Master\Pincode;
 use App\Models\Master\State;
+use App\Models\Order;
 use App\Models\Wishlist;
 use PDF;
 use Illuminate\Http\Request;
@@ -75,6 +76,7 @@ class CustomerController extends Controller
         $title      = 'Customer';
         return view('platform.customer.index',compact('title','breadCrum'));
     }
+
     public function modalAddEdit(Request $request)
     {
         $id                 = $request->id;
@@ -293,6 +295,52 @@ class CustomerController extends Controller
                 $created_at = Carbon::createFromFormat('Y-m-d H:i:s', $row['created_at'])->format('d-m-Y');
                 return $created_at;
             });
+            return $datatables->make(true);
+        }
+    }
+
+    public function orderList(Request $request)
+    {
+        if($request->ajax())
+        {
+            $customerId = $request->customer_id;
+            $data = Order::where('customer_id',$customerId);
+            
+            $keywords = $request->get('search')['value'];
+            $datatables =  Datatables::of($data)
+            ->filter(function ($query) use ($keywords) {
+                if ($keywords) {
+                   
+                    return $query->where(function($query) use ($keywords) {
+                        $date = date('Y-m-d', strtotime($keywords));
+                                    $query->orWhere('orders.order_no', 'like', "%{$keywords}%");
+                                    $query->orWhere('orders.amount', 'like', "%{$keywords}%");
+                                    $query->orWhereDate("orders.created_at", $date);
+                    });
+                }
+            })
+            ->addIndexColumn()
+            ->editColumn('created_at', function ($row) {
+                $created_at = Carbon::createFromFormat('Y-m-d H:i:s', $row['created_at'])->format('d-m-Y');
+                return $created_at;
+            })
+            ->addColumn('shipping_info', function ($row) {
+                
+                $shipping_info = '<div><div><b>'.$row->shipping_name.'</b></div>';
+                $shipping_info .= '<div>'.$row->shipping_address_line1.'</div>';
+                $shipping_info .= '<div>'.$row->shipping_city.' '. $row->shipping_city.' '.$row->shipping_post_code.'  '.$row->shipping_country.'</div>';
+                $shipping_info .= '<div>'.$row->shipping_email.', '.$row->shipping_mobile_no.'</div></div>';
+                return $shipping_info;
+                
+            })
+            ->addColumn('billing_info', function ($row) {
+                $billing_info = '<div><b>'.$row->billing_name.'</b></div>';
+                $billing_info .= '<div>'.$row->billing_address_line1.'</div>';
+                $billing_info .= '<div>'.$row->billing_city.' '. $row->billing_city.' '.$row->billing_post_code.'  '.$row->billing_country.'</div>';
+                $billing_info .= '<div>'.$row->billing_email.', '.$row->billing_mobile_no.'</div>';
+                return $billing_info;
+            })
+            ->rawColumns(['shipping_info', 'billing_info']);
             return $datatables->make(true);
         }
     }

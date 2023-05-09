@@ -3,6 +3,7 @@
         <div class="row gx-9 gy-6">
             @isset($customerAddress)
                 @foreach ($customerAddress as $key=>$val )
+                
                 <div class="col-xl-6">
                     <div class="card card-dashed h-xl-100 flex-row flex-stack flex-wrap p-6">
                         <div class="d-flex flex-column py-2">
@@ -17,17 +18,19 @@
                                     <br /><strong>Email : </strong>{{ $val->email }}
                                     <br /><strong>Mobile : </strong>{{ $val->mobile_no }}
                                     <br/><strong>Address : </strong>{{ $val->address_line1 }}
-                                    <br/><strong>Country : </strong>{{ $val->country->name }}
-                                    <br/><strong>State : </strong>{{ $val->state->state_name }}
-                                    <br/><strong>City : </strong>{{ $val->city->city }}
-                                    <br/><strong>Pincode : </strong>{{ $val->pincode->pincode }}
+                                    <br/><strong>Country : </strong>{{ $val->countries->name ?? null }}
+                                    <br/><strong>State : </strong>{{ $val->states->state_name ?? null }}
+                                    <br/><strong>City : </strong>{{ $val->city->city ?? null }}
+                                    <br/><strong>Pincode : </strong>{{ $val->pincode->pincode ?? null }}
                                 </div>
                             </div>
                         </div>
+                        @if( auth()->user()->is_super_admin )
                         <div class="d-flex align-items-center py-2">
                             <button type="button" class="btn btn-sm btn-light btn-active-light-primary me-3" onclick="addCustomer('{{ $info->id }}','{{ $val->id }}')">Edit</button>
                             <button type="button" class="btn btn-sm btn-light btn-active-light-primary me-3" onclick="deleteCustomer('{{ $info->id }}','{{ $val->id }}')">Delete</button>
                        </div>
+                       @endif
                     </div>
                 </div>
                 @endforeach

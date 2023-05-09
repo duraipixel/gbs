@@ -3,6 +3,7 @@
             <div class="col-md-10">
                 <h3>Customer Address</h3>
             </div>
+            @if( auth()->user()->is_super_admin )
             <div class="col-md-2">
                 {{-- <a class="btn btn-primary">Add <i class="fa fa-plus"></i> </a> --}}
                 <button type="button" class="btn btn-primary" onclick="addCustomer({{ $info->id }})">
@@ -18,6 +19,7 @@
                     Add
                 </button>
             </div>
+            @endif
         </div>
         <div class="card-body" id="address_list_pane">
             <!--begin::Addresses-->

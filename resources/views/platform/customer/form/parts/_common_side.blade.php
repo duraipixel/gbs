@@ -15,32 +15,36 @@
 </style>
 <div class="card card-flush" >
     <div class="card-header">
-        <div class="card-title w-100">
+        <div class="card-title w-100 mt-3">
             <h2 class="w-100">
-                Customer Information
+                <strong for="">{{  $info->first_name." ".$info->last_name}}</strong>
             </h2>
         </div>
-    </div>
+        <div class="row w-100">
+            <div class="col-sm-2">
+                @if ($info->profile_image ?? '')
+                @php 
+                    $path = asset(Storage::url($info->profile_image,'public'));
+                @endphp
+                @else
+                    @php
+                        $path = asset('userImage/no_Image.jpg');
+                    @endphp
+                @endif
+                <img src="{{ $path }}" width="75" alt="Avatar">
+            </div>
+            <div class="col-sm-4">
+                <div>
+                    <label for="">{{  $info->customer_no}}</label>
+                </div>
+                <div>
+                    <label for="">{{  $info->email}}</label>
+                </div>
+                <div>
+                    <label for="">{{  $info->mobile_no}}</label>
+                </div>
+            </div>
+        </div>
+    </div>   
    
-    <div class="card-body pt-0 fv-row" style="align-self: center;">
-        <strong for="">{{  $info->first_name." ".$info->last_name}}</strong>
-   
-        <br>
-        <label for="">{{  $info->customer_no}}</label>
-        <br>
-
-        <label for="">{{  $info->email}}</label>
-        <br>
-
-        <label for="">{{  $info->mobile_no}}</label>
-        <br>
-    </div>
-    <div class="card-body pt-0 fv-row">
-        @if ($info->profile_image ?? '')
-        @php 
-            $path = Storage::url($info->profile_image,'public')
-        @endphp
-        <img src="{{ asset($path) }}" class="circular--landscape" alt="Avatar">
-        @endif
-    </div>
 </div>

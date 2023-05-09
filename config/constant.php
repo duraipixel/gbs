@@ -32,7 +32,7 @@ return [
                     'order-status',
                     'sms-template',
                     'payment-gateway', 
-                    'reports.products',
+                    'reports',
                     'sub_category',                    
                     'wishlist',
                     'review'                             

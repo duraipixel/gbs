@@ -1,20 +1,6 @@
-<div id="kt_content_container" class="container-xxl">
+<div id="kt_content_container" class="">
     <div class="card">
-        <div class="card-header border-0 pt-6 w-100">
-            <div class="card-toolbar w-100">
-                <div class="d-flex justify-content-end w-100" data-kt-wishlist-table-toolbar="base">
-                    <div class="col-md-12">
-                        <h3>Customer Wishlist</h3>
-                    </div>
-
-
-                </div>
-            </div>
-
-        </div>
-        <!--end::Card header-->
-        <!--begin::Card body-->
-        <div class="card-body py-4">
+        <div class="">
             <div class="table-responsive">
                 <input type="hidden" id="customer_id" value="{{ $info->id }}">
                 <table class="table align-middle table-row-dashed fs-6 gy-2 mb-0 dataTable no-footer" id="wishlist">
@@ -29,12 +15,10 @@
                 </table>
             </div>
         </div>
-        <!--end::Card body-->
     </div>
     <!--end::Card-->
 </div>
     <script src="{{ asset('assets/js/datatable.min.js') }}"></script>
-
     <script>
        
         var dtTable = $('#wishlist').DataTable({
