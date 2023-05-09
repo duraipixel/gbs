@@ -257,7 +257,7 @@ class CommonController extends Controller
                 
                 $imagePath = 'public/'.$items->image;
                 if (!Storage::exists($imagePath) || empty( $items->image )) {
-                    $path               = asset('userImage/no_Image.jpg');
+                    $path               = asset('userImage/categorySampleImage.png');
                 } else {
                     $url                = Storage::url($imagePath);
                     $path               = asset($url);
