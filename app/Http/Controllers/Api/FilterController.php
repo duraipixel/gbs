@@ -219,6 +219,7 @@ class FilterController extends Controller
             ->when($sort == 'is_featured', function ($q) {
                 $q->orderBy('products.is_featured', 'desc');
             })
+            ->when('products.stock_status', 'in_stock')
             ->count();
 
         $details = Product::select('products.*')->where('products.status', 'published')
@@ -263,6 +264,7 @@ class FilterController extends Controller
             ->when($sort == 'is_featured', function ($q) {
                 $q->orderBy('products.is_featured', 'desc');
             })
+            ->when('products.stock_status', 'in_stock')
             ->groupBy('products.id')
             ->skip(0)->take($take_limit)
             ->get();
@@ -307,14 +309,15 @@ class FilterController extends Controller
                 $qr->where('product_name', 'like', "%{$query}%")
                     ->orWhere('hsn_code', 'like', "%{$query}%")
                     ->orWhere('sku', 'like', "%{$query}%");
-            })->where('status', 'published')
+            })->where('status', 'published')->when('products.stock_status', 'in_stock')
                 ->skip(0)->take($take)->get();
 
             if (count($productInfo) == 0) {
                 $productInfo = Product::where(function ($qr) use ($query) {
                     $qr->whereRaw("MATCH (gbs_products.product_name) AGAINST ('" . $query . "' IN BOOLEAN MODE)")
                         ->orWhere('sku', 'like', "%{$query}%");
-                })->where('status', 'published')->skip(0)->take($take)->get();
+                })->where('status', 'published')
+                ->when('products.stock_status', 'in_stock')->skip(0)->take($take)->get();
             }
 
             if (isset($productInfo) && !empty($productInfo) && count($productInfo) > 0) {

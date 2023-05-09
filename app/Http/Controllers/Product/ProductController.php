@@ -350,6 +350,7 @@ class ProductController extends Controller
                 $filter_variation = $request->filter_variation;
                 $filter_variation_value = $request->filter_variation_value;
                 $filter_variation_title = $request->filter_variation_title;                 
+                $filter_variation_order = $request->filter_variation_order;                 
                 ProductWithAttributeSet::where('product_id', $product_id)->delete();
 
                 for ($i=0; $i < count($request->filter_variation); $i++) { 
@@ -368,6 +369,7 @@ class ProductController extends Controller
                     $insAttr['product_attribute_set_id']    = $filter_variation[$i];
                     $insAttr['attribute_values']            = $filter_variation_value[$i];
                     $insAttr['title']                       = $filter_variation_title[$i];
+                    $insAttr['order_by']                    = $filter_variation_order[$i] ?? null;
                     if(isset($_POST['is_overview_'.$i+1]) && !empty($_POST['is_overview_'.$i+1]) && $_POST['is_overview_'.$i+1] == "1")
                     {
                         $insAttr['is_overview']      = 'yes';

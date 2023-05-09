@@ -12,13 +12,13 @@
 </style>
 @endsection
 @section('content')
-<div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+<div class="content d-flex flex-column flex-column-fluid pt-0" id="kt_content">
     <div class="post d-flex flex-column-fluid" id="kt_post">
-        <div id="kt_content_container" class="container-xxl">
+        <div id="kt_content_container" class="container-xxl px-2">
             <form id="kt_ecommerce_add_product_form" method="POST" class="form d-flex flex-column flex-lg-row" >
                 @csrf
                 <input type="hidden" name="id" value="{{ $info->id ?? '' }}">
-                <div class="d-flex flex-column gap-7 gap-lg-10 w-100 w-lg-300px mb-7 me-lg-10">
+                <div class="d-flex flex-column gap-7 gap-lg-10 w-100 w-lg-250px mb-7 me-lg-3">
                     @include('platform.product.form.parts._common_side')
                 </div>
                 
@@ -372,18 +372,16 @@
             });
         });
 
-
-        
-// Define variables
-
-// Get elements
-    
-
-
     function addLinks() {
         var addRow = $('#child-url').clone();
         $("#child-url").clone().appendTo("#formRepeaterUrl").find("input[type='text']").val("");                
     }
+
+    $('.numberonly').keypress(function (e) {    
+        var charCode = (e.which) ? e.which : event.keyCode    
+        if (String.fromCharCode(charCode).match(/[^0-9]/g))    
+            return false;                        
+    });
 
    
 

@@ -1,6 +1,6 @@
 <div class="card-header">
     <div class="card-title">
-        <h2>Thumbnail</h2>
+        <h3>Thumbnail</h3>
     </div>
 </div>
 

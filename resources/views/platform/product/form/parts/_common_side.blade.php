@@ -4,7 +4,7 @@
 <div class="card card-flush" >
     <div class="card-header">
         <div class="card-title w-100">
-            <h2 class="w-100 required">
+            <h3 class="w-100 required">
                 Categories
                 <span class="float-end">
                     <a href="javascript:void(0)" onclick="return openForm('product-category', '', 'product')" class="btn btn-light-primary btn-sm">
@@ -18,7 +18,7 @@
                     </a>
                 </span>
     
-            </h2>
+            </h3>
         </div>
     </div>
     <div id="product-category">
@@ -28,7 +28,7 @@
 <div class="card card-flush">
     <div class="card-header w-100">
         <div class="card-title w-100">
-            <h2 class="w-100 required">Brand
+            <h3 class="w-100 required">Brand
                 <span class="float-end">
                     <a href="javascript:void(0)" onclick="return openForm('brands', '', 'product')" class="btn btn-light-primary btn-sm">
                         <span class="svg-icon svg-icon-2">
@@ -40,7 +40,7 @@
                         <!--end::Svg Icon-->
                     </a>
                 </span>
-            </h2>
+            </h3>
         </div>
     </div>
     {{-- <div id="product-dj-band">
@@ -54,7 +54,7 @@
     
         <div class="card-header w-100">
             <div class="card-title w-100">
-                <h2 class="w-100 ">Warranty
+                <h3 class="w-100 ">Warranty
                     <span class="float-end">
                         <a href="javascript:void(0)" onclick="return openForm('warranty', '', 'product')" class="btn btn-light-primary btn-sm">
                             <span class="svg-icon svg-icon-2">
@@ -65,7 +65,7 @@
                             </span>
                         </a>
                     </span>
-                </h2>
+                </h3>
             </div>
         </div>
         <div class="card-body pt-0 fv-row" id="product-warranty-pane">
@@ -74,7 +74,7 @@
        
         <div class="card-header border-top">
             <div class="card-title w-100">
-                <h2 class="w-100">Labels
+                <h3 class="w-100">Labels
                     <span class="float-end">
                         <a href="javascript:void(0)" onclick="return openForm('sub_category', '', 'product', 'product-labels')" class="btn btn-light-primary btn-sm">
                             <span class="svg-icon svg-icon-2">
@@ -85,7 +85,7 @@
                             </span>
                         </a>
                     </span>
-                </h2>
+                </h3>
             </div>
         </div>
         <div class="card-body pt-0 fv-row" id="product-labels">

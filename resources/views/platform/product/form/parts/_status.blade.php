@@ -1,6 +1,6 @@
  <div class="card-header">
     <div class="card-title">
-        <h2 class="required">Status</h2>
+        <h3 class="required">Status</h3>
     </div>
     <div class="card-toolbar">
         <div class="rounded-circle bg-success w-15px h-15px" id="kt_ecommerce_add_product_status"></div>
@@ -26,7 +26,7 @@
 <div class="w-100 border-top">
     <div class="row px-10 mt-5 mb-5">
         <div class="col-sm-8">
-            <h2>Is Featured? </h2>
+            <h3>Is Featured? </h3>
         </div>
         <div class="col-sm-4">
             <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
@@ -38,7 +38,7 @@
 
 <div class="card-header border-top">
     <div class="card-title">
-        <h2 class="required">Stock Status</h2>
+        <h3 class="required">Stock Status</h3>
     </div>
     <div class="card-toolbar">
         <div class="rounded-circle bg-success w-15px h-15px" id="kt_ecommerce_add_product_status"></div>
