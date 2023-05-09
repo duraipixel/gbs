@@ -144,6 +144,7 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
             	$product_id = $productInfo->id;
             
             } else {
+                $ins['status'] = 'unpublished';
             	$product_id     = Product::create($ins)->id;
             }
             

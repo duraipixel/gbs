@@ -58,7 +58,7 @@ class ServiceCenter extends Model
 
     public function brands()
     {
-        return $this->hasMany(ServiceCenterBrand::class, 'service_center_id', 'id')->select('brand_id');
+        return $this->hasMany(ServiceCenterBrand::class, 'service_center_id', 'id')->select('brand_id')->where('status', 'active');
     }
 
     public function allBrands()

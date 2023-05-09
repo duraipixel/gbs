@@ -524,14 +524,14 @@ class ProductController extends Controller
 
     public function export()
     {
-        return Excel::download(new ProductExport, 'products.xlsx');
+        return Excel::download(new ProductExport, 'product_masters.xlsx');
     }
 
     public function exportPdf()
     {
         $list       = Product::all();
         $pdf        = PDF::loadView('platform.exports.product.products_excel', array('list' => $list, 'from' => 'pdf'))->setPaper('a2', 'landscape');;
-        return $pdf->download('products.pdf');
+        return $pdf->download('product_masters.pdf');
     }
 
     public function bulkUpload(Request $request)

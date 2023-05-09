@@ -50,7 +50,7 @@ class StoreLocator extends Model
 
     public function brands()
     {
-        return $this->hasMany(StoreLocatorBrand::class, 'store_locator_id', 'id')->select('brand_id');
+        return $this->hasMany(StoreLocatorBrand::class, 'store_locator_id', 'id')->select('brand_id')->where('status', 'active');
     }
 
     public function allBrands()
