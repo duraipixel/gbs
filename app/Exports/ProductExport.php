@@ -48,6 +48,7 @@ class ProductExport implements FromView
                         ->when($f_label, function($q) use($f_label) {
                             return $q->where('label_id', $f_label);
                         })->get();
+        // dd( $list[0]->tax->pecentage );
         
         return view('platform.exports.product.products_excel', compact('list'));
     }

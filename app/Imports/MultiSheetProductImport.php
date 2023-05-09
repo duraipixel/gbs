@@ -2,6 +2,8 @@
 
 namespace App\Imports;
 
+use App\Models\Category\MainCategory;
+use App\Models\Category\SubCategory;
 use App\Models\Master\Brands;
 use App\Models\Product\Product;
 use App\Models\Product\ProductCategory;
@@ -111,11 +113,27 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
                 $brand_id                   = Brands::create($brand_ins)->id;
             }
 
-            #check product exist or create new one
+            #check label exist or create new one
+            $label_id = null;
+            if( isset( $row['label'] ) && !empty( $row['label'])) {
+                $label_info = SubCategory::where('name', $row['label'])->first();
+                if( $label_info ) {
+                    $label_id = $label_info->id;
+                } else {
+                    $main_category = MainCategory::where('slug', 'product-labels')->first();
+                    #insert new label 
+                    $label_ins = [];
+                    $label_ins['parent_id'] = $main_category->id;
+                    $label_ins['name'] = $row['label'];
+                    $label_ins['slug'] = Str::slug($row['label']);
+                    $label_ins['status'] = 'published';
+                    $label_ins['added_by'] = Auth::id();
+
+                    $label_id = SubCategory::create($label_ins)->id;
+                }
+            }
+
             $sku            = Str::replace('.','-',$row['sku']);
-            
-            $amount         = $row['mrp'] ?? $row['tax_inclexcl'] ?? 100;
-            // $productPriceDetails = getAmountExclusiveTax((float)$amount, $taxPercentage ?? 0 );
 			
             $productInfo = Product::where('sku', $sku)->first();
 
@@ -123,19 +141,20 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
             $ins['hsn_code'] = $row['hsn'] ?? null;
             $ins['product_url'] = Str::slug(Str::replace('.', '-', $row['sku']).'-'.trim($row['brand']));
             $ins['sku'] = $sku;
-            $ins['strike_price'] = round($row['mrp']);
+            $ins['strike_price'] = round($row['mrp_price']);
             $ins['price'] = round($row['base_price']);
-            $ins['mrp'] = round($row['price_with_tax'] ?? 0);
-            $ins['discount_percentage'] = getDiscountPercentage(round($row['price_with_tax'] ?? 0), round($row['mrp']));
+            $ins['mrp'] = round($row['mop_price'] ?? 0);
+            $ins['discount_percentage'] = getDiscountPercentage(round($row['mop_price'] ?? 0), round($row['mrp_price']));
             $ins['status'] = $status;
-            $ins['quantity'] = 1;
-            $ins['stock_status'] = 'in_stock';
+            $ins['quantity'] = $row['quantity'] ?? 1;
+            $ins['stock_status'] = $row['stock_status'] ?? 'in_stock';
             $ins['brand_id'] = $brand_id;
             $ins['category_id'] = $sub_category_id ?? $category_id;
             $ins['is_featured'] = ( isset($row['featured']) && !empty( $row['featured']) ) ? 1 : 0;
             $ins['tax_id'] = $tax_id;
-            $ins['description'] = $row['short_description'];
-           
+            $ins['label_id'] = $label_id;
+            // $ins['description'] = $row['short_description'];
+            $ins['status'] = ( $row['status'] == 'published') ? 'published' : 'unpublished';
             $ins['added_by'] = Auth::id();
             
 			if( isset( $productInfo ) && !empty( $productInfo ) ) {
@@ -144,7 +163,6 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
             	$product_id = $productInfo->id;
             
             } else {
-                $ins['status'] = 'unpublished';
             	$product_id     = Product::create($ins)->id;
             }
             

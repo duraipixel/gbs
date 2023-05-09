@@ -92,8 +92,7 @@ class ProductController extends Controller
                     if ($keywords) {
                         $date = date('Y-m-d', strtotime($keywords));
                         $query->where(function($que) use($keywords, $date){
-                            $que->where('has_video_shopping', 'like', "%{$keywords}%")
-                                ->orWhere('products.status', 'like', "%{$keywords}%")
+                            $que->where('products.status', 'like', "%{$keywords}%")
                                 ->orWhere('products.stock_status', 'like', "%{$keywords}%")
                                 ->orWhere('brands.brand_name', 'like', "%{$keywords}%")
                                 ->orWhere('product_categories.name', 'like', "%{$keywords}%")

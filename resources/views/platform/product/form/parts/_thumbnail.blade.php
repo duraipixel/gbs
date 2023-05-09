@@ -42,7 +42,7 @@
     </div>
     <!--end::Image input-->
     <!--begin::Description-->
-    <div class="text-muted fs-7">Set the product thumbnail image. Only *.png, *.jpg and *.jpeg image files are accepted
+    <div class="text-muted small">Set the product thumbnail image. Only *.png, *.jpg and *.jpeg image files are accepted
     </div>
     <!--end::Description-->
 </div>

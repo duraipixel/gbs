@@ -41,5 +41,12 @@ class AddressTypeSeeder extends Seeder
 
         SubCategory::updateOrCreate(['parent_id' => $main_category->id, 'name' => 'Work'], $ins2);
 
+        $ins3['category_name']       = "Product Labels";        
+        $ins3['slug']                = Str::slug("Product Labels");
+        $ins3['status']              = 'published';
+        $ins3['added_by']            = '1';
+       
+        $main_category = MainCategory::updateOrCreate(['category_name' => 'Product Labels'], $ins3);
+
     }
 }

@@ -159,7 +159,7 @@
 
                     var disposition = xhr.getResponseHeader('content-disposition');
                     var matches = /"([^"]*)"/.exec(disposition);
-                    var filename = (matches != null && matches[1] ? matches[1] : 'products.xlsx');
+                    var filename = (matches != null && matches[1] ? matches[1] : 'product_masters.xlsx');
 
                     // The actual download
                     var blob = new Blob([result], {

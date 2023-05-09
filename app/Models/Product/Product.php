@@ -5,6 +5,7 @@ namespace App\Models\Product;
 use App\Models\Category\MainCategory;
 use App\Models\Master\Brands;
 use App\Models\ProductAddon;
+use App\Models\Settings\Tax;
 use App\Models\User;
 use App\Models\Warranty;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -151,6 +152,11 @@ class Product extends Model
     public function warranty()
     {
         return $this->hasOne(Warranty::class, 'id', 'warranty_id')->select('id', 'name', 'warranty_period', 'warranty_period_type', 'description');
+    }
+
+    public function tax()
+    {
+        return $this->hasOne(Tax::class, 'id', 'tax_id');
     }
 
 

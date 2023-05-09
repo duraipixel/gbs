@@ -16,7 +16,7 @@
                         fill="#C4C4C4" />
                 </svg>
             </span>
-            Export Excel </a>
+            Product Masters </a>
     </div>
     @endif
     @if( access()->hasAccess(['products'], 'editable') )
