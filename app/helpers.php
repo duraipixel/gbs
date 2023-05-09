@@ -128,7 +128,7 @@ if (!function_exists('generateProductSku')) {
     {
         $countNumber    = '0000';
         if (empty($sku)) {
-            $sku = 'MM-' . date('m') . '-' . strtoupper($brand) . '-' . $countNumber;
+            $sku = 'GBS-' . date('m') . '-' . strtoupper($brand) . '-' . $countNumber;
         }
 
 
@@ -147,7 +147,7 @@ if (!function_exists('generateProductSku')) {
                 }
                 $ord = $new_no . $old_no;
 
-                $sku =  'MM-' . date('m') . '-' . strtoupper($brand) . '-' . $ord;
+                $sku =  'GBS-' . date('m') . '-' . strtoupper($brand) . '-' . $ord;
             }
         }
         return $sku;
@@ -176,7 +176,7 @@ if (!function_exists('getCustomerNo')) {
                 }
                 $ord = $new_no . $old_no;
 
-                $customer_no =  'gbs' . $ord;
+                $customer_no =  'GBS' . $ord;
             }
         }
         return $customer_no;
@@ -188,7 +188,7 @@ if (!function_exists('getOrderNo')) {
     {
 
         $countNumber    = '000001';
-        $order_no    = 'GSB-ORD-' . $countNumber;
+        $order_no    = 'GBS-ORD-' . $countNumber;
 
         $checkCustomer  = Order::orderBy('id', 'desc')->first();
 
@@ -205,7 +205,7 @@ if (!function_exists('getOrderNo')) {
                 }
                 $ord = $new_no . $old_no;
 
-                $order_no =  'GSB-ORD-' . $ord;
+                $order_no =  'GBS-ORD-' . $ord;
             }
         }
 
