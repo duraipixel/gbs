@@ -42,9 +42,12 @@ class CompareController extends Controller
                                         ->where('title', $pro_items->title)
                                         ->first();
                         if( $attributes_datas ) {
-                            $each_row_attr[] = array('product_id' => $compare['products'][$i]['id'], 'value' =>$attributes_datas->attribute_values );
+                            $each_row_attr[] = array(
+                                                    'product' => $compare['products'][$i], 
+                                                    'value' =>$attributes_datas->attribute_values                                                     
+                                                );
                         } else {
-                            $each_row_attr[] = array('product_id' => $compare['products'][$i]['id'], 'value' => '-' );
+                            $each_row_attr[] = array('product_id' => $compare['products'][$i], 'value' => '-' );
                         }
                         
                     }

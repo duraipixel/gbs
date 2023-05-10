@@ -21,6 +21,8 @@ class StockUpdateImport implements ToModel, WithHeadingRow
             $base_price_info = getAmountExclusiveTax( $mop_price, $product_info->tax->pecentage);
             $base_price = $base_price_info['basePrice'];
 
+            $ins['discount_percentage'] = 
+            $product_info->discount_percentage = getDiscountPercentage(round($mop_price ?? 0), round($product_info->mrp));
             $product_info->price = $base_price;
             $product_info->mrp = $mop_price;
             $product_info->quantity = $quantity;
