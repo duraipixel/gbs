@@ -219,7 +219,7 @@ class FilterController extends Controller
             ->when($sort == 'is_featured', function ($q) {
                 $q->orderBy('products.is_featured', 'desc');
             })
-            ->when('products.stock_status', 'in_stock')
+            ->where('products.stock_status', 'in_stock')
             ->count();
 
         $details = Product::select('products.*')->where('products.status', 'published')
@@ -264,7 +264,7 @@ class FilterController extends Controller
             ->when($sort == 'is_featured', function ($q) {
                 $q->orderBy('products.is_featured', 'desc');
             })
-            ->when('products.stock_status', 'in_stock')
+            ->where('products.stock_status', 'in_stock')
             ->groupBy('products.id')
             ->skip(0)->take($take_limit)
             ->get();
