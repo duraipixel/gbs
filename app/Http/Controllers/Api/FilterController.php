@@ -477,4 +477,20 @@ class FilterController extends Controller
         }
         return array('attributes' => $attributes ?? [], 'brands' => $brands ?? []);
     }
+
+    public function exclusiveProduct()
+    {
+        $product_data = Product::join('sub_categories', 'sub_categories.id', '=', 'products.label_id')
+                            ->join('main_categories', 'main_categories.id', '=', 'sub_categories.parent_id')
+                            ->where('main_categories.slug', 'product-labels')
+                            ->where('products.stock_status', 'in_stock')
+                            ->where('products.status', 'published')->get();
+        $data = [];
+        if( isset( $product_data ) && !empty($product_data)){
+            foreach ($product_data as $item ) {
+                $data[] = getProductApiData($item);
+            }
+        }
+        return array('products' => $data, 'error' => 1);
+    }
 }

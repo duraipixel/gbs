@@ -42,4 +42,6 @@ class BrowseController extends Controller
         return response()->json(['data' => $browse]);
 
     }
+
+   
 }

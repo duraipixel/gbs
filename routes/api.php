@@ -32,6 +32,8 @@ Route::post('/get/subcategory/collections', [App\Http\Controllers\Api\CommonCont
 Route::get('/get/product/collections/{order_by?}', [App\Http\Controllers\Api\CollectionController::class, 'getProductCollections']);
 Route::get('/get/product/collections/byorder/{order_by}', [App\Http\Controllers\Api\CollectionController::class, 'getProductCollectionByOrder']);
 Route::get('/browseHome', [App\Http\Controllers\Api\BrowseController::class, 'index']);
+Route::get('/get/exclusive', [App\Http\Controllers\Api\FilterController::class, 'exclusiveProduct']);
+
 
 Route::post('/get/filter/sidemenus', [App\Http\Controllers\Api\FilterController::class, 'getFilterStaticSideMenu']);
 
