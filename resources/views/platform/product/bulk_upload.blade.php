@@ -38,7 +38,7 @@
                             <div class="col-4">
                                 <label for=""> Sample Excel file </label>
                                 <div class="mt-2">
-                                    <a href="{{ asset('assets/data/productSample.xlsx') }}" > <i class="mdi mdi-file h2"></i> Download Sample</a>
+                                    <a href="{{ asset('assets/data/product_masters.xlsx') }}" > <i class="mdi mdi-file h2"></i> Download Sample</a>
                                 </div>
                             </div>
                         </div>
