@@ -39,7 +39,20 @@ class FilterController extends Controller
                                 array( 'name' => $second_range.'% To '.round($get_max_discounts->discount).'%', 'slug' => $second_range.'-'.round($get_max_discounts->discount)),
                             );
         }
-        
+
+        /** 
+         * size filter actions
+         */
+        $size_data = ProductWithAttributeSet::select('attribute_values')->where('title', 'Size')->groupByRaw("SUBSTRING_INDEX(gbs_product_with_attribute_sets.attribute_values,' ', 1)")->get();
+        $sizes = [];
+        if( isset( $size_data ) && !empty( $size_data ) ){
+            foreach ($size_data as $size_item ) {
+                $int_var = explode(' ', $size_item->attribute_values);
+                $tmp = [];
+                $tmp = array( 'name' => $size_item->attribute_values, 'slug' => current($int_var) );
+                $sizes[] = $tmp;
+            }
+        }
 
         $sort_by                = array(
             // array('id' => null, 'name' => 'Featured', 'slug' => 'is-featured'),
@@ -85,16 +98,16 @@ class FilterController extends Controller
             ->get()->toArray();
 
         $browse                     = [];
-        $browse_filed_data          = HomepageSetting::where('status', 'published')->orderBy('order_by', 'asc')->get();
+        $browse_filed_data          = HomepageSetting::where('title', 'Browse By Price')->where('status', 'published')->orderBy('order_by', 'asc')->first();
+        
+        if( $browse_filed_data ) {
 
-        foreach ($browse_filed_data as $key => $data) {
-            // dd( $data );
             $parent = [];
-            $parent['id']             = $data->id;
-            $parent['title']          = $data->title;
-            $parent['color']          = $data->color;
-            $parent['type']           = $data->fields->slug;
-            $items_field = HomepageSettingItems::where('homepage_settings_id', $data->id)->get();
+            $parent['id']             = $browse_filed_data->id;
+            $parent['title']          = $browse_filed_data->title;
+            $parent['color']          = $browse_filed_data->color;
+            $parent['type']           = $browse_filed_data->fields->slug;
+            $items_field = HomepageSettingItems::where('homepage_settings_id', $browse_filed_data->id)->get();
             $items = [];
             foreach ($items_field as $key => $data_field) {
                 $tmp = [];
@@ -104,22 +117,24 @@ class FilterController extends Controller
                 $mobUrl          = Storage::url($image);
                 $pathbrowse      = asset($mobUrl);
                 $tmp['path'] = $pathbrowse;
-
+    
                 $items[] = $tmp;
             }
             $parent['children'] = $items;
 
-            $browse[] = $parent;
         }
+
+        $browse[] = $parent;
 
         $response = $this->getAttributeFilter($category_slug);
         
         $response['categories'] =  $categories;          
-        $response['sort_by'] =  $sort_by;          
         $response['discounts'] = $discounts;          
+        $response['sizes'] = $sizes;
+        $response['prices'] = $browse;
         $response['collection'] = $collection;          
         $response['handpicked'] = $handpicked;
-        $response['browse_by'] = $browse;
+        $response['sort_by'] =  $sort_by;          
 
         return $response;
     }
