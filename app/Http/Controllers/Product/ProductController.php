@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Product;
 use App\Exports\ProductExport;
 use App\Http\Controllers\Controller;
 use App\Imports\MultiSheetProductImport;
+use App\Imports\StockUpdateImport;
 use App\Imports\TestImport;
+use App\Imports\UploadAttributes;
 use Illuminate\Http\Request;
 use App\Models\Category\MainCategory;
 use App\Models\Master\Brands;
@@ -334,14 +336,7 @@ class ProductController extends Controller
                 $productInfo->update();
 
             }            
-            // ProductDiscount::where('product_id', $product_id )->delete();
-            // if( isset( $request->discount_option ) && $request->discount_option != 1 ) {
-            //     $disIns['product_id'] = $product_id;
-            //     $disIns['discount_type'] = $request->discount_option;
-            //     $disIns['discount_value'] = $request->discount_percentage ?? 0; //this is for percentage 
-            //     $disIns['amount'] = $request->dicsounted_price ?? 0; //this only for fixed amount
-            //     ProductDiscount::create($disIns);
-            // }
+         
             $request->session()->put('image_product_id', $product_id);
             if( isset( $request->filter_variation ) && !empty( $request->filter_variation ) )  {
                 ProductMapAttribute::where('product_id', $product_id)->delete();
@@ -553,9 +548,21 @@ class ProductController extends Controller
         return view('platform.product.bulk_upload', $params);
     }
 
-    public function doBulkUpload(Request $request)
+    public function doBulkUpload()
     {
         Excel::import( new MultiSheetProductImport, request()->file('file') );
+        return response()->json(['error'=> 0, 'message' => 'Imported successfully']);
+    }
+
+    public function doStockUpdate()
+    {
+        Excel::import( new StockUpdateImport, request()->file('file') );
+        return response()->json(['error'=> 0, 'message' => 'Imported successfully']);
+    }
+
+    public function doAttributesBulkUpload(Request $request)
+    {
+        Excel::import( new UploadAttributes, request()->file('file') );
         return response()->json(['error'=> 0, 'message' => 'Imported successfully']);
     }
 

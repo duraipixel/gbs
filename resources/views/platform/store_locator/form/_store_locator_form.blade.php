@@ -250,7 +250,7 @@
         </div>
         <div class=" mb-7">
             <div class="fv-row">
-                <label class="d-block fw-bold fs-7 mb-5">Store Locator Image</label>
+                <label class="d-block fw-bold fs-7 mb-5">Store Image</label>
                 <div class="form-text">
                     Allowed file types: png, jpg,
                     jpeg.

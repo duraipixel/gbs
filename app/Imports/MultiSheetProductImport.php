@@ -132,17 +132,23 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
                     $label_id = SubCategory::create($label_ins)->id;
                 }
             }
-
+            
             $sku            = Str::replace('.','-',$row['sku']);
 			
             $productInfo = Product::where('sku', $sku)->first();
+            $base_price = $row['base_price'] ?? 0;
+            if( !$base_price ) {
 
+                $base_price_info = getAmountExclusiveTax( $row['mop_price'], $taxPercentage);
+                $base_price = $base_price_info['basePrice'];
+                
+            }
             $ins['product_name'] = trim($row['product_name']);
             $ins['hsn_code'] = $row['hsn'] ?? null;
             $ins['product_url'] = Str::slug(Str::replace('.', '-', $row['sku']).'-'.trim($row['brand']));
             $ins['sku'] = $sku;
             $ins['strike_price'] = round($row['mrp_price']);
-            $ins['price'] = round($row['base_price']);
+            $ins['price'] = round($base_price);
             $ins['mrp'] = round($row['mop_price'] ?? 0);
             $ins['discount_percentage'] = getDiscountPercentage(round($row['mop_price'] ?? 0), round($row['mrp_price']));
             $ins['status'] = $status;

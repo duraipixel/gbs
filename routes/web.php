@@ -120,6 +120,8 @@ Route::middleware(['auth'])->group(function(){
         Route::get('/', [App\Http\Controllers\Product\ProductController::class, 'index'])->name('products')->middleware(['checkAccess:visible']); 
         Route::get('/upload', [App\Http\Controllers\Product\ProductController::class, 'bulkUpload'])->name('products.upload')->middleware(['checkAccess:editable']); 
         Route::post('/upload/product', [App\Http\Controllers\Product\ProductController::class, 'doBulkUpload'])->name('products.bulk.upload')->middleware(['checkAccess:editable']); 
+        Route::post('/stock/upload/product', [App\Http\Controllers\Product\ProductController::class, 'doStockUpdate'])->name('products.stock.upload')->middleware(['checkAccess:editable']); 
+        Route::post('/upload/attribute', [App\Http\Controllers\Product\ProductController::class, 'doAttributesBulkUpload'])->name('products.attribute.upload')->middleware(['checkAccess:editable']); 
         Route::get('/add/{id?}', [App\Http\Controllers\Product\ProductController::class, 'addEditPage'])->name('products.add.edit')->middleware(['checkAccess:editable']); 
         Route::post('/status', [App\Http\Controllers\Product\ProductController::class, 'changeStatus'])->name('products.status')->middleware(['checkAccess:status']);
         Route::post('/delete', [App\Http\Controllers\Product\ProductController::class, 'delete'])->name('products.delete')->middleware(['checkAccess:delete']);
