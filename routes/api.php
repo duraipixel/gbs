@@ -34,6 +34,7 @@ Route::get('/get/product/collections/byorder/{order_by}', [App\Http\Controllers\
 Route::get('/browseHome', [App\Http\Controllers\Api\BrowseController::class, 'index']);
 Route::get('/get/exclusive', [App\Http\Controllers\Api\FilterController::class, 'exclusiveProduct']);
 Route::post('/compare/product', [App\Http\Controllers\Api\CompareController::class, 'index']);
+Route::post('/submit/contact/form', [App\Http\Controllers\Api\CommonController::class, 'submitContactForm']);
 
 
 Route::post('/get/filter/sidemenus', [App\Http\Controllers\Api\FilterController::class, 'getFilterStaticSideMenu']);

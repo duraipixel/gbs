@@ -317,7 +317,7 @@ class FilterController extends Controller
                     $qr->whereRaw("MATCH (gbs_products.product_name) AGAINST ('" . $query . "' IN BOOLEAN MODE)")
                         ->orWhere('sku', 'like', "%{$query}%");
                 })->where('status', 'published')
-                ->when('products.stock_status', 'in_stock')->skip(0)->take($take)->get();
+                ->where('products.stock_status', 'in_stock')->skip(0)->take($take)->get();
             }
 
             if (isset($productInfo) && !empty($productInfo) && count($productInfo) > 0) {

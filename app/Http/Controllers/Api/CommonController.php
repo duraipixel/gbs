@@ -10,6 +10,7 @@ use App\Http\Resources\HistoryVideoResource;
 use App\Http\Resources\ProductCollectionResource;
 use App\Http\Resources\TestimonialResource;
 use App\Models\Banner;
+use App\Models\Enquiry;
 use App\Models\Master\Brands;
 use App\Models\Master\State;
 use App\Models\Offers\Coupons;
@@ -268,6 +269,23 @@ class CommonController extends Controller
             }
         }
         return $response;
+        
+    }
+
+    public function submitContactForm(Request $request)
+    {
+        $name = $request->name;
+        $email = $request->email;
+        $mobile_no = $request->mobile_no;
+        $message = $request->message;
+
+        $ins['first_name'] = $name;
+        $ins['email'] = $email;
+        $ins['mobile_no'] = $mobile_no;
+        $ins['message'] = $message;
+
+        Enquiry::create($ins);
+
         
     }
 }
