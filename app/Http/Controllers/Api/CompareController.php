@@ -47,7 +47,7 @@ class CompareController extends Controller
                                                     'value' =>$attributes_datas->attribute_values                                                     
                                                 );
                         } else {
-                            $each_row_attr[] = array('product_id' => $compare['products'][$i], 'value' => '-' );
+                            $each_row_attr[] = array('product' => $compare['products'][$i], 'value' => '-' );
                         }
                         
                     }
