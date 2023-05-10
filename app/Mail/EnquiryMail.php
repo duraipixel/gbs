@@ -11,23 +11,19 @@ class EnquiryMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    /**
-     * Create a new message instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    public $data;
+    public $title;
+
+    public function __construct($data, $title)
     {
-        //
+        $this->data = $data;
+        $this->title = $title;
     }
 
-    /**
-     * Build the message.
-     *
-     * @return $this
-     */
+   
     public function build()
     {
-        return $this->view('view.name');
+        return $this->markdown('email.enquiry_mail')->subject($this->title);
     }
+    
 }

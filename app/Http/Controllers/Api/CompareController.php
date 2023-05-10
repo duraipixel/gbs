@@ -12,10 +12,10 @@ class CompareController extends Controller
     public function index(Request $request)
     {
         
-        $product_id = $request->product_id;
+        $product_ids = $request->product_id;
         $compare = [];
-        if( $product_id ) {
-            $product_ids = explode(',', $product_id);
+        if( $product_ids ) {
+            // $product_ids = explode(',', $product_id);
             $usedAttributeHeads = ProductWithAttributeSet::whereIn('product_id', $product_ids)
                                     ->where('status', 'published')
                                     ->groupBy('title')

@@ -9,6 +9,7 @@ use App\Http\Resources\DiscountCollectionResource;
 use App\Http\Resources\HistoryVideoResource;
 use App\Http\Resources\ProductCollectionResource;
 use App\Http\Resources\TestimonialResource;
+use App\Mail\EnquiryMail;
 use App\Models\Banner;
 use App\Models\Enquiry;
 use App\Models\Master\Brands;
@@ -21,6 +22,7 @@ use App\Models\Testimonials;
 use App\Models\WalkThrough;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class CommonController extends Controller
@@ -284,8 +286,21 @@ class CommonController extends Controller
         $ins['mobile_no'] = $mobile_no;
         $ins['message'] = $message;
 
+        $to_email = 'durairaj.pixel@gmail.com';
+        $title = 'New Enquiry Has Received';
+
+        $html = '<table>';
+        $html .= '<tr><td> Name </td><td>'.$name.'</td></tr>';
+        $html .= '<tr><td> Email </td><td>'.$email.'</td></tr>';
+        $html .= '<tr><td> Moblie No </td><td>'.$mobile_no.'</td></tr>';
+        $html .= '<tr><td> Message </td><td>'.$message.'</td></tr>';
+
+        $send_mail = new EnquiryMail($html, $title);
+        Mail::to($to_email)->send($send_mail);
         Enquiry::create($ins);
 
-        
+        return array('status' => 1, 'message' => 'Enquiry submitted successfuly');
+
+
     }
 }
