@@ -20,10 +20,11 @@ class FilterController extends Controller
     {
         $category_slug = $request->category_slug ?? '';
 
-        $product_availability = array(
-            'in_stock' => 'In Stock',
-            'coming_soon' => 'Upcoming',
-        );
+        $categories = Product::select('product_categories.id', 'product_categories.name', 'product_categories.slug')
+                            ->join('product_categories', 'product_categories.id', '=', 'products.category_id')
+                            ->where('product_categories.parent_id', 0)
+                            ->groupBy('products.category_id')
+                            ->get()->toArray();
 
         $sort_by                = array(
             // array('id' => null, 'name' => 'Featured', 'slug' => 'is-featured'),
@@ -98,7 +99,7 @@ class FilterController extends Controller
 
         $response = $this->getAttributeFilter($category_slug);
         
-        // $response['product_availability'] =  $product_availability;          
+        $response['categories'] =  $categories;          
         $response['sort_by'] =  $sort_by;          
         $response['discounts'] = $discounts;          
         $response['collection'] = $collection;          
