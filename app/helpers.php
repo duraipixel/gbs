@@ -537,6 +537,42 @@ function getProductApiData($product_data, $customer_id = '')
     return $pro;
 }
 
+function getProductCompareApiData($product_data, $customer_id = '')
+{
+    
+    $category               = $product_data->productCategory;
+    $pro                    = [];
+    $pro['id']              = $product_data->id;
+    $pro['product_name']    = $product_data->product_name;
+    $pro['category_name']   = $product_data->productCategory->name ?? '';
+    $pro['brand_name']      = $product_data->productBrand->brand_name ?? '';
+    $pro['hsn_code']        = $product_data->hsn_code;
+    $pro['product_url']     = $product_data->product_url;
+    $pro['sku']             = $product_data->sku;
+    $pro['stock_status']    = $product_data->stock_status;
+    $pro['is_featured']     = $product_data->is_featured;
+    $pro['is_best_selling'] = $product_data->is_best_selling;
+    $pro['is_new']          = $product_data->is_new;
+    $pro['price']           = $product_data->mrp;
+    $pro['strike_price']    = $product_data->strike_price;
+    $pro['save_price']      = $product_data->strike_price - $product_data->mrp;
+    $pro['discount_percentage'] = abs($product_data->discount_percentage);
+    $pro['image']           = $product_data->base_image;
+    $pro['max_quantity']    = $product_data->quantity;
+    $imagePath              = $product_data->base_image;
+
+    if (!Storage::exists($imagePath)) {
+        $path               = asset('userImage/no_Image.jpg');
+    } else {
+        $url                = Storage::url($imagePath);
+        $path               = asset($url);
+    }
+
+    $pro['image']                   = $path;  
+    return $pro;
+    
+}
+
 if (!function_exists('getProductPrice')) {
     function getProductPrice($productsObjects)
     { // this function not used check all files confirm and delete it

@@ -33,6 +33,7 @@ Route::get('/get/product/collections/{order_by?}', [App\Http\Controllers\Api\Col
 Route::get('/get/product/collections/byorder/{order_by}', [App\Http\Controllers\Api\CollectionController::class, 'getProductCollectionByOrder']);
 Route::get('/browseHome', [App\Http\Controllers\Api\BrowseController::class, 'index']);
 Route::get('/get/exclusive', [App\Http\Controllers\Api\FilterController::class, 'exclusiveProduct']);
+Route::post('/compare/product', [App\Http\Controllers\Api\CompareController::class, 'index']);
 
 
 Route::post('/get/filter/sidemenus', [App\Http\Controllers\Api\FilterController::class, 'getFilterStaticSideMenu']);
