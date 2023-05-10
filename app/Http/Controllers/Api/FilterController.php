@@ -25,6 +25,21 @@ class FilterController extends Controller
                             ->where('product_categories.parent_id', 0)
                             ->groupBy('products.category_id')
                             ->get()->toArray();
+        
+        $get_max_discounts = Product::selectRaw('max(abs(gbs_products.discount_percentage)) as discount')
+                            ->where('status','published')->where('stock_status', 'in_stock')->first();
+        $discounts = [];
+        if( $get_max_discounts->discount ){
+
+            $discount_range = $get_max_discounts->discount / 3;
+            $second_range = ( round($discount_range) +  round($discount_range));
+            $discounts = array( 
+                                array( 'name' => 'below '.round($discount_range).'%', 'slug' => '0-'.round($discount_range)),
+                                array( 'name' => round($discount_range).'% To '.$second_range.'%', 'slug' =>  round($discount_range).'-'.$second_range),
+                                array( 'name' => $second_range.'% To '.round($get_max_discounts->discount).'%', 'slug' => $second_range.'-'.round($get_max_discounts->discount)),
+                            );
+        }
+        
 
         $sort_by                = array(
             // array('id' => null, 'name' => 'Featured', 'slug' => 'is-featured'),
@@ -32,7 +47,7 @@ class FilterController extends Controller
             array('id' => null, 'name' => 'Price: Low to High', 'slug' => 'price-low-to-high'),
         );
 
-        $discounts              = ProductCollection::select('product_collections.id', 'product_collections.collection_name as name', 'product_collections.slug')
+        $discount_collections              = ProductCollection::select('product_collections.id', 'product_collections.collection_name as name', 'product_collections.slug')
             ->join('product_collections_products', 'product_collections_products.product_collection_id', '=', 'product_collections.id')
             ->join('products', 'products.id', '=', 'product_collections_products.product_id')
             ->where('products.stock_status', 'in_stock')
@@ -310,7 +325,7 @@ class FilterController extends Controller
                 $qr->where('product_name', 'like', "%{$query}%")
                     ->orWhere('hsn_code', 'like', "%{$query}%")
                     ->orWhere('sku', 'like', "%{$query}%");
-            })->where('status', 'published')->when('products.stock_status', 'in_stock')
+            })->where('status', 'published')->where('products.stock_status', 'in_stock')
                 ->skip(0)->take($take)->get();
 
             if (count($productInfo) == 0) {
