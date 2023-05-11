@@ -222,7 +222,7 @@ class ProductController extends Controller
                                 'sale_price' => 'required_if:discount_option,==,fixed_amount',
                                 'sale_start_date' => 'required_if:sale_price,!=,0',
                                 'sale_end_date' => 'required_if:sale_price,==,0',
-                                'dicsounted_price' => 'required_if:discount_option,==,fixed_amount',
+                                'discount_percentage' => 'required_if:discount_option,==,fixed_amount',
                                 'filter_variation' => 'nullable|array',
                                 'filter_variation.*' => 'nullable|required_with:filter_variation',
                                 'filter_variation_value' => 'nullable|required_with:filter_variation|array',
@@ -264,6 +264,7 @@ class ProductController extends Controller
             $ins[ 'quantity' ]              = $request->qty;
             $ins['warranty_id']             = $request->warranty_id;
             $ins[ 'stock_status' ]          = $request->stock_status;
+            $ins['discount_percentage']     = $request->discount_percentage ?? 0;
             // $ins[ 'sale_price' ]            = $request->sale_price ?? 0;
             // $ins[ 'sale_start_date' ]       = $request->sale_start_date ?? null;
             // $ins[ 'sale_end_date' ]         = $request->sale_end_date ?? null;
@@ -361,8 +362,8 @@ class ProductController extends Controller
                     
                     $insAttr = [];
                     $insAttr['product_attribute_set_id']    = $filter_variation[$i];
-                    $insAttr['attribute_values']            = $filter_variation_value[$i];
-                    $insAttr['title']                       = $filter_variation_title[$i];
+                    $insAttr['attribute_values']            = trim($filter_variation_value[$i]);
+                    $insAttr['title']                       = trim($filter_variation_title[$i]);
                     $insAttr['order_by']                    = $filter_variation_order[$i] ?? null;
                     if(isset($_POST['is_overview_'.$i+1]) && !empty($_POST['is_overview_'.$i+1]) && $_POST['is_overview_'.$i+1] == "1")
                     {

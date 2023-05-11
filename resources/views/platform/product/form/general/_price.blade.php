@@ -38,7 +38,8 @@
         <div class="text-center col-sm-12 fs-1 fw-bold">
             <p> Discount Percentage</p>
             <label>
-                <span id="discount_price_percentage"><?= $info->discount_percentage ?? 0 ?></span> %
+                <span id="discount_price_percentage"><?= abs($info->discount_percentage) ?? 0 ?></span> %
+                <input type="hidden" name="discount_percentage" id="discount_percentage" value="{{ abs($info->discount_percentage) ?? 0 }}">
             </label>
         </div>
     </div>
@@ -121,13 +122,13 @@
     function getDisPercentage(mop, mrp) {
         mop = parseFloat(mop);
         mrp = parseFloat(mrp);
-        return Math.round(((mop/mrp)*100) - 100).toFixed(2);
+        return Math.abs(Math.round(((mop/mrp)*100) - 100).toFixed(2));
     }
 
     function getDiscountPricePercentage(inputField, price) {
 
         const discount_price_percentage = document.getElementById('discount_price_percentage');
-
+        const discount_percentage = document.getElementById('discount_percentage');
         let mop = $('#mrp').val();
         if( mop == '' || mop == 'undefined' || mop == null ) {
             toastr.clear()
@@ -149,7 +150,7 @@
         }
         toastr.clear();
         discount_price_percentage.innerHTML = getDisPercentage(mop, mrp);
-        
+        discount_percentage.value = getDisPercentage(mop, mrp);
 
     }
 

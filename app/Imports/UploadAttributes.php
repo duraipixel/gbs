@@ -57,7 +57,7 @@ class UploadAttributes implements ToModel, WithHeadingRow, WithBatchInserts, Wit
                     $ins_set['product_id'] = $product_info->id;
                     $ins_set['product_attribute_set_id'] = $attribute_info->id;
                     $ins_set['title'] = $row['keys'];
-                    $ins_set['attribute_values'] = $row['values'];
+                    $ins_set['attribute_values'] = trim($row['values']);
                     $ins_set['is_overview'] = isset($row['is_overview']) && !empty( $row['is_overview']) ? $row['is_overview'] : 'no';
                     $ins_set['order_by'] = $row['sorting_order'] ?? null;
                     $ins_set['status'] = 'published';
