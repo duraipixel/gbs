@@ -21,40 +21,40 @@ class FilterController extends Controller
         $category_slug = $request->category_slug ?? '';
 
         $categories = Product::select('product_categories.id', 'product_categories.name', 'product_categories.slug')
-                            ->join('product_categories', 'product_categories.id', '=', 'products.category_id')
-                            ->where('product_categories.parent_id', 0)
-                            ->groupBy('products.category_id')
-                            ->get()->toArray();
-        
+            ->join('product_categories', 'product_categories.id', '=', 'products.category_id')
+            ->where('product_categories.parent_id', 0)
+            ->groupBy('products.category_id')
+            ->get()->toArray();
+
         $get_max_discounts = Product::selectRaw('max(abs(gbs_products.discount_percentage)) as discount')
-                            ->where('status','published')->where('stock_status', 'in_stock')->first();
+            ->where('status', 'published')->where('stock_status', 'in_stock')->first();
         $discounts = [];
-        if( $get_max_discounts->discount ){
+        if ($get_max_discounts->discount) {
 
             $discount_range = $get_max_discounts->discount / 3;
-            $second_range = ( round($discount_range) +  round($discount_range));
-            $discounts = array( 
-                                array( 'name' => 'below '.round($discount_range).'%', 'slug' => '0-'.round($discount_range)),
-                                array( 'name' => round($discount_range).'% To '.$second_range.'%', 'slug' =>  round($discount_range).'-'.$second_range),
-                                array( 'name' => $second_range.'% To '.round($get_max_discounts->discount).'%', 'slug' => $second_range.'-'.round($get_max_discounts->discount)),
-                            );
+            $second_range = (round($discount_range) +  round($discount_range));
+            $discounts = array(
+                array('name' => 'below ' . round($discount_range) . '%', 'slug' => '0-' . round($discount_range)),
+                array('name' => round($discount_range) . '% To ' . $second_range . '%', 'slug' =>  round($discount_range) . '-' . $second_range),
+                array('name' => $second_range . '% To ' . round($get_max_discounts->discount) . '%', 'slug' => $second_range . '-' . round($get_max_discounts->discount)),
+            );
         }
         /**
          * over all attributes
          */
-       
+
         /** 
          * size filter actions
          */
         $size_data = ProductWithAttributeSet::select('product_with_attribute_sets.attribute_values')
-                    ->join('products', 'products.id', '=', 'product_with_attribute_sets.product_id')
-                    ->where('product_with_attribute_sets.title', 'Size')->groupByRaw("SUBSTRING_INDEX(gbs_product_with_attribute_sets.attribute_values,' ', 1)")->get();
+            ->join('products', 'products.id', '=', 'product_with_attribute_sets.product_id')
+            ->where('product_with_attribute_sets.title', 'Size')->groupByRaw("SUBSTRING_INDEX(gbs_product_with_attribute_sets.attribute_values,' ', 1)")->get();
         $sizes = [];
-        if( isset( $size_data ) && !empty( $size_data ) ){
-            foreach ($size_data as $size_item ) {
+        if (isset($size_data) && !empty($size_data)) {
+            foreach ($size_data as $size_item) {
                 $int_var = explode(' ', $size_item->attribute_values);
                 $tmp = [];
-                $tmp = array( 'name' => $size_item->attribute_values, 'slug' => current($int_var) );
+                $tmp = array('name' => $size_item->attribute_values, 'slug' => current($int_var));
                 $sizes[] = $tmp;
             }
         }
@@ -63,7 +63,7 @@ class FilterController extends Controller
             // array('id' => null, 'name' => 'Featured', 'slug' => 'is-featured'),
             array('id' => null, 'name' => 'Price: High to Low', 'slug' => 'price-high-to-low'),
             array('id' => null, 'name' => 'Price: Low to High', 'slug' => 'price-low-to-high'),
-        );       
+        );
 
         $collection             = ProductCollection::select('product_collections.id', 'product_collections.collection_name as name', 'product_collections.slug')
             ->join('product_collections_products', 'product_collections_products.product_collection_id', '=', 'product_collections.id')
@@ -92,33 +92,32 @@ class FilterController extends Controller
 
         $browse                     = [];
         $browse_filed_data          = HomepageSetting::where('title', 'Browse By Price')->where('status', 'published')->orderBy('order_by', 'asc')->first();
-        
-        if( $browse_filed_data ) {
+
+        if ($browse_filed_data) {
 
             $parent = [];
-           
+
             $items_field = HomepageSettingItems::where('homepage_settings_id', $browse_filed_data->id)->get();
-            
+
             foreach ($items_field as $key => $data_field) {
                 $tmp = [];
-                $tmp['name'] = ($data_field->start_size == 0 ? 'Below ' : $data_field->start_size ).'-'.($data_field->end_size == 0 ? 'Above' : $data_field->end_size);
-                $tmp['slug'] = $data_field->start_size.'-'.$data_field->end_size;
+                $tmp['name'] = ($data_field->start_size == 0 ? 'Below ' : $data_field->start_size) . '-' . ($data_field->end_size == 0 ? 'Above' : $data_field->end_size);
+                $tmp['slug'] = $data_field->start_size . '-' . $data_field->end_size;
                 $parent[] = $tmp;
             }
-
         }
 
         $browse = $parent;
 
         $attr_response = $this->getAttributeFilter($category_slug);
-        
-        $response['categories'] =  $categories;          
-        $response['brands'] =  $attr_response['brands'];          
-        $response['discounts'] = $discounts;          
+
+        $response['categories'] =  $categories;
+        $response['brands'] =  $attr_response['brands'];
+        $response['discounts'] = $discounts;
         $response['prices'] = $browse;
         $response['sizes'] = $sizes;
         $new_array = array_merge($response, $attr_response['attributes']);
-        $new_array['collection'] = $collection;          
+        $new_array['collection'] = $collection;
         $new_array['handpicked'] = $handpicked;
         // dd( $attr_response['attributes'] );
         // dd( $new_array );
@@ -136,11 +135,25 @@ class FilterController extends Controller
         $filter_availability    = $request->availability;
         $filter_brand           = $request->brands;
         $filter_discount        = $request->discounts;
-        $filter_attribute       = $request->attribute_category ?? '';
+        // $filter_attribute       = $request->attribute_category ?? '';
         $sort                   = $request->sort_by;
         $price                  = $request->prices;
         $size                   = $request->sizes;
-        
+
+        $not_in_attributes = array('page', 'take', 'categories', 'scategory', 'brands', 'discounts', 'sort_by', 'prices', 'sizes', 'size');
+        $from_request = $request->all();
+
+        $filter_attribute = [];
+        if ($from_request) {
+            foreach ($from_request as $key => $value) {
+
+                if (in_array($key, $not_in_attributes)) {
+                } else {
+                    $filter_attribute[$key] = $value;
+                }
+            }
+        }
+
         $filter_availability_array = [];
         $filter_attribute_array = [];
         $filter_brand_array = [];
@@ -152,14 +165,11 @@ class FilterController extends Controller
         $price_start = 0;
         $price_end = 0;
 
-        if (isset($price) && !empty($price)) {            
-            $filter_price_array = explode("_", $price);        
-           
+        if (isset($price) && !empty($price)) {
+            $filter_price_array = explode("_", $price);
         }
-        
-        if (isset($filter_attribute) && !empty($filter_attribute)) {            
-            $filter_attribute_array = explode("-", $filter_attribute);
-        }
+
+
         if (isset($filter_availability) && !empty($filter_availability)) {
             $filter_availability_array = explode("-", $filter_availability);
         }
@@ -169,27 +179,25 @@ class FilterController extends Controller
         if (isset($size) && !empty($size)) {
             $filter_size_array     = explode("_", $size);
         }
-        
+
         $discount_start_value = '';
         $discount_end_value = '';
 
         if (isset($filter_discount) && !empty($filter_discount)) {
             $filter_discount_array     = explode("_", $filter_discount);
-            if( !empty($filter_discount_array ) ) {
+            if (!empty($filter_discount_array)) {
                 $dis_array = [];
                 foreach ($filter_discount_array as $dis_arr) {
-                    $dis_array = array_merge( explode('-', $dis_arr), $dis_array) ;
+                    $dis_array = array_merge(explode('-', $dis_arr), $dis_array);
                 }
             }
-            if( !empty( $dis_array)) {
+            if (!empty($dis_array)) {
                 $dis_array = array_unique($dis_array);
                 sort($dis_array);
 
                 $discount_start_value = current($dis_array);
                 $discount_end_value = end($dis_array);
-
             }
-          
         }
 
         $productAttrNames = [];
@@ -204,95 +212,122 @@ class FilterController extends Controller
 
         $take_limit = $take ?? 12;
         $total = Product::select('products.*')->where('products.status', 'published')
-        ->join('product_categories', 'product_categories.id', '=', 'products.category_id')
-        ->leftJoin('product_categories as parent', 'parent.id', '=', 'product_categories.parent_id')
-        ->join('brands', 'brands.id', '=', 'products.brand_id')
-        ->when($filter_category != '', function ($q) use ($filter_category) {
-            $q->where(function ($query) use ($filter_category) {
-                return $query->where('product_categories.slug', $filter_category)->orWhere('parent.slug', $filter_category);
-            });
-        })
-        ->when($filter_sub_category != '', function ($q) use ($filter_sub_category) {
-            return $q->where('product_categories.slug', $filter_sub_category);
-        })
-        ->when($filter_availability != '', function ($q) use ($filter_availability_array) {
-            return $q->whereIn('products.stock_status', $filter_availability_array);
-        })
-        ->when($filter_brand != '', function ($q) use ($filter_brand_array) {
-            return $q->whereIn('brands.slug', $filter_brand_array);
-        })
-       
-        ->when( $filter_attribute != '' || $filter_size_array != '', function($q){
-            $q->join('product_with_attribute_sets', 'product_with_attribute_sets.product_id', '=', 'products.id');
-        })
-        ->when( $discount_start_value != '' && $discount_end_value != '', function($q) use($discount_start_value, $discount_end_value) {
-            
-            $q->where(function ($query) use ($discount_start_value, $discount_end_value) {
-                return $query->whereRaw('ABS(gbs_products.discount_percentage) >= '. $discount_start_value )
-                            ->whereRaw('ABS(gbs_products.discount_percentage) <= '. $discount_end_value);
-            });
+            ->join('product_categories', 'product_categories.id', '=', 'products.category_id')
+            ->leftJoin('product_categories as parent', 'parent.id', '=', 'product_categories.parent_id')
+            ->join('brands', 'brands.id', '=', 'products.brand_id')
+            ->when($filter_category != '', function ($q) use ($filter_category) {
+                $q->where(function ($query) use ($filter_category) {
+                    return $query->where('product_categories.slug', $filter_category)->orWhere('parent.slug', $filter_category);
+                });
+            })
+            ->when($filter_sub_category != '', function ($q) use ($filter_sub_category) {
+                return $q->where('product_categories.slug', $filter_sub_category);
+            })
+            ->when($filter_availability != '', function ($q) use ($filter_availability_array) {
+                return $q->whereIn('products.stock_status', $filter_availability_array);
+            })
+            ->when($filter_brand != '', function ($q) use ($filter_brand_array) {
+                return $q->whereIn('brands.slug', $filter_brand_array);
+            })
 
-        })
-        ->when($filter_size_array != '', function($q) use($filter_size_array) {
-            $q->where('product_with_attribute_sets.title', 'size');
-            $q->where(function($query) use($filter_size_array){
-                if( count($filter_size_array) > 0) {
-                    $i = 1;
-                    foreach ($filter_size_array as $size_arr) {
-                        if( $i == 1){
+            ->when(!empty($filter_attribute)  || !empty($filter_size_array), function ($q) {
+                $q->join('product_with_attribute_sets', 'product_with_attribute_sets.product_id', '=', 'products.id');
+            })
+            ->when($discount_start_value != '' && $discount_end_value != '', function ($q) use ($discount_start_value, $discount_end_value) {
 
-                            $query->where('product_with_attribute_sets.attribute_values', $size_arr );
-                        } else {
+                $q->where(function ($query) use ($discount_start_value, $discount_end_value) {
+                    return $query->whereRaw('ABS(gbs_products.discount_percentage) >= ' . $discount_start_value)
+                        ->whereRaw('ABS(gbs_products.discount_percentage) <= ' . $discount_end_value);
+                });
+            })
+            ->when(!empty($filter_size_array) || !empty($filter_attribute), function ($q) use ($filter_size_array, $filter_attribute) {
 
-                            $query->orWhere('product_with_attribute_sets.attribute_values', $size_arr );
-                        }
-                        $i++;
+                $q->where(function ($query) use ($filter_size_array, $filter_attribute) {
+                    if (count($filter_size_array) > 0) {
+                        $query->where(function ($query1) use ($filter_size_array, $filter_attribute) {
+
+                            $query1->where('product_with_attribute_sets.title', 'size');
+                            $query1->where(function ($query2) use ($filter_size_array) {
+
+                                $i = 1;
+                                foreach ($filter_size_array as $size_arr) {
+                                    if ($i == 1) {
+                                        $query2->where('product_with_attribute_sets.attribute_values', 'like', "%{$size_arr}%");
+                                    } else {
+                                        $query2->orWhere('product_with_attribute_sets.attribute_values', 'like', "%{$size_arr}%");
+                                    }
+                                    $i++;
+                                }
+                            });
+                        });
                     }
 
-                } 
-            });                
-            
-        })
-        ->when($filter_attribute != '', function ($q) use ($productAttrNames) {
-            
-            return $q->whereIn('product_with_attribute_sets.title', $productAttrNames);
-        })
-        ->when($filter_price_array != '', function ($q) use ($filter_price_array) {
-            // dd( $filter_price_array );
-            if(count($filter_price_array) > 0 ){
-                $j = 1;
-                foreach ($filter_price_array as $price_var) {
-                    $test_price = explode('-', $price_var);
-                    if($j == 1){
-
-                        $q->where(function ($query) use ($test_price) {
-                            return $query->where('products.mrp', '>=', current($test_price))
-                                        ->where('products.mrp','<=', end($test_price));
+                    if (count($filter_attribute) > 0 && count($filter_size_array) > 0) {
+                        $query->orWhere(function ($query3) use ($filter_size_array, $filter_attribute) {
+                            $loop_count = 4;
+                            foreach ($filter_attribute as $tkey => $tvalue) {
+                                $attr_title = str_replace(['-', '_'], ' ', $tkey);
+                                $attribute_values_sub = str_replace('-', ' ', explode('_', $tvalue));
+                                $whereloop = '$query' . $loop_count;
+                                $query3->orWhere(function ($whereloop) use ($attr_title, $attribute_values_sub) {
+                                    $whereloop->where('product_with_attribute_sets.title', $attr_title);
+                                    $whereloop->whereIn('product_with_attribute_sets.attribute_values', $attribute_values_sub);
+                                });
+                                $loop_count++;
+                            }
                         });
-
                     } else {
-                        $q->orWhere(function ($query) use ($test_price) {
-                            return $query->where('products.mrp', '>=', current($test_price))
-                                        ->where('products.mrp','<=', end($test_price));
+                        $query->where(function ($query3) use ($filter_size_array, $filter_attribute) {
+                            $loop_count = 4;
+                            foreach ($filter_attribute as $tkey => $tvalue) {
+                                $attr_title = str_replace(['-', '_'], ' ', $tkey);
+                                $attribute_values_sub = str_replace('-', ' ', explode('_', $tvalue));
+                                $whereloop = '$query' . $loop_count;
+                                $query3->orWhere(function ($whereloop) use ($attr_title, $attribute_values_sub) {
+                                    $whereloop->where('product_with_attribute_sets.title', $attr_title);
+                                    $whereloop->whereIn('product_with_attribute_sets.attribute_values', $attribute_values_sub);
+                                });
+                                $loop_count++;
+                            }
                         });
                     }
-                    $j++;
+                });
+            })
+
+            ->when($filter_price_array != '', function ($q) use ($filter_price_array) {
+                // dd( $filter_price_array );
+                if (count($filter_price_array) > 0) {
+                    $j = 1;
+                    foreach ($filter_price_array as $price_var) {
+                        $test_price = explode('-', $price_var);
+                        if ($j == 1) {
+
+                            $q->where(function ($query) use ($test_price) {
+                                return $query->where('products.mrp', '>=', current($test_price))
+                                    ->where('products.mrp', '<=', end($test_price));
+                            });
+                        } else {
+                            $q->orWhere(function ($query) use ($test_price) {
+                                return $query->where('products.mrp', '>=', current($test_price))
+                                    ->where('products.mrp', '<=', end($test_price));
+                            });
+                        }
+                        $j++;
+                    }
                 }
-            }
-            
-        })
-        ->when($sort == 'price-high-to-low', function ($q) {
-            $q->orderBy('products.mrp', 'desc');
-        })
-        ->when($sort == 'price-low-to-high', function ($q) {
-            $q->orderBy('products.mrp', 'asc');
-        })
-        ->when($sort == 'is_featured', function ($q) {
-            $q->orderBy('products.is_featured', 'desc');
-        })
-        ->where('products.stock_status', 'in_stock')
-        ->groupBy('products.id')        
-        ->count();
+            })
+            ->when($sort == 'price-high-to-low', function ($q) {
+                $q->orderBy('products.mrp', 'desc');
+            })
+            ->when($sort == 'price-low-to-high', function ($q) {
+                $q->orderBy('products.mrp', 'asc');
+            })
+            ->when($sort == 'is_featured', function ($q) {
+                $q->orderBy('products.is_featured', 'desc');
+            })
+            ->where('products.stock_status', 'in_stock')
+            ->groupBy('products.id')
+            ->count();
 
         $details = Product::select('products.*')->where('products.status', 'published')
             ->join('product_categories', 'product_categories.id', '=', 'products.category_id')
@@ -312,65 +347,92 @@ class FilterController extends Controller
             ->when($filter_brand != '', function ($q) use ($filter_brand_array) {
                 return $q->whereIn('brands.slug', $filter_brand_array);
             })
-           
-            ->when( $filter_attribute != '' || $filter_size_array != '', function($q){
+
+            ->when(!empty($filter_attribute)  || !empty($filter_size_array), function ($q) {
                 $q->join('product_with_attribute_sets', 'product_with_attribute_sets.product_id', '=', 'products.id');
             })
-            ->when( $discount_start_value != '' && $discount_end_value != '', function($q) use($discount_start_value, $discount_end_value) {
-                
+            ->when($discount_start_value != '' && $discount_end_value != '', function ($q) use ($discount_start_value, $discount_end_value) {
+
                 $q->where(function ($query) use ($discount_start_value, $discount_end_value) {
-                    return $query->whereRaw('ABS(gbs_products.discount_percentage) >= '. $discount_start_value )
-                                ->whereRaw('ABS(gbs_products.discount_percentage) <= '. $discount_end_value);
+                    return $query->whereRaw('ABS(gbs_products.discount_percentage) >= ' . $discount_start_value)
+                        ->whereRaw('ABS(gbs_products.discount_percentage) <= ' . $discount_end_value);
                 });
-
             })
-            ->when($filter_size_array != '', function($q) use($filter_size_array) {
-                $q->where('product_with_attribute_sets.title', 'size');
-                $q->where(function($query) use($filter_size_array){
-                    if( count($filter_size_array) > 0) {
-                        $i = 1;
-                        foreach ($filter_size_array as $size_arr) {
-                            if( $i == 1){
+            ->when(!empty($filter_size_array) || !empty($filter_attribute), function ($q) use ($filter_size_array, $filter_attribute) {
 
-                                $query->where('product_with_attribute_sets.attribute_values', $size_arr );
-                            } else {
+                $q->where(function ($query) use ($filter_size_array, $filter_attribute) {
+                    if (count($filter_size_array) > 0) {
+                        $query->where(function ($query1) use ($filter_size_array, $filter_attribute) {
 
-                                $query->orWhere('product_with_attribute_sets.attribute_values', $size_arr );
+                            $query1->where('product_with_attribute_sets.title', 'size');
+                            $query1->where(function ($query2) use ($filter_size_array) {
+
+                                $i = 1;
+                                foreach ($filter_size_array as $size_arr) {
+                                    if ($i == 1) {
+                                        $query2->where('product_with_attribute_sets.attribute_values', 'like', "%{$size_arr}%");
+                                    } else {
+                                        $query2->orWhere('product_with_attribute_sets.attribute_values', 'like', "%{$size_arr}%");
+                                    }
+                                    $i++;
+                                }
+                            });
+                        });
+                    }
+
+                    if (count($filter_attribute) > 0 && count($filter_size_array) > 0) {
+                        $query->orWhere(function ($query3) use ($filter_size_array, $filter_attribute) {
+                            $loop_count = 4;
+                            foreach ($filter_attribute as $tkey => $tvalue) {
+                                $attr_title = str_replace(['-', '_'], ' ', $tkey);
+                                $attribute_values_sub = str_replace('-', ' ', explode('_', $tvalue));
+                                $whereloop = '$query' . $loop_count;
+                                $query3->orWhere(function ($whereloop) use ($attr_title, $attribute_values_sub) {
+                                    $whereloop->where('product_with_attribute_sets.title', $attr_title);
+                                    $whereloop->whereIn('product_with_attribute_sets.attribute_values', $attribute_values_sub);
+                                });
+                                $loop_count++;
                             }
-                            $i++;
-                        }
-    
-                    } 
-                });                
-                
+                        });
+                    } else {
+                        $query->where(function ($query3) use ($filter_size_array, $filter_attribute) {
+                            $loop_count = 4;
+                            foreach ($filter_attribute as $tkey => $tvalue) {
+                                $attr_title = str_replace(['-', '_'], ' ', $tkey);
+                                $attribute_values_sub = str_replace('-', ' ', explode('_', $tvalue));
+                                $whereloop = '$query' . $loop_count;
+                                $query3->orWhere(function ($whereloop) use ($attr_title, $attribute_values_sub) {
+                                    $whereloop->where('product_with_attribute_sets.title', $attr_title);
+                                    $whereloop->whereIn('product_with_attribute_sets.attribute_values', $attribute_values_sub);
+                                });
+                                $loop_count++;
+                            }
+                        });
+                    }
+                });
             })
-            ->when($filter_attribute != '', function ($q) use ($productAttrNames) {
-                
-                return $q->whereIn('product_with_attribute_sets.title', $productAttrNames);
-            })
+
             ->when($filter_price_array != '', function ($q) use ($filter_price_array) {
                 // dd( $filter_price_array );
-                if(count($filter_price_array) > 0 ){
+                if (count($filter_price_array) > 0) {
                     $j = 1;
                     foreach ($filter_price_array as $price_var) {
                         $test_price = explode('-', $price_var);
-                        if($j == 1){
+                        if ($j == 1) {
 
                             $q->where(function ($query) use ($test_price) {
                                 return $query->where('products.mrp', '>=', current($test_price))
-                                            ->where('products.mrp','<=', end($test_price));
+                                    ->where('products.mrp', '<=', end($test_price));
                             });
-
                         } else {
                             $q->orWhere(function ($query) use ($test_price) {
                                 return $query->where('products.mrp', '>=', current($test_price))
-                                            ->where('products.mrp','<=', end($test_price));
+                                    ->where('products.mrp', '<=', end($test_price));
                             });
                         }
                         $j++;
                     }
                 }
-                
             })
             ->when($sort == 'price-high-to-low', function ($q) {
                 $q->orderBy('products.mrp', 'desc');
@@ -434,7 +496,7 @@ class FilterController extends Controller
                     $qr->whereRaw("MATCH (gbs_products.product_name) AGAINST ('" . $query . "' IN BOOLEAN MODE)")
                         ->orWhere('sku', 'like', "%{$query}%");
                 })->where('status', 'published')
-                ->where('products.stock_status', 'in_stock')->skip(0)->take($take)->get();
+                    ->where('products.stock_status', 'in_stock')->skip(0)->take($take)->get();
             }
 
             if (isset($productInfo) && !empty($productInfo) && count($productInfo) > 0) {
@@ -495,19 +557,19 @@ class FilterController extends Controller
 
     public function getAttributeFilter($category_slug = '')
     {
-        
-        if( $category_slug ) {
+
+        if ($category_slug) {
             $productCategory = ProductCategory::where('slug', $category_slug)->first();
         }
-        
-        $cat_id = $productCategory->id ?? '' ;
+
+        $cat_id = $productCategory->id ?? '';
         $brands = Product::select('brands.id', 'brands.brand_name as name', 'brands.slug')
             ->join('brands', 'brands.id', '=', 'products.brand_id')
             ->join('product_categories', function ($join) {
                 $join->on('product_categories.id', '=', 'products.category_id');
                 $join->orOn('product_categories.parent_id', '=', 'products.category_id');
             })
-            ->when($cat_id != '', function($query) use($cat_id) {
+            ->when($cat_id != '', function ($query) use ($cat_id) {
                 $query->where(function ($query) use ($cat_id) {
                     return $query->where('product_categories.id', $cat_id)->orWhere('product_categories.parent_id', $cat_id);
                 });
@@ -520,52 +582,51 @@ class FilterController extends Controller
         // dump($category_slug);
         // dd( $productCategory );
         $attribute_header = ProductWithAttributeSet::select('product_with_attribute_sets.*')->join('products', 'products.id', '=', 'product_with_attribute_sets.product_id')
-                            ->where(['products.status' => 'published', 'products.stock_status' => 'in_stock'])
-                            ->where('product_with_attribute_sets.title', '!=', 'size')
-                            ->groupBy('product_with_attribute_sets.title')                            
-                            ->get();
-                            
+            ->where(['products.status' => 'published', 'products.stock_status' => 'in_stock'])
+            ->where('product_with_attribute_sets.title', '!=', 'size')
+            ->groupBy('product_with_attribute_sets.title')
+            ->get();
+
         $attributes = [];
-        if( isset( $attribute_header ) && !empty( $attribute_header ) ) {
+        if (isset($attribute_header) && !empty($attribute_header)) {
             foreach ($attribute_header as $att_value) {
-                
+
                 /**
                  * get group by values
                  */
                 $sub_values = ProductWithAttributeSet::select('product_with_attribute_sets.*')
-                ->join('products', 'products.id', '=', 'product_with_attribute_sets.product_id')
-                ->where(['products.status' => 'published', 'products.stock_status' => 'in_stock'])
-                ->where('product_with_attribute_sets.title', $att_value->title)
-                ->groupBy('product_with_attribute_sets.attribute_values')                            
-                ->get();
-                if( isset( $sub_values ) && !empty( $sub_values ) ) {
+                    ->join('products', 'products.id', '=', 'product_with_attribute_sets.product_id')
+                    ->where(['products.status' => 'published', 'products.stock_status' => 'in_stock'])
+                    ->where('product_with_attribute_sets.title', $att_value->title)
+                    ->groupBy('product_with_attribute_sets.attribute_values')
+                    ->get();
+                if (isset($sub_values) && !empty($sub_values)) {
                     $sub_array = [];
-                    foreach ($sub_values as $items_sub ) {
+                    foreach ($sub_values as $items_sub) {
                         $temp_val = [];
-                        $temp_val['name'] = trim($items_sub->attribute_values);                    
-                        $temp_val['slug'] = str_replace(' ', '-', trim($items_sub->attribute_values));   
-                        $sub_array[] = $temp_val;                 
+                        $temp_val['name'] = trim($items_sub->attribute_values);
+                        $temp_val['slug'] = str_replace(' ', '-', trim($items_sub->attribute_values));
+                        $sub_array[] = $temp_val;
                     }
                     $attributes[str_replace(' ', '_', strtolower($att_value->title))] = $sub_array;
                 }
-                
             }
         }
-        
-        
-        return array( 'attributes' => $attributes, 'brands' => $brands ?? []);
+
+
+        return array('attributes' => $attributes, 'brands' => $brands ?? []);
     }
 
     public function exclusiveProduct()
     {
         $product_data = Product::join('sub_categories', 'sub_categories.id', '=', 'products.label_id')
-                            ->join('main_categories', 'main_categories.id', '=', 'sub_categories.parent_id')
-                            ->where('main_categories.slug', 'product-labels')
-                            ->where('products.stock_status', 'in_stock')
-                            ->where('products.status', 'published')->get();
+            ->join('main_categories', 'main_categories.id', '=', 'sub_categories.parent_id')
+            ->where('main_categories.slug', 'product-labels')
+            ->where('products.stock_status', 'in_stock')
+            ->where('products.status', 'published')->get();
         $data = [];
-        if( isset( $product_data ) && !empty($product_data)){
-            foreach ($product_data as $item ) {
+        if (isset($product_data) && !empty($product_data)) {
+            foreach ($product_data as $item) {
                 $data[] = getProductApiData($item);
             }
         }
