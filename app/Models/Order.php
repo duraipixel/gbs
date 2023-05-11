@@ -53,7 +53,11 @@ class Order extends Model
         'payment_response_id',
         'shipping_method_type',
         'pickup_store_id',
-        'pickup_store_details'        
+        'pickup_store_details',
+        'delivery_otp',
+        'otp_verified_at',
+        'otp_verified_by',
+        'delivery_document'
     ];
 
     public function orderItems()

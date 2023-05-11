@@ -56,7 +56,8 @@ function sendGBSSms($sms_type, $details)
             'tempid' => $info->tdlt_no,
             'sid'   => urlencode(current(explode(",", $info->header)))
         );
-
+        // dump( $templateMessage );
+        // dd( $params );
         sendSMS($mobile_no, $templateMessage, $params);
     }
 }
@@ -781,4 +782,15 @@ function getEndWarrantyDate($warranty_period, $warranty_type) {
                 break;
         }
     }
+}
+
+function generateOtp() {
+    
+    $otp = random_int(100000, 999999);
+    $order_info = Order::where('delivery_otp', $otp)->first();
+    if( $order_info ){
+        $otp = random_int(100000, 999999);
+    }
+    return $otp;
+
 }

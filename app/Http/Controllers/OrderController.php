@@ -12,9 +12,11 @@ use App\Models\OrderHistory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use DataTables;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 use Mail;
+use Image;
 
 class OrderController extends Controller
 {
@@ -121,7 +123,7 @@ class OrderController extends Controller
                                 'description' => 'required|string',                             
                             ]);
         if ($validator->passes()) {
-
+            
             $info = Order::find($id);
             $info->order_status_id = $request->order_status_id;
             
@@ -143,6 +145,8 @@ class OrderController extends Controller
                 
                 case '4':
                     $action = 'Order Shipped';
+                    $otp = generateOtp();
+                    
                     /****
                      * 1.send email for order placed
                      * 2.send sms for notification
@@ -185,18 +189,41 @@ class OrderController extends Controller
                     $sms_params = array(
                         'name' => $info->billing_name,
                         'order_no' => $info->order_no,
-                        'tracking_url' => env('WEBSITE_LOGIN_URL'),                        
+                        'otp' => $otp,                        
                         'mobile_no' => [$info->billing_mobile_no]
                     );
+                    
                     sendGBSSms('order_shipping', $sms_params);
 
                     $info->status = 'shipped';
+                    $info->delivery_otp = $otp;
 
                     break;
                 
                 case '5':
                     $action = 'Order Delivered';
                     $info->status = 'delivered';
+                    /**
+                     * upload image
+                     */
+                    if ($request->hasFile('delivery_document')) {
+               
+                        $imagName               = time() . '_' . $request->delivery_document->getClientOriginalName();
+                        $directory              = 'orderDocument/'.$info->order_no.'/document';
+                        Storage::deleteDirectory('public/'.$directory);
+                       
+                        if (!is_dir(storage_path("app/public/orderDocument/".$info->order_no."/document"))) {
+                            mkdir(storage_path("app/public/orderDocument/".$info->order_no."/document"), 0775, true);
+                        }
+                        
+                        $thumbnailPath          = 'public/orderDocument/'.$info->order_no.'/document/' . $imagName;
+                        Image::make($request->file('delivery_document'))->save(storage_path('app/' . $thumbnailPath));
+        
+                        $info->delivery_document = $thumbnailPath;
+                        
+                    }
+                    $info->otp_verified_by = auth()->user()->id;
+                    $info->otp_verified_at = date('Y-m-d H:i:s');
 
                     #send sms for notification
                     $sms_params = array(

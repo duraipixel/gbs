@@ -30,35 +30,47 @@
                         data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}"
                         data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_user_header"
                         data-kt-scroll-wrappers="#kt_modal_add_user_scroll" data-kt-scroll-offset="300px">
-                      
+
                         <input type="hidden" name="id" value="{{ $info->id ?? '' }}">
 
-                      <div class="row">
-                        <div class="col-md-12">
-                            <div class="fv-row mb-7">
-                                <label class="required fw-bold fs-6 mb-2">Order Status</label>
-                                <select class="form-control" name="order_status_id" id="order_status_id">
-                                    <option value="">--select--</option>
-                                    @if( isset( $order_status_info ) && !empty( $order_status_info ) ) 
-                                    @foreach ($order_status_info as $item)
-                                        <option value="{{ $item->id }}" @if($info->order_status_id == $item->id) selected @endif> {{ $item->status_name }} </option>
-                                    @endforeach
-                                    @endif
-                                </select>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="fv-row mb-7">
+                                    <label class="required fw-bold fs-6 mb-2">Order Status</label>
+                                    <select class="form-control" name="order_status_id" id="order_status_id">
+                                        <option value="">--select--</option>
+                                        @if (isset($order_status_info) && !empty($order_status_info))
+                                            @foreach ($order_status_info as $item)
+                                                <option value="{{ $item->id }}"
+                                                    @if ($info->order_status_id == $item->id) selected @endif>
+                                                    {{ $item->status_name }} </option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                </div>
                             </div>
+
                         </div>
-                       
-                      </div>
-                        
+
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="fv-row mb-7">
                                     <label class="required fw-bold fs-6 mb-2"> Description </label>
-                                        <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Description" name="description" id="description" cols="30" rows="5">{{ $info->address ?? '' }}</textarea>
+                                    <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Description" name="description"
+                                        id="description" cols="30" rows="5">{{ $info->address ?? '' }}</textarea>
                                 </div>
                             </div>
                         </div>
-                     
+                        <div class="row d-none" id="delivery-document">
+                            <div class="col-md-12">
+                                <div class="fv-row mb-7">
+                                    <label class="required fw-bold fs-6 mb-2"> Delivery Document </label>
+                                    <input type="file" name="delivery_document" id="delivery_document"
+                                        class="form-control">
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -77,6 +89,78 @@
 </form>
 
 <script>
+    var formValidateFields = {
+        'order_status_id': {
+            validators: {
+                notEmpty: {
+                    message: 'Order Status is required'
+                }
+            }
+        },
+        'description': {
+            validators: {
+                notEmpty: {
+                    message: 'Description is required'
+                }
+            }
+        },
+
+    };
+    var order_status_id = document.getElementById('order_status_id');
+
+    order_status_id.addEventListener('change', function() {
+
+        console.log($("#order_status_id option:selected").text());
+        if ($("#order_status_id option:selected").text().trim() == 'Order Delivered') {
+            console.log('inside');
+            $('#delivery-document').removeClass('d-none');
+            formValidateFields = {
+                'order_status_id': {
+                    validators: {
+                        notEmpty: {
+                            message: 'Order Status is required'
+                        }
+                    }
+                },
+
+                'description': {
+                    validators: {
+                        notEmpty: {
+                            message: 'Description is required'
+                        }
+                    }
+                },
+                'delivery_document': {
+                    validators: {
+                        notEmpty: {
+                            message: 'Delivery Document is required'
+                        }
+                    }
+                },
+            };
+        } else {
+            $('#delivery-document').addClass('d-none');
+            formValidateFields = {
+                'order_status_id': {
+                    validators: {
+                        notEmpty: {
+                            message: 'Order Status is required'
+                        }
+                    }
+                },
+                'description': {
+                    validators: {
+                        notEmpty: {
+                            message: 'Description is required'
+                        }
+                    }
+                },
+
+            };
+        }
+
+    })
+
 
     var add_url = "{{ route('order.change.status') }}";
 
@@ -95,37 +179,7 @@
         var initAddRole = () => {
 
             // Init form validation rules. For more info check the FormValidation plugin's official documentation:https://formvalidation.io/
-            var validator = FormValidation.formValidation(
-                form, {
-                    fields: {
-                        'order_status_id': {
-                            validators: {
-                                notEmpty: {
-                                    message: 'Order Status is required'
-                                }
-                            }
-                        },
-                       
-                        'description': {
-                            validators: {
-                                notEmpty: {
-                                    message: 'Description is required'
-                                }
-                            }
-                        },
-                        
-                    },
 
-                    plugins: {
-                        trigger: new FormValidation.plugins.Trigger(),
-                        bootstrap: new FormValidation.plugins.Bootstrap5({
-                            rowSelector: '.fv-row',
-                            eleInvalidClass: '',
-                            eleValidClass: ''
-                        })
-                    }
-                }
-            );
 
             // Cancel button handler
             const cancelButton = element.querySelector('#discard');
@@ -154,6 +208,20 @@
             const submitButton = element.querySelector('[data-kt-customer-modal-action="submit"]');
             // submitButton.addEventListener('click', function(e) {
             $('#change_order_status_form').submit(function(e) {
+                var validator = FormValidation.formValidation(
+                    form, {
+                        fields: formValidateFields,
+
+                        plugins: {
+                            trigger: new FormValidation.plugins.Trigger(),
+                            bootstrap: new FormValidation.plugins.Bootstrap5({
+                                rowSelector: '.fv-row',
+                                eleInvalidClass: '',
+                                eleValidClass: ''
+                            })
+                        }
+                    }
+                );
                 // Prevent default button action
                 e.preventDefault();
                 // Validate form before submit
@@ -178,7 +246,8 @@
                                 success: function(res) {
                                     if (res.error == 1) {
                                         // Remove loading indication
-                                        submitButton.removeAttribute('data-kt-indicator');
+                                        submitButton.removeAttribute(
+                                            'data-kt-indicator');
                                         // Enable button
                                         submitButton.disabled = false;
                                         let error_msg = res.message
@@ -246,6 +315,4 @@
     KTUtil.onDOMContentLoaded(function() {
         KTUsersAddRole.init();
     });
-
- 
 </script>
