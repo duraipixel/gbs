@@ -113,7 +113,7 @@ class FilterController extends Controller
         $response['prices'] = $browse;
         $response['collection'] = $collection;          
         $response['handpicked'] = $handpicked;
-        $response['sort_by'] =  $sort_by;          
+        // $response['sort_by'] =  $sort_by;          
 
         return $response;
     }
