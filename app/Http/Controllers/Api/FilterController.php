@@ -129,7 +129,7 @@ class FilterController extends Controller
         $filter_discount        = $request->discounts;
         $filter_attribute       = $request->attribute_category ?? '';
         $sort                   = $request->sort_by;
-        $price                  = $request->price;
+        $price                  = $request->prices;
         $size                   = $request->sizes;
         
         $filter_availability_array = [];
