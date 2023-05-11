@@ -138,6 +138,7 @@ class FilterController extends Controller
         $filter_discount_array = [];
         $filter_price_array = [];
         $filter_size_array = [];
+        $tmp_price = [];
 
         $price_start = 0;
         $price_end = 0;
@@ -145,7 +146,6 @@ class FilterController extends Controller
         if (isset($price) && !empty($price)) {            
             $filter_price_array = explode("_", $price);
             
-            $tmp_price = [];
             if( isset( $filter_price_array ) && !empty( $filter_price_array )) {
                 foreach ($filter_price_array as $itemsPrice ) {
                     # code...
@@ -154,9 +154,9 @@ class FilterController extends Controller
             }
             if( $tmp_price ) {
 
-                asort($tmp_price);
-                $price_start = current($tmp_price);
-                $price_end = end($tmp_price);
+                // asort($tmp_price);
+                // $price_start = current($tmp_price);
+                // $price_end = end($tmp_price);
 
             }
            
@@ -266,11 +266,26 @@ class FilterController extends Controller
                 });                
                 
             })
-            ->when($price_start || $price_end, function ($q) use ($price_start, $price_end) {
-                $q->where(function ($query) use ($price_start, $price_end) {
-                    return $query->where('products.mrp', '>=', $price_start)
-                                ->where('products.mrp','<=', $price_end);
-                });
+            ->when($tmp_price != '', function ($q) use ($tmp_price) {
+                if(count($tmp_price) > 0 ){
+                    $j = 1;
+                    foreach ($tmp_price as $price_var) {
+                        if($j == 1){
+
+                            $q->where(function ($query) use ($price_var) {
+                                return $query->where('products.mrp', '>=', current($price_var))
+                                            ->where('products.mrp','<=', end($price_var));
+                            });
+
+                        } else {
+                            $q->orWhere(function ($query) use ($price_var) {
+                                return $query->where('products.mrp', '>=', current($price_var))
+                                            ->where('products.mrp','<=', end($price_var));
+                            });
+                        }
+                    }
+                }
+                
             })
             ->when($sort == 'price-high-to-low', function ($q) {
                 $q->orderBy('products.mrp', 'desc');
@@ -321,7 +336,7 @@ class FilterController extends Controller
             ->when($filter_size_array != '', function($q) use($filter_size_array) {
                 $q->where('product_with_attribute_sets.title', 'size');
                 $q->where(function($query) use($filter_size_array){
-                    if( count($filter_size_array) > 1) {
+                    if( count($filter_size_array) > 0) {
                         $i = 1;
                         foreach ($filter_size_array as $size_arr) {
                             if( $i == 1){
