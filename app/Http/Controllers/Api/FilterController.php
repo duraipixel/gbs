@@ -521,6 +521,7 @@ class FilterController extends Controller
         // dd( $productCategory );
         $attribute_header = ProductWithAttributeSet::select('product_with_attribute_sets.*')->join('products', 'products.id', '=', 'product_with_attribute_sets.product_id')
                             ->where(['products.status' => 'published', 'products.stock_status' => 'in_stock'])
+                            ->where('product_with_attribute_sets.title', '!=', 'size')
                             ->groupBy('product_with_attribute_sets.title')                            
                             ->get();
                             
