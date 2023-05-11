@@ -543,7 +543,7 @@ class FilterController extends Controller
                     foreach ($sub_values as $items_sub ) {
                         $temp_val = [];
                         $temp_val['name'] = $items_sub->attribute_values;                    
-                        $temp_val['slug'] = str_replace(' ', '__', $items_sub->attribute_values);   
+                        $temp_val['slug'] = str_replace(' ', '_', $items_sub->attribute_values);   
                         $sub_array[] = $temp_val;                 
                     }
                     $attributes[str_replace(' ', '_', strtolower($att_value->title))] = $sub_array;
