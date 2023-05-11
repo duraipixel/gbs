@@ -373,7 +373,7 @@ class ProductController extends Controller
                     }
 
                     $insAttr['product_id']                  = $product_id;
-                    dump( $insAttr );
+                    
                     ProductWithAttributeSet::create($insAttr);
                 }
                

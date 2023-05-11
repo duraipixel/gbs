@@ -89,12 +89,12 @@ class Product extends Model
 
     public function productAttributes()
     {
-        return $this->hasMany(ProductWithAttributeSet::class, 'product_id', 'id')->select('id', 'title', 'attribute_values', 'product_attribute_set_id','is_overview')->orderBy('order_by');
+        return $this->hasMany(ProductWithAttributeSet::class, 'product_id', 'id')->select('id', 'title', 'attribute_values', 'product_attribute_set_id','is_overview', 'order_by')->orderBy('order_by');
     }
 
     public function productOverviewAttributes()
     {
-        return $this->hasMany(ProductWithAttributeSet::class, 'product_id', 'id')->where('is_overview', 'yes')->select('id', 'title', 'attribute_values', 'product_attribute_set_id','is_overview')->orderBy('order_by');
+        return $this->hasMany(ProductWithAttributeSet::class, 'product_id', 'id')->where('is_overview', 'yes')->select('id', 'title', 'attribute_values', 'product_attribute_set_id','is_overview', 'order_by')->orderBy('order_by');
     }
 
     public function productMeta()
