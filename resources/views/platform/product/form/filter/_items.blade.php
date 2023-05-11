@@ -21,7 +21,7 @@
             <input type="text" class="form-control mw-100 w-300px required" name="filter_variation_value[]"
                 value="{{ $attr->attribute_values ?? '' }}" placeholder="Values" required />
             <input type="text" class="form-control mw-100 w-100px required numberonly"
-                name="filter_variation_order[]" value="" maxlength="3" placeholder="Orders" required />
+                name="filter_variation_order[]" value="{{ $attr->order_by ?? '' }}" maxlength="3" placeholder="Orders" required />
 
             <!--end::Input-->
             <input type="checkbox" name="is_overview_{{ $loop->iteration }}" value="1"
