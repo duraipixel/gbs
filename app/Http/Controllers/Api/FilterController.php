@@ -327,7 +327,8 @@ class FilterController extends Controller
             })
             ->where('products.stock_status', 'in_stock')
             ->groupBy('products.id')
-            ->count();
+            ->get();
+        $total = count($total);
 
         $details = Product::select('products.*')->where('products.status', 'published')
             ->join('product_categories', 'product_categories.id', '=', 'products.category_id')
