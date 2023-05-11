@@ -29,6 +29,8 @@ Route::get('/get/brands/alphabets', [App\Http\Controllers\Api\CommonController::
 Route::post('/get/discount/collections', [App\Http\Controllers\Api\CommonController::class, 'getDiscountCollections']);
 Route::post('/get/handpicked/collections', [App\Http\Controllers\Api\CommonController::class, 'getHandPickedCollections']);
 Route::post('/get/subcategory/collections', [App\Http\Controllers\Api\CommonController::class, 'getSubCategoryCollections']);
+Route::post('/get/model/data', [App\Http\Controllers\Api\CommonController::class, 'getProcessorModelData']);
+
 Route::get('/get/product/collections/{order_by?}', [App\Http\Controllers\Api\CollectionController::class, 'getProductCollections']);
 Route::get('/get/product/collections/byorder/{order_by}', [App\Http\Controllers\Api\CollectionController::class, 'getProductCollectionByOrder']);
 Route::get('/browseHome', [App\Http\Controllers\Api\BrowseController::class, 'index']);

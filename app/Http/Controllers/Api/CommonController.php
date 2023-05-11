@@ -17,6 +17,7 @@ use App\Models\Master\State;
 use App\Models\Offers\Coupons;
 use App\Models\Product\Product;
 use App\Models\Product\ProductCollection;
+use App\Models\Product\ProductWithAttributeSet;
 use App\Models\RecentView;
 use App\Models\Testimonials;
 use App\Models\WalkThrough;
@@ -301,6 +302,57 @@ class CommonController extends Controller
 
         return array('status' => 1, 'message' => 'Enquiry submitted successfuly');
 
+    }
 
+    public function getProcessorModelData(Request $request)
+    {
+        /**
+         * Get Intel Processor data
+         */
+        $intel_data = ProductWithAttributeSet::where('title', 'model')
+                        ->where('attribute_values', 'like', "%intel%")
+                        ->groupBy('attribute_values')
+                        ->limit(4)
+                        ->get();
+        $model = [];
+        $intel_information = [];
+        if( isset( $intel_data ) && !empty( $intel_data ) ) {
+            $intel_information['title'] = 'Intel® Processors';
+            $intel_information['banner'] = asset('assets/logo/intelprocessor.jpg');
+
+            $tmp = [];
+            foreach ( $intel_data as $items ) {             
+                $tmp[] = array('slug' => 'model='.str_replace(' ', '-', $items->attribute_values ), 'name' => $items->attribute_values );
+            }
+            $intel_information['processors'] = $tmp;
+
+        }
+        $test[] = $intel_information;
+        
+        /**
+         * Get Amd processor data
+         */
+        $intel_data = ProductWithAttributeSet::where('title', 'model')
+                        ->where('attribute_values', 'like', "%NVIDIA%")
+                        ->groupBy('attribute_values')
+                        ->limit(4)
+                        ->get();
+        $model = [];
+        $intel_information = [];
+        if( isset( $intel_data ) && !empty( $intel_data ) ) {
+            $intel_information['title'] = 'Graphics Cards';
+            $intel_information['banner'] = asset('assets/logo/geforce.jpg');
+
+            $tmp = [];
+            foreach ( $intel_data as $items ) {             
+                $tmp[] = array('slug' => 'model='.str_replace(' ', '-', $items->attribute_values ), 'name' => $items->attribute_values );
+            }
+            $intel_information['processors'] = $tmp;
+
+        }
+        $test[] = $intel_information;
+
+        $model = $test;
+        return $model;
     }
 }
