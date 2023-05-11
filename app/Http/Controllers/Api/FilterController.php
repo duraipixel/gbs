@@ -122,7 +122,7 @@ class FilterController extends Controller
     {
         $page                   = $request->page ?? 0;
         $take                   = $request->take ?? 12;
-        $filter_category        = $request->category;
+        $filter_category        = $request->categories;
         $filter_sub_category    = $request->scategory;
         $filter_availability    = $request->availability;
         $filter_brand           = $request->brands;
