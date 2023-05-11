@@ -58,19 +58,7 @@ class FilterController extends Controller
             // array('id' => null, 'name' => 'Featured', 'slug' => 'is-featured'),
             array('id' => null, 'name' => 'Price: High to Low', 'slug' => 'price-high-to-low'),
             array('id' => null, 'name' => 'Price: Low to High', 'slug' => 'price-low-to-high'),
-        );
-
-        $discount_collections              = ProductCollection::select('product_collections.id', 'product_collections.collection_name as name', 'product_collections.slug')
-            ->join('product_collections_products', 'product_collections_products.product_collection_id', '=', 'product_collections.id')
-            ->join('products', 'products.id', '=', 'product_collections_products.product_id')
-            ->where('products.stock_status', 'in_stock')
-            ->where('products.status', 'published')
-            ->where('product_collections.is_handpicked_collection', 'no')
-            ->where('product_collections.can_map_discount', 'yes')
-            ->where('product_collections.status', 'published')
-            ->orderBy('product_collections.order_by', 'asc')
-            ->groupBy('product_collections.id')
-            ->get()->toArray();
+        );       
 
         $collection             = ProductCollection::select('product_collections.id', 'product_collections.collection_name as name', 'product_collections.slug')
             ->join('product_collections_products', 'product_collections_products.product_collection_id', '=', 'product_collections.id')
@@ -103,24 +91,15 @@ class FilterController extends Controller
         if( $browse_filed_data ) {
 
             $parent = [];
-            $parent['id']             = $browse_filed_data->id;
-            $parent['title']          = $browse_filed_data->title;
-            $parent['color']          = $browse_filed_data->color;
-            $parent['type']           = $browse_filed_data->fields->slug;
+           
             $items_field = HomepageSettingItems::where('homepage_settings_id', $browse_filed_data->id)->get();
-            $items = [];
+            
             foreach ($items_field as $key => $data_field) {
                 $tmp = [];
-                $tmp['start'] = $data_field->start_size;
-                $tmp['end'] = $data_field->end_size;
-                $image           = $data_field->setting_image_name;
-                $mobUrl          = Storage::url($image);
-                $pathbrowse      = asset($mobUrl);
-                $tmp['path'] = $pathbrowse;
-    
-                $items[] = $tmp;
+                $tmp['name'] = ($data_field->start_size == 0 ? 'Below ' : $data_field->start_size ).'-'.($data_field->end_size == 0 ? 'Above' : $data_field->end_size);
+                $tmp['slug'] = $data_field->start_size.'-'.$data_field->end_size;
+                $parent[] = $tmp;
             }
-            $parent['children'] = $items;
 
         }
 
@@ -589,7 +568,7 @@ class FilterController extends Controller
                 $attributes[] = $tmp;
             }
         }
-        return array('attributes' => $attributes ?? [], 'brands' => $brands ?? []);
+        return array( 'brands' => $brands ?? []);
     }
 
     public function exclusiveProduct()
