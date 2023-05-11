@@ -144,21 +144,7 @@ class FilterController extends Controller
         $price_end = 0;
 
         if (isset($price) && !empty($price)) {            
-            $filter_price_array = explode("_", $price);
-            
-            if( isset( $filter_price_array ) && !empty( $filter_price_array )) {
-                foreach ($filter_price_array as $itemsPrice ) {
-                    # code...
-                    $tmp_price = array_merge(explode('-', $itemsPrice), $tmp_price);
-                }
-            }
-            if( $tmp_price ) {
-
-                // asort($tmp_price);
-                // $price_start = current($tmp_price);
-                // $price_end = end($tmp_price);
-
-            }
+            $filter_price_array = explode("_", $price);        
            
         }
         
@@ -226,12 +212,7 @@ class FilterController extends Controller
             ->when($filter_brand != '', function ($q) use ($filter_brand_array) {
                 return $q->whereIn('brands.slug', $filter_brand_array);
             })
-           
-            // ->when($filter_discount != '', function ($q) use ($filter_discount_array) {
-            //     $q->join('product_collections_products', 'product_collections_products.product_id', '=', 'products.id');
-            //     $q->join('product_collections', 'product_collections.id', '=', 'product_collections_products.product_collection_id');
-            //     return $q->whereIn('product_collections.slug', $filter_discount_array);
-            // })
+                     
             ->when( $filter_attribute != '' || $filter_size_array != '', function($q){
                 $q->join('product_with_attribute_sets', 'product_with_attribute_sets.product_id', '=', 'products.id');
             } )
@@ -261,28 +242,32 @@ class FilterController extends Controller
                             }
                             $i++;
                         }
+
     
                     } 
                 });                
                 
             })
-            ->when($tmp_price != '', function ($q) use ($tmp_price) {
-                if(count($tmp_price) > 0 ){
+            ->when($filter_price_array != '', function ($q) use ($filter_price_array) {
+                // dd( $filter_price_array );
+                if(count($filter_price_array) > 0 ){
                     $j = 1;
-                    foreach ($tmp_price as $price_var) {
+                    foreach ($filter_price_array as $price_var) {
+                        $test_price = explode('-', $price_var);
                         if($j == 1){
 
-                            $q->where(function ($query) use ($price_var) {
-                                return $query->where('products.mrp', '>=', current($price_var))
-                                            ->where('products.mrp','<=', end($price_var));
+                            $q->where(function ($query) use ($test_price) {
+                                return $query->where('products.mrp', '>=', current($test_price))
+                                            ->where('products.mrp','<=', end($test_price));
                             });
 
                         } else {
-                            $q->orWhere(function ($query) use ($price_var) {
-                                return $query->where('products.mrp', '>=', current($price_var))
-                                            ->where('products.mrp','<=', end($price_var));
+                            $q->orWhere(function ($query) use ($test_price) {
+                                return $query->where('products.mrp', '>=', current($test_price))
+                                            ->where('products.mrp','<=', end($test_price));
                             });
                         }
+                        $j++;
                     }
                 }
                 
@@ -317,11 +302,7 @@ class FilterController extends Controller
             ->when($filter_brand != '', function ($q) use ($filter_brand_array) {
                 return $q->whereIn('brands.slug', $filter_brand_array);
             })
-            // ->when($filter_discount != '', function ($q) use ($filter_discount_array) {
-            //     $q->join('product_collections_products', 'product_collections_products.product_id', '=', 'products.id');
-            //     $q->join('product_collections', 'product_collections.id', '=', 'product_collections_products.product_collection_id');
-            //     return $q->whereIn('product_collections.slug', $filter_discount_array);
-            // })
+           
             ->when( $filter_attribute != '' || $filter_size_array != '', function($q){
                 $q->join('product_with_attribute_sets', 'product_with_attribute_sets.product_id', '=', 'products.id');
             })
@@ -357,11 +338,29 @@ class FilterController extends Controller
                 
                 return $q->whereIn('product_with_attribute_sets.title', $productAttrNames);
             })
-            ->when($price_start || $price_end, function ($q) use ($price_start, $price_end) {
-                $q->where(function ($query) use ($price_start, $price_end) {
-                    return $query->where('products.mrp', '>=', $price_start)
-                                ->where('products.mrp','<=', $price_end);
-                });
+            ->when($filter_price_array != '', function ($q) use ($filter_price_array) {
+                // dd( $filter_price_array );
+                if(count($filter_price_array) > 0 ){
+                    $j = 1;
+                    foreach ($filter_price_array as $price_var) {
+                        $test_price = explode('-', $price_var);
+                        if($j == 1){
+
+                            $q->where(function ($query) use ($test_price) {
+                                return $query->where('products.mrp', '>=', current($test_price))
+                                            ->where('products.mrp','<=', end($test_price));
+                            });
+
+                        } else {
+                            $q->orWhere(function ($query) use ($test_price) {
+                                return $query->where('products.mrp', '>=', current($test_price))
+                                            ->where('products.mrp','<=', end($test_price));
+                            });
+                        }
+                        $j++;
+                    }
+                }
+                
             })
             ->when($sort == 'price-high-to-low', function ($q) {
                 $q->orderBy('products.mrp', 'desc');
