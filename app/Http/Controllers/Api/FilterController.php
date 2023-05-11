@@ -103,7 +103,7 @@ class FilterController extends Controller
 
         }
 
-        $browse[] = $parent;
+        $browse = $parent;
 
         $response = $this->getAttributeFilter($category_slug);
         
