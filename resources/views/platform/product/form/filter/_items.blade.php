@@ -26,7 +26,7 @@
             <!--end::Input-->
             <input type="checkbox" name="is_overview_{{ $loop->iteration }}" value="1"
                 @if (isset($attr->is_overview) && $attr->is_overview == 'yes') checked @endif>
-            <button type="button" data-repeater-delete="" class="btn btn-sm btn-icon btn-light-danger removeRow">
+            <button type="button" data-repeater-delete="" class="btn btn-sm btn-icon btn-light-danger removeRow" onclick="return removeRow(this)">
                 <!--begin::Svg Icon | path: icons/duotune/arrows/arr088.svg-->
                 <span class="svg-icon svg-icon-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
