@@ -140,7 +140,7 @@ class FilterController extends Controller
         $price                  = $request->prices;
         $size                   = $request->sizes;
 
-        $not_in_attributes = array('page', 'take', 'categories', 'scategory', 'brands', 'discounts', 'sort_by', 'prices', 'sizes', 'size');
+        $not_in_attributes = array('page', 'take', 'categories', 'scategory', 'brands', 'discounts', 'sort_by', 'prices', 'sizes', 'size', 'customer_id');
         $from_request = $request->all();
 
         $filter_attribute = [];
