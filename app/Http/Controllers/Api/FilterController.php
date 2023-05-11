@@ -195,94 +195,95 @@ class FilterController extends Controller
 
         $take_limit = $take ?? 12;
         $total = Product::select('products.*')->where('products.status', 'published')
-            ->join('product_categories', 'product_categories.id', '=', 'products.category_id')
-            ->leftJoin('product_categories as parent', 'parent.id', '=', 'product_categories.parent_id')
-            ->join('brands', 'brands.id', '=', 'products.brand_id')
-            ->when($filter_category != '', function ($q) use ($filter_category) {
-                $q->where(function ($query) use ($filter_category) {
-                    return $query->where('product_categories.slug', $filter_category)->orWhere('parent.slug', $filter_category);
-                });
-            })
-            ->when($filter_sub_category != '', function ($q) use ($filter_sub_category) {
-                return $q->where('product_categories.slug', $filter_sub_category);
-            })
-            ->when($filter_availability != '', function ($q) use ($filter_availability_array) {
-                return $q->whereIn('products.stock_status', $filter_availability_array);
-            })
-            ->when($filter_brand != '', function ($q) use ($filter_brand_array) {
-                return $q->whereIn('brands.slug', $filter_brand_array);
-            })
-                     
-            ->when( $filter_attribute != '' || $filter_size_array != '', function($q){
-                $q->join('product_with_attribute_sets', 'product_with_attribute_sets.product_id', '=', 'products.id');
-            } )
-            ->when( $discount_start_value != '' && $discount_end_value != '', function($q) use($discount_start_value, $discount_end_value) {
-                
-                $q->where(function ($query) use ($discount_start_value, $discount_end_value) {
-                    return $query->whereRaw('ABS(gbs_products.discount_percentage) >= '. $discount_start_value )
-                                ->whereRaw('ABS(gbs_products.discount_percentage) <= '. $discount_end_value);
-                });
+        ->join('product_categories', 'product_categories.id', '=', 'products.category_id')
+        ->leftJoin('product_categories as parent', 'parent.id', '=', 'product_categories.parent_id')
+        ->join('brands', 'brands.id', '=', 'products.brand_id')
+        ->when($filter_category != '', function ($q) use ($filter_category) {
+            $q->where(function ($query) use ($filter_category) {
+                return $query->where('product_categories.slug', $filter_category)->orWhere('parent.slug', $filter_category);
+            });
+        })
+        ->when($filter_sub_category != '', function ($q) use ($filter_sub_category) {
+            return $q->where('product_categories.slug', $filter_sub_category);
+        })
+        ->when($filter_availability != '', function ($q) use ($filter_availability_array) {
+            return $q->whereIn('products.stock_status', $filter_availability_array);
+        })
+        ->when($filter_brand != '', function ($q) use ($filter_brand_array) {
+            return $q->whereIn('brands.slug', $filter_brand_array);
+        })
+       
+        ->when( $filter_attribute != '' || $filter_size_array != '', function($q){
+            $q->join('product_with_attribute_sets', 'product_with_attribute_sets.product_id', '=', 'products.id');
+        })
+        ->when( $discount_start_value != '' && $discount_end_value != '', function($q) use($discount_start_value, $discount_end_value) {
+            
+            $q->where(function ($query) use ($discount_start_value, $discount_end_value) {
+                return $query->whereRaw('ABS(gbs_products.discount_percentage) >= '. $discount_start_value )
+                            ->whereRaw('ABS(gbs_products.discount_percentage) <= '. $discount_end_value);
+            });
 
-            })
-            ->when($filter_attribute != '', function ($q) use ($productAttrNames) {
-                return $q->whereIn('product_with_attribute_sets.title', $productAttrNames);
-            })
-            ->when($filter_size_array != '', function($q) use($filter_size_array) {
-                $q->where('product_with_attribute_sets.title', 'size');
-                $q->where(function($query) use($filter_size_array){
-                    if( count($filter_size_array) > 1) {
-                        $i = 1;
-                        foreach ($filter_size_array as $size_arr) {
-                            if( $i == 1){
+        })
+        ->when($filter_size_array != '', function($q) use($filter_size_array) {
+            $q->where('product_with_attribute_sets.title', 'size');
+            $q->where(function($query) use($filter_size_array){
+                if( count($filter_size_array) > 0) {
+                    $i = 1;
+                    foreach ($filter_size_array as $size_arr) {
+                        if( $i == 1){
 
-                                $query->where('product_with_attribute_sets.attribute_values', $size_arr );
-                            } else {
-
-                                $query->orWhere('product_with_attribute_sets.attribute_values', $size_arr );
-                            }
-                            $i++;
-                        }
-
-    
-                    } 
-                });                
-                
-            })
-            ->when($filter_price_array != '', function ($q) use ($filter_price_array) {
-                // dd( $filter_price_array );
-                if(count($filter_price_array) > 0 ){
-                    $j = 1;
-                    foreach ($filter_price_array as $price_var) {
-                        $test_price = explode('-', $price_var);
-                        if($j == 1){
-
-                            $q->where(function ($query) use ($test_price) {
-                                return $query->where('products.mrp', '>=', current($test_price))
-                                            ->where('products.mrp','<=', end($test_price));
-                            });
-
+                            $query->where('product_with_attribute_sets.attribute_values', $size_arr );
                         } else {
-                            $q->orWhere(function ($query) use ($test_price) {
-                                return $query->where('products.mrp', '>=', current($test_price))
-                                            ->where('products.mrp','<=', end($test_price));
-                            });
+
+                            $query->orWhere('product_with_attribute_sets.attribute_values', $size_arr );
                         }
-                        $j++;
+                        $i++;
                     }
+
+                } 
+            });                
+            
+        })
+        ->when($filter_attribute != '', function ($q) use ($productAttrNames) {
+            
+            return $q->whereIn('product_with_attribute_sets.title', $productAttrNames);
+        })
+        ->when($filter_price_array != '', function ($q) use ($filter_price_array) {
+            // dd( $filter_price_array );
+            if(count($filter_price_array) > 0 ){
+                $j = 1;
+                foreach ($filter_price_array as $price_var) {
+                    $test_price = explode('-', $price_var);
+                    if($j == 1){
+
+                        $q->where(function ($query) use ($test_price) {
+                            return $query->where('products.mrp', '>=', current($test_price))
+                                        ->where('products.mrp','<=', end($test_price));
+                        });
+
+                    } else {
+                        $q->orWhere(function ($query) use ($test_price) {
+                            return $query->where('products.mrp', '>=', current($test_price))
+                                        ->where('products.mrp','<=', end($test_price));
+                        });
+                    }
+                    $j++;
                 }
-                
-            })
-            ->when($sort == 'price-high-to-low', function ($q) {
-                $q->orderBy('products.mrp', 'desc');
-            })
-            ->when($sort == 'price-low-to-high', function ($q) {
-                $q->orderBy('products.mrp', 'asc');
-            })
-            ->when($sort == 'is_featured', function ($q) {
-                $q->orderBy('products.is_featured', 'desc');
-            })
-            ->where('products.stock_status', 'in_stock')
-            ->count();
+            }
+            
+        })
+        ->when($sort == 'price-high-to-low', function ($q) {
+            $q->orderBy('products.mrp', 'desc');
+        })
+        ->when($sort == 'price-low-to-high', function ($q) {
+            $q->orderBy('products.mrp', 'asc');
+        })
+        ->when($sort == 'is_featured', function ($q) {
+            $q->orderBy('products.is_featured', 'desc');
+        })
+        ->where('products.stock_status', 'in_stock')
+        ->groupBy('products.id')        
+        ->count();
 
         $details = Product::select('products.*')->where('products.status', 'published')
             ->join('product_categories', 'product_categories.id', '=', 'products.category_id')
