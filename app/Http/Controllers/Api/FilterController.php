@@ -546,7 +546,7 @@ class FilterController extends Controller
                         $temp_val['slug'] = str_replace(' ', '__', $items_sub->attribute_values);   
                         $sub_array[] = $temp_val;                 
                     }
-                    $attributes[$att_value->title] = $sub_array;
+                    $attributes[str_replace(' ', '_', strtolower($att_value->title))] = $sub_array;
                 }
                 
             }
