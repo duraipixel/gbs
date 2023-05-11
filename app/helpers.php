@@ -753,7 +753,7 @@ function getIndianCurrency(float $number)
 
 function getDiscountPercentage($mop, $mrp)
 {
-    return round((($mop / $mrp) * 100) - 100);
+    return abs(round((($mop / $mrp) * 100) - 100));
 }
 
 function addonHasSelected($item_id, $product_id, $cart_id ) {

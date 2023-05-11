@@ -151,7 +151,7 @@ class FilterController extends Controller
         $filter_attribute       = $request->attribute_category ?? '';
         $sort                   = $request->sort_by;
         $price                  = $request->price;
-        $size                   = $request->size;
+        $size                   = $request->sizes;
         
         $filter_availability_array = [];
         $filter_attribute_array = [];
@@ -192,8 +192,30 @@ class FilterController extends Controller
         if (isset($filter_brand) && !empty($filter_brand)) {
             $filter_brand_array     = explode("_", $filter_brand);
         }
+        if (isset($size) && !empty($size)) {
+            $filter_size_array     = explode("_", $size);
+        }
+        
+        $discount_start_value = '';
+        $discount_end_value = '';
+
         if (isset($filter_discount) && !empty($filter_discount)) {
             $filter_discount_array     = explode("_", $filter_discount);
+            if( !empty($filter_discount_array ) ) {
+                $dis_array = [];
+                foreach ($filter_discount_array as $dis_arr) {
+                    $dis_array = array_merge( explode('-', $dis_arr), $dis_array) ;
+                }
+            }
+            if( !empty( $dis_array)) {
+                $dis_array = array_unique($dis_array);
+                sort($dis_array);
+
+                $discount_start_value = current($dis_array);
+                $discount_end_value = end($dis_array);
+
+            }
+          
         }
 
         $productAttrNames = [];
@@ -226,14 +248,44 @@ class FilterController extends Controller
                 return $q->whereIn('brands.slug', $filter_brand_array);
             })
            
-            ->when($filter_discount != '', function ($q) use ($filter_discount_array) {
-                $q->join('product_collections_products', 'product_collections_products.product_id', '=', 'products.id');
-                $q->join('product_collections', 'product_collections.id', '=', 'product_collections_products.product_collection_id');
-                return $q->whereIn('product_collections.slug', $filter_discount_array);
+            // ->when($filter_discount != '', function ($q) use ($filter_discount_array) {
+            //     $q->join('product_collections_products', 'product_collections_products.product_id', '=', 'products.id');
+            //     $q->join('product_collections', 'product_collections.id', '=', 'product_collections_products.product_collection_id');
+            //     return $q->whereIn('product_collections.slug', $filter_discount_array);
+            // })
+            ->when( $filter_attribute != '' || $filter_size_array != '', function($q){
+                $q->join('product_with_attribute_sets', 'product_with_attribute_sets.product_id', '=', 'products.id');
+            } )
+            ->when( $discount_start_value != '' && $discount_end_value != '', function($q) use($discount_start_value, $discount_end_value) {
+                
+                $q->where(function ($query) use ($discount_start_value, $discount_end_value) {
+                    return $query->whereRaw('ABS(gbs_products.discount_percentage) >= '. $discount_start_value )
+                                ->whereRaw('ABS(gbs_products.discount_percentage) <= '. $discount_end_value);
+                });
+
             })
             ->when($filter_attribute != '', function ($q) use ($productAttrNames) {
-                $q->join('product_with_attribute_sets', 'product_with_attribute_sets.product_id', '=', 'products.id');
                 return $q->whereIn('product_with_attribute_sets.title', $productAttrNames);
+            })
+            ->when($filter_size_array != '', function($q) use($filter_size_array) {
+                $q->where('product_with_attribute_sets.title', 'size');
+                $q->where(function($query) use($filter_size_array){
+                    if( count($filter_size_array) > 1) {
+                        $i = 1;
+                        foreach ($filter_size_array as $size_arr) {
+                            if( $i == 1){
+
+                                $query->where('product_with_attribute_sets.attribute_values', $size_arr );
+                            } else {
+
+                                $query->orWhere('product_with_attribute_sets.attribute_values', $size_arr );
+                            }
+                            $i++;
+                        }
+    
+                    } 
+                });                
+                
             })
             ->when($price_start || $price_end, function ($q) use ($price_start, $price_end) {
                 $q->where(function ($query) use ($price_start, $price_end) {
@@ -271,13 +323,44 @@ class FilterController extends Controller
             ->when($filter_brand != '', function ($q) use ($filter_brand_array) {
                 return $q->whereIn('brands.slug', $filter_brand_array);
             })
-            ->when($filter_discount != '', function ($q) use ($filter_discount_array) {
-                $q->join('product_collections_products', 'product_collections_products.product_id', '=', 'products.id');
-                $q->join('product_collections', 'product_collections.id', '=', 'product_collections_products.product_collection_id');
-                return $q->whereIn('product_collections.slug', $filter_discount_array);
+            // ->when($filter_discount != '', function ($q) use ($filter_discount_array) {
+            //     $q->join('product_collections_products', 'product_collections_products.product_id', '=', 'products.id');
+            //     $q->join('product_collections', 'product_collections.id', '=', 'product_collections_products.product_collection_id');
+            //     return $q->whereIn('product_collections.slug', $filter_discount_array);
+            // })
+            ->when( $filter_attribute != '' || $filter_size_array != '', function($q){
+                $q->join('product_with_attribute_sets', 'product_with_attribute_sets.product_id', '=', 'products.id');
+            })
+            ->when( $discount_start_value != '' && $discount_end_value != '', function($q) use($discount_start_value, $discount_end_value) {
+                
+                $q->where(function ($query) use ($discount_start_value, $discount_end_value) {
+                    return $query->whereRaw('ABS(gbs_products.discount_percentage) >= '. $discount_start_value )
+                                ->whereRaw('ABS(gbs_products.discount_percentage) <= '. $discount_end_value);
+                });
+
+            })
+            ->when($filter_size_array != '', function($q) use($filter_size_array) {
+                $q->where('product_with_attribute_sets.title', 'size');
+                $q->where(function($query) use($filter_size_array){
+                    if( count($filter_size_array) > 1) {
+                        $i = 1;
+                        foreach ($filter_size_array as $size_arr) {
+                            if( $i == 1){
+
+                                $query->where('product_with_attribute_sets.attribute_values', $size_arr );
+                            } else {
+
+                                $query->orWhere('product_with_attribute_sets.attribute_values', $size_arr );
+                            }
+                            $i++;
+                        }
+    
+                    } 
+                });                
+                
             })
             ->when($filter_attribute != '', function ($q) use ($productAttrNames) {
-                $q->join('product_with_attribute_sets', 'product_with_attribute_sets.product_id', '=', 'products.id');
+                
                 return $q->whereIn('product_with_attribute_sets.title', $productAttrNames);
             })
             ->when($price_start || $price_end, function ($q) use ($price_start, $price_end) {
