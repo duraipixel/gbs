@@ -39,11 +39,16 @@ class FilterController extends Controller
                                 array( 'name' => $second_range.'% To '.round($get_max_discounts->discount).'%', 'slug' => $second_range.'-'.round($get_max_discounts->discount)),
                             );
         }
-
+        /**
+         * over all attributes
+         */
+       
         /** 
          * size filter actions
          */
-        $size_data = ProductWithAttributeSet::select('attribute_values')->where('title', 'Size')->groupByRaw("SUBSTRING_INDEX(gbs_product_with_attribute_sets.attribute_values,' ', 1)")->get();
+        $size_data = ProductWithAttributeSet::select('product_with_attribute_sets.attribute_values')
+                    ->join('products', 'products.id', '=', 'product_with_attribute_sets.product_id')
+                    ->where('product_with_attribute_sets.title', 'Size')->groupByRaw("SUBSTRING_INDEX(gbs_product_with_attribute_sets.attribute_values,' ', 1)")->get();
         $sizes = [];
         if( isset( $size_data ) && !empty( $size_data ) ){
             foreach ($size_data as $size_item ) {
@@ -105,17 +110,21 @@ class FilterController extends Controller
 
         $browse = $parent;
 
-        $response = $this->getAttributeFilter($category_slug);
+        $attr_response = $this->getAttributeFilter($category_slug);
         
         $response['categories'] =  $categories;          
+        $response['brands'] =  $attr_response['brands'];          
         $response['discounts'] = $discounts;          
-        $response['sizes'] = $sizes;
         $response['prices'] = $browse;
-        $response['collection'] = $collection;          
-        $response['handpicked'] = $handpicked;
+        $response['sizes'] = $sizes;
+        $new_array = array_merge($response, $attr_response['attributes']);
+        $new_array['collection'] = $collection;          
+        $new_array['handpicked'] = $handpicked;
+        // dd( $attr_response['attributes'] );
+        // dd( $new_array );
         // $response['sort_by'] =  $sort_by;          
 
-        return $response;
+        return $new_array;
     }
 
     public function getProducts(Request $request)
@@ -507,83 +516,43 @@ class FilterController extends Controller
             ->where('products.status', 'published')->groupBy('products.brand_id')
             ->get()->toArray();
 
-        $whereIn = [];
-        if( isset( $productCategory ) && !empty( $productCategory ) ) {
-            $whereIn[] = $productCategory->id;
-            if (isset($productCategory->childCategory) && !empty($productCategory->childCategory)) {
-                foreach ($productCategory->childCategory  as $items) {
-                    $whereIn[] = $items->id;
-                }
-            }
-        } else {
-            $productCategory = ProductCategory::where('status', 'published')->get();
-            if( isset( $productCategory ) && !empty($productCategory) ) {
-                foreach ($productCategory as $catItem) {
-                    $whereIn[] = $catItem->id;
-                    if (isset($catItem->childCategory) && !empty($catItem->childCategory)) {
-                        foreach ($catItem->childCategory  as $itemsOne) {
-                            $whereIn[] = $itemsOne->id;
-                        }
-                    }
-                }
-            }
-        }
-
-        $whereIn = array_unique($whereIn);
-        $data = [];
+        $productCategory = ProductCategory::where('slug', $category_slug)->first();
+        // dump($category_slug);
+        // dd( $productCategory );
+        $attribute_header = ProductWithAttributeSet::select('product_with_attribute_sets.*')->join('products', 'products.id', '=', 'product_with_attribute_sets.product_id')
+                            ->where(['products.status' => 'published', 'products.stock_status' => 'in_stock'])
+                            ->groupBy('product_with_attribute_sets.title')                            
+                            ->get();
+                            
         $attributes = [];
-
-        $topLevelData = ProductAttributeSet::select('product_attribute_sets.*')->join('product_with_attribute_sets', 'product_with_attribute_sets.product_attribute_set_id', '=', 'product_attribute_sets.id')
-                                            ->join('products', 'products.id', '=', 'product_with_attribute_sets.product_id')
-                                            ->whereIn('product_attribute_sets.product_category_id', $whereIn)
-                                            ->where(['products.status' => 'published', 'products.stock_status' => 'in_stock'])
-                                            ->groupBy('product_attribute_sets.id')
-                                            ->orderBy('product_attribute_sets.id', 'asc')->get();
-
-        if (isset($topLevelData) && !empty($topLevelData)) {
-            foreach ($topLevelData as $vals) {
-                $tmp = [];
-                $tmp['id'] = $vals->id;
-                $tmp['title'] = $vals->title;
-                $tmp['slug'] = $vals->slug;
+        if( isset( $attribute_header ) && !empty( $attribute_header ) ) {
+            foreach ($attribute_header as $att_value) {
                 
-                $secondLevelData = ProductAttributeSet::select('product_with_attribute_sets.id', 'product_with_attribute_sets.title', 'product_with_attribute_sets.attribute_values', 'product_with_attribute_sets.is_overview', 'product_with_attribute_sets.order_by' )
-                                        ->join('product_with_attribute_sets', 'product_with_attribute_sets.product_attribute_set_id', '=', 'product_attribute_sets.id')
-                                        ->join('products', 'products.id', '=', 'product_with_attribute_sets.product_id')
-                                        ->whereIn('product_attribute_sets.product_category_id', $whereIn)
-                                        ->where(['products.status' => 'published', 'products.stock_status' => 'in_stock'])
-                                        ->where('product_attribute_sets.id', $vals->id)
-                                        ->where('product_with_attribute_sets.status', 'published')
-                                        ->groupBy('product_with_attribute_sets.title')
-                                        ->orderBy('product_with_attribute_sets.title', 'asc')->get();
-                
-                if( isset( $secondLevelData ) && !empty( $secondLevelData ) ) {
-                    foreach ($secondLevelData as $secondValue ) {
-                        $sec = [];
-                        $sec['id'] = $secondValue->id;
-                        $sec['title'] = $secondValue->title;
-
-                        $childItems = ProductAttributeSet::select('product_with_attribute_sets.title', 'product_with_attribute_sets.attribute_values', 'product_with_attribute_sets.is_overview', 'product_with_attribute_sets.order_by' )
-                                        ->join('product_with_attribute_sets', 'product_with_attribute_sets.product_attribute_set_id', '=', 'product_attribute_sets.id')
-                                        ->join('products', 'products.id', '=', 'product_with_attribute_sets.product_id')
-                                        ->whereIn('product_attribute_sets.product_category_id', $whereIn)
-                                        ->where(['products.status' => 'published', 'products.stock_status' => 'in_stock'])
-                                        ->where('product_attribute_sets.id', $vals->id)
-                                        ->where('product_with_attribute_sets.status', 'published')
-                                        ->where('product_with_attribute_sets.title', $secondValue->title )
-                                        ->orderBy('product_with_attribute_sets.title', 'asc')->get()->toArray();
-                        $sec['items'] = $childItems;
-
-                        $tmp['items'] = $sec;
+                /**
+                 * get group by values
+                 */
+                $sub_values = ProductWithAttributeSet::select('product_with_attribute_sets.*')
+                ->join('products', 'products.id', '=', 'product_with_attribute_sets.product_id')
+                ->where(['products.status' => 'published', 'products.stock_status' => 'in_stock'])
+                ->where('product_with_attribute_sets.title', $att_value->title)
+                ->groupBy('product_with_attribute_sets.attribute_values')                            
+                ->get();
+                if( isset( $sub_values ) && !empty( $sub_values ) ) {
+                    $sub_array = [];
+                    foreach ($sub_values as $items_sub ) {
+                        $temp_val = [];
+                        $temp_val['name'] = $items_sub->attribute_values;                    
+                        $temp_val['slug'] = str_replace(' ', '__', $items_sub->attribute_values);   
+                        $sub_array[] = $temp_val;                 
                     }
+                    $attributes[$att_value->title] = $sub_array;
                 }
-                // $tmp['items'] 
                 
-
-                $attributes[] = $tmp;
             }
         }
-        return array( 'brands' => $brands ?? []);
+        
+        
+        return array( 'attributes' => $attributes, 'brands' => $brands ?? []);
     }
 
     public function exclusiveProduct()
