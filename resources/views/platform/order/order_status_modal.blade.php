@@ -64,6 +64,13 @@
                         <div class="row d-none" id="delivery-document">
                             <div class="col-md-12">
                                 <div class="fv-row mb-7">
+                                    <label class="required fw-bold fs-6 mb-2"> OTP </label>
+                                    <input type="text" name="otp" id="otp"
+                                        class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="fv-row mb-7">
                                     <label class="required fw-bold fs-6 mb-2"> Delivery Document </label>
                                     <input type="file" name="delivery_document" id="delivery_document"
                                         class="form-control">
@@ -134,6 +141,13 @@
                     validators: {
                         notEmpty: {
                             message: 'Delivery Document is required'
+                        }
+                    }
+                },
+                'otp': {
+                    validators: {
+                        notEmpty: {
+                            message: 'OTP is required'
                         }
                     }
                 },
@@ -246,8 +260,7 @@
                                 success: function(res) {
                                     if (res.error == 1) {
                                         // Remove loading indication
-                                        submitButton.removeAttribute(
-                                            'data-kt-indicator');
+                                        submitButton.removeAttribute('data-kt-indicator');
                                         // Enable button
                                         submitButton.disabled = false;
                                         let error_msg = res.message
