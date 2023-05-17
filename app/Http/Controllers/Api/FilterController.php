@@ -33,6 +33,8 @@ class FilterController extends Controller
                                     ->where('parent_id', 0)
                                     ->where('id', $category->parent_id)
                                     ->first();
+            } else {
+                $top_category = $category;
             }
         } else {
 
