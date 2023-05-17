@@ -26,11 +26,18 @@ class FilterController extends Controller
          */
         $response = [];
         if( $category_slug ) {
-            $top_category = ProductCategory::select('id', 'name', 'parent_id', 'slug', 'image')->with('childCategory')->where('slug', $category_slug)->first();
+            $category = ProductCategory::select('id', 'name', 'parent_id', 'slug', 'image')->with('childCategory')->where('slug', $category_slug)->first();
+            
+            if( $category->parent_id != 0 ){
+                $top_category = ProductCategory::select('id', 'name', 'parent_id', 'slug', 'image')->with('childCategory')->where('status', 'published')
+                                    ->where('parent_id', 0)
+                                    ->where('id', $category->parent_id)
+                                    ->first();
+            }
         } else {
 
             $top_category = ProductCategory::select('id', 'name', 'parent_id', 'slug', 'image')->with('childCategory')->where('status', 'published')->where('parent_id', 0)
-            ->orderBy('order_by')->first();
+            ->where('slug', 'laptop')->first();
         }
         if( $top_category ) {
             $response = $top_category;
