@@ -16,6 +16,29 @@ use Illuminate\Support\Facades\Storage;
 
 class FilterController extends Controller
 {
+
+    public function getProductListCategory(Request $request)
+    {
+        
+        $category_slug = $request->category_slug ?? '';
+        /**
+         * top menu
+         */
+        $response = [];
+        if( $category_slug ) {
+            $top_category = ProductCategory::select('id', 'name', 'parent_id', 'slug', 'image')->with('childCategory')->where('slug', $category_slug)->first();
+        } else {
+
+            $top_category = ProductCategory::select('id', 'name', 'parent_id', 'slug', 'image')->with('childCategory')->where('status', 'published')->where('parent_id', 0)
+            ->orderBy('order_by')->first();
+        }
+        if( $top_category ) {
+            $response = $top_category;
+        }
+        return $response;
+
+    }
+
     public function getFilterStaticSideMenu(Request $request)
     {
         $category_slug = $request->category_slug ?? '';
@@ -110,6 +133,7 @@ class FilterController extends Controller
         $browse = $parent;
 
         $attr_response = $this->getAttributeFilter($category_slug);
+
 
         $response['categories'] =  $categories;
         $response['brands'] =  $attr_response['brands'];

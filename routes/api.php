@@ -39,6 +39,7 @@ Route::post('/compare/product', [App\Http\Controllers\Api\CompareController::cla
 Route::post('/submit/contact/form', [App\Http\Controllers\Api\CommonController::class, 'submitContactForm']);
 
 Route::post('/get/filter/sidemenus', [App\Http\Controllers\Api\FilterController::class, 'getFilterStaticSideMenu']);
+Route::post('/get/product/list/category', [App\Http\Controllers\Api\FilterController::class, 'getProductListCategory']);
 
 Route::get('/get/products', [App\Http\Controllers\Api\FilterController::class, 'getProducts']);
 Route::post('/get/products/by/slug', [App\Http\Controllers\Api\FilterController::class, 'getProductBySlug']);

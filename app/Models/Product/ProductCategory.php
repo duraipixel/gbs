@@ -50,7 +50,7 @@ class ProductCategory extends Model
 
     public function childCategory() 
     {
-        return $this->hasMany(ProductCategory::class, 'parent_id', 'id')->where('status', 'published')->orderBy('order_by', 'asc');
+        return $this->hasMany(ProductCategory::class, 'parent_id', 'id')->select('id', 'name', 'parent_id', 'slug', 'image')->where('status', 'published')->orderBy('order_by', 'asc');
     }
 
     public function childTopMenuCategory() 
