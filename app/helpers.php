@@ -286,6 +286,7 @@ function getProductApiData($product_data, $customer_id = '')
     $pro['category_name']   = $product_data->productCategory->name ?? '';
     $pro['category_slug']   = $product_data->productCategory->slug ?? '';
     $pro['brand_name']      = $product_data->productBrand->brand_name ?? '';
+    $pro['brand_id']        = $product_data->brand_id ?? '';
     $pro['hsn_code']        = $product_data->hsn_code;
     $pro['product_url']     = $product_data->product_url;
     $pro['sku']             = $product_data->sku;

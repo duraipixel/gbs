@@ -168,12 +168,15 @@ class FilterController extends Controller
         $filter_availability    = $request->availability;
         $filter_brand           = $request->brands;
         $filter_discount        = $request->discounts;
+        $filter_discount_collection = $request->discount_collection;
+        $filter_collection      = $request->collection;
         // $filter_attribute       = $request->attribute_category ?? '';
         $sort                   = $request->sort_by;
         $price                  = $request->prices;
         $size                   = $request->sizes;
+       
 
-        $not_in_attributes = array('page', 'take', 'categories', 'scategory', 'brands', 'discounts', 'sort_by', 'prices', 'sizes', 'size', 'customer_id');
+        $not_in_attributes = array('page', 'take', 'categories', 'scategory', 'brands', 'discounts', 'sort_by', 'prices', 'sizes', 'size', 'customer_id', 'collection', 'discount_collection');
         $from_request = $request->all();
 
         $filter_attribute = [];
@@ -186,6 +189,7 @@ class FilterController extends Controller
                 }
             }
         }
+        
 
         $filter_availability_array = [];
         $filter_attribute_array = [];
@@ -193,6 +197,7 @@ class FilterController extends Controller
         $filter_discount_array = [];
         $filter_price_array = [];
         $filter_size_array = [];
+        $filter_collection_array = [];
         $tmp_price = [];
 
         $price_start = 0;
@@ -202,7 +207,12 @@ class FilterController extends Controller
             $filter_price_array = explode("_", $price);
         }
 
+        if( isset($filter_collection) && !empty( $filter_collection)) {
+            $filter_collection_array = explode("_", $filter_collection);
+        }
 
+        // dd( $filter_collection_array);
+        
         if (isset($filter_availability) && !empty($filter_availability)) {
             $filter_availability_array = explode("-", $filter_availability);
         }
@@ -232,6 +242,7 @@ class FilterController extends Controller
                 $discount_end_value = end($dis_array);
             }
         }
+       
 
         $productAttrNames = [];
         if (isset($filter_attribute_array) && !empty($filter_attribute_array)) {
@@ -349,6 +360,16 @@ class FilterController extends Controller
                     }
                 }
             })
+            ->when( (!empty($filter_collection_array) || !empty( $filter_discount_collection )), function($q) {
+                $q->leftJoin('product_collections_products', 'product_collections_products.product_id', '=', 'products.id');
+                $q->leftJoin('product_collections', 'product_collections.id', '=', 'product_collections_products.product_collection_id');
+            })
+            ->when( !empty($filter_collection_array) , function($q) use ( $filter_collection_array ) {
+                $q->whereIn('product_collections.slug', $filter_collection_array);
+            })
+            ->when( !empty($filter_discount_collection) , function($q) use ( $filter_discount_collection ) {
+                $q->where('product_collections.slug', $filter_discount_collection);
+            })
             ->when($sort == 'price-high-to-low', function ($q) {
                 $q->orderBy('products.mrp', 'desc');
             })
@@ -361,6 +382,7 @@ class FilterController extends Controller
             ->where('products.stock_status', 'in_stock')
             ->groupBy('products.id')
             ->get();
+
         $total = count($total);
 
         $details = Product::select('products.*')->where('products.status', 'published')
@@ -467,6 +489,16 @@ class FilterController extends Controller
                         $j++;
                     }
                 }
+            })
+            ->when( (!empty($filter_collection_array) || !empty( $filter_discount_collection )), function($q) {
+                $q->leftJoin('product_collections_products', 'product_collections_products.product_id', '=', 'products.id');
+                $q->leftJoin('product_collections', 'product_collections.id', '=', 'product_collections_products.product_collection_id');
+            })
+            ->when( !empty($filter_collection_array) , function($q) use ( $filter_collection_array ) {
+                $q->whereIn('product_collections.slug', $filter_collection_array);
+            })
+            ->when( !empty($filter_discount_collection) , function($q) use ( $filter_discount_collection ) {
+                $q->where('product_collections.slug', $filter_discount_collection);
             })
             ->when($sort == 'price-high-to-low', function ($q) {
                 $q->orderBy('products.mrp', 'desc');
