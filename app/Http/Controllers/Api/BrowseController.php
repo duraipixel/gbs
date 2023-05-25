@@ -20,7 +20,7 @@ class BrowseController extends Controller
             $parent['id']             = $data->id;
             $parent['title']          = $data->title;
             $parent['color']          = $data->color;
-            $parent['type']           = $data->fields->slug;
+            $parent['type']           = $data->fields->slug == 'price' ? 'prices' : $data->fields->slug;
             $items_field = HomepageSettingItems::where('homepage_settings_id', $data->id)->get();
             $items = [];
             foreach ($items_field as $key => $data_field) {
