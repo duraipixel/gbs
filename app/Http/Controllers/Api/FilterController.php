@@ -93,8 +93,8 @@ class FilterController extends Controller
 
         $sort_by                = array(
             // array('id' => null, 'name' => 'Featured', 'slug' => 'is-featured'),
-            array('id' => null, 'name' => 'Price: High to Low', 'slug' => 'price-high-to-low'),
-            array('id' => null, 'name' => 'Price: Low to High', 'slug' => 'price-low-to-high'),
+            array('id' => null, 'name' => 'Price: High to Low', 'slug' => 'prices-high-to-low'),
+            array('id' => null, 'name' => 'Price: Low to High', 'slug' => 'prices-low-to-high'),
         );
 
         $collection             = ProductCollection::select('product_collections.id', 'product_collections.collection_name as name', 'product_collections.slug')
