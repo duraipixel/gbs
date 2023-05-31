@@ -53,9 +53,13 @@ class FilterController extends Controller
         $category_slug = $request->category_slug ?? '';
 
         $categories = Product::select('product_categories.id', 'product_categories.name', 'product_categories.slug')
-            ->join('product_categories', 'product_categories.id', '=', 'products.category_id')
+            // ->join('product_categories', 'product_categories.id', '=', 'products.category_id')
+            ->join('product_categories', function ($join) {
+                $join->on('product_categories.id', '=', 'products.category_id');
+                $join->orOn('product_categories.parent_id', '=', 'products.category_id');
+            })
             ->where('product_categories.parent_id', 0)
-            ->groupBy('products.category_id')
+            ->groupBy('product_categories.id')
             ->get()->toArray();
 
         $get_max_discounts = Product::selectRaw('max(abs(gbs_products.discount_percentage)) as discount')
