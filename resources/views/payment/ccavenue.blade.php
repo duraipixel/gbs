@@ -127,7 +127,7 @@
                 <td>Shipping Tel :</td>
                 <td><input type="text" name="delivery_tel" value="9876543210" /></td>
             </tr>
-            <tr>
+            {{-- <tr>
                 <td>Merchant Param1 :</td>
                 <td><input type="text" name="merchant_param1" value="additional Info." /></td>
             </tr>
@@ -146,15 +146,15 @@
             <tr>
                 <td>Merchant Param5 :</td>
                 <td><input type="text" name="merchant_param5" value="additional Info." /></td>
-            </tr>
-            <tr>
+            </tr> --}}
+            {{-- <tr>
                 <td>Promo Code :</td>
                 <td><input type="text" name="promo_code" value="" /></td>
-            </tr>
-            <tr>
+            </tr> --}}
+            {{-- <tr>
                 <td>Vault Info. :</td>
                 <td><input type="text" name="customer_identifier" value="" /></td>
-            </tr>
+            </tr> --}}
             <tr>
                 <td></td>
                 <td><INPUT TYPE="submit" value="CheckOut"></td>
