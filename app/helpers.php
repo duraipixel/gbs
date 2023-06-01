@@ -277,8 +277,8 @@ if (!function_exists('getSaleProductPrices')) {
 
 function getProductApiData($product_data, $customer_id = '')
 {
-//    dd( $product_data->productCategory->name );
-    
+    //    dd( $product_data->productCategory->name );
+
     $category               = $product_data->productCategory;
     $pro                    = [];
     $pro['id']              = $product_data->id;
@@ -319,27 +319,27 @@ function getProductApiData($product_data, $customer_id = '')
     $wishlist = '';
     $is_cart = '';
     $has_purchased = false;
-    $common_reviews = Review::select(DB::raw( 'count(*) as total, CAST(AVG(star) as Decimal(10,1) ) AS rating'))->where(['product_id' => $product_data->id, 'status' => 'approved'])->first();
+    $common_reviews = Review::select(DB::raw('count(*) as total, CAST(AVG(star) as Decimal(10,1) ) AS rating'))->where(['product_id' => $product_data->id, 'status' => 'approved'])->first();
     $has_pickup_store = true;
-    if( isset($customer_id) && !empty( $customer_id) ) {
-        $reviews = Review::where(['product_id' => $product_data->id, 'customer_id' => $customer_id ])->first();
-        $wishlist = Wishlist::where(['product_id' => $product_data->id, 'customer_id' => $customer_id ])->first();
-        $is_cart = Cart::where(['product_id' => $product_data->id, 'customer_id' => $customer_id ])->first();
+    if (isset($customer_id) && !empty($customer_id)) {
+        $reviews = Review::where(['product_id' => $product_data->id, 'customer_id' => $customer_id])->first();
+        $wishlist = Wishlist::where(['product_id' => $product_data->id, 'customer_id' => $customer_id])->first();
+        $is_cart = Cart::where(['product_id' => $product_data->id, 'customer_id' => $customer_id])->first();
         $purchased_data = Order::join('order_products', 'order_products.order_id', '=', 'orders.id')
-                            ->where('orders.customer_id', $customer_id)
-                            ->where('orders.status', 'delivered')
-                            ->where('order_products.product_id', $product_data->id)->first();
+            ->where('orders.customer_id', $customer_id)
+            ->where('orders.status', 'delivered')
+            ->where('order_products.product_id', $product_data->id)->first();
 
-        if( $purchased_data ) {
+        if ($purchased_data) {
             $has_purchased = true;
         }
         /**
          * check cart has different brand
          */
-        $checkCart          = Cart::with(['products', 'products.productCategory'])->when( $customer_id != '', function($q) use($customer_id) {
-                                $q->where('customer_id', $customer_id);
-                            })->get();
-        
+        $checkCart          = Cart::with(['products', 'products.productCategory'])->when($customer_id != '', function ($q) use ($customer_id) {
+            $q->where('customer_id', $customer_id);
+        })->get();
+
         $brand_array = [];
         if (isset($checkCart) && !empty($checkCart)) {
             foreach ($checkCart as $cartitems) {
@@ -347,14 +347,14 @@ function getProductApiData($product_data, $customer_id = '')
                 $brand_array[] = $proitems->brand_id;
             }
         }
-        
-        if( count(array_unique($brand_array)) > 1 ) {
+
+        if (count(array_unique($brand_array)) > 1) {
             $has_pickup_store = false;
         } else {
-            if( !empty( $brand_array ) ) {
+            if (!empty($brand_array)) {
                 $current_cart_brand_id = current($brand_array);
 
-                if( $product_data->brand_id != $current_cart_brand_id ){
+                if ($product_data->brand_id != $current_cart_brand_id) {
                     $has_pickup_store = false;
                 }
             }
@@ -368,7 +368,7 @@ function getProductApiData($product_data, $customer_id = '')
     $pro['is_cart'] = $is_cart ? true : false;
     $pro['cart_id'] = $is_cart->id ?? 0;
     $pro['warranty_available'] = $product_data->warranty ? $product_data->warranty->toArray() : [];
-    
+
 
     $pro['description']             = $product_data->description;
 
@@ -484,37 +484,37 @@ function getProductApiData($product_data, $customer_id = '')
     }
 
     $addon_arr = [];
-    
+
     if (isset($product_data->productAddons) && !empty($product_data->productAddons)) {
-        
+
         foreach ($product_data->productAddons as $items) {
-            
+
             $addon_items = ProductAddon::find($items->product_addon_id);
-            
+
             $temp = [];
-            if( $addon_items ) {
+            if ($addon_items) {
 
                 $temp['id'] = $addon_items->id;
                 $temp['title'] = $addon_items->title;
                 $temp['description'] = $addon_items->description;
-                
+
                 if (!Storage::exists($addon_items->icon)) {
                     $path               = asset('assets/logo/no_Image.jpg');
                 } else {
                     $url                = Storage::url($addon_items->icon);
                     $path               = asset($url);
                 }
-    
+
                 $temp['icon'] = $path;
                 $addon_item_array = [];
                 // dd( $addon_items->items );
-                if( isset( $addon_items->items ) && !empty( $addon_items->items ) ) {
+                if (isset($addon_items->items) && !empty($addon_items->items)) {
                     foreach ($addon_items->items as $aitem) {
-    
+
                         $is_selected = false;
-                        if( isset( $is_cart->id ) && !empty( $is_cart->id ) ) {
-    
-                            $is_selected = addonHasSelected($aitem->id, $product_data->id, $is_cart->id );
+                        if (isset($is_cart->id) && !empty($is_cart->id)) {
+
+                            $is_selected = addonHasSelected($aitem->id, $product_data->id, $is_cart->id);
                         }
                         $tmp = [];
                         $tmp['id'] = $aitem->id;
@@ -542,7 +542,7 @@ function getProductApiData($product_data, $customer_id = '')
 
 function getProductCompareApiData($product_data, $customer_id = '')
 {
-    
+
     $category               = $product_data->productCategory;
     $pro                    = [];
     $pro['id']              = $product_data->id;
@@ -571,9 +571,8 @@ function getProductCompareApiData($product_data, $customer_id = '')
         $path               = asset($url);
     }
 
-    $pro['image']                   = $path;  
+    $pro['image']                   = $path;
     return $pro;
-    
 }
 
 if (!function_exists('getProductPrice')) {
@@ -759,40 +758,88 @@ function getDiscountPercentage($mop, $mrp)
     return abs(round((($mop / $mrp) * 100) - 100));
 }
 
-function addonHasSelected($item_id, $product_id, $cart_id ) {
+function addonHasSelected($item_id, $product_id, $cart_id)
+{
     $cart_data = CartProductAddon::where(['cart_id' => $cart_id, 'product_id' => $product_id, 'addon_item_id' => $item_id])->first();
-    if( $cart_data ) {
+    if ($cart_data) {
         return true;
     } else {
         return false;
     }
 }
 
-function getEndWarrantyDate($warranty_period, $warranty_type) {
-    if( $warranty_period && $warranty_type ) {
+function getEndWarrantyDate($warranty_period, $warranty_type)
+{
+    if ($warranty_period && $warranty_type) {
         switch ($warranty_type) {
             case 'Year':
-                return date('Y-m-d', strtotime('+'.$warranty_period.' year'));
+                return date('Y-m-d', strtotime('+' . $warranty_period . ' year'));
                 break;
             case 'Month':
-                return date("Y-m-d", strtotime("+".$warranty_period." month"));
+                return date("Y-m-d", strtotime("+" . $warranty_period . " month"));
                 break;
-        
+
             default:
                 //for day case
-                return date("Y-m-d", strtotime("+".$warranty_period." day"));
+                return date("Y-m-d", strtotime("+" . $warranty_period . " day"));
                 break;
         }
     }
 }
 
-function generateOtp() {
-    
+function generateOtp()
+{
+
     $otp = random_int(100000, 999999);
     $order_info = Order::where('delivery_otp', $otp)->first();
-    if( $order_info ){
+    if ($order_info) {
         $otp = random_int(100000, 999999);
     }
     return $otp;
+}
 
+function ccEncrypt($plainText, $key)
+{
+    $key = ccHextobin(md5($key));
+    $initVector = pack("C*", 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f);
+    $openMode = openssl_encrypt($plainText, 'AES-128-CBC', $key, OPENSSL_RAW_DATA, $initVector);
+    $encryptedText = bin2hex($openMode);
+    return $encryptedText;
+}
+
+function ccDecrypt($encryptedText, $key)
+{
+    $key = ccHextobin(md5($key));
+    $initVector = pack("C*", 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f);
+    $encryptedText = ccHextobin($encryptedText);
+    $decryptedText = openssl_decrypt($encryptedText, 'AES-128-CBC', $key, OPENSSL_RAW_DATA, $initVector);
+    return $decryptedText;
+}
+//*********** Padding Function *********************
+
+function pkcs5_pad($plainText, $blockSize)
+{
+    $pad = $blockSize - (strlen($plainText) % $blockSize);
+    return $plainText . str_repeat(chr($pad), $pad);
+}
+
+//********** Hexadecimal to Binary function for php 4.0 version ********
+
+function ccHextobin($hexString)
+{
+    $length = strlen($hexString);
+    $binString = "";
+    $count = 0;
+    while ($count < $length) {
+        $subString = substr($hexString, $count, 2);
+        $packedString = pack("H*", $subString);
+        if ($count == 0) {
+            $binString = $packedString;
+        } else {
+            $binString .= $packedString;
+        }
+
+        $count += 2;
+    }
+    return $binString;
 }
