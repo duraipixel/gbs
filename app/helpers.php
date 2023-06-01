@@ -798,6 +798,7 @@ function generateOtp()
     return $otp;
 }
 
+
 function ccEncrypt($plainText, $key)
 {
     $key = ccHextobin(md5($key));

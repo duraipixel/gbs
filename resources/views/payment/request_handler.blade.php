@@ -19,7 +19,7 @@
         @endphp
 
        
-        <form method="post" name="redirect"
+        <form method="get" name="redirect"
             action="https://test.ccavenue.com/transaction/transaction.do?command=initiateTransaction">
 
             <input type=hidden name="encRequest" value="{{ $encrypted_data  }}">
