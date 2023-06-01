@@ -20,7 +20,7 @@ class CCavenueController extends Controller
     public function ccavResponseHandler(Request $request)
     {
         $workingKey = 'B00B81683DCD0816F8F32551E2C2910B';        //Working Key should be provided here.
-        $encResponse = $_POST["encResp"];            //This is the response sent by the CCAvenue Server
+        $encResponse = $_POST["enc_request"];            //This is the response sent by the CCAvenue Server
         $rcvdString = ccDecrypt($encResponse, $workingKey);        //Crypto Decryption used as per the specified working key.
         $order_status = "";
         $decryptValues = explode('&', $rcvdString);
