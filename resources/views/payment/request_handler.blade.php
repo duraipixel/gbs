@@ -15,7 +15,7 @@
                 $merchant_data .= $key . '=' . $value . '&';
             }
             
-            $encrypted_data = encrypt($merchant_data, $working_key); // Method for encrypting the data.
+            $encrypted_data = ccEncrypt($merchant_data, $working_key); // Method for encrypting the data.
         @endphp
 
        
