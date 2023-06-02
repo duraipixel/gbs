@@ -73,6 +73,9 @@ Route::post('/delete/addon', [App\Http\Controllers\Api\CartController::class, 'd
 
 Route::post('/list/customer/reviews', [App\Http\Controllers\Api\CustomerReviewController::class, 'listReviews']);
 
+Route::get('/ccavenue/payment/processing/{customer_id?}/{order_id?}', [App\Http\Controllers\Payment\CCavenueController::class, 'startPayment'])->name('ccav.payment.start');
+
+
 Route::middleware(['client'])->group(function(){
     //get profile data
     Route::post('/get/profile', [App\Http\Controllers\Api\CustomerController::class, 'getProfileDetails']);
@@ -102,6 +105,11 @@ Route::middleware(['client'])->group(function(){
 
     Route::post('/proceed/checkout', [App\Http\Controllers\Api\CheckoutController::class, 'proceedCheckout']);
     Route::post('/verify/payment/signature', [App\Http\Controllers\Api\CheckoutController::class, 'verifySignature']);
+
+    /**
+     * ccave routes
+     */
+    Route::post('/proceed/ccav/checkout', [App\Http\Controllers\Payment\CCavenueController::class, 'proceedCheckout']);
     
     Route::post('/set/recent', [App\Http\Controllers\Api\CommonController::class, 'setRecentView']);
     
