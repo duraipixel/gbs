@@ -74,9 +74,7 @@ class CCavenueController extends Controller
             
             $order_no = $response['order_id'];
             $order_status = $response['order_status'];
-            dump( $order_status );
             $order_info = Order::where('order_no', $order_no)->first();
-            dump( $order_info );
             $encrypted_order_no = base64_encode($order_info->order_no);
             if( strtolower($order_status) == 'success' ) {
                 /*
@@ -116,8 +114,8 @@ class CCavenueController extends Controller
                     $pay_ins['payment_type'] = 'ccavenue';
                     $pay_ins['payment_mode'] = $response['payment_mode'] ?? 'online';
                     $pay_ins['response'] = serialize($response);
-                    $pay_ins['status'] = $order_status;
-                    dd( $pay_ins );
+                    $pay_ins['status'] = 'paid';
+                    
                     Payment::create($pay_ins);
 
                     /**** order history */
@@ -498,7 +496,7 @@ class CCavenueController extends Controller
             $order_info = Order::where('order_no', $order_no)->first();
             // dd( $order_info );
             if( $order_info ) {
-                if( strtolower($order_info->payments->status) == 'success' ) {
+                if( strtolower($order_info->payments->status) == 'paid' ) {
                     $error = 0;
                     $response['error'] = $error;
                     $response['message'] = 'PAYMENT_SUCCESS';
