@@ -296,8 +296,6 @@ class CCavenueController extends Controller
         $checkout_total = str_replace(',', '', $checkout_data->total);
         $pay_amount  = filter_var($checkout_total, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
         
-
-        $order_ins['customer_id'] = $customer_id;
         $order_ins['customer_id'] = $customer_id;
         $order_ins['order_no'] = getOrderNo();
         
@@ -440,31 +438,37 @@ class CCavenueController extends Controller
             $order_id    = base64_decode( $request->order_id );
 
             $order_info = Order::find($order_id);
+            if( $order_info ) {
 
-            $parameters = [
-                'tid' => date('ymdhis'),
-                'order_id' => $order_info->order_no,
-                'amount' => $order_info->amount,
-                'billing_name' => $order_info->billing_name,
-                'billing_address' => $order_info->billing_address_line1,
-                'billing_city' => $order_info->billing_city,
-                'billing_state' => $order_info->billing_state,
-                'billing_zip' => $order_info->billing_post_code,
-                'billing_country' => $order_info->billing_country,
-                'billing_tel' => $order_info->billing_mobile_no,
-                'billing_email' => $order_info->billing_email,
-                'delivery_name' => $order_info->shipping_name,
-                'delivery_address' => $order_info->shipping_address_line1,
-                'delivery_city' => $order_info->shipping_city,
-                'delivery_state' => $order_info->shipping_state,
-                'delivery_zip' => $order_info->shipping_post_code,
-                'delivery_country' => $order_info->shipping_country,
-                'delivery_tel' => $order_info->shipping_mobile_no
-    
-            ];
-    
-            $order = Indipay::prepare($parameters);
-            return Indipay::process($order);
+                $parameters = [
+                    'tid' => date('ymdhis'),
+                    'order_id' => $order_info->order_no,
+                    'amount' => $order_info->amount,
+                    'billing_name' => $order_info->billing_name,
+                    'billing_address' => $order_info->billing_address_line1,
+                    'billing_city' => $order_info->billing_city,
+                    'billing_state' => $order_info->billing_state,
+                    'billing_zip' => $order_info->billing_post_code,
+                    'billing_country' => $order_info->billing_country,
+                    'billing_tel' => $order_info->billing_mobile_no,
+                    'billing_email' => $order_info->billing_email,
+                    'delivery_name' => $order_info->shipping_name,
+                    'delivery_address' => $order_info->shipping_address_line1,
+                    'delivery_city' => $order_info->shipping_city,
+                    'delivery_state' => $order_info->shipping_state,
+                    'delivery_zip' => $order_info->shipping_post_code,
+                    'delivery_country' => $order_info->shipping_country,
+                    'delivery_tel' => $order_info->shipping_mobile_no
+        
+                ];
+        
+                $order = Indipay::prepare($parameters);
+                return Indipay::process($order);
+            } else {
+                $error = 1;
+                $response['error'] = $error;
+                $response['message'] = 'UnAuthorized Access';
+            }
 
         } else {
             $error = 1;
