@@ -13,7 +13,7 @@ Route::get('/test-payment', [App\Http\Controllers\TestController::class, 'paymen
 Route::post('/razor/payment', [App\Http\Controllers\TestController::class, 'verifySignature'])->name('razorpay.payment');
 Route::get('/ccpayment', [App\Http\Controllers\Payment\CCavenueController::class, 'index']);
 Route::post('/ccpayment/request', [App\Http\Controllers\Payment\CCavenueController::class, 'ccavRequestHandler'])->name('ccavenue.request');
-Route::post('/ccpayment/response', [App\Http\Controllers\Payment\CCavenueController::class, 'ccavResponseHandler'])->name('ccavenue.response');
+Route::any('/ccpayment/response', [App\Http\Controllers\Payment\CCavenueController::class, 'ccavResponseHandler'])->name('ccavenue.response');
 
 
 Auth::routes();
