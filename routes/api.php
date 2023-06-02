@@ -110,6 +110,7 @@ Route::middleware(['client'])->group(function(){
      * ccave routes
      */
     Route::post('/proceed/ccav/checkout', [App\Http\Controllers\Payment\CCavenueController::class, 'proceedCheckout']);
+    Route::post('/verify/ccav/token', [App\Http\Controllers\Payment\CCavenueController::class, 'verifyCCavenueTransaction']);
     
     Route::post('/set/recent', [App\Http\Controllers\Api\CommonController::class, 'setRecentView']);
     

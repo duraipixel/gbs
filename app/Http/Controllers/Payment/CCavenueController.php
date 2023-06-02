@@ -68,12 +68,15 @@ class CCavenueController extends Controller
 
         // For Otherthan Default Gateway
         $response = Indipay::gateway('CCAvenue')->response($request);
-
+        $encrypted_order_no = '';
         if( $response ) {
+            
             $order_no = $response['order_id'];
             $order_status = $response['order_status'];
 
             $order_info = Order::where('order_no', $order_no)->first();
+
+            $encrypted_order_no = base64_encode($order_info->order_no);
             if( strtolower($order_status) == 'success' ) {
                 /*
                 Success Payment
@@ -230,6 +233,9 @@ class CCavenueController extends Controller
             $success = false;
             $error_message = 'Payment Failed';
         }
+
+        return redirect()->away('http://192.168.0.59:3000/verify-payment/'.$encrypted_order_no);
+
         return  array('success' => $success, 'message' => $error_message);
         
     }
@@ -478,5 +484,38 @@ class CCavenueController extends Controller
 
         return $response;
         
+    }
+
+    public function verifyCCavenueTransaction(Request $request)
+    {
+
+        $token = $request->token;
+        
+        if( $token ) {
+            $order_no = base64_decode( $token );
+            $order_info = Order::where('order_no', $order_no)->first();
+            if( $order_info ) {
+                if( strtolower($order_info->payments->status) == 'success' ) {
+                    $error = 0;
+                    $response['error'] = $error;
+                    $response['message'] = 'Payment Success';
+                } else {
+                    $error = 0;
+                    $response['error'] = $error;
+                    $response['message'] = 'Payment Failed';
+                }
+            } else {
+                $error = 1;
+                $response['error'] = $error;
+                $response['message'] = 'Payment Token invalid';
+            }
+
+        } else {
+            $error = 1;
+            $response['error'] = $error;
+            $response['message'] = 'Payment Token expired';
+        }
+
+        return $response;
     }
 }
