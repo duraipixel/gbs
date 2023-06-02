@@ -498,22 +498,22 @@ class CCavenueController extends Controller
                 if( strtolower($order_info->payments->status) == 'success' ) {
                     $error = 0;
                     $response['error'] = $error;
-                    $response['message'] = 'Payment Success';
+                    $response['message'] = 'PAYMENT_SUCCESS';
                 } else {
                     $error = 0;
                     $response['error'] = $error;
-                    $response['message'] = 'Payment Failed';
+                    $response['message'] = 'PAYMENT_FAILD';
                 }
             } else {
                 $error = 1;
                 $response['error'] = $error;
-                $response['message'] = 'Payment Token invalid';
+                $response['message'] = 'PAYMENT_TOKEN_INVALID';
             }
 
         } else {
             $error = 1;
             $response['error'] = $error;
-            $response['message'] = 'Payment Token expired';
+            $response['message'] = 'PAYMENT_TOKEN_INVALID';
         }
 
         return $response;
