@@ -11,7 +11,7 @@ Route::get('/test-mail', [App\Http\Controllers\TestController::class, 'sendMail'
 Route::get('/test-invoice', [App\Http\Controllers\TestController::class, 'invoiceSample']);
 Route::get('/test-payment', [App\Http\Controllers\TestController::class, 'payment']);
 Route::post('/razor/payment', [App\Http\Controllers\TestController::class, 'verifySignature'])->name('razorpay.payment');
-Route::get('/ccpayment', [App\Http\Controllers\Payment\CCavenueController::class, 'index']);
+Route::get('/ccpayment', [App\Http\Controllers\Payment\CCavenueController::class, 'index'])->name('ccpayment');
 Route::post('/ccpayment/request', [App\Http\Controllers\Payment\CCavenueController::class, 'ccavRequestHandler'])->name('ccavenue.request');
 Route::any('/ccpayment/response', [App\Http\Controllers\Payment\CCavenueController::class, 'ccavResponseHandler'])->name('ccavenue.response');
 
