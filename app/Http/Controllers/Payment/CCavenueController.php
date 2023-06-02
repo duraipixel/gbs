@@ -117,7 +117,7 @@ class CCavenueController extends Controller
                     $pay_ins['payment_mode'] = $response['payment_mode'] ?? 'online';
                     $pay_ins['response'] = serialize($response);
                     $pay_ins['status'] = $order_status;
-                    die( $pay_ins );
+                    dd( $pay_ins );
                     Payment::create($pay_ins);
 
                     /**** order history */
