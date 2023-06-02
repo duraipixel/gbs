@@ -182,6 +182,9 @@ return [
         'Intervention\Image\ImageServiceProvider',
         Maatwebsite\Excel\ExcelServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
+
+        Softon\Indipay\IndipayServiceProvider::class,
+
     ],
 
     /*
@@ -239,6 +242,8 @@ return [
         'Image' => 'Intervention\Image\Facades\Image',
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
+
+        'Indipay' => Softon\Indipay\Facades\Indipay::class,
 
     ],
 

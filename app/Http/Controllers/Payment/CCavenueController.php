@@ -4,11 +4,37 @@ namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Softon\Indipay\Facades\Indipay;  
 
 class CCavenueController extends Controller
 {
     public function index(Request $request)
     {
+        $parameters = [
+            'tid' => date('ymdhis'),
+            'order_id' => '123654789',
+            'amount' => '1.00',
+            'billing_name' => 'Jon Doe',
+            'billing_address' => 'annanagar, chennai',
+            'billing_city' => 'chennai',
+            'billing_state' => 'Tamil Nadu',
+            'billing_zip' => '600032',
+            'billing_country' => 'India',
+            'billing_tel' => '9551706025',
+            'billing_email' => 'duraibytes@gmail.com',
+            'delivery_name' => 'Chaplin',
+            'delivery_address' => 'room no.701 near bus stand',
+            'delivery_city' => 'Hyderabad',
+            'delivery_state' => 'Tamilnadu',
+            'delivery_zip' => '600049',
+            'delivery_country' => 'India',
+            'delivery_tel' => '9551402025'
+
+        ];
+
+        $order = Indipay::prepare($parameters);
+        return Indipay::process($order);
+
         return view('payment.ccavenue');
     }
 
