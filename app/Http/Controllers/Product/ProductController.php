@@ -322,6 +322,7 @@ class ProductController extends Controller
             if( $request->hasFile('avatar') ) {        
               
                 $imageName                  = uniqid().$request->avatar->getClientOriginalName();
+                $imageName = str_replace([' ', '  '], "_", $imageName);
                 $directory                  = 'products/'.$product_id.'/default';
                 Storage::deleteDirectory('public/'.$directory);
 
@@ -447,6 +448,7 @@ class ProductController extends Controller
             foreach ($files as $file) {
 
                 $imageName = uniqid().$file->getClientOriginalName();
+                $imageName = str_replace([' ', '  '], "_", $imageName);
                 
                 if (!is_dir(storage_path("app/public/products/".$product_id."/gallery"))) {
                     mkdir(storage_path("app/public/products/".$product_id."/gallery"), 0775, true);
