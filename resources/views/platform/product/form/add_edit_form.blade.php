@@ -155,7 +155,9 @@
                             submitButton.disabled = false;
                             setTimeout(() => {
                                 if( res.isUpdate ) {
-                                    // location.reload();
+                                    setTimeout(() => {
+                                        location.reload();
+                                    }, 2000);
                                 } else {
                                     window.location.href = product_url;
                                 }
