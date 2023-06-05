@@ -489,19 +489,27 @@ class CCavenueController extends Controller
     {
 
         $token = $request->token;
-        
+        $orders = [];
         if( $token ) {
             $order_no = base64_decode( $token );
             
             $order_info = Order::where('order_no', $order_no)->first();
             // dd( $order_info );
             if( $order_info ) {
+                $orders = array(
+                            'order_no' => $order_info->order_no,
+                            'amount' => $order_info->amount,
+
+                        );
                 if( strtolower($order_info->payments->status) == 'paid' ) {
                     $error = 0;
                     $response['error'] = $error;
                     $response['message'] = 'PAYMENT_SUCCESS';
+                    $orders['status'] = 'paid';
                 } else {
                     $error = 0;
+                    $orders['status'] = 'failed';
+
                     $response['error'] = $error;
                     $response['message'] = 'PAYMENT_FAILD';
                 }
@@ -516,6 +524,7 @@ class CCavenueController extends Controller
             $response['error'] = $error;
             $response['message'] = 'PAYMENT_TOKEN_INVALID';
         }
+        $response['order'] = $orders;
 
         return $response;
     }
