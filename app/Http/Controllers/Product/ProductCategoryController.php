@@ -161,13 +161,14 @@ class ProductCategoryController extends Controller
                 $ins['status']          = 'unpublished';
             }
             $parent_name = '';
-            if( isset( $parent_id ) && !empty( $parent_id ) ) {
-                $parentInfo             = ProductCategory::find($parent_id);
+            
+            if( !$parent_id ) {
+                $parentInfo             = ProductCategory::find($request->parent_category);
                 $parent_name            = $parentInfo->name;
             }
 
             $ins['slug']                = Str::slug($request->name.' '.$parent_name);
-            // dd( $ins );
+            
             $error                      = 0;
             $categeryInfo               = ProductCategory::updateOrCreate(['id' => $id], $ins);
             $categoryId                 = $categeryInfo->id;

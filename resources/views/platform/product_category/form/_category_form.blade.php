@@ -7,7 +7,7 @@
         <div class="fv-row mb-7">
             <label class="fw-bold fs-6 mb-2"> Is Parent </label>
             <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
-                <input class="form-check-input" type="checkbox"  name="is_parent" id="is_parent" value="1" @if( (isset( $info->parent_id ) && $info->parent_id == 0 ) || !isset($info->parent_id) ) checked @endif />
+                <input class="form-check-input" type="checkbox"  name="is_parent" id="is_parent" value="yes" @if( (isset( $info->parent_id ) && $info->parent_id == 0 ) || !isset($info->parent_id) ) checked @endif />
             </div>
             <div class="fv-row @if( (isset( $info->parent_id ) && $info->parent_id == 0 ) || !isset($info->parent_id) ) d-none @endif" id="parent-tab">
                 <label class="required fw-bold fs-6 mb-2">Parent Category</label>
