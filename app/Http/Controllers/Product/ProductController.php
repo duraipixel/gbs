@@ -289,6 +289,9 @@ class ProductController extends Controller
                     if( isset( $request->home_image[$i] ) && !empty($request->home_image[$i]) ) {
 
                         $imageName                  = uniqid().$request->home_image[$i]->getClientOriginalName();
+                        $imageName = str_replace([' ', '  '], "_", $imageName);
+
+
                         $directory                  = 'products/'.$product_id.'/description';
                         //Storage::deleteDirectory('public/'.$directory);
         
