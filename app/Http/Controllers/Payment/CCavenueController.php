@@ -498,8 +498,7 @@ class CCavenueController extends Controller
             if( $order_info ) {
                 $orders = array(
                             'order_no' => $order_info->order_no,
-                            'amount' => $order_info->amount,
-
+                            'amount' => $order_info->amount
                         );
                 if( strtolower($order_info->payments->status) == 'paid' ) {
                     $error = 0;
