@@ -62,7 +62,7 @@ class MenuController extends Controller
             }
         }
 
-        return $new_menu;
+        return array( 'data' => $new_menu);
 
     }
 
