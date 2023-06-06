@@ -40,19 +40,27 @@ class TestController extends Controller
                     foreach ($cat_item->childCategory as $sub_item) {
                         // dump( $sub_item );
                         // dump( count($sub_item->products ) );
+                        if( !isset( $category[$cat_item->id] ) ) {
+                            $category[$cat_item->id] = array('id' => $cat_item->id, 'name' => $cat_item->name, 'slug' => $cat_item->slug);
+                        }
                         if( count($sub_item->products ) > 0 ) {
                             
                             $category[$cat_item->id]['child'][] = array('id' => $sub_item->id, 'name' => $sub_item->name, 'slug' => $sub_item->slug);
                         }
                     }
                 }
-                if( isset( $category[$cat_item->id] ) ) {
-                    $category[$cat_item->id]['parent'] = array('id' => $cat_item->id, 'name' => $cat_item->name, 'slug' => $cat_item->slug);
-                }
+                
+            }
+        }
+        $new_menu = [];
+        if( !empty( $category ) ) {
+            foreach ($category as $key => $value) {
+                
+                $new_menu[] = $value;
             }
         }
 
-        dd( $category );
+        
         
         // $response = Http::post('https://apiv2.shiprocket.in/v1/external/auth/login',[
         //     'header' => 'Content-Type: application/json',

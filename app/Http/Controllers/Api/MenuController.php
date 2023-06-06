@@ -31,8 +31,38 @@ class MenuController extends Controller
     public function getAllMenu()
     {
 
-        $menus   = ProductCategory::select('id', 'name', 'slug')->where(['status' => 'published', 'parent_id' => 0])->orderBy('order_by', 'asc')->get();
-        return MenuAllResource::collection($menus);
+        $all_category = ProductCategory::where('status', 'published')->where('parent_id', 0)->get();
+
+        $category = [];
+        if( isset( $all_category ) && !empty( $all_category ) ) {
+            foreach ($all_category as $cat_item ) {
+                
+                // dump( $cat_item->childCategory );
+                if( isset( $cat_item->childCategory ) && !empty( $cat_item->childCategory ) ) {
+                    foreach ($cat_item->childCategory as $sub_item) {
+                        // dump( $sub_item );
+                        // dump( count($sub_item->products ) );
+                        if( !isset( $category[$cat_item->id] ) ) {
+                            $category[$cat_item->id] = array('id' => $cat_item->id, 'name' => $cat_item->name, 'slug' => $cat_item->slug);
+                        }
+                        if( count($sub_item->products ) > 0 ) {
+                            
+                            $category[$cat_item->id]['child'][] = array('id' => $sub_item->id, 'name' => $sub_item->name, 'slug' => $sub_item->slug);
+                        }
+                    }
+                }
+                
+            }
+        }
+        $new_menu = [];
+        if( !empty( $category ) ) {
+            foreach ($category as $key => $value) {
+                
+                $new_menu[] = $value;
+            }
+        }
+
+        return $new_menu;
 
     }
 
