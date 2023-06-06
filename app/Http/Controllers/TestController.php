@@ -6,6 +6,8 @@ use App\Mail\TestMail;
 use App\Models\GlobalSettings;
 use App\Models\Master\EmailTemplate;
 use App\Models\Order;
+use App\Models\Product\Product;
+use App\Models\Product\ProductCategory;
 use App\Models\SmsTemplate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -20,13 +22,37 @@ class TestController extends Controller
 {
     public function index(Request $request) {
 
-        $number = ['919551706025'];
-        $name   = 'Durairaj';
-        $orderId = 'IOP9090909P';
-        $companyName = 'Musee Musical';
-        $credentials = 'durairamyb@mail.com/09876543456';
-        $message = "Dear $name, Ref.Id $orderId, Thank you for register with $companyName. Your credentials are $credentials. -MUSEE MUSICAL";
-        sendSMS($number, $message, []);
+        // $number = ['919551706025'];
+        // $name   = 'Durairaj';
+        // $orderId = 'IOP9090909P';
+        // $companyName = 'Musee Musical';
+        // $credentials = 'durairamyb@mail.com/09876543456';
+        // $message = "Dear $name, Ref.Id $orderId, Thank you for register with $companyName. Your credentials are $credentials. -MUSEE MUSICAL";
+        // sendSMS($number, $message, []);
+        $all_category = ProductCategory::where('status', 'published')->where('parent_id', 0)->get();
+
+        $category = [];
+        if( isset( $all_category ) && !empty( $all_category ) ) {
+            foreach ($all_category as $cat_item ) {
+                
+                // dump( $cat_item->childCategory );
+                if( isset( $cat_item->childCategory ) && !empty( $cat_item->childCategory ) ) {
+                    foreach ($cat_item->childCategory as $sub_item) {
+                        // dump( $sub_item );
+                        // dump( count($sub_item->products ) );
+                        if( count($sub_item->products ) > 0 ) {
+                            
+                            $category[$cat_item->id]['child'][] = array('id' => $sub_item->id, 'name' => $sub_item->name, 'slug' => $sub_item->slug);
+                        }
+                    }
+                }
+                if( isset( $category[$cat_item->id] ) ) {
+                    $category[$cat_item->id]['parent'] = array('id' => $cat_item->id, 'name' => $cat_item->name, 'slug' => $cat_item->slug);
+                }
+            }
+        }
+
+        dd( $category );
         
         // $response = Http::post('https://apiv2.shiprocket.in/v1/external/auth/login',[
         //     'header' => 'Content-Type: application/json',

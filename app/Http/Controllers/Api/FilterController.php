@@ -12,6 +12,7 @@ use App\Models\Product\ProductCategory;
 use App\Models\Product\ProductCollection;
 use App\Models\Product\ProductWithAttributeSet;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class FilterController extends Controller
@@ -19,49 +20,70 @@ class FilterController extends Controller
 
     public function getProductListCategory(Request $request)
     {
-        
+
         $category_slug = $request->category_slug ?? '';
         /**
          * top menu
          */
         $response = [];
-        if( $category_slug ) {
+        if ($category_slug) {
             $category = ProductCategory::select('id', 'name', 'parent_id', 'slug', 'image')->with('childCategory')->where('slug', $category_slug)->first();
-            
-            if( $category->parent_id != 0 ){
+
+            if ($category->parent_id != 0) {
                 $top_category = ProductCategory::select('id', 'name', 'parent_id', 'slug', 'image')->with('childCategory')->where('status', 'published')
-                                    ->where('parent_id', 0)
-                                    ->where('id', $category->parent_id)
-                                    ->first();
+                    ->where('parent_id', 0)
+                    ->where('id', $category->parent_id)
+                    ->first();
             } else {
                 $top_category = $category;
             }
         } else {
 
             $top_category = ProductCategory::select('id', 'name', 'parent_id', 'slug', 'image')->with('childCategory')->where('status', 'published')->where('parent_id', 0)
-            ->where('slug', 'laptop')->first();
+                ->where('slug', 'laptop')->first();
         }
-        if( $top_category ) {
+        if ($top_category) {
             $response = $top_category;
         }
         return $response;
-
     }
 
     public function getFilterStaticSideMenu(Request $request)
     {
         $category_slug = $request->category_slug ?? '';
 
-        $categories = Product::select('product_categories.id', 'product_categories.name', 'product_categories.slug')
-            // ->join('product_categories', 'product_categories.id', '=', 'products.category_id')
-            ->join('product_categories', function ($join) {
-                $join->on('product_categories.id', '=', 'products.category_id');
-                $join->orOn('product_categories.parent_id', '=', 'products.category_id');
-            })
-            ->where('product_categories.parent_id', 0)
-            ->groupBy('product_categories.id')
-            ->get()->toArray();
+        $categories_data = Product::selectRaw('parent.name,parent.slug,parent.id,parent.parent_id')
+            ->join('product_categories', 'product_categories.id', '=', 'products.category_id')
+            ->join(DB::raw('gbs_product_categories parent'), 'product_categories.parent_id', '=', DB::raw('parent.id'))
+            ->where('products.status', 'published')
+            ->where('products.stock_status', 'in_stock')
+            ->whereNotNull(DB::raw('parent.id'))
+            ->groupBy(DB::raw('parent.id'))
+            ->get();
 
+        $all_category = ProductCategory::where('status', 'published')->where('parent_id', 0)->get();
+
+        $category = [];
+        $categories = [];
+        if (isset($all_category) && !empty($all_category)) {
+            foreach ($all_category as $cat_item) {
+
+                if (isset($cat_item->childCategory) && !empty($cat_item->childCategory) ) {
+                    foreach ($cat_item->childCategory as $sub_item) {
+                     
+                        if (count($sub_item->products) > 0) {
+
+                            $category[$cat_item->id]['child'][] = array('id' => $sub_item->id, 'name' => $sub_item->name, 'slug' => $sub_item->slug);
+                        }
+                    }
+                }
+                if (isset($category[$cat_item->id])) {
+                    $categories[] = array('id' => $cat_item->id, 'name' => $cat_item->name, 'slug' => $cat_item->slug);
+                }
+            }
+        }
+
+        
         $get_max_discounts = Product::selectRaw('max(abs(gbs_products.discount_percentage)) as discount')
             ->where('status', 'published')->where('stock_status', 'in_stock')->first();
         $discounts = [];
@@ -178,7 +200,7 @@ class FilterController extends Controller
         $sort                   = $request->sort_by;
         $price                  = $request->prices;
         $size                   = $request->sizes;
-       
+
 
         $not_in_attributes = array('page', 'take', 'categories', 'scategory', 'brands', 'discounts', 'sort_by', 'prices', 'sizes', 'size', 'customer_id', 'collection', 'discount_collection');
         $from_request = $request->all();
@@ -193,7 +215,7 @@ class FilterController extends Controller
                 }
             }
         }
-        
+
 
         $filter_availability_array = [];
         $filter_attribute_array = [];
@@ -211,12 +233,12 @@ class FilterController extends Controller
             $filter_price_array = explode("_", $price);
         }
 
-        if( isset($filter_collection) && !empty( $filter_collection)) {
+        if (isset($filter_collection) && !empty($filter_collection)) {
             $filter_collection_array = explode("_", $filter_collection);
         }
 
         // dd( $filter_collection_array);
-        
+
         if (isset($filter_availability) && !empty($filter_availability)) {
             $filter_availability_array = explode("-", $filter_availability);
         }
@@ -246,7 +268,7 @@ class FilterController extends Controller
                 $discount_end_value = end($dis_array);
             }
         }
-       
+
 
         $productAttrNames = [];
         if (isset($filter_attribute_array) && !empty($filter_attribute_array)) {
@@ -364,14 +386,14 @@ class FilterController extends Controller
                     }
                 }
             })
-            ->when( (!empty($filter_collection_array) || !empty( $filter_discount_collection )), function($q) {
+            ->when((!empty($filter_collection_array) || !empty($filter_discount_collection)), function ($q) {
                 $q->leftJoin('product_collections_products', 'product_collections_products.product_id', '=', 'products.id');
                 $q->leftJoin('product_collections', 'product_collections.id', '=', 'product_collections_products.product_collection_id');
             })
-            ->when( !empty($filter_collection_array) , function($q) use ( $filter_collection_array ) {
+            ->when(!empty($filter_collection_array), function ($q) use ($filter_collection_array) {
                 $q->whereIn('product_collections.slug', $filter_collection_array);
             })
-            ->when( !empty($filter_discount_collection) , function($q) use ( $filter_discount_collection ) {
+            ->when(!empty($filter_discount_collection), function ($q) use ($filter_discount_collection) {
                 $q->where('product_collections.slug', $filter_discount_collection);
             })
             ->when($sort == 'price-high-to-low', function ($q) {
@@ -494,14 +516,14 @@ class FilterController extends Controller
                     }
                 }
             })
-            ->when( (!empty($filter_collection_array) || !empty( $filter_discount_collection )), function($q) {
+            ->when((!empty($filter_collection_array) || !empty($filter_discount_collection)), function ($q) {
                 $q->leftJoin('product_collections_products', 'product_collections_products.product_id', '=', 'products.id');
                 $q->leftJoin('product_collections', 'product_collections.id', '=', 'product_collections_products.product_collection_id');
             })
-            ->when( !empty($filter_collection_array) , function($q) use ( $filter_collection_array ) {
+            ->when(!empty($filter_collection_array), function ($q) use ($filter_collection_array) {
                 $q->whereIn('product_collections.slug', $filter_collection_array);
             })
-            ->when( !empty($filter_discount_collection) , function($q) use ( $filter_discount_collection ) {
+            ->when(!empty($filter_discount_collection), function ($q) use ($filter_discount_collection) {
                 $q->where('product_collections.slug', $filter_discount_collection);
             })
             ->when($sort == 'price-high-to-low', function ($q) {

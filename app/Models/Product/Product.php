@@ -158,6 +158,9 @@ class Product extends Model
     {
         return $this->hasOne(Tax::class, 'id', 'tax_id');
     }
-
+    public function productCategoryList()
+    {
+        return $this->hasOne(ProductCategory::class, 'id', 'category_id');
+    }
 
 }
