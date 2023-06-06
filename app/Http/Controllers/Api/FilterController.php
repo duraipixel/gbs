@@ -65,21 +65,34 @@ class FilterController extends Controller
 
         $category = [];
         $categories = [];
-        if (isset($all_category) && !empty($all_category)) {
-            foreach ($all_category as $cat_item) {
+        $all_category = ProductCategory::where('status', 'published')->where('parent_id', 0)->get();
 
-                if (isset($cat_item->childCategory) && !empty($cat_item->childCategory) ) {
+        $category = [];
+        if( isset( $all_category ) && !empty( $all_category ) ) {
+            foreach ($all_category as $cat_item ) {
+                
+                // dump( $cat_item->childCategory );
+                if( isset( $cat_item->childCategory ) && !empty( $cat_item->childCategory ) ) {
                     foreach ($cat_item->childCategory as $sub_item) {
-                     
-                        if (count($sub_item->products) > 0) {
-
+                        // dump( $sub_item );
+                        // dump( count($sub_item->products ) );
+                        if( !isset( $category[$cat_item->id] ) ) {
+                            $category[$cat_item->id] = array('id' => $cat_item->id, 'name' => $cat_item->name, 'slug' => $cat_item->slug);
+                        }
+                        if( count($sub_item->products ) > 0 ) {
+                            
                             $category[$cat_item->id]['child'][] = array('id' => $sub_item->id, 'name' => $sub_item->name, 'slug' => $sub_item->slug);
                         }
                     }
                 }
-                if (isset($category[$cat_item->id])) {
-                    $categories[] = array('id' => $cat_item->id, 'name' => $cat_item->name, 'slug' => $cat_item->slug);
-                }
+                
+            }
+        }
+        
+        if( !empty( $category ) ) {
+            foreach ($category as $key => $value) {
+                
+                $categories[] = $value;
             }
         }
 
