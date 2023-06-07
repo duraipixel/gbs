@@ -504,6 +504,7 @@ class CCavenueController extends Controller
                 $access_code = 'AVRD71KE07CJ75DRJC';
                 $working_key = 'B00B81683DCD0816F8F32551E2C2910B';
                 $merchant_data = json_encode($merchant_json_data);
+                dump( $merchant_data );
                 $encrypted_data = encrypt($merchant_data, $working_key);
                 $final_data = array(
                     'enc_request' => $encrypted_data,
@@ -512,6 +513,7 @@ class CCavenueController extends Controller
                     'request_type' => 'JSON',
                     'response_type' => 'JSON'
                 );
+                dump( $final_data );
                 // 'enc_request=' . $encrypted_data . '&access_code=' . $access_code . '&command=orderStatusTracker&request_type=JSON&response_type=JSON';
                 $this->statusTracker($final_data);
 
