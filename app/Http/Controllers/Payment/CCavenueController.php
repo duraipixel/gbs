@@ -497,23 +497,23 @@ class CCavenueController extends Controller
                 /** 
                  *  check status api
                  */
-                $merchant_json_data = array(
-                    'order_no' => $order_info->order_no,
-                    'reference_no' => $pay_response->tracking_id ?? ''
-                );
-                $access_code = 'AVRD71KE07CJ75DRJC';
-                $working_key = 'B00B81683DCD0816F8F32551E2C2910B';
-                $merchant_data = json_encode($merchant_json_data);
-                $encrypted_data = encrypt($merchant_data, $working_key);
-                $final_data = array(
-                    'enc_request' => $encrypted_data,
-                    'access_code' => $access_code,
-                    'command' => 'orderStatusTracker',
-                    'request_type' => 'JSON',
-                    'response_type' => 'JSON'
-                );
-                // 'enc_request=' . $encrypted_data . '&access_code=' . $access_code . '&command=orderStatusTracker&request_type=JSON&response_type=JSON';
-                $this->statusTracker($final_data);
+                // $merchant_json_data = array(
+                //     'order_no' => $order_info->order_no,
+                //     'reference_no' => $pay_response->tracking_id ?? ''
+                // );
+                // $access_code = 'AVRD71KE07CJ75DRJC';
+                // $working_key = 'B00B81683DCD0816F8F32551E2C2910B';
+                // $merchant_data = json_encode($merchant_json_data);
+                // $encrypted_data = encrypt($merchant_data, $working_key);
+                // $final_data = array(
+                //     'enc_request' => $encrypted_data,
+                //     'access_code' => $access_code,
+                //     'command' => 'orderStatusTracker',
+                //     'request_type' => 'JSON',
+                //     'response_type' => 'JSON'
+                // );
+                // // 'enc_request=' . $encrypted_data . '&access_code=' . $access_code . '&command=orderStatusTracker&request_type=JSON&response_type=JSON';
+                // $this->statusTracker($final_data);
 
                 if (strtolower($order_info->payments->status) == 'paid') {
                     $error = 0;
@@ -544,7 +544,7 @@ class CCavenueController extends Controller
 
     public function statusTracker($final_data)
     {
-        
+
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, "https://apitest.ccavenue.com/apis/servlet/DoWebTrans");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
