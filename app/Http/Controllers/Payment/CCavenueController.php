@@ -68,15 +68,15 @@ class CCavenueController extends Controller
 
         // For Otherthan Default Gateway
         $response = Indipay::gateway('CCAvenue')->response($request);
-        
+
         $encrypted_order_no = '';
-        if( $response ) {
-            
+        if ($response) {
+
             $order_no = $response['order_id'];
             $order_status = $response['order_status'];
             $order_info = Order::where('order_no', $order_no)->first();
             $encrypted_order_no = base64_encode($order_info->order_no);
-            if( strtolower($order_status) == 'success' ) {
+            if (strtolower($order_status) == 'success') {
                 /*
                 Success Payment
                 */
@@ -115,7 +115,7 @@ class CCavenueController extends Controller
                     $pay_ins['payment_mode'] = $response['payment_mode'] ?? 'online';
                     $pay_ins['response'] = serialize($response);
                     $pay_ins['status'] = 'paid';
-                    
+
                     Payment::create($pay_ins);
 
                     /**** order history */
@@ -131,9 +131,9 @@ class CCavenueController extends Controller
                     #generate invoice
                     $globalInfo = GlobalSettings::first();
                     $pickup_details = [];
-                    if( isset( $order_info->pickup_store_id ) && !empty( $order_info->pickup_store_id) && !empty($order_info->pickup_store_details )) {
+                    if (isset($order_info->pickup_store_id) && !empty($order_info->pickup_store_id) && !empty($order_info->pickup_store_details)) {
                         $pickup = unserialize($order_info->pickup_store_details);
-                        
+
                         $pickup_details = $pickup;
                     }
                     $pdf = PDF::loadView('platform.invoice.index', compact('order_info', 'globalInfo', 'pickup_details'));
@@ -165,11 +165,11 @@ class CCavenueController extends Controller
                     $title = str_replace("}", "", $title);
                     eval("\$title = \"$title\";");
 
-                    $filePath = 'storage/invoice_order/'.$order_info->order_no.'.pdf';
+                    $filePath = 'storage/invoice_order/' . $order_info->order_no . '.pdf';
                     $send_mail = new OrderMail($templateMessage, $title, $filePath);
                     // return $send_mail->render();
                     Mail::to($order_info->billing_email)->send($send_mail);
-                                   
+
 
                     #send sms for notification
                     $sms_params = array(
@@ -224,24 +224,21 @@ class CCavenueController extends Controller
                     $pay_ins['status'] = 'failed';
 
                     Payment::create($pay_ins);
-                 
                 }
             }
-
         } else {
             $success = false;
             $error_message = 'Payment Failed';
         }
 
-        return redirect()->away('http://beta.gbssystems.com/verify-payment/'.$encrypted_order_no);
+        return redirect()->away('http://beta.gbssystems.com/verify-payment/' . $encrypted_order_no);
 
         return  array('success' => $success, 'message' => $error_message);
-        
     }
 
     public function proceedCheckout(Request $request)
     {
-        
+
         $checkout_infomation = json_decode($request->checkout_infomation);
 
         $customer_id            = $request->customer_id;
@@ -259,7 +256,7 @@ class CCavenueController extends Controller
         $coupon_code = '';
         $coupon_amount = 0;
         $coupon_id = 0;
-        if( isset( $coupon_data ) && !empty( $coupon_data ) ){
+        if (isset($coupon_data) && !empty($coupon_data)) {
             $coupon_code = $coupon_data->coupon_code;
             $coupon_id = $coupon_data->coupon_id;
             $coupon_amount = $coupon_data->coupon_amount;
@@ -267,7 +264,7 @@ class CCavenueController extends Controller
         }
 
         $pickup_address_details = '';
-        if( isset( $pickup_store_address ) && !empty( $pickup_store_address ) ){
+        if (isset($pickup_store_address) && !empty($pickup_store_address)) {
             $pickup_address_details = serialize($pickup_store_address);
         }
 
@@ -283,7 +280,7 @@ class CCavenueController extends Controller
                 }
             }
         }
-        if( !$shipping_method ) {
+        if (!$shipping_method) {
             $message = 'Shipping Method not selected';
             $error = 1;
             $response['error'] = $error;
@@ -294,22 +291,22 @@ class CCavenueController extends Controller
             $error = 1;
             $response['error'] = $error;
             $response['message'] = implode(',', $errors);
-            
+
             return $response;
         }
 
         $checkout_total = str_replace(',', '', $checkout_data->total);
         $pay_amount  = filter_var($checkout_total, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-        
+
         $order_ins['customer_id'] = $customer_id;
         $order_ins['order_no'] = getOrderNo();
-        
-       
+
+
         $order_ins['amount'] = $pay_amount;
         $order_ins['tax_amount'] = $checkout_data->tax_total ? str_replace(',', '', $checkout_data->tax_total) : 0;
         $order_ins['tax_percentage'] = $checkout_data->tax_percentage ?? 0;
         $order_ins['shipping_amount'] = $checkout_data->shipping_charge ?? 0;
-        
+
         $order_ins['coupon_amount'] = $coupon_amount ?? 0;
         $order_ins['coupon_code'] = $coupon_code ?? '';
         $order_ins['coupon_details'] = $coupon_details ?? '';
@@ -318,7 +315,7 @@ class CCavenueController extends Controller
         $order_ins['order_status_id'] = $order_status->id;
         $order_ins['status'] = 'pending';
         $order_ins['pickup_store_details'] = $pickup_address_details;
-        
+
         $order_ins['billing_name'] = $billing_address->name;
         $order_ins['billing_email'] = $billing_address->email;
         $order_ins['billing_mobile_no'] = $billing_address->mobile_no;
@@ -341,19 +338,17 @@ class CCavenueController extends Controller
         $order_ins['shipping_state'] = $shipping_address->state ?? $billing_address->state ?? null;
         $order_ins['shipping_city'] = $shipping_address->city ?? $billing_address->city ?? null;
 
-        if( isset( $shipping_method ) && $shipping_method != 'PICKUP_FROM_STORE' && isset( $shipping_address ) && !empty( $shipping_address ) ) {
+        if (isset($shipping_method) && $shipping_method != 'PICKUP_FROM_STORE' && isset($shipping_address) && !empty($shipping_address)) {
 
             $shipping_type_info = ShippingCharge::find($checkout_infomation->standard_shipping_charge_id);
 
             $order_ins['shipping_options'] = $checkout_infomation->standard_shipping_charge_id ?? 0;
-            if( $shipping_type_info ) {
+            if ($shipping_type_info) {
                 $order_ins['shipping_type'] = $shipping_type_info->shipping_title ?? 'Free';
             }
-
         } else {
 
             $order_ins['pickup_store_id'] = $checkout_infomation->pickup_store_id;
-
         }
 
         $order_info = Order::create($order_ins);
@@ -374,34 +369,34 @@ class CCavenueController extends Controller
                 $items_ins['strice_price'] = $item->strike_price;
                 $items_ins['save_price'] = $item->save_price;
                 $items_ins['base_price'] = $item->tax->basePrice;
-                $items_ins['tax_amount'] = ($item->tax->gstAmount ?? 0 ) * $item->quantity;
+                $items_ins['tax_amount'] = ($item->tax->gstAmount ?? 0) * $item->quantity;
                 $items_ins['tax_percentage'] = $item->tax->tax_percentage ?? 0;
                 $items_ins['sub_total'] = $item->sub_total;
 
                 $order_product_info = OrderProduct::create($items_ins);
-                if( isset( $product_info->warranty_id ) && !empty($product_info->warranty_id ) ) {
+                if (isset($product_info->warranty_id) && !empty($product_info->warranty_id)) {
                     $warranty_info = Warranty::find($product_info->warranty_id);
-                    if($warranty_info){
+                    if ($warranty_info) {
                         $war = [];
-                        $war['order_product_id']= $order_product_info->id;
-                        $war['product_id']= $order_product_info->product_id;
-                        $war['warranty_id']= $warranty_info->id;
-                        $war['warranty_name']= $warranty_info->name;
-                        $war['description']= $warranty_info->description;
-                        $war['warranty_period']= $warranty_info->warranty_period;
-                        $war['warranty_period_type']= $warranty_info->warranty_period_type;
-                        $war['warranty_start_date']= date('Y-m-d');
-                        $war['warranty_end_date']= getEndWarrantyDate($warranty_info->warranty_period, $warranty_info->warranty_period_type);
-                        $war['status']= 'active';
+                        $war['order_product_id'] = $order_product_info->id;
+                        $war['product_id'] = $order_product_info->product_id;
+                        $war['warranty_id'] = $warranty_info->id;
+                        $war['warranty_name'] = $warranty_info->name;
+                        $war['description'] = $warranty_info->description;
+                        $war['warranty_period'] = $warranty_info->warranty_period;
+                        $war['warranty_period_type'] = $warranty_info->warranty_period_type;
+                        $war['warranty_start_date'] = date('Y-m-d');
+                        $war['warranty_end_date'] = getEndWarrantyDate($warranty_info->warranty_period, $warranty_info->warranty_period_type);
+                        $war['status'] = 'active';
                         OrderProductWarranty::create($war);
                     }
-                } 
+                }
 
                 /**
                  * insert addons data
                  */
-                if( isset( $item->addons ) && !empty( $item->addons ) ) {
-                    foreach ($item->addons as $aitems ) {
+                if (isset($item->addons) && !empty($item->addons)) {
+                    foreach ($item->addons as $aitems) {
                         $add_ins = [];
                         $add_ins['order_id'] = $order_id;
                         $add_ins['product_id'] = $item->id;
@@ -423,27 +418,26 @@ class CCavenueController extends Controller
         $his['order_id'] = $order_info->id;
         $his['action'] = 'Order Initiate';
         $his['description'] = 'Order has been Initiated successfully';
-        OrderHistory::create($his);   
-        
+        OrderHistory::create($his);
+
         $error = 0;
         $response['error'] = $error;
         $response['message'] = 'Payment Initiated Successfully';
-        $response['redirect_url'] = route('ccav.payment.start', ['customer_id' => base64_encode($customer_id), 'order_id' => base64_encode($order_info->id)] );
+        $response['redirect_url'] = route('ccav.payment.start', ['customer_id' => base64_encode($customer_id), 'order_id' => base64_encode($order_info->id)]);
 
         return $response;
-        
     }
 
     public function startPayment(Request $request,)
     {
-        
-        if( $request->customer_id && $request->order_id ) {
-            
-            $customer_id = base64_decode( $request->customer_id );
-            $order_id    = base64_decode( $request->order_id );
+
+        if ($request->customer_id && $request->order_id) {
+
+            $customer_id = base64_decode($request->customer_id);
+            $order_id    = base64_decode($request->order_id);
 
             $order_info = Order::find($order_id);
-            if( $order_info ) {
+            if ($order_info) {
 
                 $parameters = [
                     'tid' => date('ymdhis'),
@@ -464,9 +458,9 @@ class CCavenueController extends Controller
                     'delivery_zip' => $order_info->shipping_post_code,
                     'delivery_country' => $order_info->shipping_country,
                     'delivery_tel' => $order_info->shipping_mobile_no
-        
+
                 ];
-        
+
                 $order = Indipay::prepare($parameters);
                 return Indipay::process($order);
             } else {
@@ -474,7 +468,6 @@ class CCavenueController extends Controller
                 $response['error'] = $error;
                 $response['message'] = 'UnAuthorized Access';
             }
-
         } else {
             $error = 1;
             $response['error'] = $error;
@@ -482,7 +475,6 @@ class CCavenueController extends Controller
         }
 
         return $response;
-        
     }
 
     public function verifyCCavenueTransaction(Request $request)
@@ -490,17 +482,31 @@ class CCavenueController extends Controller
 
         $token = $request->token;
         $orders = [];
-        if( $token ) {
-            $order_no = base64_decode( $token );
-            
+        if ($token) {
+            $order_no = base64_decode($token);
+
             $order_info = Order::where('order_no', $order_no)->first();
             // dd( $order_info );
-            if( $order_info ) {
+            if ($order_info) {
                 $orders = array(
-                            'order_no' => $order_info->order_no,
-                            'amount' => $order_info->amount
-                        );
-                if( strtolower($order_info->payments->status) == 'paid' ) {
+                    'order_no' => $order_info->order_no,
+                    'amount' => $order_info->amount
+                );
+                /** 
+                 *  check status api
+                 */
+                $merchant_json_data = array(
+                    'order_no' => $order_info->order_no,
+                    'reference_no' => ''
+                );
+                $access_code = 'AVRD71KE07CJ75DRJC';
+                $working_key = 'B00B81683DCD0816F8F32551E2C2910B';
+                $merchant_data = json_encode($merchant_json_data);
+                $encrypted_data = encrypt($merchant_data, $working_key);
+                $final_data = 'enc_request=' . $encrypted_data . '&access_code=' . $access_code . '&command=orderStatusTracker&request_type=JSON&response_type=JSON';
+                $this->statusTracker($final_data);
+
+                if (strtolower($order_info->payments->status) == 'paid') {
                     $error = 0;
                     $response['error'] = $error;
                     $response['message'] = 'PAYMENT_SUCCESS';
@@ -517,7 +523,6 @@ class CCavenueController extends Controller
                 $response['error'] = $error;
                 $response['message'] = 'PAYMENT_TOKEN_INVALID';
             }
-
         } else {
             $error = 1;
             $response['error'] = $error;
@@ -526,5 +531,68 @@ class CCavenueController extends Controller
         $response['order'] = $orders;
 
         return $response;
+    }
+
+    public function statusTracker($final_data)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, "https://apitest.ccavenue.com/apis/servlet/DoWebTrans");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_VERBOSE, 1);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, 'Content-Type: application/json');
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $final_data);
+        // Get server response ...
+        $result = curl_exec($ch);
+        curl_close($ch);
+        dd($result);
+    }
+
+
+    function statusEncrypt($plainText, $key)
+    {
+        $key = $this->statusHextobin(md5($key));
+        $initVector = pack("C*", 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f);
+        $openMode = openssl_encrypt($plainText, 'AES-128-CBC', $key, OPENSSL_RAW_DATA, $initVector);
+        $encryptedText = bin2hex($openMode);
+        return $encryptedText;
+    }
+
+    function statusDecrypt($encryptedText, $key)
+    {
+        $key = $this->statusHextobin(md5($key));
+        $initVector = pack("C*", 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f);
+        $encryptedText = $this->statusHextobin($encryptedText);
+        $decryptedText = openssl_decrypt($encryptedText, 'AES-128-CBC', $key, OPENSSL_RAW_DATA, $initVector);
+        return $decryptedText;
+    }
+    //*********** Padding Function *********************
+
+    function status_pkcs5_pad($plainText, $blockSize)
+    {
+        $pad = $blockSize - (strlen($plainText) % $blockSize);
+        return $plainText . str_repeat(chr($pad), $pad);
+    }
+
+    //********** Hexadecimal to Binary function for php 4.0 version ********
+
+    function statusHextobin($hexString)
+    {
+        $length = strlen($hexString);
+        $binString = "";
+        $count = 0;
+        while ($count < $length) {
+            $subString = substr($hexString, $count, 2);
+            $packedString = pack("H*", $subString);
+            if ($count == 0) {
+                $binString = $packedString;
+            } else {
+                $binString .= $packedString;
+            }
+
+            $count += 2;
+        }
+        return $binString;
     }
 }
