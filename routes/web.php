@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 
 // Route::get('/', [App\Http\Controllers\HomeController::class, 'index']);
 Route::get('/upload-image', [App\Http\Controllers\ImageUploadController::class, 'index']);
-Route::get('/test', [App\Http\Controllers\TestController::class, 'index']);
+Route::get('/test', [App\Http\Controllers\TestController::class, 'testPaymentStatusTracker']);
 Route::get('/test-mail', [App\Http\Controllers\TestController::class, 'sendMail']);
 Route::get('/test-invoice', [App\Http\Controllers\TestController::class, 'invoiceSample']);
 Route::get('/test-payment', [App\Http\Controllers\TestController::class, 'payment']);
