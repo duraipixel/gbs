@@ -313,4 +313,31 @@ class TestController extends Controller
         $decryptedText = openssl_decrypt($encryptedText, 'AES-128-CBC', $key, OPENSSL_RAW_DATA, $initVector);
         return $decryptedText;
     }
+
+    function status_pkcs5_pad($plainText, $blockSize)
+    {
+        $pad = $blockSize - (strlen($plainText) % $blockSize);
+        return $plainText . str_repeat(chr($pad), $pad);
+    }
+
+    //********** Hexadecimal to Binary function for php 4.0 version ********
+
+    function statusHextobin($hexString)
+    {
+        $length = strlen($hexString);
+        $binString = "";
+        $count = 0;
+        while ($count < $length) {
+            $subString = substr($hexString, $count, 2);
+            $packedString = pack("H*", $subString);
+            if ($count == 0) {
+                $binString = $packedString;
+            } else {
+                $binString .= $packedString;
+            }
+
+            $count += 2;
+        }
+        return $binString;
+    }
 }
