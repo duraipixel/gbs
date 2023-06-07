@@ -486,10 +486,9 @@ class CCavenueController extends Controller
             $order_no = base64_decode($token);
 
             $order_info = Order::where('order_no', $order_no)->first();
-            dump( $order_info );
+            
             $pay_response = unserialize($order_info->payments->response);
-            dump($pay_response['tracking_id']);
-            dd( $order_info->payments->response );
+            
             if ($order_info) {
                 $orders = array(
                     'order_no' => $order_info->order_no,
