@@ -504,8 +504,8 @@ class CCavenueController extends Controller
                 $access_code = 'AVRD71KE07CJ75DRJC';
                 $working_key = 'B00B81683DCD0816F8F32551E2C2910B';
                 $merchant_data = json_encode($merchant_json_data);
-                dump( $merchant_data );
                 $encrypted_data = $this->statusEncrypt($merchant_data, $working_key);
+                dump( $encrypted_data );
                 $final_data = array(
                     'enc_request' => $encrypted_data,
                     'access_code' => $access_code,
