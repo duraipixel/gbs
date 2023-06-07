@@ -18,6 +18,7 @@ use App\Models\Product\Product;
 use App\Models\ShippingCharge;
 use App\Models\Warranty;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Softon\Indipay\Facades\Indipay;
 use PDF;
@@ -515,8 +516,11 @@ class CCavenueController extends Controller
                     'version' => '1.2'
                 );
                 dump( $final_data );
+
+                $response = Http::post('https://apitest.ccavenue.com/apis/servlet/DoWebTrans', $final_data);
+                dd( $response );
                 // 'enc_request=' . $encrypted_data . '&access_code=' . $access_code . '&command=orderStatusTracker&request_type=JSON&response_type=JSON';
-                $this->statusTracker($final_data);
+                
 
                 if (strtolower($order_info->payments->status) == 'paid') {
                     $error = 0;
