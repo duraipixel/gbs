@@ -510,7 +510,6 @@ class CCavenueController extends Controller
                 $working_key = 'B00B81683DCD0816F8F32551E2C2910B';
                 $merchant_data = json_encode($merchant_json_data);
                 $encrypted_data = $this->statusEncrypt($merchant_data, $working_key);
-                dump($encrypted_data);
                 
                 $curl = curl_init();
 
