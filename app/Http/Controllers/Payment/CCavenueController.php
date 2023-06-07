@@ -544,6 +544,23 @@ class CCavenueController extends Controller
 
                 curl_close($curl);
                 dump( $response );
+                $status_response = '';
+                if( $response ) {
+                    $information = explode('&', $response);
+
+                    $dataSize = sizeof($information);
+                    for ($i = 0; $i < $dataSize; $i++) {
+                        $info_value = explode('=', $information[$i]);
+                        if ($info_value[0] == 'enc_response') {
+                            $status_response = $this->statusDecrypt(trim($info_value[1]), $working_key);	
+                            break;	
+                        }
+                    }
+                    dump( $status_response );
+                    $obj = json_decode($status_response);
+                    dd($obj);
+                    
+                }
                 dd( json_encode($response) );
 
                 // 'enc_request=' . $encrypted_data . '&access_code=' . $access_code . '&command=orderStatusTracker&request_type=JSON&response_type=JSON';
