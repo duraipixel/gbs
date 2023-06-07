@@ -543,7 +543,8 @@ class CCavenueController extends Controller
                 $response = curl_exec($curl);
 
                 curl_close($curl);
-                dd( $response );
+                dump( $response );
+                dd( json_encode($response) );
 
                 // 'enc_request=' . $encrypted_data . '&access_code=' . $access_code . '&command=orderStatusTracker&request_type=JSON&response_type=JSON';
 
