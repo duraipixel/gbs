@@ -487,7 +487,9 @@ class CCavenueController extends Controller
 
             $order_info = Order::where('order_no', $order_no)->first();
             dump( $order_info );
-            dd( $order_info->payments );
+            $pay_response = unserialize($order_info->payments->response);
+            dump($pay_response->tracking_id);
+            dd( $order_info->payments->response );
             if ($order_info) {
                 $orders = array(
                     'order_no' => $order_info->order_no,
@@ -498,7 +500,7 @@ class CCavenueController extends Controller
                  */
                 $merchant_json_data = array(
                     'order_no' => $order_info->order_no,
-                    'reference_no' => ''
+                    'reference_no' => $pay_response->tracking_id ?? ''
                 );
                 $access_code = 'AVRD71KE07CJ75DRJC';
                 $working_key = 'B00B81683DCD0816F8F32551E2C2910B';
