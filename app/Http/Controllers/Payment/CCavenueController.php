@@ -558,29 +558,29 @@ class CCavenueController extends Controller
 
                 if (strtolower($order_info->payments->status) == 'paid') {
                     $error = 0;
-                    $response['error'] = $error;
-                    $response['message'] = 'PAYMENT_SUCCESS';
+                    $response_api['error'] = $error;
+                    $response_api['message'] = 'PAYMENT_SUCCESS';
                     $orders['status'] = 'paid';
                 } else {
                     $error = 0;
                     $orders['status'] = 'failed';
 
-                    $response['error'] = $error;
-                    $response['message'] = 'PAYMENT_FAILD';
+                    $response_api['error'] = $error;
+                    $response_api['message'] = 'PAYMENT_FAILD';
                 }
             } else {
                 $error = 1;
-                $response['error'] = $error;
-                $response['message'] = 'PAYMENT_TOKEN_INVALID';
+                $response_api['error'] = $error;
+                $response_api['message'] = 'PAYMENT_TOKEN_INVALID';
             }
         } else {
             $error = 1;
-            $response['error'] = $error;
-            $response['message'] = 'PAYMENT_TOKEN_INVALID';
+            $response_api['error'] = $error;
+            $response_api['message'] = 'PAYMENT_TOKEN_INVALID';
         }
-        $response['order'] = $orders;
+        $response_api['order'] = $orders;
 
-        return $response;
+        return $response_api;
     }
 
     public function statusTracker($final_data)
