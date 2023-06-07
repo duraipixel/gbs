@@ -23,7 +23,10 @@ use Softon\Indipay\Facades\Indipay;
 use PDF;
 use Mail;
 use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Request as Psr7Request;
+use Illuminate\Http\Request;
+
+
 
 class CCavenueController extends Controller
 {
@@ -519,7 +522,7 @@ class CCavenueController extends Controller
 
                 $client = new Client();
                 $url = 'https://apitest.ccavenue.com/apis/servlet/DoWebTrans?enc_request='.$encrypted_data.'&access_code=AVRD71KE07CJ75DRJC&request_type=JSON&response_type=JSON&command=orderStatusTracker&version=1.2';
-                $request = new Request('POST', $url);
+                $request = new Psr7Request('POST', $url);
         
                 $res = $client->sendAsync($request)->wait();
                 dd( $res->getBody() );
