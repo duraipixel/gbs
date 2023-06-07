@@ -18,7 +18,10 @@ class Payment extends Model
         'payment_mode',
         'response',
         'description',
-        'status'
+        'status',
+        'enc_request',
+        'enc_response',
+        'enc_response_decrypted'
     ];
 
     public function orders()

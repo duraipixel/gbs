@@ -511,22 +511,7 @@ class CCavenueController extends Controller
                 $merchant_data = json_encode($merchant_json_data);
                 $encrypted_data = $this->statusEncrypt($merchant_data, $working_key);
                 dump($encrypted_data);
-                // $final_data = array(
-                //     'enc_request' => $encrypted_data,
-                //     'access_code' => $access_code,
-                //     'command' => 'orderStatusTracker',
-                //     'request_type' => 'JSON',
-                //     'response_type' => 'JSON',
-                //     'version' => '1.2'
-                // );
-
-                // $client = new Client();
-                // $url = 'https://apitest.ccavenue.com/apis/servlet/DoWebTrans?enc_request='.$encrypted_data.'&access_code=AVRD71KE07CJ75DRJC&request_type=JSON&response_type=JSON&command=orderStatusTracker&version=1.2';
-                // $request = new Psr7Request('POST', $url);
-
-                // $res = $client->sendAsync($request)->wait();
-                // dump( $res );
-                // dd( $res->getBody() );
+                
                 $curl = curl_init();
 
                 curl_setopt_array($curl, array(
@@ -541,11 +526,18 @@ class CCavenueController extends Controller
                 ));
 
                 $response = curl_exec($curl);
-
                 curl_close($curl);
-                dump( $response );
+                
                 $status_response = '';
                 if( $response ) {
+
+                    $payment_info = Payment::where('order_id', $order_info->id )->orderBy('id', 'desc')->first();
+                    $payment_info->enc_request = $encrypted_data;
+                    $payment_info->enc_response = $response;
+                    
+                    /** 
+                     * insert in payment enc_response
+                     */
                     $information = explode('&', $response);
 
                     $dataSize = sizeof($information);
@@ -556,12 +548,12 @@ class CCavenueController extends Controller
                             break;	
                         }
                     }
-                    dump( $status_response );
+                    
+                    $payment_info->enc_response_decrypted = $status_response;
                     $obj = json_decode($status_response);
-                    dd($obj);
+                    $payment_info->save();
                     
                 }
-                dd( json_encode($response) );
 
                 // 'enc_request=' . $encrypted_data . '&access_code=' . $access_code . '&command=orderStatusTracker&request_type=JSON&response_type=JSON';
 
