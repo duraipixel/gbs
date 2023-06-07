@@ -511,7 +511,8 @@ class CCavenueController extends Controller
                     'access_code' => $access_code,
                     'command' => 'orderStatusTracker',
                     'request_type' => 'JSON',
-                    'response_type' => 'JSON'
+                    'response_type' => 'JSON',
+                    'version' => '1.2'
                 );
                 dump( $final_data );
                 // 'enc_request=' . $encrypted_data . '&access_code=' . $access_code . '&command=orderStatusTracker&request_type=JSON&response_type=JSON';
