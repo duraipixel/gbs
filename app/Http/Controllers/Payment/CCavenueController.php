@@ -17,12 +17,13 @@ use App\Models\Product\OrderProductAddon;
 use App\Models\Product\Product;
 use App\Models\ShippingCharge;
 use App\Models\Warranty;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Softon\Indipay\Facades\Indipay;
 use PDF;
 use Mail;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request;
 
 class CCavenueController extends Controller
 {
@@ -507,20 +508,23 @@ class CCavenueController extends Controller
                 $merchant_data = json_encode($merchant_json_data);
                 $encrypted_data = $this->statusEncrypt($merchant_data, $working_key);
                 dump( $encrypted_data );
-                $final_data = array(
-                    'enc_request' => $encrypted_data,
-                    'access_code' => $access_code,
-                    'command' => 'orderStatusTracker',
-                    'request_type' => 'JSON',
-                    'response_type' => 'JSON',
-                    'version' => '1.2'
-                );
-                dump( $final_data );
+                // $final_data = array(
+                //     'enc_request' => $encrypted_data,
+                //     'access_code' => $access_code,
+                //     'command' => 'orderStatusTracker',
+                //     'request_type' => 'JSON',
+                //     'response_type' => 'JSON',
+                //     'version' => '1.2'
+                // );
 
-                $response = Http::post('https://apitest.ccavenue.com/apis/servlet/DoWebTrans', $final_data);
-                dd( $response );
-                // 'enc_request=' . $encrypted_data . '&access_code=' . $access_code . '&command=orderStatusTracker&request_type=JSON&response_type=JSON';
+                $client = new Client();
+                $url = 'https://apitest.ccavenue.com/apis/servlet/DoWebTrans?enc_request='.$encrypted_data.'&access_code=AVRD71KE07CJ75DRJC&request_type=JSON&response_type=JSON&command=orderStatusTracker&version=1.2';
+                $request = new Request('POST', $url);
+        
+                $res = $client->sendAsync($request)->wait();
+                dd( $res->getBody() );
                 
+                // 'enc_request=' . $encrypted_data . '&access_code=' . $access_code . '&command=orderStatusTracker&request_type=JSON&response_type=JSON';
 
                 if (strtolower($order_info->payments->status) == 'paid') {
                     $error = 0;
