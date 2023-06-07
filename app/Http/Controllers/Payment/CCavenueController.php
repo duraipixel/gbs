@@ -525,6 +525,7 @@ class CCavenueController extends Controller
                 $request = new Psr7Request('POST', $url);
         
                 $res = $client->sendAsync($request)->wait();
+                dump( $res );
                 dd( $res->getBody() );
                 
                 // 'enc_request=' . $encrypted_data . '&access_code=' . $access_code . '&command=orderStatusTracker&request_type=JSON&response_type=JSON';
