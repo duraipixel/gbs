@@ -491,9 +491,9 @@ class CCavenueController extends Controller
             $order_no = base64_decode($token);
 
             $order_info = Order::where('order_no', $order_no)->first();
-            
+
             $pay_response = unserialize($order_info->payments->response);
-            
+
             if ($order_info) {
                 $orders = array(
                     'order_no' => $order_info->order_no,
@@ -510,7 +510,7 @@ class CCavenueController extends Controller
                 $working_key = 'B00B81683DCD0816F8F32551E2C2910B';
                 $merchant_data = json_encode($merchant_json_data);
                 $encrypted_data = $this->statusEncrypt($merchant_data, $working_key);
-                dump( $encrypted_data );
+                dump($encrypted_data);
                 // $final_data = array(
                 //     'enc_request' => $encrypted_data,
                 //     'access_code' => $access_code,
@@ -520,14 +520,31 @@ class CCavenueController extends Controller
                 //     'version' => '1.2'
                 // );
 
-                $client = new Client();
-                $url = 'https://apitest.ccavenue.com/apis/servlet/DoWebTrans?enc_request='.$encrypted_data.'&access_code=AVRD71KE07CJ75DRJC&request_type=JSON&response_type=JSON&command=orderStatusTracker&version=1.2';
-                $request = new Psr7Request('POST', $url);
-        
-                $res = $client->sendAsync($request)->wait();
-                dump( $res );
-                dd( $res->getBody() );
-                
+                // $client = new Client();
+                // $url = 'https://apitest.ccavenue.com/apis/servlet/DoWebTrans?enc_request='.$encrypted_data.'&access_code=AVRD71KE07CJ75DRJC&request_type=JSON&response_type=JSON&command=orderStatusTracker&version=1.2';
+                // $request = new Psr7Request('POST', $url);
+
+                // $res = $client->sendAsync($request)->wait();
+                // dump( $res );
+                // dd( $res->getBody() );
+                $curl = curl_init();
+
+                curl_setopt_array($curl, array(
+                    CURLOPT_URL => 'https://apitest.ccavenue.com/apis/servlet/DoWebTrans?enc_request='.$encrypted_data.'&access_code=AVRD71KE07CJ75DRJC&request_type=JSON&response_type=JSON&command=orderStatusTracker&version=1.2',
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'POST',
+                ));
+
+                $response = curl_exec($curl);
+
+                curl_close($curl);
+                dd( $response );
+
                 // 'enc_request=' . $encrypted_data . '&access_code=' . $access_code . '&command=orderStatusTracker&request_type=JSON&response_type=JSON';
 
                 if (strtolower($order_info->payments->status) == 'paid') {
