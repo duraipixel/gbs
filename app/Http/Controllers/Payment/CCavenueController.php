@@ -188,6 +188,9 @@ class CCavenueController extends Controller
 
                     $success = true;
                     $error_message = "Payment Success";
+
+                    $order_info->response_amount = $paid_amount;
+                    $order_info->save();
                 }
             } else {
                 /*
@@ -557,7 +560,7 @@ class CCavenueController extends Controller
 
                 // 'enc_request=' . $encrypted_data . '&access_code=' . $access_code . '&command=orderStatusTracker&request_type=JSON&response_type=JSON';
 
-                if (strtolower($order_info->payments->status) == 'paid') {
+                if (strtolower($order_info->payments->status) == 'paid' && $order_info->amount == $order_info->response_amount ) {
                     $error = 0;
                     $response_api['error'] = $error;
                     $response_api['message'] = 'PAYMENT_SUCCESS';
@@ -598,7 +601,7 @@ class CCavenueController extends Controller
         // Get server response ...
         $result = curl_exec($ch);
         curl_close($ch);
-        dd($result);
+        // dd($result);
     }
 
 
