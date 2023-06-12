@@ -62,7 +62,7 @@ class CCavenueController extends Controller
 
     public function ccavRequestHandler(Request $request)
     {
-        dd( $request->all() );
+        
         return view('payment.request_handler');
     }
 
@@ -71,7 +71,7 @@ class CCavenueController extends Controller
 
         // For default Gateway
         $response = Indipay::response($request);
-
+        dd( $response );
         // For Otherthan Default Gateway
         $response = Indipay::gateway('CCAvenue')->response($request);
 
