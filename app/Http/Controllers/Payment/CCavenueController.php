@@ -71,7 +71,7 @@ class CCavenueController extends Controller
 
         // For default Gateway
         $response = Indipay::response($request);
-        dd( $response );
+        // dd( $response );
         // For Otherthan Default Gateway
         $response = Indipay::gateway('CCAvenue')->response($request);
         
