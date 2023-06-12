@@ -62,6 +62,7 @@ class CCavenueController extends Controller
 
     public function ccavRequestHandler(Request $request)
     {
+        dd( $request->all() );
         return view('payment.request_handler');
     }
 
