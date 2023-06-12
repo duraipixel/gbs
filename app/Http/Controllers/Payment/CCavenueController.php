@@ -74,15 +74,15 @@ class CCavenueController extends Controller
         dd( $response );
         // For Otherthan Default Gateway
         $response = Indipay::gateway('CCAvenue')->response($request);
-
+        
         $encrypted_order_no = '';
         if ($response) {
-
+            $paid_amount = $response['amount'];
             $order_no = $response['order_id'];
             $order_status = $response['order_status'];
             $order_info = Order::where('order_no', $order_no)->first();
             $encrypted_order_no = base64_encode($order_info->order_no);
-            if (strtolower($order_status) == 'success') {
+            if (strtolower($order_status) == 'success' && $order_info->amount == $paid_amount ) {
                 /*
                 Success Payment
                 */
