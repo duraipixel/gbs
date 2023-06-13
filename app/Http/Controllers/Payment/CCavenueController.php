@@ -255,7 +255,8 @@ class CCavenueController extends Controller
         $customer_id            = $request->customer_id;
 
         $cart_info = $this->getCartListAll($customer_id);
-        dump( $cart_info['cart_total'] );
+        $cart_db_total = str_replace(',', '', $cart_info['cart_total'] );
+        dump( $cart_db_total );
         dd( $cart_info );
         $order_status           = OrderStatus::where('status', 'published')->where('order', 1)->first();
         $shipping_method        = $checkout_infomation->shipping_method;
