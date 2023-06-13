@@ -256,7 +256,6 @@ class CCavenueController extends Controller
         $coupon_amount = 0;
         $shippping_fee_amount = 0;
 
-
         $cart_info = Cart::selectRaw('sum(sub_total) as total, coupon_id, coupon_amount, shipping_fee_id, shipping_fee')->where('customer_id', $customer_id)->first();
         $total_order_value = 0;
         if($cart_info ) {
@@ -264,8 +263,7 @@ class CCavenueController extends Controller
             $shippping_fee_amount = ($cart_info->shipping_fee ?? 0);
             $total_order_value = $cart_info->total - ($cart_info->coupon_amount ?? 0) + ($cart_info->shipping_fee ?? 0);
         }
-        dump($total_order_value);
-        dd( $cart_info );
+        
         $order_status           = OrderStatus::where('status', 'published')->where('order', 1)->first();
         $shipping_method        = $checkout_infomation->shipping_method;
 
