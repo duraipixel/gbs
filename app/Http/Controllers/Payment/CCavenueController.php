@@ -262,7 +262,7 @@ class CCavenueController extends Controller
         if($cart_info ) {
             $coupon_amount = $cart_info->coupon_amount ?? 0;
             $shippping_fee_amount = ($cart_info->shipping_fee ?? 0);
-            $total_order_value = $cart_info->total - ($cart_info->coupon_amount ?? 0) - ($cart_info->shipping_fee ?? 0);
+            $total_order_value = $cart_info->total - ($cart_info->coupon_amount ?? 0) + ($cart_info->shipping_fee ?? 0);
         }
         dump($total_order_value);
         dd( $cart_info );
