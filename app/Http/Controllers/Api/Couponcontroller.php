@@ -222,6 +222,11 @@ class Couponcontroller extends Controller
         $customer_id = $request->customer_id;
         $shipping_fee_id = $request->shipping_fee_id ?? '';
         $carts          = Cart::where('customer_id', $customer_id)->get();
+        $update_data = [
+            'coupon_id' => null,
+            'coupon_amount' => null
+        ];
+        DB::table('carts')->where('customer_id', $customer_id)->update($update_data);
         $response['cart_info'] = $this->getCartListAll($customer_id, null, null, null, $shipping_fee_id);
         $response['status'] = 'success';
         $response['message'] = 'Coupon removed successfully';
