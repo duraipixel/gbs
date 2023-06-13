@@ -251,7 +251,7 @@ class CCavenueController extends Controller
     {
 
         $checkout_infomation = json_decode($request->checkout_infomation);
-        dump( $checkout_infomation );
+        // dump( $checkout_infomation );
         $customer_id            = $request->customer_id;
 
         $cart_info = $this->getCartListAll($customer_id);
