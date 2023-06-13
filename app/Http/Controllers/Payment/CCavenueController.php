@@ -253,11 +253,18 @@ class CCavenueController extends Controller
         $checkout_infomation = json_decode($request->checkout_infomation);
         // dump( $checkout_infomation );
         $customer_id            = $request->customer_id;
+        $coupon_amount = 0;
+        $shippping_fee_amount = 0;
+
 
         $cart_info = Cart::selectRaw('sum(sub_total) as total, coupon_id, coupon_amount, shipping_fee_id, shipping_fee')->where('customer_id', $customer_id)->first();
-        
-        $cart_db_total = str_replace(',', '', $cart_info['cart_total'] );
-        dump( $cart_db_total );
+        $total_order_value = 0;
+        if($cart_info ) {
+            $coupon_amount = $cart_info->coupon_amount ?? 0;
+            $shippping_fee_amount = ($cart_info->shipping_fee ?? 0);
+            $total_order_value = $cart_info->total - ($cart_info->coupon_amount ?? 0) - ($cart_info->shipping_fee ?? 0);
+        }
+        dump($total_order_value);
         dd( $cart_info );
         $order_status           = OrderStatus::where('status', 'published')->where('order', 1)->first();
         $shipping_method        = $checkout_infomation->shipping_method;
@@ -271,12 +278,11 @@ class CCavenueController extends Controller
         
         $coupon_details = '';
         $coupon_code = '';
-        $coupon_amount = 0;
         $coupon_id = 0;
         if (isset($coupon_data) && !empty($coupon_data)) {
             $coupon_code = $coupon_data->coupon_code;
             $coupon_id = $coupon_data->coupon_id;
-            $coupon_amount = $coupon_data->coupon_amount;
+            // $coupon_amount = $coupon_data->coupon_amount;
             $coupon_details = serialize($coupon_data);
         }
 
@@ -319,11 +325,10 @@ class CCavenueController extends Controller
         $order_ins['order_no'] = getOrderNo();
 
 
-        $order_ins['amount'] = $pay_amount;
+        $order_ins['amount'] = $total_order_value;
         $order_ins['tax_amount'] = $checkout_data->tax_total ? str_replace(',', '', $checkout_data->tax_total) : 0;
         $order_ins['tax_percentage'] = $checkout_data->tax_percentage ?? 0;
-        $order_ins['shipping_amount'] = $checkout_data->shipping_charge ?? 0;
-
+        $order_ins['shipping_amount'] = $shippping_fee_amount;
         $order_ins['coupon_amount'] = $coupon_amount ?? 0;
         $order_ins['coupon_code'] = $coupon_code ?? '';
         $order_ins['coupon_details'] = $coupon_details ?? '';
