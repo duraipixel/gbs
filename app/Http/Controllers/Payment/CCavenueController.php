@@ -260,7 +260,7 @@ class CCavenueController extends Controller
         $billing_address        = $checkout_infomation->billing_address;
         $coupon_data            = $checkout_infomation->coupon_data;
         $pickup_store_address   = $checkout_infomation->pickup_store_address;
-
+        dd( $request->all() );
         $coupon_details = '';
         $coupon_code = '';
         $coupon_amount = 0;
