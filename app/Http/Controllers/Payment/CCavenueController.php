@@ -254,7 +254,8 @@ class CCavenueController extends Controller
         // dump( $checkout_infomation );
         $customer_id            = $request->customer_id;
 
-        $cart_info = $this->getCartListAll($customer_id);
+        $cart_info = Cart::selectRaw('sum(sub_total) as total, coupon_id, coupon_amount, shipping_fee_id, shipping_fee')->first();
+        
         $cart_db_total = str_replace(',', '', $cart_info['cart_total'] );
         dump( $cart_db_total );
         dd( $cart_info );
