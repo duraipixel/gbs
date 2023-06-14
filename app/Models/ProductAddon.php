@@ -26,7 +26,10 @@ class ProductAddon extends Model
     }
 
     public function addonProducts() {
-        return $this->hasMany(ProductAddonProduct::class, 'product_addon_id', 'id');
+        return $this->hasMany(ProductAddonProduct::class, 'product_addon_id', 'id')->where('type','product');
+    }
+    public function addonCategory() {
+        return $this->hasMany(ProductAddonProduct::class, 'product_addon_id', 'id')->where('type','category');
     }
 
 }

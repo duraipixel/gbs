@@ -186,7 +186,7 @@ class SubCategoryController extends Controller
         $validator              = Validator::make($request->all(), [
                                         'name' => 'required|string|unique:sub_categories,name,' . $id . ',id,deleted_at,NULL',
                                         'category_name' => 'required',
-                                        'avatar' => 'mimes:jpeg,png,jpg',
+                                        'avatar' => 'mimes:jpeg,png,jpg|max:150',
                                     ]);
         $sub_id                 = '';                    
         if ($validator->passes()) {

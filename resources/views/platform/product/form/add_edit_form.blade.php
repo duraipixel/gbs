@@ -228,6 +228,7 @@
             uploadMultiple: true,
             addRemoveLinks: true,
             acceptedFiles: "image/*", 
+           
             accept: function (file, done) {
                 
                 if (file.name == "wow.jpg") {

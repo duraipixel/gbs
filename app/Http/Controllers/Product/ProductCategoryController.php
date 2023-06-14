@@ -104,6 +104,7 @@ class ProductCategoryController extends Controller
     
     public function saveForm(Request $request,$id = null)
     {
+       // dd('ss');
         
         $id             = $request->id;
         $parent_id      = $request->parent_category;
@@ -117,6 +118,7 @@ class ProductCategoryController extends Controller
                                                 ],
 
                             'avatar' => 'mimes:jpeg,png,jpg',
+                            'categoryImage' => 'max:150',
                             'tax_id' => 'required_if:is_tax,on'
                         ]);
 

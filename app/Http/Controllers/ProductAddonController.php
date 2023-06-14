@@ -15,14 +15,15 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Excel;
 use Image;
+use App\Models\Product\ProductCategory;
 
 class ProductAddonController extends Controller
 {
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data       = ProductAddon::select('product_addons.*','products.product_name')
-            ->leftJoin('products','products.id','=','product_addons.product_id');
+            $data       = ProductAddon::select('product_addons.*','product_addon_products.type')
+            ->leftJoin('product_addon_products','product_addon_products.product_addon_id','=','product_addons.id')->groupBy('product_addon_products.product_addon_id');
             $status     = $request->get('status');
             $keywords   = $request->get('search')['value'];
 
@@ -34,7 +35,7 @@ class ProductAddonController extends Controller
                     if ($keywords) {
                         $date = date('Y-m-d', strtotime($keywords));
                         return $query->where('product_addons.title', 'like', "%{$keywords}%")
-                        ->orWhere('products.product_name', 'like', "%{$keywords}%")
+                        ->orWhere('product_addon_products.type', 'like', "%{$keywords}%")
                         ->orWhereDate("product_addons.created_at", $date);
                     }
                 })
@@ -72,15 +73,22 @@ class ProductAddonController extends Controller
         $info               = '';
         $modal_title        = 'Add Product Addon';
         $product = Product::select('id','product_name')->where('status','published')->get();
+        $category=ProductCategory::select('id','name')->where('status','published')->get();
         $usedProduct = [];
+        $usedCategory =[];
+        $info_items='';
         if (isset($id) && !empty($id)) {
+           
             $info           = ProductAddon::find($id);
+            $info_items     = ProductAddonProduct::where('product_addon_id',$id)->first();
+          
             $usedProduct    = array_column($info->addonProducts->toArray(), 'product_id');
+            $usedCategory    = array_column($info->addonCategory->toArray(), 'product_id');
             
             $modal_title    = 'Update Product Addon';
         }
 
-        return view('platform.product_addon.add_edit_modal', compact('info', 'modal_title', 'from','product', 'usedProduct'));
+        return view('platform.product_addon.add_edit_modal', compact('info', 'modal_title', 'info_items','category' ,'from','product', 'usedProduct','usedCategory'));
     }
 
     public function saveForm(Request $request,$id = null)
@@ -88,7 +96,8 @@ class ProductAddonController extends Controller
         $id             = $request->id;
         $validator      = Validator::make($request->all(), [
                                 'title' => 'required|string|unique:product_addons,title,' . $id . ',id,deleted_at,NULL',
-                                'product_id' => 'required',
+                                'product_id' => 'required_if:add_on_type,==,product',
+                                'category_id' => 'required_if:add_on_type,==,category',
                             ]);
         $banner_id      = '';
         if ($validator->passes()) {
@@ -147,12 +156,33 @@ class ProductAddonController extends Controller
             /**
              * store products
              */
-            if( $request->product_id ) {
+            $add_on_type_id=[];
+            if( $request->product_id)
+            {
+              
+                if($request->product_id[0]=='all'){
+                  $prod=  Product::select('id','product_name')->where('status','published')->get();
+                    foreach($prod as $products_all)
+                    {
+                        $add_on_type_id[]=$products_all->id;
+                    }
+                }
+                else
+                {                
+                    $add_on_type_id=$request->product_id;
+                }
+            }
+            else if($request->category_id )
+            {
+                $add_on_type_id=$request->category_id;
+            }
+            if( $add_on_type_id  ) {               
                 ProductAddonProduct::where('product_addon_id', $info->id )->delete();
-                foreach ( $request->product_id as $item ) {
+                foreach ( $add_on_type_id as $item ) {
                     $pro = [];
                     $pro['product_addon_id'] = $info->id;
                     $pro['product_id'] = $item;
+                    $pro['type']=$request->add_on_type;
 
                     ProductAddonProduct::create($pro);
                 }
