@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Payment;
 use App\Http\Controllers\Controller;
 use App\Mail\OrderMail;
 use App\Models\Cart;
+use App\Models\CartProductAddon;
 use App\Models\GlobalSettings;
 use App\Models\Master\EmailTemplate;
 use App\Models\Master\OrderStatus;
@@ -15,6 +16,7 @@ use App\Models\OrderProductWarranty;
 use App\Models\Payment;
 use App\Models\Product\OrderProductAddon;
 use App\Models\Product\Product;
+use App\Models\Settings\Tax;
 use App\Models\ShippingCharge;
 use App\Models\Warranty;
 use Illuminate\Support\Facades\Http;
@@ -62,6 +64,7 @@ class CCavenueController extends Controller
 
     public function ccavRequestHandler(Request $request)
     {
+        
         return view('payment.request_handler');
     }
 
@@ -70,18 +73,18 @@ class CCavenueController extends Controller
 
         // For default Gateway
         $response = Indipay::response($request);
-
+        // dd( $response );
         // For Otherthan Default Gateway
         $response = Indipay::gateway('CCAvenue')->response($request);
-
+        
         $encrypted_order_no = '';
         if ($response) {
-
+            $paid_amount = $response['amount'];
             $order_no = $response['order_id'];
             $order_status = $response['order_status'];
             $order_info = Order::where('order_no', $order_no)->first();
             $encrypted_order_no = base64_encode($order_info->order_no);
-            if (strtolower($order_status) == 'success') {
+            if (strtolower($order_status) == 'success' && $order_info->amount == $paid_amount ) {
                 /*
                 Success Payment
                 */
@@ -187,6 +190,9 @@ class CCavenueController extends Controller
 
                     $success = true;
                     $error_message = "Payment Success";
+
+                    $order_info->response_amount = $paid_amount;
+                    $order_info->save();
                 }
             } else {
                 /*
@@ -245,8 +251,19 @@ class CCavenueController extends Controller
     {
 
         $checkout_infomation = json_decode($request->checkout_infomation);
-
+        // dump( $checkout_infomation );
         $customer_id            = $request->customer_id;
+        $coupon_amount = 0;
+        $shippping_fee_amount = 0;
+
+        $cart_info = Cart::selectRaw('sum(sub_total) as total, coupon_id, coupon_amount, shipping_fee_id, shipping_fee')->where('customer_id', $customer_id)->first();
+        $total_order_value = 0;
+        if($cart_info ) {
+            $coupon_amount = $cart_info->coupon_amount ?? 0;
+            $shippping_fee_amount = ($cart_info->shipping_fee ?? 0);
+            $total_order_value = $cart_info->total - ($cart_info->coupon_amount ?? 0) + ($cart_info->shipping_fee ?? 0);
+        }
+        
         $order_status           = OrderStatus::where('status', 'published')->where('order', 1)->first();
         $shipping_method        = $checkout_infomation->shipping_method;
 
@@ -256,15 +273,14 @@ class CCavenueController extends Controller
         $billing_address        = $checkout_infomation->billing_address;
         $coupon_data            = $checkout_infomation->coupon_data;
         $pickup_store_address   = $checkout_infomation->pickup_store_address;
-
+        
         $coupon_details = '';
         $coupon_code = '';
-        $coupon_amount = 0;
         $coupon_id = 0;
         if (isset($coupon_data) && !empty($coupon_data)) {
             $coupon_code = $coupon_data->coupon_code;
             $coupon_id = $coupon_data->coupon_id;
-            $coupon_amount = $coupon_data->coupon_amount;
+            // $coupon_amount = $coupon_data->coupon_amount;
             $coupon_details = serialize($coupon_data);
         }
 
@@ -307,11 +323,10 @@ class CCavenueController extends Controller
         $order_ins['order_no'] = getOrderNo();
 
 
-        $order_ins['amount'] = $pay_amount;
+        $order_ins['amount'] = $total_order_value;
         $order_ins['tax_amount'] = $checkout_data->tax_total ? str_replace(',', '', $checkout_data->tax_total) : 0;
         $order_ins['tax_percentage'] = $checkout_data->tax_percentage ?? 0;
-        $order_ins['shipping_amount'] = $checkout_data->shipping_charge ?? 0;
-
+        $order_ins['shipping_amount'] = $shippping_fee_amount;
         $order_ins['coupon_amount'] = $coupon_amount ?? 0;
         $order_ins['coupon_code'] = $coupon_code ?? '';
         $order_ins['coupon_details'] = $coupon_details ?? '';
@@ -556,7 +571,7 @@ class CCavenueController extends Controller
 
                 // 'enc_request=' . $encrypted_data . '&access_code=' . $access_code . '&command=orderStatusTracker&request_type=JSON&response_type=JSON';
 
-                if (strtolower($order_info->payments->status) == 'paid') {
+                if (strtolower($order_info->payments->status) == 'paid' && $order_info->amount == $order_info->response_amount ) {
                     $error = 0;
                     $response_api['error'] = $error;
                     $response_api['message'] = 'PAYMENT_SUCCESS';
@@ -597,7 +612,7 @@ class CCavenueController extends Controller
         // Get server response ...
         $result = curl_exec($ch);
         curl_close($ch);
-        dd($result);
+        // dd($result);
     }
 
 
@@ -645,5 +660,163 @@ class CCavenueController extends Controller
             $count += 2;
         }
         return $binString;
+    }
+
+    function getCartListAll($customer_id = null, $guest_token = null,  $shipping_info = null, $shipping_type = null, $selected_shipping = null, $coupon_data = null)
+    {
+        // dd( $coupon_data );
+        $checkCart          = Cart::with(['products', 'products.productCategory'])->when( $customer_id != '', function($q) use($customer_id) {
+                                        $q->where('customer_id', $customer_id);
+                                    })->get();
+
+        $tmp                = [];
+        $grand_total        = 0;
+        $tax_total          = 0;
+        $product_tax_exclusive_total = 0;
+        $tax_percentage = 0;
+        $cartTemp = [];
+        $used_addons = [];
+        $total_addon_amount = 0;
+        $has_pickup_store = true;
+        $brand_array = [];
+        if (isset($checkCart) && !empty($checkCart)) {
+            foreach ($checkCart as $citems) {
+                
+                $items = $citems->products;
+                $tax = [];
+                $tax_percentage = 0;
+
+                $category               = $items->productCategory;
+                $price_with_tax         = $items->mrp;
+                if (isset($category->parent->tax_id) && !empty($category->parent->tax_id)) {
+                    $tax_info = Tax::find($category->parent->tax_id);
+                } else if (isset($category->tax_id) && !empty($category->tax_id)) {
+                    $tax_info = Tax::find($category->tax_id);
+                }
+                // dump( $citems );
+                if (isset($tax_info) && !empty($tax_info)) {
+                    $tax = getAmountExclusiveTax($price_with_tax, $tax_info->pecentage);
+                    $tax_total =  $tax_total + ($tax['gstAmount'] * $citems->quantity) ?? 0;
+                    $product_tax_exclusive_total = $product_tax_exclusive_total + ($tax['basePrice'] * $citems->quantity);
+                    // print_r( $product_tax_exclusive_total );
+                    $tax_percentage         = $tax['tax_percentage'] ?? 0;
+                } else {
+                    $product_tax_exclusive_total = $product_tax_exclusive_total + $citems->sub_total;
+                }
+
+                /**
+                 * addon amount calculated here
+                 */
+                $addonItems = CartProductAddon::where(['cart_id' => $citems->id, 'product_id' => $items->id ])->get();
+                
+                $addon_total = 0;
+                if( isset( $addonItems ) && !empty( $addonItems ) ) {
+                    foreach ($addonItems as $addItems) {
+                        
+                        $addons = [];
+                        $addons['addon_id'] = $addItems->addonItem->addon->id;
+                        $addons['title'] = $addItems->addonItem->addon->title;
+                        $addons['description'] = $addItems->addonItem->addon->description;
+
+                        if (!Storage::exists( $addItems->addonItem->addon->icon)) {
+                            $path               = asset('assets/logo/no_Image.jpg');
+                        } else {
+                            $url                = Storage::url( $addItems->addonItem->addon->icon);
+                            $path               = asset($url);
+                        }
+                        $addons['addon_item_id'] = $addItems->addonItem->id;
+                        $addons['icon'] = $path;
+                        $addons['addon_item_label'] = $addItems->addonItem->label;
+                        $addons['amount'] = $addItems->addonItem->amount;
+                        $addon_total += $addItems->addonItem->amount;
+                        $used_addons[] = $addons;
+
+                    }
+                }
+
+                $total_addon_amount += $addon_total;
+              
+                $pro                    = [];
+                $pro['id']              = $items->id;
+                $pro['tax']             = $tax;
+                $pro['tax_percentage']  = $tax_percentage;
+                $pro['hsn_no']          = $items->hsn_code ?? null;
+                $pro['product_name']    = $items->product_name;
+                $pro['category_name']   = $category->name ?? '';
+                $pro['brand_name']      = $items->productBrand->brand_name ?? '';
+                $pro['hsn_code']        = $items->hsn_code;
+                $pro['product_url']     = $items->product_url;
+                $pro['sku']             = $items->sku;
+                $pro['has_video_shopping'] = $items->has_video_shopping;
+                $pro['stock_status']    = $items->stock_status;
+                $pro['is_featured']     = $items->is_featured;
+                $pro['is_best_selling'] = $items->is_best_selling;
+                $pro['price']           = $items->mrp;
+                $pro['strike_price']    = $items->strike_price;
+                $pro['save_price']      = $items->strike_price - $items->mrp;
+                $pro['discount_percentage'] = abs($items->discount_percentage);
+                $pro['image']           = $items->base_image;
+                $pro['max_quantity']    = $items->quantity;
+                $imagePath              = $items->base_image;
+
+                $brand_array[] = $items->brand_id;
+
+                if (!Storage::exists($imagePath)) {
+                    $path               = asset('assets/logo/no_Image.jpg');
+                } else {
+                    $url                = Storage::url($imagePath);
+                    $path               = asset($url);
+                }
+
+                $pro['image']           = $path;
+                $pro['customer_id']     = $customer_id;
+                $pro['guest_token']     = $citems->guest_token;
+                $pro['cart_id']         = $citems->id;
+                $pro['price']           = $citems->price;
+                $pro['quantity']        = $citems->quantity;
+                $pro['sub_total']       = $citems->sub_total;
+                $pro['addons']          = $used_addons;
+                $grand_total            += $citems->sub_total;
+                $grand_total            += $addon_total;
+                $cartTemp[] = $pro;
+                
+            }
+
+            $tmp['carts'] = $cartTemp;
+            $tmp['cart_count'] = count($cartTemp);
+            if (isset($shipping_info) && !empty($shipping_info) || (isset( $selected_shipping ) && !empty( $selected_shipping )) ) {
+                $tmp['selected_shipping_fees'] = array(
+                                                'shipping_id' => $shipping_info->id ?? $selected_shipping['shipping_id'],
+                                                'shipping_charge_order' => $shipping_info->charges ?? $selected_shipping['shipping_charge_order'],
+                                                'shipping_type' => $shipping_type ?? $selected_shipping['shipping_type'] ?? 'fees'
+                                                );
+                
+                $grand_total                = $grand_total + ($shipping_info->charges ?? $selected_shipping['shipping_charge_order'] ?? 0);
+            }
+            if( isset( $coupon_data ) && !empty( $coupon_data ) ) {
+                $grand_total = $grand_total - $coupon_data['discount_amount'] ?? 0;
+            }
+
+            if( count(array_unique($brand_array)) > 1 ) {
+                $has_pickup_store = false;
+            } 
+
+            $amount         = filter_var($grand_total, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+            $charges        = ShippingCharge::select('id', 'shipping_title', 'minimum_order_amount', 'charges', 'is_free')->where('status', 'published')->where('minimum_order_amount', '<', $amount)->get();
+
+            $tmp['shipping_charges']    = $charges;
+            $tmp['cart_total']          = array(
+                'total' => number_format(round($grand_total), 2),
+                'product_tax_exclusive_total' => number_format(round($product_tax_exclusive_total), 2),
+                'product_tax_exclusive_total_without_format' => round($product_tax_exclusive_total),
+                'tax_total' => number_format(round($tax_total), 2),
+                'tax_percentage' => number_format(round($tax_percentage), 2),
+                'shipping_charge' => $shipping_info->charges ?? 0,
+                'addon_amount' => $total_addon_amount,
+                'has_pickup_store' => $has_pickup_store
+            );
+        }
+        
+        return $tmp;
     }
 }

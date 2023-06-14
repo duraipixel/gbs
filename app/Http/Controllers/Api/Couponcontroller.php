@@ -9,6 +9,7 @@ use App\Models\Offers\Coupons;
 use App\Models\Settings\Tax;
 use App\Models\ShippingCharge;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class Couponcontroller extends Controller
@@ -88,6 +89,18 @@ class Couponcontroller extends Controller
                                             $response['coupon_code'] = $coupon->coupon_code;
                                             $response['status'] = 'success';
                                             $response['message'] = 'Coupon applied';
+                                            /** upddate cart coupon amount */
+                                            if( isset($shipping_fee_id) && !empty( $shipping_fee_id ) ) {
+                                                $shippingfee_info = ShippingCharge::select('id', 'shipping_title', 'minimum_order_amount', 'charges', 'is_free')->find($shipping_fee_id);
+                                                
+                                            }
+                                            $update_data = [
+                                                'coupon_id' => $coupon->id,
+                                                'coupon_amount' => $product_amount,
+                                                'shipping_fee_id' => $shippingfee_info->id ?? null,
+                                                'shipping_fee' => $shippingfee_info->charges ?? null
+                                            ];
+                                            DB::table('carts')->where('customer_id', $customer_id)->update($update_data);
                                             $response['cart_info'] = $this->getCartListAll($customer_id, null, null, null, $shipping_fee_id, $response['coupon_amount']);
                                         }
                                     } else {
@@ -163,6 +176,20 @@ class Couponcontroller extends Controller
                                     $response['coupon_code'] = $coupon->coupon_code;
                                     $response['status'] = 'success';
                                     $response['message'] = 'Coupon applied';
+
+                                    /** upddate cart coupon amount */
+                                    if( isset($shipping_fee_id) && !empty( $shipping_fee_id ) ) {
+                                        $shippingfee_info = ShippingCharge::select('id', 'shipping_title', 'minimum_order_amount', 'charges', 'is_free')->find($shipping_fee_id);
+                                        
+                                    }
+                                    $update_data = [
+                                        'coupon_id' => $coupon->id,
+                                        'coupon_amount' => $product_amount,
+                                        'shipping_fee_id' => $shippingfee_info->id ?? null,
+                                        'shipping_fee' => $shippingfee_info->charges ?? null
+                                    ];
+                                    DB::table('carts')->where('customer_id', $customer_id)->update($update_data);
+                                    
                                     $response['cart_info'] = $this->getCartListAll($customer_id, null, null, null, $shipping_fee_id, $response['coupon_amount']);
                                 }
                             } else {
@@ -195,6 +222,11 @@ class Couponcontroller extends Controller
         $customer_id = $request->customer_id;
         $shipping_fee_id = $request->shipping_fee_id ?? '';
         $carts          = Cart::where('customer_id', $customer_id)->get();
+        $update_data = [
+            'coupon_id' => null,
+            'coupon_amount' => null
+        ];
+        DB::table('carts')->where('customer_id', $customer_id)->update($update_data);
         $response['cart_info'] = $this->getCartListAll($customer_id, null, null, null, $shipping_fee_id);
         $response['status'] = 'success';
         $response['message'] = 'Coupon removed successfully';
@@ -335,7 +367,11 @@ class Couponcontroller extends Controller
         
         $fee_info = ShippingCharge::select('id', 'shipping_title', 'minimum_order_amount', 'charges', 'is_free')->find($shipping_fee_id);
         if( $fee_info ) {
-            
+            $update_data = [
+                'shipping_fee_id' => $shipping_fee_id,
+                'shipping_fee' => $fee_info->charges
+            ];
+            DB::table('carts')->where('customer_id', $customer_id)->update($update_data);
             $data = $this->getCartListAll($customer_id, null, null, null, $shipping_fee_id, $coupon_amount);
             $response['data'] = $data;
             $response['error'] = '0';

@@ -57,7 +57,8 @@ class Order extends Model
         'delivery_otp',
         'otp_verified_at',
         'otp_verified_by',
-        'delivery_document'
+        'delivery_document',
+        'response_amount'
     ];
 
     public function orderItems()
