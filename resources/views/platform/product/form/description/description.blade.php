@@ -58,6 +58,7 @@
                                             <input type="file" id="home_image" name="home_image[]"
                                                 class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
                                                 placeholder="Sorting Order" />
+                                                <input type="hidden" name="old_image_name[]" value="{{$item->desc_image ?? ''}}">
                                         </div>
                                         <div class="mt-3">
                                             @php

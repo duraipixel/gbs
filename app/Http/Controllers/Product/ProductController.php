@@ -289,12 +289,12 @@ class ProductController extends Controller
             
             $desc_id = $request->desc_id ?? '';
             if( isset( $request->title ) && !empty( $request->title ) ) {
-               // ProductDescription::where('product_id', $product_id)->delete();
+                ProductDescription::where('product_id', $product_id)->delete();
                 for ($i = 0; $i < count($request->title); $i++) {    
                     $ins_desc_array = [];
                     $pro_desc_id = $desc_id[$i] ?? '';
                     if( isset( $desc_id ) && !empty( $desc_id ) ) {
-                        ProductDescription::where('product_id', $product_id)->whereNotIn('id', $desc_id)->delete();
+                      //  ProductDescription::where('product_id', $product_id)->whereNotIn('id', $desc_id)->delete();
                       
                     }
                     if( isset( $request->home_image[$i] ) && !empty($request->home_image[$i]) ) {
@@ -314,14 +314,18 @@ class ProductController extends Controller
                         Image::make($request->home_image[$i])->save(storage_path('app/' . $fileNameThumb));
                         $ins_desc_array['desc_image'] = $fileNameThumb;
                     }
+                    else
+                    {
+                        $ins_desc_array['desc_image'] = $request->old_image_name[$i];
+                    }
 
                     $ins_desc_array['product_id'] = $product_id;
                     $ins_desc_array['title'] = $request->title[$i];
                     $ins_desc_array['description'] = $request->desc[$i];
                     $ins_desc_array['order_by'] = $request->sorting_order[$i];
                 
-                    ProductDescription::updateOrCreate(['id' => $pro_desc_id], $ins_desc_array);
-                  //  ProductDescription::Create($ins_desc_array);               
+                  //  ProductDescription::updateOrCreate(['id' => $pro_desc_id], $ins_desc_array);
+                    ProductDescription::Create($ins_desc_array);               
                 }
                 
             }
