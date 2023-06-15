@@ -11,6 +11,7 @@ class ProductAddonProduct extends Model
 
     protected $fillable = [
         'product_addon_id',
+        'type',
         'product_id'
     ];
 }

@@ -95,8 +95,8 @@
                     <table class="table align-middle table-row-dashed fs-6 gy-2 mb-0 dataTable no-footer" id="product_addon-table">
                         <thead>
                             <tr class="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
-                                <th> Title  </th>
-                                <th>Product</th>
+                                <th>Title  </th>
+                                <th>Type</th>
                                 <th> Status </th>
                                 <th style="width: 75px;">Action</th>
                             </tr>
@@ -134,8 +134,8 @@
                   
                 },
                 {
-                    data: 'product_name',
-                    name: 'product_name',
+                    data: 'type',
+                    name: 'type',
                 },
                 {
                     data: 'status',

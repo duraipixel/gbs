@@ -109,7 +109,8 @@ class ProductCollectionController extends Controller
         $id             = $request->id;
         $validator      = Validator::make($request->all(), [
                             'collection_name' => 'required|string|unique:product_collections,collection_name,' . $id,
-                            'collection_product' => 'required|array',
+                            'collection_product' => 'required|array|min:5',
+                            'image' => 'max:150'
                         ]);
 
         $categoryId         = '';

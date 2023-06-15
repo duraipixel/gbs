@@ -104,7 +104,7 @@
                         </div> --}}
 
                         <div class="fv-row mb-7">
-                            <label class=" fw-bold fs-6 mb-2">Products</label>
+                            <label class=" fw-bold fs-6 mb-2">Products  (Minimum 5)</label>
                             <select name="collection_product[]" id="collection_product" aria-label="Select a Product" multiple="multiple" data-placeholder="Select a Product..." class="form-select mb-2" required>
                                 <option value=""></option>
                                 @isset($products)
@@ -197,6 +197,7 @@ $(document).ready(function() {
             $('#collection_product').select2();
         });
     });
+   
     document.getElementById('readUrl').addEventListener('change', function() {
     
       if (this.files[0]) {

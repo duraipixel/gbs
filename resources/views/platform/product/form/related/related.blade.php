@@ -3,7 +3,7 @@
         <div class="card-body pt-2">
             <div class="mb-10 fv-row">
                
-                <label class="form-label d-block">Related Products </label>
+                <label class="form-label d-block">Related Products(Minimum 5) </label>
 
                 <select name="related_product[]" id="related_product" aria-label="Select a Category" multiple="multiple" data-placeholder="Select a Category..." class="form-select mb-2">
                     <option value=""></option>
@@ -11,7 +11,7 @@
                         @foreach ($otherProducts as $item)
                         <option value="{{ $item->id }}"  @if( isset($info->productRelated) && in_array( $item->id, array_column( $info->productRelated->toArray(), 'to_product_id'))  ) selected="selected" @endif>
                             {{-- <option value="{{ $item->id }}" > --}}
-                                {{ $item->product_name }}
+                                {{ $item->sku }}
                             </option>
                         @endforeach
                     @endisset
@@ -35,3 +35,10 @@
         </div>
     </div>  
 </div>
+<style>
+     .select2-container .select2-selection {
+    height: 80px;
+    width:500px;
+    overflow: scroll;
+} 
+    </style>
