@@ -39,8 +39,11 @@ class FilterController extends Controller
             }
         } else {
 
-            $top_category = ProductCategory::select('id', 'name', 'parent_id', 'slug', 'image')->where('status', 'published')->where('parent_id', 0)
+            $top_category = ProductCategory::select('id', 'name', 'parent_id', 'slug', 'image')
+                ->where('status', 'published')
+                ->where('parent_id', 0)
                 ->where('slug', 'laptop')->first();
+                $top_category['child_category'] = [];
         }
         if ($top_category) {
             $response = $top_category;
