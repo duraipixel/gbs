@@ -97,7 +97,8 @@ class CustomerController extends Controller
         $validator      = Validator::make($request->all(), [
                                 'first_name' => 'required|string',
                                 'email' => 'required|email|unique:customers,email,' . $id . ',id',
-                                'mobile_no' => 'required|numeric|digits:10|unique:customers,mobile_no,'. $id . ',id'
+                                'mobile_no' => 'required|numeric|digits:10|unique:customers,mobile_no,'. $id . ',id',
+                                'avatar' => 'max:150'
                             ]);
         if ($validator->passes()) {
 

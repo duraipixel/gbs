@@ -98,7 +98,8 @@ class BannerController extends Controller
         $id             = $request->id;
         $validator      = Validator::make($request->all(), [
                                 'title' => 'required|string|unique:banners,title,' . $id . ',id,deleted_at,NULL',
-                                'avatar' => 'mimes:jpeg,png,jpg',
+                                'avatar' => 'mimes:jpeg,png,jpg|max:1024',
+                                'banner' => 'max:1024',
                                 // 'avatar' => 'mimes:jpeg,png,jpg|dimensions:min_width=1600,min_height=420',
                                 'order_by' => 'required|unique:banners,order_by,'.$id.',id,deleted_at,NULL'
                             ]);

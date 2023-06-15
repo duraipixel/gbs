@@ -115,6 +115,8 @@ class ServiceCenterController extends Controller
                                               ],
                             'brand_id' => 'required',
                           'description' => 'required',
+                          'banner'      => 'max:150',
+                          'banner_mb' => 'max:150',
                       ]);
         $serviceCenterId         = '';
 
