@@ -360,6 +360,11 @@ class TestController extends Controller
                     $query->orWhere('desc_image', '!=', '');
                 })->first();
 
+                if( $update_data) {
+                    $update_data->desc_image = $items->desc_image;
+                    $update_data->save();
+                }
+
                 dump( $update_data );
                 
             }
