@@ -23,9 +23,10 @@ class ProductAvailCheckController extends Controller
         $message = 'Product Shipping avilable in this Pincode';
         $error = 0;
       } else {
+
         $error = 1;
-        $message = 'Product not avilable in this Pincode';
-        
+        $message = 'Product not avilable in this Pincode';   
+             
       }
     }
 
