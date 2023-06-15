@@ -212,6 +212,7 @@ class ProductController extends Controller
                                 'category_id' => 'required',
                                 'brand_id' => 'required',
                                 'status' => 'required',
+                                'related_product' => 'min:5',
                                 'stock_status' => 'required',
                                 'product_name' => 'required_if:product_page_type,==,general',
                                 'base_price' => 'required_if:product_page_type,==,general',
@@ -226,8 +227,7 @@ class ProductController extends Controller
                                 'filter_variation' => 'nullable|array',
                                 'filter_variation.*' => 'nullable|required_with:filter_variation',
                                 'filter_variation_value' => 'nullable|required_with:filter_variation|array',
-                                'filter_variation_value.*' => 'nullable|required_with:filter_variation.*',
-                               
+                                'filter_variation_value.*' => 'nullable|required_with:filter_variation.*',                                
                             ];
                                        
         if( isset($request->url) && !empty( $request->url) && !is_null($request->url[0]) ) {
