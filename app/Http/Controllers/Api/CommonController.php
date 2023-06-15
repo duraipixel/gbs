@@ -341,7 +341,7 @@ class CommonController extends Controller
         $intel_information = [];
         if( isset( $intel_data ) && !empty( $intel_data ) ) {
             $intel_information['title'] = 'AMD Ryzen Processors';
-            $intel_information['banner'] = asset('assets/logo/geforce.jpg');
+            $intel_information['banner'] = asset('assets/logo/amdprocessor.jpg');
 
             $tmp = [];
             foreach ( $intel_data as $items ) {             
