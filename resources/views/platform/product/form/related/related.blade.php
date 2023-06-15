@@ -12,7 +12,7 @@
                         @foreach ($otherProducts as $item)
                         <option value="{{ $item->id }}"  @if( isset($info->productRelated) && in_array( $item->id, array_column( $info->productRelated->toArray(), 'to_product_id'))  ) selected="selected" @endif>
                             {{-- <option value="{{ $item->id }}" > --}}
-                                {{ $item->sku }}
+                                {{ $item->product_name }}
                             </option>
                         @endforeach
                     @endisset

@@ -127,6 +127,14 @@ class BrandController extends Controller
             } else {
                 $ins['status']          = 'unpublished';
             }
+            if($request->top_brand == "1")
+            {
+                $ins['is_top_brand']          = 'yes';
+            }
+            else
+            {
+                $ins['is_top_brand']          = 'no';
+            }
             $error                  = 0;
             $info                   = Brands::updateOrCreate(['id' => $id], $ins);
             $brand_id               = $info->id;

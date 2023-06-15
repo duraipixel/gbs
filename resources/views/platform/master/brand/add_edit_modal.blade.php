@@ -93,13 +93,14 @@
                                     </span>
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                                <label class="fw-bold fs-6 mb-2">Short Description</label>
+                                <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Short Description" name="short_description" id="short_description" cols="30" rows="2">{{ $info->short_description ?? '' }}</textarea>
+                            </div>
                         
                            
                         </div>
-                        <div class="fv-row mb-7">
-                            <label class="fw-bold fs-6 mb-2">Short Description</label>
-                            <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Short Description" name="short_description" id="short_description" cols="30" rows="2">{{ $info->short_description ?? '' }}</textarea>
-                        </div>
+                        
                         <div class="row mb-7">
                             <div class="col-md-6">
                                 <label class="fw-bold fs-6 mb-2">Notes</label>
@@ -111,12 +112,24 @@
                                 placeholder="Sorting Order" value="{{ $info->order_by ?? '' }}" />
                             </div>
                         </div>
-                        <div class="fv-row">
-                            <label class="fw-bold fs-6 mb-2"> Status </label>
-                            <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
+
+                        <div class="row mb-7">
+                            <div class="col-md-6">
+                                <label class="fw-bold fs-6 mb-2"> Status </label>
+                                <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
                                 <input class="form-check-input" type="checkbox"  name="status" value="1"  @if( ( isset( $info->status) && $info->status == 'published') || (!isset( $info->status ))) checked @endif />
                             </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="fw-bold fs-6 mb-2"> Is Top Brand </label>
+                                <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
+                                <input class="form-check-input" type="checkbox"  name="top_brand" value="1"  @if( ( isset( $info->is_top_brand) && $info->is_top_brand == 'yes')) checked @endif />
+                                </div>
+                            </div>
                         </div>
+
+
+                     
                     </div>
                 </div>
             </div>

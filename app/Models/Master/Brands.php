@@ -21,7 +21,8 @@ class Brands extends Model
         'notes',
         'order_by',
         'added_by',
-        'status'
+        'status',
+        'is_top_brand'
     ];
 
     public function products() {
