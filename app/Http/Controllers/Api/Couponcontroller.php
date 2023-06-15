@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
+use App\Models\CartProductAddon;
 use App\Models\Offers\CouponCategory;
 use App\Models\Offers\Coupons;
 use App\Models\Settings\Tax;
@@ -255,7 +256,10 @@ class Couponcontroller extends Controller
         $tax_total          = 0;
         $product_tax_exclusive_total = 0;
         $tax_percentage = 0;
+        $total_addon_amount = 0;
         $cartTemp = [];
+        $brand_array = [];
+        $has_pickup_store = true;
         if (isset($checkCart) && !empty($checkCart)) {
             foreach ($checkCart as $citems) {
                 
@@ -281,6 +285,38 @@ class Couponcontroller extends Controller
                     $product_tax_exclusive_total = $product_tax_exclusive_total + $citems->sub_total;
                 }
 
+                /**
+                 * addon amount calculated here
+                 */
+                $addonItems = CartProductAddon::where(['cart_id' => $citems->id, 'product_id' => $items->id ])->get();
+                
+                $addon_total = 0;
+                if( isset( $addonItems ) && !empty( $addonItems ) ) {
+                    foreach ($addonItems as $addItems) {
+                        
+                        $addons = [];
+                        $addons['addon_id'] = $addItems->addonItem->addon->id;
+                        $addons['title'] = $addItems->addonItem->addon->title;
+                        $addons['description'] = $addItems->addonItem->addon->description;
+
+                        if (!Storage::exists( $addItems->addonItem->addon->icon)) {
+                            $path               = asset('assets/logo/no_Image.jpg');
+                        } else {
+                            $url                = Storage::url( $addItems->addonItem->addon->icon);
+                            $path               = asset($url);
+                        }
+                        $addons['addon_item_id'] = $addItems->addonItem->id;
+                        $addons['icon'] = $path;
+                        $addons['addon_item_label'] = $addItems->addonItem->label;
+                        $addons['amount'] = $addItems->addonItem->amount;
+                        $addon_total += $addItems->addonItem->amount;
+                        $used_addons[] = $addons;
+
+                    }
+                }
+
+                $total_addon_amount += $addon_total;
+
                 $pro                    = [];
                 $pro['id']              = $items->id;
                 $pro['tax']             = $tax;
@@ -304,6 +340,8 @@ class Couponcontroller extends Controller
                 $pro['max_quantity']    = $items->quantity;
                 $imagePath              = $items->base_image;
 
+                $brand_array[] = $items->brand_id;
+
                 if (!Storage::exists($imagePath)) {
                     $path               = asset('assets/logo/product-noimg.jpg');
                 } else {
@@ -320,6 +358,7 @@ class Couponcontroller extends Controller
                 $pro['sub_total']       = $citems->sub_total;
                 
                 $grand_total            += $citems->sub_total;
+                $grand_total            += $addon_total;
                 $cartTemp[] = $pro;
                 
             }
@@ -339,6 +378,10 @@ class Couponcontroller extends Controller
                 $grand_total = $grand_total - $coupon_amount ?? 0;
             }
 
+            if( count(array_unique($brand_array)) > 1 ) {
+                $has_pickup_store = false;
+            } 
+
             $amount         = filter_var($grand_total, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
             $charges        = ShippingCharge::select('id', 'shipping_title', 'minimum_order_amount', 'charges', 'is_free')->where('status', 'published')->where('minimum_order_amount', '<', $amount)->get();
 
@@ -350,13 +393,15 @@ class Couponcontroller extends Controller
                 'tax_total' => number_format(round($tax_total), 2),
                 'tax_percentage' => number_format(round($tax_percentage), 2),
                 'shipping_charge' => $shippingfee_info->charges ?? 0,
-                'coupon_amount' => $coupon_amount ?? 0
+                'coupon_amount' => $coupon_amount ?? 0,
+                'addon_amount' => $total_addon_amount,
+                'has_pickup_store' => $has_pickup_store
                 
             );
         }
         
         return $tmp;
-    }
+    } 
 
     public function setShippingCharges(Request $request)
     {

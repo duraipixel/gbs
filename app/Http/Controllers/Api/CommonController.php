@@ -25,6 +25,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class CommonController extends Controller
 {
@@ -152,8 +153,7 @@ class CommonController extends Controller
                     $path               = asset($url);
                 }
 
-                $tmp['image']           = $path;
-               
+                $tmp['image']           = $path;   
 
                 $collection[] = $tmp;
             }
@@ -322,7 +322,7 @@ class CommonController extends Controller
 
             $tmp = [];
             foreach ( $intel_data as $items ) {             
-                $tmp[] = array('slug' => 'model='.str_replace(' ', '-', $items->attribute_values ), 'name' => $items->attribute_values );
+                $tmp[] = array('slug' => 'model='.Str::slug($items->attribute_values ), 'name' => $items->attribute_values );
             }
             $intel_information['processors'] = $tmp;
 
@@ -332,20 +332,20 @@ class CommonController extends Controller
         /**
          * Get Amd processor data
          */
-        $intel_data = ProductWithAttributeSet::where('title', 'model')
-                        ->where('attribute_values', 'like', "%NVIDIA%")
+        $intel_data = ProductWithAttributeSet::where('title', 'processor')
+                        ->where('attribute_values', 'like', "%ryzen%")
                         ->groupBy('attribute_values')
                         ->limit(4)
                         ->get();
         $model = [];
         $intel_information = [];
         if( isset( $intel_data ) && !empty( $intel_data ) ) {
-            $intel_information['title'] = 'Graphics Cards';
-            $intel_information['banner'] = asset('assets/logo/geforce.jpg');
+            $intel_information['title'] = 'AMD Ryzen Processors';
+            $intel_information['banner'] = asset('assets/logo/amdprocessor.jpg');
 
             $tmp = [];
             foreach ( $intel_data as $items ) {             
-                $tmp[] = array('slug' => 'model='.str_replace(' ', '-', $items->attribute_values ), 'name' => $items->attribute_values );
+                $tmp[] = array('slug' => 'processor='.Str::slug($items->attribute_values), 'name' => $items->attribute_values );
             }
             $intel_information['processors'] = $tmp;
 
