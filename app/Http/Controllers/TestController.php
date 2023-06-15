@@ -20,6 +20,7 @@ use Exception;
 
 class TestController extends Controller
 {
+
     public function index(Request $request)
     {
 
@@ -339,5 +340,15 @@ class TestController extends Controller
             $count += 2;
         }
         return $binString;
+    }
+
+    public function testDescription() {
+        $deleted_data = DB::select("select * from  gbs_product_descriptions  
+        WHERE 
+        deleted_at is not null 
+        and (desc_image is not null and desc_image != '' )
+        GROUP by title
+        order by deleted_at DESC");
+        dd( $deleted_data );
     }
 }
