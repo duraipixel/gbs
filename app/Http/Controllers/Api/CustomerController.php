@@ -79,7 +79,8 @@ class CustomerController extends Controller
             $globalInfo = GlobalSettings::first();
 
             // $link = 'http://192.168.0.35:2000/verify-account/' . $token_id;
-            $link = 'https://gbs-dev.vercel.app/verify-account/' . $token_id;
+            // $link = 'https://gbs-dev.vercel.app/verify-account/' . $token_id;
+            $link = 'https://beta.gbssystems.com/verify-account/' . $token_id;
 
             $customer_data->verification_token = $token_id;
             $customer_data->update();
@@ -258,7 +259,8 @@ class CustomerController extends Controller
 
             $globalInfo = GlobalSettings::first();
             // $link = 'http://192.168.0.35:2000/verify-account/' . $token_id;
-            $link = 'https://gbs-dev.vercel.app/reset-password/' . $token_id;
+            // $link = 'https://gbs-dev.vercel.app/reset-password/' . $token_id;
+            $link = 'https://beta.gbssystems.com/reset-password/' . $token_id;
             $extract = array(
                 'name' => $customer_info->firstName . ' ' . $customer_info->last_name,
                 'link' => '<a href="' . $link . '"> Reset Password </a>',
