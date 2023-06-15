@@ -35,3 +35,10 @@
         </div>
     </div>  
 </div>
+<style>
+     .select2-container .select2-selection {
+    height: 80px;
+    width:500px;
+    overflow: scroll;
+} 
+    </style>
