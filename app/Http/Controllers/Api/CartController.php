@@ -107,7 +107,7 @@ class CartController extends Controller
         $quantity       = $request->quantity ?? 1;
         $addon_id   = $request->addon_id;
         $addon_item_id   = $request->addon_item_id;
-
+        dump( $request->all() );
         $addon_items_info = ProductAddonItem::find($addon_id);       
             
         $checkCart      = Cart::where('id', $cart_id)->first();
