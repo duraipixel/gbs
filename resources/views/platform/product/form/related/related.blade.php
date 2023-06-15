@@ -42,7 +42,7 @@
     overflow: scroll;
 } 
 
-.related_product .select2-container .select2-selection {
+.cross_selling_product .select2-container .select2-selection {
     height: 80px;
     width:500px;
     overflow: scroll;
