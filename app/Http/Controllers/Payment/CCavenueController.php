@@ -256,7 +256,7 @@ class CCavenueController extends Controller
         $coupon_amount = 0;
         $shippping_fee_amount = 0;
 
-        $cart_info = Cart::selectRaw('sum(sub_total) as total, coupon_id, coupon_amount, shipping_fee_id, shipping_fee')->where('customer_id', $customer_id)->first();
+        $cart_info = Cart::selectRaw('sum(sub_total) as total, coupon_id, coupon_amount, shipping_fee_id, shipping_fee')->where('customer_id', $customer_id)->dd();
         $total_order_value = 0;
         if($cart_info ) {
             $coupon_amount = $cart_info->coupon_amount ?? 0;
