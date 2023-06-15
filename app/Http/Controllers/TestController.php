@@ -356,7 +356,7 @@ class TestController extends Controller
                 $update_data = ProductDescription::where(['product_id' => $items->product_id, 'title' => $items->title])
                 ->whereNull('deleted_at')
                 ->where(function($query){
-                    $query->whereNotNull('desc_image', '!=', '');
+                    $query->whereNotNull('desc_image');
                     $query->orWhere('desc_image', '!=', '');
                 })->first();
 
