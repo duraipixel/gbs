@@ -270,7 +270,7 @@ class CartController extends Controller
                 /**
                  * addon amount calculated here
                  */
-                $addonItems = CartProductAddon::where(['cart_id' => $citems->id, 'product_id' => $items->id ])->dd();
+                $addonItems = CartProductAddon::where(['cart_id' => $citems->id, 'product_id' => $items->id ])->get();
                 
                 $addon_total = 0;
                 if( isset( $addonItems ) && !empty( $addonItems ) && count($addonItems) > 0 ) {
