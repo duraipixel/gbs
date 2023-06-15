@@ -111,7 +111,8 @@ class CartController extends Controller
         $addon_items_info = ProductAddonItem::find($addon_id);       
             
         $checkCart      = Cart::where('id', $cart_id)->first();
-        dump( $checkCart );
+        dump( $addon_items_info );
+        dd( $checkCart );
         if( $checkCart ) {
 
             if( isset( $addon_items_info ) && !empty( $addon_items_info ) ) {
