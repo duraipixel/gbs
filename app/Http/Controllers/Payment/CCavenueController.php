@@ -256,7 +256,7 @@ class CCavenueController extends Controller
         $coupon_amount = 0;
         $shippping_fee_amount = 0;
 
-        $cart_info = Cart::selectRaw('sum(sub_total) as total, coupon_id, coupon_amount, shipping_fee_id, shipping_fee')->where('customer_id', $customer_id)->first();
+        $cart_info = Cart::selectRaw('sum(sub_total) as total, coupon_id, coupon_amount, shipping_fee_id, shipping_fee')->where('customer_id', $customer_id)->dd();
         $total_order_value = 0;
         if($cart_info ) {
             $coupon_amount = $cart_info->coupon_amount ?? 0;
@@ -318,7 +318,7 @@ class CCavenueController extends Controller
 
         $checkout_total = str_replace(',', '', $checkout_data->total);
         $pay_amount  = filter_var($checkout_total, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-
+        
         $order_ins['customer_id'] = $customer_id;
         $order_ins['order_no'] = getOrderNo();
 
@@ -370,7 +370,8 @@ class CCavenueController extends Controller
 
             $order_ins['pickup_store_id'] = $checkout_infomation->pickup_store_id;
         }
-
+        dump( $request->all() );
+        dd( $order_ins );
         $order_info = Order::create($order_ins);
         $order_id = $order_info->id;
 
