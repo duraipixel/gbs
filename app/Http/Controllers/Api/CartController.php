@@ -275,24 +275,26 @@ class CartController extends Controller
                 $addon_total = 0;
                 if( isset( $addonItems ) && !empty( $addonItems ) && count($addonItems) > 0 ) {
                     foreach ($addonItems as $addItems) {
-                        
-                        $addons = [];
-                        $addons['addon_id'] = $addItems->addonItem->addon->id;
-                        $addons['title'] = $addItems->addonItem->addon->title;
-                        $addons['description'] = $addItems->addonItem->addon->description;
+                        if( isset( $addItems->addonItem->addon ) && !empty( $addItems->addonItem->addon ) ) {
 
-                        if (!Storage::exists( $addItems->addonItem->addon->icon)) {
-                            $path               = asset('assets/logo/no_Image.jpg');
-                        } else {
-                            $url                = Storage::url( $addItems->addonItem->addon->icon);
-                            $path               = asset($url);
+                            $addons = [];
+                            $addons['addon_id'] = $addItems->addonItem->addon->id;
+                            $addons['title'] = $addItems->addonItem->addon->title;
+                            $addons['description'] = $addItems->addonItem->addon->description;
+    
+                            if (!Storage::exists( $addItems->addonItem->addon->icon)) {
+                                $path               = asset('assets/logo/no_Image.jpg');
+                            } else {
+                                $url                = Storage::url( $addItems->addonItem->addon->icon);
+                                $path               = asset($url);
+                            }
+                            $addons['addon_item_id'] = $addItems->addonItem->id;
+                            $addons['icon'] = $path;
+                            $addons['addon_item_label'] = $addItems->addonItem->label;
+                            $addons['amount'] = $addItems->addonItem->amount;
+                            $addon_total += $addItems->addonItem->amount;
+                            $used_addons[] = $addons;
                         }
-                        $addons['addon_item_id'] = $addItems->addonItem->id;
-                        $addons['icon'] = $path;
-                        $addons['addon_item_label'] = $addItems->addonItem->label;
-                        $addons['amount'] = $addItems->addonItem->amount;
-                        $addon_total += $addItems->addonItem->amount;
-                        $used_addons[] = $addons;
 
                     }
                 }
