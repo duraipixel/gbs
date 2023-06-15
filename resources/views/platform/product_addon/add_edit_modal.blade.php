@@ -261,7 +261,7 @@
         margin: 0;
     }
     .select2-container .select2-selection {
-    height: 100px;
+    height: 80px;
     overflow: scroll;
 } 
 </style>

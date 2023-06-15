@@ -32,6 +32,7 @@ use Illuminate\Support\Facades\Storage;
 use Image;
 use Maatwebsite\Excel\Facades\Excel;
 use PDF;
+use App\Models\Product\ProductUrl;
 
 class ProductController extends Controller
 {
@@ -212,6 +213,8 @@ class ProductController extends Controller
                                 'category_id' => 'required',
                                 'brand_id' => 'required',
                                 'status' => 'required',
+                                'thumbnail_url' => 'url|array',
+                                'video_url' => 'url|array',
                                 'related_product' => 'min:5',
                                 'stock_status' => 'required',
                                 'product_name' => 'required_if:product_page_type,==,general',
@@ -427,6 +430,31 @@ class ProductController extends Controller
                     }
                 }
             } 
+            if( (isset( $request->thumbnail_url ) && !empty( $request->thumbnail_url ) ) ||  (isset( $request->video_url ) && !empty( $request->video_url ) ) )  {
+                $thumbnail_url=$request->thumbnail_url;
+                $video_url=$request->video_url;
+                $url_desc=$request->url_desc;
+                $url_order_by=$request->url_order_by;
+                if( isset( $thumbnail_url ) && !empty( $thumbnail_url )) {
+                  $check_url= ProductUrl::where('product_id',$product_id)->first();
+                  if($check_url)
+                  {
+                    ProductUrl::where('product_id', $product_id)->delete();
+                  }
+                   
+                    for ($i=0; $i < count($video_url); $i++) { 
+                        $insUrl = [];
+                        $insUrl['product_id']         = $product_id;
+                        $insUrl['thumbnail_url']      = $thumbnail_url[$i];
+                        $insUrl['video_url']          = $video_url[$i];
+                        $insUrl['description']        = $url_desc[$i];
+                        $insUrl['order_by']           = $url_order_by[$i];
+
+                        ProductUrl::create($insUrl);
+                    }
+                }
+            }
+           
             
             $error                          = 0;
         } else {

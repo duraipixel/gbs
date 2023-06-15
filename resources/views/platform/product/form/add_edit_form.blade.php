@@ -40,6 +40,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-active-primary product-tab pb-4" data-bs-toggle="tab" href="#kt_ecommerce_add_product_related">Related Products</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-active-primary product-tab pb-4" data-bs-toggle="tab" href="#kt_ecommerce_add_product_url">URL</a>
+                        </li>
                     </ul>
                     
                     <div class="tab-content">
@@ -61,6 +64,9 @@
 
                         <div class="tab-pane fade" id="kt_ecommerce_add_product_related" role="tab-panel">
                             @include('platform.product.form.related.related')
+                        </div>
+                        <div class="tab-pane fade" id="kt_ecommerce_add_product_url" role="tab-panel">
+                            @include('platform.product.form.url.url')
                         </div>
                     </div>
                     <div class="d-flex justify-content-end">

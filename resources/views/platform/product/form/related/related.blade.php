@@ -1,11 +1,12 @@
+
 <div class="d-flex flex-column gap-7 gap-lg-10">
     <div class="card card-flush py-4">
         <div class="card-body pt-2">
             <div class="mb-10 fv-row">
-               
+               <div class="col-md-6" style="width:400px">
                 <label class="form-label d-block">Related Products(Minimum 5) </label>
 
-                <select name="related_product[]" class="related_product" ="related_product" aria-label="Select a Category" multiple="multiple" data-placeholder="Select a Category..." class="form-select mb-2">
+                <select name="related_product[]" id="related_product" aria-label="Select a Category" multiple="multiple" data-placeholder="Select a Category..." class="form-select mb-2">
                     <option value=""></option>
                     @isset($otherProducts)
                         @foreach ($otherProducts as $item)
@@ -16,12 +17,13 @@
                         @endforeach
                     @endisset
                 </select>
-
+               </div>
             </div>
 
             <div class="mb-10 fv-row">
+                <div class="col-md-6" style="width:400px">
                 <label class="form-label d-block"> Frequently Purchased Products </label>
-                <select name="cross_selling_product[]"  class="cross_selling_product" ="cross_selling_product" aria-label="Select a Category" multiple="multiple" data-placeholder="Select a Category..." class="form-select mb-2">
+                <select name="cross_selling_product[]" id="cross_selling_product" aria-label="Select a Category" multiple="multiple" data-placeholder="Select a Category..." class="form-select mb-2">
                     <option value=""></option>
                     @isset($otherProducts)
                         @foreach ($otherProducts as $item)
@@ -30,21 +32,17 @@
                             </option>
                         @endforeach
                     @endisset
-                </select>                
+                </select>     
+                </div>           
             </div>
         </div>
     </div>  
 </div>
-<style>
-     .related_product .select2-container .select2-selection {
-    height: 80px;
-    width:500px;
-    overflow: scroll;
-} 
 
-.cross_selling_product .select2-container .select2-selection {
-    height: 80px;
-    width:500px;
+<style>
+  /*  .select2-container .select2-selection {
+    height: 50px;
+  
     overflow: scroll;
-} 
+} */
     </style>
