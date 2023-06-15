@@ -8,6 +8,7 @@ use App\Models\Master\EmailTemplate;
 use App\Models\Order;
 use App\Models\Product\Product;
 use App\Models\Product\ProductCategory;
+use App\Models\Product\ProductDescription;
 use App\Models\SmsTemplate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -20,6 +21,7 @@ use Exception;
 
 class TestController extends Controller
 {
+
     public function index(Request $request)
     {
 
@@ -339,5 +341,34 @@ class TestController extends Controller
             $count += 2;
         }
         return $binString;
+    }
+
+    public function testDescription() {
+        $deleted_data = DB::select("select * from  gbs_product_descriptions  
+        WHERE 
+        deleted_at is not null 
+        and (desc_image is not null and desc_image != '' )
+        GROUP by title
+        order by deleted_at DESC");
+
+        if( isset( $deleted_data ) && !empty( $deleted_data )  ) {
+            foreach ($deleted_data as $items ) {
+                $update_data = ProductDescription::where(['product_id' => $items->product_id, 'title' => $items->title])
+                ->whereNull('deleted_at')
+                ->where(function($query){
+                    $query->whereNotNull('desc_image');
+                    $query->orWhere('desc_image', '!=', '');
+                })->first();
+
+                if( $update_data) {
+                    $update_data->desc_image = $items->desc_image;
+                    $update_data->save();
+                }
+
+                dump( $update_data );
+                
+            }
+        }
+        
     }
 }
