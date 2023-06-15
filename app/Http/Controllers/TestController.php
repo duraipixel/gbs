@@ -8,6 +8,7 @@ use App\Models\Master\EmailTemplate;
 use App\Models\Order;
 use App\Models\Product\Product;
 use App\Models\Product\ProductCategory;
+use App\Models\Product\ProductDescription;
 use App\Models\SmsTemplate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -349,6 +350,20 @@ class TestController extends Controller
         and (desc_image is not null and desc_image != '' )
         GROUP by title
         order by deleted_at DESC");
-        dd( $deleted_data );
+
+        if( isset( $deleted_data ) && !empty( $deleted_data )  ) {
+            foreach ($deleted_data as $items ) {
+                $update_data = ProductDescription::where(['product_id' => $items->product_id, 'title' => $items->title])
+                ->whereNull('deleted_at')
+                ->where(function($query){
+                    $query->whereNotNull('desc_image', '!=', '');
+                    $query->orWhere('desc_image', '!=', '');
+                })->first();
+
+                dump( $update_data );
+                
+            }
+        }
+        
     }
 }
