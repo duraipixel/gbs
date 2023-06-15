@@ -14,6 +14,7 @@ use App\Models\Product\ProductWithAttributeSet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class FilterController extends Controller
 {
@@ -29,7 +30,7 @@ class FilterController extends Controller
         if ($category_slug) {
             $category = ProductCategory::select('id', 'name', 'parent_id', 'slug', 'image')->with('childCategory')->where('slug', $category_slug)->first();
 
-            if ($category->parent_id != 0) {
+            if ( isset( $category ) && $category->parent_id != 0) {
                 $top_category = ProductCategory::select('id', 'name', 'parent_id', 'slug', 'image')->with('childCategory')->where('status', 'published')
                     ->where('parent_id', 0)
                     ->where('id', $category->parent_id)
@@ -713,10 +714,10 @@ class FilterController extends Controller
                     foreach ($sub_values as $items_sub) {
                         $temp_val = [];
                         $temp_val['name'] = trim($items_sub->attribute_values);
-                        $temp_val['slug'] = str_replace(' ', '-', trim($items_sub->attribute_values));
+                        $temp_val['slug'] = Str::slug(trim($items_sub->attribute_values));
                         $sub_array[] = $temp_val;
                     }
-                    $attributes[str_replace(' ', '_', strtolower($att_value->title))] = $sub_array;
+                    $attributes[Str::slug(strtolower($att_value->title))] = $sub_array;
                 }
             }
         }
