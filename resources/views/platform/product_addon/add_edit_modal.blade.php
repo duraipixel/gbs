@@ -41,16 +41,9 @@
                                     <input type="text" name="title" class="form-control form-control-solid mb-3 mb-lg-0"
                                         placeholder="Title" value="{{ $info->title ?? '' }}" />
                                 </div>
-                               
-                               
-                            </div>
-                        </div>
 
-                        <div class="fv-row mb-7">
-
-                            <div class="row">
                                 <div class="col-md-6 mt-3">
-                                    <input class="form-check-input" type="radio" name="add_on_type"  
+                                    <input class="form-check-input mx-3" type="radio" name="add_on_type"  
                                    @if ($info_items!='')                                       
                                    @if($info_items->type=='category') checked @endif @endif @if ($info_items=='')
                                    checked
@@ -59,7 +52,7 @@
                                     <label class="form-check-label" for="category">
                                         Category
                                     </label>
-                                    <input class="form-check-input" type="radio" name="add_on_type" id="product" 
+                                    <input class="form-check-input mx-3" type="radio" name="add_on_type" id="product" 
                                     @if ($info_items!='')   
                                     @if($info_items->type=='product') checked @endif  
                                     @endif value="product" onclick="return type_show('product')">
@@ -68,7 +61,21 @@
                                     </label>                                   
                                    
                                 </div>
-                                <div class="col-md-6 category_show"  @if ($info_items!='')      @if($info_items->type=='product') style="display:none;"  @endif @endif  >
+                               
+                               
+                            </div>
+                        </div>
+
+                        <div class="fv-row mb-7">
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class="fw-bold fs-6 mb-2">Description</label>
+                                    <textarea name="description" id="description" class="form-control" cols="30" rows="2">{{ $info->description ?? '' }}</textarea>
+        
+                                </div>
+                                <div class="col-md-6" >
+                                   <div class="category_show" @if ($info_items!='')      @if($info_items->type=='product') style="display:none;"  @endif @endif>
                                     <label class="required fw-bold fs-6 mb-2">Category</label>
                                     <select name="category_id[]" id="category_id"
                                         aria-label="Select a Category" data-control="select2"
@@ -83,7 +90,7 @@
                                         @endif
                                     </select>
                                 </div>
-                        <div class="col-md-6 product_show"   @if ($info_items!='')     @if($info_items->type=='category') style="display:none;"  @endif @endif 
+                        <div class="product_show"   @if ($info_items!='')     @if($info_items->type=='category') style="display:none;"  @endif @endif 
                             @if($info_items=='')  style="display:none;" @endif >
                             <label class="required fw-bold fs-6 mb-2">Product</label>
                             <select name="product_id[]" id="product_id"
@@ -101,15 +108,14 @@
                             </select>
                         </div>
                     </div>
+                       
+                    </div>
                 </div>
                        
                         
                         <div class="fv-row mb-7">
                             <div class="row">
-                                <div class="col-md-6">
-                                    <label class="fw-bold fs-6 mb-2">Description</label>
-                                    <textarea name="description" id="description" class="form-control" cols="30" rows="2">{{ $info->description ?? '' }}</textarea>
-                                    <br>
+                              
                                     
                                     <div class="row">
                                         <div class="col-md-6">
@@ -117,14 +123,8 @@
                                             <input type="text" name="order_by" id="order_by" class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
                                             placeholder="Sorting Order" value="{{ $info->order_by ?? '' }}" />
                                         </div>
-                                        <div class="col-md-6">
-                                            <label class="fw-bold fs-6 mb-2"> Status </label>
-                                            <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
-                                                <input class="form-check-input" type="checkbox"  name="status" value="1"  @if( ( isset( $info->status) && $info->status == 'published') || (!isset( $info->status ))) checked @endif />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+
+                                         
                                 <div class="col-md-6">
                                     <div class="fv-row mb-7">
                                         <label class="d-block fw-bold fs-6 mb-5">Icon</label>
@@ -174,6 +174,17 @@
                                         </span>
                                     </div>
                                 </div>
+
+                                        
+                                    </div>
+                               
+
+                                    <div class="col-md-6">
+                                        <label class="fw-bold fs-6 mb-2"> Status </label>
+                                        <div class="form-check form-switch form-check-custom form-check-solid fw-bold fs-6 mb-2">
+                                            <input class="form-check-input" type="checkbox"  name="status" value="1"  @if( ( isset( $info->status) && $info->status == 'published') || (!isset( $info->status ))) checked @endif />
+                                        </div>
+                                    </div>
                             </div>
                             
                         </div>
