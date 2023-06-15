@@ -5,7 +5,7 @@
                
                 <label class="form-label d-block">Related Products(Minimum 5) </label>
 
-                <select name="related_product[]" id="related_product" aria-label="Select a Category" multiple="multiple" data-placeholder="Select a Category..." class="form-select mb-2">
+                <select name="related_product[]" class="related_product" ="related_product" aria-label="Select a Category" multiple="multiple" data-placeholder="Select a Category..." class="form-select mb-2">
                     <option value=""></option>
                     @isset($otherProducts)
                         @foreach ($otherProducts as $item)
@@ -21,7 +21,7 @@
 
             <div class="mb-10 fv-row">
                 <label class="form-label d-block"> Frequently Purchased Products </label>
-                <select name="cross_selling_product[]" id="cross_selling_product" aria-label="Select a Category" multiple="multiple" data-placeholder="Select a Category..." class="form-select mb-2">
+                <select name="cross_selling_product[]"  class="cross_selling_product" ="cross_selling_product" aria-label="Select a Category" multiple="multiple" data-placeholder="Select a Category..." class="form-select mb-2">
                     <option value=""></option>
                     @isset($otherProducts)
                         @foreach ($otherProducts as $item)
@@ -36,7 +36,13 @@
     </div>  
 </div>
 <style>
-     .select2-container .select2-selection {
+     .related_product .select2-container .select2-selection {
+    height: 80px;
+    width:500px;
+    overflow: scroll;
+} 
+
+.cross_selling_product .select2-container .select2-selection {
     height: 80px;
     width:500px;
     overflow: scroll;
