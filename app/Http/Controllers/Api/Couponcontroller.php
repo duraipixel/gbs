@@ -366,6 +366,8 @@ class Couponcontroller extends Controller
             $tmp['carts'] = $cartTemp;
             $tmp['cart_count'] = count($cartTemp);
             if (isset($shipping_info) && !empty($shipping_info) || (isset( $selected_shipping ) && !empty( $selected_shipping )) ) {
+                dump( $selected_shipping );
+                dd( $shipping_info );
                 $tmp['selected_shipping_fees'] = array(
                                                 'shipping_id' => $shipping_info->id ?? $selected_shipping['shipping_id'],
                                                 'shipping_charge_order' => $shipping_info->charges ?? $selected_shipping['shipping_charge_order'],
