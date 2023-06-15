@@ -102,8 +102,8 @@ class BrandController extends Controller
         $id             = $request->id;
         $validator      = Validator::make($request->all(), [
                                 'brand_name' => 'required|string|unique:brands,brand_name,' . $id . ',id,deleted_at,NULL',
-                                'avatar_logo' => 'mimes:jpeg,png,jpg',
-                                'avatar_banner' => 'mimes:jpeg,png,jpg',
+                                'avatar_logo' => 'mimes:jpeg,png,jpg|max:150',
+                                'avatar_banner' => 'mimes:jpeg,png,jpg|max:150',
                                 'order_by' => 'required|unique:brands,order_by,' . $id . ',id,deleted_at,NULL',
 
                             ]);

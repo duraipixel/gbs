@@ -98,6 +98,7 @@ class ProductAddonController extends Controller
                                 'title' => 'required|string|unique:product_addons,title,' . $id . ',id,deleted_at,NULL',
                                 'product_id' => 'required_if:add_on_type,==,product',
                                 'category_id' => 'required_if:add_on_type,==,category',
+                                'icon' => 'max:150'
                             ]);
         $banner_id      = '';
         if ($validator->passes()) {
