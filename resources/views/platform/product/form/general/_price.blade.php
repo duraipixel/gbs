@@ -38,8 +38,16 @@
         <div class="text-center col-sm-12 fs-1 fw-bold">
             <p> Discount Percentage</p>
             <label>
+              
+                @isset($info->discount_percentage)
+              
                 <span id="discount_price_percentage"><?= abs($info->discount_percentage) ?? 0 ?></span> %
-                <input type="hidden" name="discount_percentage" id="discount_percentage" value="{{ abs($info->discount_percentage) ?? 0 }}">
+               
+                @endisset
+                @empty($info->discount_percentage)
+                <span id="discount_price_percentage">0</span> %
+                @endempty
+               
             </label>
         </div>
     </div>
