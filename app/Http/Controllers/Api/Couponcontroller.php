@@ -365,16 +365,14 @@ class Couponcontroller extends Controller
 
             $tmp['carts'] = $cartTemp;
             $tmp['cart_count'] = count($cartTemp);
-            if (isset($shipping_info) && !empty($shipping_info) || (isset( $shippingfee_info ) && !empty( $shippingfee_info )) ) {
-                dump( $shippingfee_info );
-                dd( $shipping_info );
+            if (isset( $shippingfee_info ) && !empty( $shippingfee_info ) ) {
                 $tmp['selected_shipping_fees'] = array(
-                                                'shipping_id' => $shipping_info->id ?? $shippingfee_info['shipping_id'],
-                                                'shipping_charge_order' => $shipping_info->charges ?? $shippingfee_info['shipping_charge_order'],
-                                                'shipping_type' => $shipping_type ?? $shippingfee_info['shipping_type'] ?? 'fees'
+                                                'id' => $shippingfee_info->id,
+                                                'charges' => $shippingfee_info->charges,
+                                                'shipping_title' => $shippingfee_info->shipping_title
                                                 );
                 
-                $grand_total                = $grand_total + ($shipping_info->charges ?? $shippingfee_info['shipping_charge_order'] ?? 0);
+                $grand_total                = $grand_total + ($shippingfee_info->charges ?? 0);
             }
             if( isset( $coupon_amount ) && !empty( $coupon_amount ) ) {
                 $grand_total = $grand_total - $coupon_amount ?? 0;
