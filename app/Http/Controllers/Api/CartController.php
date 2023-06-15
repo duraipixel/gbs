@@ -273,7 +273,7 @@ class CartController extends Controller
                 $addonItems = CartProductAddon::where(['cart_id' => $citems->id, 'product_id' => $items->id ])->get();
                 
                 $addon_total = 0;
-                if( isset( $addonItems ) && !empty( $addonItems ) && $addonItems > 0 ) {
+                if( isset( $addonItems ) && !empty( $addonItems ) && count($addonItems) > 0 ) {
                     foreach ($addonItems as $addItems) {
                         
                         $addons = [];
