@@ -427,23 +427,23 @@ class CCavenueController extends Controller
 
             if (isset($cart_items) && !empty($cart_items)) {
                 foreach ($cart_items as $item) {
-                    dd( $item );
+                    
                     $product_info = Product::find($item->product_id);
-
+                    
                     $items_ins['order_id'] = $order_id;
-                    $items_ins['product_id'] = $item->id;
-                    $items_ins['product_name'] = $item->product_name;
-                    $items_ins['image'] = $item->image;
-                    $items_ins['hsn_code'] = $item->hsn_no;
-                    $items_ins['sku'] = $item->sku;
-                    $items_ins['quantity'] = $item->quantity;
-                    $items_ins['price'] = $item->price;
-                    $items_ins['strice_price'] = $item->strike_price;
-                    $items_ins['save_price'] = $item->save_price;
-                    $items_ins['base_price'] = $item->tax->basePrice;
-                    $items_ins['tax_amount'] = ($item->tax->gstAmount ?? 0) * $item->quantity;
-                    $items_ins['tax_percentage'] = $item->tax->tax_percentage ?? 0;
-                    $items_ins['sub_total'] = $item->sub_total;
+                    $items_ins['product_id'] = $product_info->id;
+                    $items_ins['product_name'] = $product_info->product_name;
+                    $items_ins['image'] = $product_info->image;
+                    $items_ins['hsn_code'] = $product_info->hsn_no;
+                    $items_ins['sku'] = $product_info->sku;
+                    $items_ins['quantity'] = $product_info->quantity;
+                    $items_ins['price'] = $product_info->price;
+                    $items_ins['strice_price'] = $product_info->strike_price;
+                    $items_ins['save_price'] = $product_info->save_price;
+                    $items_ins['base_price'] = $product_info->tax->basePrice;
+                    $items_ins['tax_amount'] = ($product_info->tax->gstAmount ?? 0) * $product_info->quantity;
+                    $items_ins['tax_percentage'] = $product_info->tax->tax_percentage ?? 0;
+                    $items_ins['sub_total'] = $product_info->sub_total;
                     
                     dump( $items_ins );
                     $order_product_info = OrderProduct::create($items_ins);
@@ -472,7 +472,7 @@ class CCavenueController extends Controller
                         foreach ($item->addons as $aitems) {
                             $add_ins = [];
                             $add_ins['order_id'] = $order_id;
-                            $add_ins['product_id'] = $item->id;
+                            $add_ins['product_id'] = $product_info->id;
                             $add_ins['addon_id'] = $aitems->addon_id;
                             $add_ins['addon_item_id'] = $aitems->addon_item_id;
                             $add_ins['title'] = $aitems->title;
