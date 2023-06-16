@@ -119,10 +119,10 @@
                             <div class="col-sm-4 mb-2">
                                 <input type="text" id="sorting_order" name="sorting_order[]"
                                     class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
-                                    placeholder="Sorting Order"  />
+                                    placeholder="Sorting Order"  required />
                             </div>
                             <div class="col-sm-12">
-                                <textarea class="form-control form-control-solid mb-3 mb-lg-0" name="desc[]" id="desc"></textarea>
+                                <textarea class="form-control form-control-solid mb-3 mb-lg-0" name="desc[]" id="desc" required></textarea>
                             </div>
                         </div>
 
@@ -132,6 +132,7 @@
                             <input type="file" id="home_image" name="home_image[]"
                                 class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
                                 placeholder="Sorting Order" />
+                                <input type="hidden" name="old_image_name[]" value="">
                         </div>
                         
                     </div>

@@ -180,6 +180,7 @@ class ProductController extends Controller
         $brands                 = Brands::where('status', 'published')->get();
 
         $images                 = $this->productRepository->getImageInfoJson($id);
+        //dd($images);
         $brochures              = $this->productRepository->getBrochureJson($id);
         
         $params                 = array(
@@ -213,11 +214,11 @@ class ProductController extends Controller
                                 'category_id' => 'required',
                                 'brand_id' => 'required',
                                 'status' => 'required',
-                                'sorting_order' => 'required',                                  
-                                'desc_image' => 'nullable|array', 
-                                'desc_image' => 'max:150', 
-                                'avatar' => 'nullable|array', 
-                                'avatar' => 'max:150',
+                                //'sorting_order' => 'required',                                  
+                               // 'desc_image' => 'nullable|array', 
+                                //'desc_image' => 'max:150', 
+                                //'avatar' => 'nullable|array', 
+                                //'avatar' => 'max:150',
                                 'thumbnail_url' => 'nullable|array',                     
                                 'thumbnail_url.*' => 'url',
                                 'video_url' => 'nullable|array',                     
@@ -502,7 +503,6 @@ class ProductController extends Controller
                 Image::make($file)->save(storage_path('app/' . $fileName));
                 
                 $fileSize = $file->getSize();
-
                 $imageIns[] = array( 
                     'gallery_path'  => $fileName,                   
                     'product_id'    => $product_id,
