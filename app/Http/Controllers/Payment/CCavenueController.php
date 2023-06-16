@@ -331,7 +331,7 @@ class CCavenueController extends Controller
             $tax_percentage = 0;
             if (isset($cart_items) && !empty($cart_items)) {
                 foreach ($cart_items as $citem) {
-                    dump( $citem );
+                    
                     $tax = [];
                     $tax_percentage = 0;
 
@@ -367,7 +367,9 @@ class CCavenueController extends Controller
             }
 
             dump( $product_tax_exclusive_total );
-            dd( $tax_percentage );
+            dump( $tax_total );
+            dump( $tax_percentage );
+            dd( $total_order_value );
 
             if (!$shipping_method) {
                 $message = 'Shipping Method not selected';
