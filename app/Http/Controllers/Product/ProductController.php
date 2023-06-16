@@ -270,7 +270,6 @@ class ProductController extends Controller
             $ins[ 'tag_id' ]                = $request->tag_id;
             $ins[ 'label_id' ]              = $request->label_id;
             $ins[ 'is_featured' ]           = $request->is_featured ?? 0;
-            $ins[ 'has_video_shopping' ]    = $request->has_video_shopping ?? 'no';
             $ins[ 'quantity' ]              = $request->qty;
             $ins['warranty_id']             = $request->warranty_id;
             $ins[ 'stock_status' ]          = $request->stock_status;

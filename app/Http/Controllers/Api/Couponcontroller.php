@@ -328,7 +328,6 @@ class Couponcontroller extends Controller
                 $pro['hsn_code']        = $items->hsn_code;
                 $pro['product_url']     = $items->product_url;
                 $pro['sku']             = $items->sku;
-                $pro['has_video_shopping'] = $items->has_video_shopping;
                 $pro['stock_status']    = $items->stock_status;
                 $pro['is_featured']     = $items->is_featured;
                 $pro['is_best_selling'] = $items->is_best_selling;

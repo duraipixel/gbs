@@ -63,7 +63,6 @@ class CollectionController extends Controller
                 $pro['hsn_code']        = $productInfo->hsn_code;
                 $pro['product_url']     = $productInfo->product_url;
                 $pro['sku']             = $productInfo->sku;
-                $pro['has_video_shopping'] = $productInfo->has_video_shopping;
                 $pro['stock_status']    = $productInfo->stock_status;
                 $pro['is_featured']     = $productInfo->is_featured;
                 $pro['is_best_selling'] = $productInfo->is_best_selling;

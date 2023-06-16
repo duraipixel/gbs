@@ -7,6 +7,7 @@ use App\Mail\OrderMail;
 use App\Models\Cart;
 use App\Models\CartProductAddon;
 use App\Models\GlobalSettings;
+use App\Models\Master\CustomerAddress;
 use App\Models\Master\EmailTemplate;
 use App\Models\Master\OrderStatus;
 use App\Models\Order;
@@ -18,6 +19,7 @@ use App\Models\Product\OrderProductAddon;
 use App\Models\Product\Product;
 use App\Models\Settings\Tax;
 use App\Models\ShippingCharge;
+use App\Models\StoreLocator;
 use App\Models\Warranty;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
@@ -27,8 +29,7 @@ use Mail;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request as Psr7Request;
 use Illuminate\Http\Request;
-
-
+use Illuminate\Support\Facades\Validator;
 
 class CCavenueController extends Controller
 {
@@ -64,7 +65,7 @@ class CCavenueController extends Controller
 
     public function ccavRequestHandler(Request $request)
     {
-        
+
         return view('payment.request_handler');
     }
 
@@ -76,7 +77,7 @@ class CCavenueController extends Controller
         // dd( $response );
         // For Otherthan Default Gateway
         $response = Indipay::gateway('CCAvenue')->response($request);
-        
+
         $encrypted_order_no = '';
         if ($response) {
             $paid_amount = $response['amount'];
@@ -84,13 +85,13 @@ class CCavenueController extends Controller
             $order_status = $response['order_status'];
             $order_info = Order::where('order_no', $order_no)->first();
             $encrypted_order_no = base64_encode($order_info->order_no);
-            if (strtolower($order_status) == 'success' && $order_info->amount == $paid_amount ) {
+            if (strtolower($order_status) == 'success' && $order_info->amount == $paid_amount) {
                 /*
                 Success Payment
                 */
                 $cart_data = Cart::where('customer_id', $order_info->customer_id)->get();
-                if( isset( $cart_data ) && !empty( $cart_data ) ) {
-                    foreach ( $cart_data as $item ) {
+                if (isset($cart_data) && !empty($cart_data)) {
+                    foreach ($cart_data as $item) {
                         $item->addons()->delete();
                         $item->delete();
                     }
@@ -256,207 +257,234 @@ class CCavenueController extends Controller
     public function proceedCheckout(Request $request)
     {
 
-        $checkout_infomation = json_decode($request->checkout_infomation);
-        // dump( $checkout_infomation );
-        $customer_id            = $request->customer_id;
-        $coupon_amount = 0;
-        $shippping_fee_amount = 0;
+        $validate_array     = [
+            'billing_address_id' => 'required',
+            'shipping_address_id' => 'required',
+            'shipping_method' => 'required'
+        ];
+        $validator      = Validator::make($request->all(), $validate_array);
+        if ($validator->passes()) {
 
-        $cart_info = Cart::selectRaw('sum(sub_total) as total, coupon_id, coupon_amount, shipping_fee_id, shipping_fee')->where('customer_id', $customer_id)->first();
-        $cart_addon_info = Cart::selectRaw('sum(gbs_cart_product_addons.amount) as addon_total, coupon_id, coupon_amount, shipping_fee_id, shipping_fee')
-                            ->leftJoin('cart_product_addons', 'cart_product_addons.product_id', '=', 'carts.product_id')->where('customer_id', $customer_id)->first();
-        
-        $cart_items = Cart::where('customer_id', $customer_id)->get();
-        dd( $cart_items );
-        $total_order_value = 0;
-        if($cart_info ) {
-            $coupon_amount = $cart_info->coupon_amount ?? 0;
-            $shippping_fee_amount = ($cart_info->shipping_fee ?? 0);
-            $total_order_value = ($cart_info->total + $cart_addon_info->addon_total ?? 0 ) - ($cart_info->coupon_amount ?? 0) + ($cart_info->shipping_fee ?? 0);
-        }
-        
-        $order_status           = OrderStatus::where('status', 'published')->where('order', 1)->first();
-        $shipping_method        = $checkout_infomation->shipping_method;
+            $customer_id            = $request->customer_id;
+            $billing_address_id     = $request->billing_address_id;
+            $shipping_method        = $request->shipping_method;
 
-        $checkout_data          = $checkout_infomation->checkout_data;
-        // $cart_items             = $checkout_infomation->cart_items;
-        $shipping_address       = $checkout_infomation->shipping_address;
-        $billing_address        = $checkout_infomation->billing_address;
-        $coupon_data            = $checkout_infomation->coupon_data;
-        $pickup_store_address   = $checkout_infomation->pickup_store_address;
-        
-        $coupon_details = '';
-        $coupon_code = '';
-        $coupon_id = 0;
-        if (isset($coupon_data) && !empty($coupon_data)) {
-            $coupon_code = $coupon_data->coupon_code;
-            $coupon_id = $coupon_data->coupon_id;
-            // $coupon_amount = $coupon_data->coupon_amount;
-            $coupon_details = serialize($coupon_data);
-        }
 
-        $pickup_address_details = '';
-        if (isset($pickup_store_address) && !empty($pickup_store_address)) {
-            $pickup_address_details = serialize($pickup_store_address);
-        }
 
-        #check product is out of stock
-        $errors                 = [];
-        if (isset($cart_items) && !empty($cart_items)) {
-            foreach ($cart_items as $citem) {
-                $product_id = $citem->id;
-                $product_info = Product::find($product_id);
-                if ($product_info->quantity < $citem->quantity) {
-                    $errors[]     = $citem->product_name . ' is out of stock, Product will be removed from cart.Please choose another';
-                    $response['error'] = $errors;
+            $coupon_amount = 0;
+            $shippping_fee_amount = 0;
+
+            $cart_info = Cart::selectRaw('sum(sub_total) as total, coupon_id, coupon_amount, shipping_fee_id, shipping_fee')->where('customer_id', $customer_id)->first();
+            $cart_addon_info = Cart::selectRaw('sum(gbs_cart_product_addons.amount) as addon_total, coupon_id, coupon_amount, shipping_fee_id, shipping_fee')
+                ->leftJoin('cart_product_addons', 'cart_product_addons.product_id', '=', 'carts.product_id')->where('customer_id', $customer_id)->first();
+
+            $cart_items = Cart::where('customer_id', $customer_id)->get();
+            
+            $total_order_value = 0;
+
+            if ($cart_info) {
+                $coupon_amount = $cart_info->coupon_amount ?? 0;
+                $shippping_fee_amount = ($cart_info->shipping_fee ?? 0);
+                $total_order_value = ($cart_info->total + $cart_addon_info->addon_total ?? 0) - ($cart_info->coupon_amount ?? 0) + ($cart_info->shipping_fee ?? 0);
+            }
+
+            $order_status           = OrderStatus::where('status', 'published')->where('order', 1)->first();
+
+            $shipping_method        = $shipping_method['type'];
+
+            
+            // $cart_items             = $checkout_infomation->cart_items;
+            $billing_address        = CustomerAddress::find($billing_address_id);
+
+            if( $shipping_method == 'STANDARD_SHIPPING' ) {
+                $shipping_address       = CustomerAddress::find($shipping_method['address_id']);
+            } else {
+                $pickup_store_address   = StoreLocator::find($shipping_method['address_id']);
+            }
+            dump( $shipping_address );
+            dd( $billing_address );
+            // $coupon_data            = $checkout_infomation->coupon_data;
+
+            $coupon_details = '';
+            $coupon_code = '';
+            $coupon_id = 0;
+            if (isset($coupon_data) && !empty($coupon_data)) {
+                $coupon_code = $coupon_data->coupon_code;
+                $coupon_id = $coupon_data->coupon_id;
+                // $coupon_amount = $coupon_data->coupon_amount;
+                $coupon_details = serialize($coupon_data);
+            }
+
+            $pickup_address_details = '';
+            if (isset($pickup_store_address) && !empty($pickup_store_address)) {
+                $pickup_address_details = serialize($pickup_store_address);
+            }
+
+            #check product is out of stock
+            $errors                 = [];
+            if (isset($cart_items) && !empty($cart_items)) {
+                foreach ($cart_items as $citem) {
+                    $product_id = $citem->id;
+                    $product_info = Product::find($product_id);
+                    if ($product_info->quantity < $citem->quantity) {
+                        $errors[]     = $citem->product_name . ' is out of stock, Product will be removed from cart.Please choose another';
+                        $response['error'] = $errors;
+                    }
                 }
             }
-        }
-        if (!$shipping_method) {
-            $message = 'Shipping Method not selected';
-            $error = 1;
-            $response['error'] = $error;
-            $response['message'] = $message;
-        }
-        if (!empty($errors)) {
-
-            $error = 1;
-            $response['error'] = $error;
-            $response['message'] = implode(',', $errors);
-
-            return $response;
-        }
-
-        $checkout_total = str_replace(',', '', $checkout_data->total);
-        $pay_amount  = filter_var($checkout_total, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-        
-        $order_ins['customer_id'] = $customer_id;
-        $order_ins['order_no'] = getOrderNo();
-
-
-        $order_ins['amount'] = $total_order_value;
-        $order_ins['tax_amount'] = $checkout_data->tax_total ? str_replace(',', '', $checkout_data->tax_total) : 0;
-        $order_ins['tax_percentage'] = $checkout_data->tax_percentage ?? 0;
-        $order_ins['shipping_amount'] = $shippping_fee_amount;
-        $order_ins['coupon_amount'] = $coupon_amount ?? 0;
-        $order_ins['coupon_code'] = $coupon_code ?? '';
-        $order_ins['coupon_details'] = $coupon_details ?? '';
-        $order_ins['sub_total'] = $checkout_data->product_tax_exclusive_total_without_format;
-        $order_ins['description'] = '';
-        $order_ins['order_status_id'] = $order_status->id;
-        $order_ins['status'] = 'pending';
-        $order_ins['pickup_store_details'] = $pickup_address_details;
-
-        $order_ins['billing_name'] = $billing_address->name;
-        $order_ins['billing_email'] = $billing_address->email;
-        $order_ins['billing_mobile_no'] = $billing_address->mobile_no;
-        $order_ins['billing_address_line1'] = $billing_address->address_line1;
-        $order_ins['billing_address_line2'] = $billing_address->address_line2 ?? null;
-        $order_ins['billing_landmark'] = $billing_address->landmark ?? null;
-        $order_ins['billing_country'] = $billing_address->country ?? null;
-        $order_ins['billing_post_code'] = $billing_address->post_code ?? null;
-        $order_ins['billing_state'] = $billing_address->state ?? null;
-        $order_ins['billing_city'] = $billing_address->city ?? null;
-
-        $order_ins['shipping_name'] = $shipping_address->name ?? $billing_address->name;
-        $order_ins['shipping_email'] = $shipping_address->email ?? $billing_address->email;
-        $order_ins['shipping_mobile_no'] = $shipping_address->mobile_no ?? $billing_address->mobile_no;
-        $order_ins['shipping_address_line1'] = $shipping_address->address_line1 ?? $billing_address->address_line1;
-        $order_ins['shipping_address_line2'] = $shipping_address->address_line2 ?? $billing_address->address_line2 ?? null;
-        $order_ins['shipping_landmark'] = $shipping_address->landmark ?? $billing_address->landmark ?? null;
-        $order_ins['shipping_country'] = $shipping_address->country ?? $billing_address->country ?? null;
-        $order_ins['shipping_post_code'] = $shipping_address->post_code ?? $billing_address->post_code;
-        $order_ins['shipping_state'] = $shipping_address->state ?? $billing_address->state ?? null;
-        $order_ins['shipping_city'] = $shipping_address->city ?? $billing_address->city ?? null;
-
-        if (isset($shipping_method) && $shipping_method != 'PICKUP_FROM_STORE' && isset($shipping_address) && !empty($shipping_address)) {
-
-            $shipping_type_info = ShippingCharge::find($checkout_infomation->standard_shipping_charge_id);
-
-            $order_ins['shipping_options'] = $checkout_infomation->standard_shipping_charge_id ?? 0;
-            if ($shipping_type_info) {
-                $order_ins['shipping_type'] = $shipping_type_info->shipping_title ?? 'Free';
+            if (!$shipping_method) {
+                $message = 'Shipping Method not selected';
+                $error = 1;
+                $response['error'] = $error;
+                $response['message'] = $message;
             }
+            if (!empty($errors)) {
+
+                $error = 1;
+                $response['error'] = $error;
+                $response['message'] = implode(',', $errors);
+
+                return $response;
+            }
+
+            $checkout_total = str_replace(',', '', $checkout_data->total);
+            $pay_amount  = filter_var($checkout_total, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+
+            $order_ins['customer_id'] = $customer_id;
+            $order_ins['order_no'] = getOrderNo();
+
+
+            $order_ins['amount'] = $total_order_value;
+            $order_ins['tax_amount'] = $checkout_data->tax_total ? str_replace(',', '', $checkout_data->tax_total) : 0;
+            $order_ins['tax_percentage'] = $checkout_data->tax_percentage ?? 0;
+            $order_ins['shipping_amount'] = $shippping_fee_amount;
+            $order_ins['coupon_amount'] = $coupon_amount ?? 0;
+            $order_ins['coupon_code'] = $coupon_code ?? '';
+            $order_ins['coupon_details'] = $coupon_details ?? '';
+            $order_ins['sub_total'] = $checkout_data->product_tax_exclusive_total_without_format;
+            $order_ins['description'] = '';
+            $order_ins['order_status_id'] = $order_status->id;
+            $order_ins['status'] = 'pending';
+            $order_ins['pickup_store_details'] = $pickup_address_details;
+
+            $order_ins['billing_name'] = $billing_address->name;
+            $order_ins['billing_email'] = $billing_address->email;
+            $order_ins['billing_mobile_no'] = $billing_address->mobile_no;
+            $order_ins['billing_address_line1'] = $billing_address->address_line1;
+            $order_ins['billing_address_line2'] = $billing_address->address_line2 ?? null;
+            $order_ins['billing_landmark'] = $billing_address->landmark ?? null;
+            $order_ins['billing_country'] = $billing_address->country ?? null;
+            $order_ins['billing_post_code'] = $billing_address->post_code ?? null;
+            $order_ins['billing_state'] = $billing_address->state ?? null;
+            $order_ins['billing_city'] = $billing_address->city ?? null;
+
+            $order_ins['shipping_name'] = $shipping_address->name ?? $billing_address->name;
+            $order_ins['shipping_email'] = $shipping_address->email ?? $billing_address->email;
+            $order_ins['shipping_mobile_no'] = $shipping_address->mobile_no ?? $billing_address->mobile_no;
+            $order_ins['shipping_address_line1'] = $shipping_address->address_line1 ?? $billing_address->address_line1;
+            $order_ins['shipping_address_line2'] = $shipping_address->address_line2 ?? $billing_address->address_line2 ?? null;
+            $order_ins['shipping_landmark'] = $shipping_address->landmark ?? $billing_address->landmark ?? null;
+            $order_ins['shipping_country'] = $shipping_address->country ?? $billing_address->country ?? null;
+            $order_ins['shipping_post_code'] = $shipping_address->post_code ?? $billing_address->post_code;
+            $order_ins['shipping_state'] = $shipping_address->state ?? $billing_address->state ?? null;
+            $order_ins['shipping_city'] = $shipping_address->city ?? $billing_address->city ?? null;
+
+            if (isset($shipping_method) && $shipping_method != 'PICKUP_FROM_STORE' && isset($shipping_address) && !empty($shipping_address)) {
+
+                $shipping_type_info = ShippingCharge::find($checkout_infomation->standard_shipping_charge_id);
+
+                $order_ins['shipping_options'] = $checkout_infomation->standard_shipping_charge_id ?? 0;
+                if ($shipping_type_info) {
+                    $order_ins['shipping_type'] = $shipping_type_info->shipping_title ?? 'Free';
+                }
+            } else {
+
+                $order_ins['pickup_store_id'] = $checkout_infomation->pickup_store_id;
+            }
+            dump($request->all());
+            dd($order_ins);
+            $order_info = Order::create($order_ins);
+            $order_id = $order_info->id;
+
+            if (isset($cart_items) && !empty($cart_items)) {
+                foreach ($cart_items as $item) {
+                    $product_info = Product::find($item->id);
+
+                    $items_ins['order_id'] = $order_id;
+                    $items_ins['product_id'] = $item->id;
+                    $items_ins['product_name'] = $item->product_name;
+                    $items_ins['image'] = $item->image;
+                    $items_ins['hsn_code'] = $item->hsn_no;
+                    $items_ins['sku'] = $item->sku;
+                    $items_ins['quantity'] = $item->quantity;
+                    $items_ins['price'] = $item->price;
+                    $items_ins['strice_price'] = $item->strike_price;
+                    $items_ins['save_price'] = $item->save_price;
+                    $items_ins['base_price'] = $item->tax->basePrice;
+                    $items_ins['tax_amount'] = ($item->tax->gstAmount ?? 0) * $item->quantity;
+                    $items_ins['tax_percentage'] = $item->tax->tax_percentage ?? 0;
+                    $items_ins['sub_total'] = $item->sub_total;
+
+                    $order_product_info = OrderProduct::create($items_ins);
+                    if (isset($product_info->warranty_id) && !empty($product_info->warranty_id)) {
+                        $warranty_info = Warranty::find($product_info->warranty_id);
+                        if ($warranty_info) {
+                            $war = [];
+                            $war['order_product_id'] = $order_product_info->id;
+                            $war['product_id'] = $order_product_info->product_id;
+                            $war['warranty_id'] = $warranty_info->id;
+                            $war['warranty_name'] = $warranty_info->name;
+                            $war['description'] = $warranty_info->description;
+                            $war['warranty_period'] = $warranty_info->warranty_period;
+                            $war['warranty_period_type'] = $warranty_info->warranty_period_type;
+                            $war['warranty_start_date'] = date('Y-m-d');
+                            $war['warranty_end_date'] = getEndWarrantyDate($warranty_info->warranty_period, $warranty_info->warranty_period_type);
+                            $war['status'] = 'active';
+                            OrderProductWarranty::create($war);
+                        }
+                    }
+
+                    /**
+                     * insert addons data
+                     */
+                    if (isset($item->addons) && !empty($item->addons)) {
+                        foreach ($item->addons as $aitems) {
+                            $add_ins = [];
+                            $add_ins['order_id'] = $order_id;
+                            $add_ins['product_id'] = $item->id;
+                            $add_ins['addon_id'] = $aitems->addon_id;
+                            $add_ins['addon_item_id'] = $aitems->addon_item_id;
+                            $add_ins['title'] = $aitems->title;
+                            $add_ins['addon_item_label'] = $aitems->addon_item_label;
+                            $add_ins['amount'] = $aitems->amount;
+                            $add_ins['icon'] = $aitems->icon;
+                            $add_ins['description'] = $aitems->description;
+
+                            OrderProductAddon::create($add_ins);
+                        }
+                    }
+                }
+            }
+
+            /**** order history */
+            $his['order_id'] = $order_info->id;
+            $his['action'] = 'Order Initiate';
+            $his['description'] = 'Order has been Initiated successfully';
+            OrderHistory::create($his);
+
+            $error = 0;
+            $response['error'] = $error;
+            $response['message'] = 'Payment Initiated Successfully';
+            $response['redirect_url'] = route('ccav.payment.start', ['customer_id' => base64_encode($customer_id), 'order_id' => base64_encode($order_info->id)]);
+
         } else {
 
-            $order_ins['pickup_store_id'] = $checkout_infomation->pickup_store_id;
+            $error = 1;
+            $response['error'] = $error;
+            $response['message'] = errorArrays($validator->errors()->all());
+            $response['redirect_url'] = '';
+            
         }
-        dump( $request->all() );
-        dd( $order_ins );
-        $order_info = Order::create($order_ins);
-        $order_id = $order_info->id;
-
-        if (isset($cart_items) && !empty($cart_items)) {
-            foreach ($cart_items as $item) {
-                $product_info = Product::find($item->id);
-
-                $items_ins['order_id'] = $order_id;
-                $items_ins['product_id'] = $item->id;
-                $items_ins['product_name'] = $item->product_name;
-                $items_ins['image'] = $item->image;
-                $items_ins['hsn_code'] = $item->hsn_no;
-                $items_ins['sku'] = $item->sku;
-                $items_ins['quantity'] = $item->quantity;
-                $items_ins['price'] = $item->price;
-                $items_ins['strice_price'] = $item->strike_price;
-                $items_ins['save_price'] = $item->save_price;
-                $items_ins['base_price'] = $item->tax->basePrice;
-                $items_ins['tax_amount'] = ($item->tax->gstAmount ?? 0) * $item->quantity;
-                $items_ins['tax_percentage'] = $item->tax->tax_percentage ?? 0;
-                $items_ins['sub_total'] = $item->sub_total;
-
-                $order_product_info = OrderProduct::create($items_ins);
-                if (isset($product_info->warranty_id) && !empty($product_info->warranty_id)) {
-                    $warranty_info = Warranty::find($product_info->warranty_id);
-                    if ($warranty_info) {
-                        $war = [];
-                        $war['order_product_id'] = $order_product_info->id;
-                        $war['product_id'] = $order_product_info->product_id;
-                        $war['warranty_id'] = $warranty_info->id;
-                        $war['warranty_name'] = $warranty_info->name;
-                        $war['description'] = $warranty_info->description;
-                        $war['warranty_period'] = $warranty_info->warranty_period;
-                        $war['warranty_period_type'] = $warranty_info->warranty_period_type;
-                        $war['warranty_start_date'] = date('Y-m-d');
-                        $war['warranty_end_date'] = getEndWarrantyDate($warranty_info->warranty_period, $warranty_info->warranty_period_type);
-                        $war['status'] = 'active';
-                        OrderProductWarranty::create($war);
-                    }
-                }
-
-                /**
-                 * insert addons data
-                 */
-                if (isset($item->addons) && !empty($item->addons)) {
-                    foreach ($item->addons as $aitems) {
-                        $add_ins = [];
-                        $add_ins['order_id'] = $order_id;
-                        $add_ins['product_id'] = $item->id;
-                        $add_ins['addon_id'] = $aitems->addon_id;
-                        $add_ins['addon_item_id'] = $aitems->addon_item_id;
-                        $add_ins['title'] = $aitems->title;
-                        $add_ins['addon_item_label'] = $aitems->addon_item_label;
-                        $add_ins['amount'] = $aitems->amount;
-                        $add_ins['icon'] = $aitems->icon;
-                        $add_ins['description'] = $aitems->description;
-
-                        OrderProductAddon::create($add_ins);
-                    }
-                }
-            }
-        }
-
-        /**** order history */
-        $his['order_id'] = $order_info->id;
-        $his['action'] = 'Order Initiate';
-        $his['description'] = 'Order has been Initiated successfully';
-        OrderHistory::create($his);
-
-        $error = 0;
-        $response['error'] = $error;
-        $response['message'] = 'Payment Initiated Successfully';
-        $response['redirect_url'] = route('ccav.payment.start', ['customer_id' => base64_encode($customer_id), 'order_id' => base64_encode($order_info->id)]);
-
         return $response;
     }
 
@@ -537,11 +565,11 @@ class CCavenueController extends Controller
                 $working_key = 'B00B81683DCD0816F8F32551E2C2910B';
                 $merchant_data = json_encode($merchant_json_data);
                 $encrypted_data = $this->statusEncrypt($merchant_data, $working_key);
-                
+
                 $curl = curl_init();
 
                 curl_setopt_array($curl, array(
-                    CURLOPT_URL => 'https://apitest.ccavenue.com/apis/servlet/DoWebTrans?enc_request='.$encrypted_data.'&access_code=AVRD71KE07CJ75DRJC&request_type=JSON&response_type=JSON&command=orderStatusTracker&version=1.2',
+                    CURLOPT_URL => 'https://apitest.ccavenue.com/apis/servlet/DoWebTrans?enc_request=' . $encrypted_data . '&access_code=AVRD71KE07CJ75DRJC&request_type=JSON&response_type=JSON&command=orderStatusTracker&version=1.2',
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_ENCODING => '',
                     CURLOPT_MAXREDIRS => 10,
@@ -553,14 +581,14 @@ class CCavenueController extends Controller
 
                 $response = curl_exec($curl);
                 curl_close($curl);
-                
-                $status_response = '';
-                if( $response ) {
 
-                    $payment_info = Payment::where('order_id', $order_info->id )->orderBy('id', 'desc')->first();
+                $status_response = '';
+                if ($response) {
+
+                    $payment_info = Payment::where('order_id', $order_info->id)->orderBy('id', 'desc')->first();
                     $payment_info->enc_request = $encrypted_data;
                     $payment_info->enc_response = $response;
-                    
+
                     /** 
                      * insert in payment enc_response
                      */
@@ -570,20 +598,19 @@ class CCavenueController extends Controller
                     for ($i = 0; $i < $dataSize; $i++) {
                         $info_value = explode('=', $information[$i]);
                         if ($info_value[0] == 'enc_response') {
-                            $status_response = $this->statusDecrypt(trim($info_value[1]), $working_key);	
-                            break;	
+                            $status_response = $this->statusDecrypt(trim($info_value[1]), $working_key);
+                            break;
                         }
                     }
-                    
+
                     $payment_info->enc_response_decrypted = $status_response;
                     $obj = json_decode($status_response);
                     $payment_info->save();
-                    
                 }
 
                 // 'enc_request=' . $encrypted_data . '&access_code=' . $access_code . '&command=orderStatusTracker&request_type=JSON&response_type=JSON';
 
-                if (strtolower($order_info->payments->status) == 'paid' && $order_info->amount == $order_info->response_amount ) {
+                if (strtolower($order_info->payments->status) == 'paid' && $order_info->amount == $order_info->response_amount) {
                     $error = 0;
                     $response_api['error'] = $error;
                     $response_api['message'] = 'PAYMENT_SUCCESS';
@@ -677,9 +704,9 @@ class CCavenueController extends Controller
     function getCartListAll($customer_id = null, $guest_token = null,  $shipping_info = null, $shipping_type = null, $selected_shipping = null, $coupon_data = null)
     {
         // dd( $coupon_data );
-        $checkCart          = Cart::with(['products', 'products.productCategory'])->when( $customer_id != '', function($q) use($customer_id) {
-                                        $q->where('customer_id', $customer_id);
-                                    })->get();
+        $checkCart          = Cart::with(['products', 'products.productCategory'])->when($customer_id != '', function ($q) use ($customer_id) {
+            $q->where('customer_id', $customer_id);
+        })->get();
 
         $tmp                = [];
         $grand_total        = 0;
@@ -693,7 +720,7 @@ class CCavenueController extends Controller
         $brand_array = [];
         if (isset($checkCart) && !empty($checkCart)) {
             foreach ($checkCart as $citems) {
-                
+
                 $items = $citems->products;
                 $tax = [];
                 $tax_percentage = 0;
@@ -719,21 +746,21 @@ class CCavenueController extends Controller
                 /**
                  * addon amount calculated here
                  */
-                $addonItems = CartProductAddon::where(['cart_id' => $citems->id, 'product_id' => $items->id ])->get();
-                
+                $addonItems = CartProductAddon::where(['cart_id' => $citems->id, 'product_id' => $items->id])->get();
+
                 $addon_total = 0;
-                if( isset( $addonItems ) && !empty( $addonItems ) ) {
+                if (isset($addonItems) && !empty($addonItems)) {
                     foreach ($addonItems as $addItems) {
-                        
+
                         $addons = [];
                         $addons['addon_id'] = $addItems->addonItem->addon->id;
                         $addons['title'] = $addItems->addonItem->addon->title;
                         $addons['description'] = $addItems->addonItem->addon->description;
 
-                        if (!Storage::exists( $addItems->addonItem->addon->icon)) {
+                        if (!Storage::exists($addItems->addonItem->addon->icon)) {
                             $path               = asset('assets/logo/no_Image.jpg');
                         } else {
-                            $url                = Storage::url( $addItems->addonItem->addon->icon);
+                            $url                = Storage::url($addItems->addonItem->addon->icon);
                             $path               = asset($url);
                         }
                         $addons['addon_item_id'] = $addItems->addonItem->id;
@@ -742,12 +769,11 @@ class CCavenueController extends Controller
                         $addons['amount'] = $addItems->addonItem->amount;
                         $addon_total += $addItems->addonItem->amount;
                         $used_addons[] = $addons;
-
                     }
                 }
 
                 $total_addon_amount += $addon_total;
-              
+
                 $pro                    = [];
                 $pro['id']              = $items->id;
                 $pro['tax']             = $tax;
@@ -759,7 +785,6 @@ class CCavenueController extends Controller
                 $pro['hsn_code']        = $items->hsn_code;
                 $pro['product_url']     = $items->product_url;
                 $pro['sku']             = $items->sku;
-                $pro['has_video_shopping'] = $items->has_video_shopping;
                 $pro['stock_status']    = $items->stock_status;
                 $pro['is_featured']     = $items->is_featured;
                 $pro['is_best_selling'] = $items->is_best_selling;
@@ -791,27 +816,26 @@ class CCavenueController extends Controller
                 $grand_total            += $citems->sub_total;
                 $grand_total            += $addon_total;
                 $cartTemp[] = $pro;
-                
             }
 
             $tmp['carts'] = $cartTemp;
             $tmp['cart_count'] = count($cartTemp);
-            if (isset($shipping_info) && !empty($shipping_info) || (isset( $selected_shipping ) && !empty( $selected_shipping )) ) {
+            if (isset($shipping_info) && !empty($shipping_info) || (isset($selected_shipping) && !empty($selected_shipping))) {
                 $tmp['selected_shipping_fees'] = array(
-                                                'shipping_id' => $shipping_info->id ?? $selected_shipping['shipping_id'],
-                                                'shipping_charge_order' => $shipping_info->charges ?? $selected_shipping['shipping_charge_order'],
-                                                'shipping_type' => $shipping_type ?? $selected_shipping['shipping_type'] ?? 'fees'
-                                                );
-                
+                    'shipping_id' => $shipping_info->id ?? $selected_shipping['shipping_id'],
+                    'shipping_charge_order' => $shipping_info->charges ?? $selected_shipping['shipping_charge_order'],
+                    'shipping_type' => $shipping_type ?? $selected_shipping['shipping_type'] ?? 'fees'
+                );
+
                 $grand_total                = $grand_total + ($shipping_info->charges ?? $selected_shipping['shipping_charge_order'] ?? 0);
             }
-            if( isset( $coupon_data ) && !empty( $coupon_data ) ) {
+            if (isset($coupon_data) && !empty($coupon_data)) {
                 $grand_total = $grand_total - $coupon_data['discount_amount'] ?? 0;
             }
 
-            if( count(array_unique($brand_array)) > 1 ) {
+            if (count(array_unique($brand_array)) > 1) {
                 $has_pickup_store = false;
-            } 
+            }
 
             $amount         = filter_var($grand_total, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
             $charges        = ShippingCharge::select('id', 'shipping_title', 'minimum_order_amount', 'charges', 'is_free')->where('status', 'published')->where('minimum_order_amount', '<', $amount)->get();
@@ -828,7 +852,7 @@ class CCavenueController extends Controller
                 'has_pickup_store' => $has_pickup_store
             );
         }
-        
+
         return $tmp;
     }
 }
