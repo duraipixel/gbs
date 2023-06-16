@@ -259,7 +259,6 @@ class CCavenueController extends Controller
 
         $validate_array     = [
             'billing_address_id' => 'required',
-            'shipping_address_id' => 'required',
             'shipping_method' => 'required'
         ];
         $validator      = Validator::make($request->all(), $validate_array);
