@@ -436,14 +436,14 @@ class CCavenueController extends Controller
                     $items_ins['image'] = $product_info->image;
                     $items_ins['hsn_code'] = $product_info->hsn_no;
                     $items_ins['sku'] = $product_info->sku;
-                    $items_ins['quantity'] = $product_info->quantity;
-                    $items_ins['price'] = $product_info->price;
+                    $items_ins['quantity'] = $item->quantity;
+                    $items_ins['price'] = $item->price;
                     $items_ins['strice_price'] = $product_info->strike_price;
                     $items_ins['save_price'] = $product_info->save_price;
                     $items_ins['base_price'] = $product_info->tax->basePrice;
                     $items_ins['tax_amount'] = ($product_info->tax->gstAmount ?? 0) * $product_info->quantity;
                     $items_ins['tax_percentage'] = $product_info->tax->tax_percentage ?? 0;
-                    $items_ins['sub_total'] = $product_info->sub_total;
+                    $items_ins['sub_total'] = $item->sub_total;
                     
                     dump( $items_ins );
                     $order_product_info = OrderProduct::create($items_ins);
