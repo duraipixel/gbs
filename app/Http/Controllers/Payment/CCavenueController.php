@@ -366,11 +366,6 @@ class CCavenueController extends Controller
                 }
             }
 
-            dump( $product_tax_exclusive_total );
-            dump( $tax_total );
-            dump( $tax_percentage );
-            dd( $total_order_value );
-
             if (!$shipping_method) {
                 $message = 'Shipping Method not selected';
                 $error = 1;
@@ -391,13 +386,13 @@ class CCavenueController extends Controller
 
 
             $order_ins['amount'] = $total_order_value;
-            $order_ins['tax_amount'] = $checkout_data->tax_total ? str_replace(',', '', $checkout_data->tax_total) : 0;
-            $order_ins['tax_percentage'] = $checkout_data->tax_percentage ?? 0;
+            $order_ins['tax_amount'] = $tax_total ?? 0;
+            $order_ins['tax_percentage'] = $tax_percentage ?? 0;
             $order_ins['shipping_amount'] = $shippping_fee_amount;
             $order_ins['coupon_amount'] = $coupon_amount ?? 0;
             $order_ins['coupon_code'] = $coupon_code ?? '';
             $order_ins['coupon_details'] = $coupon_details ?? '';
-            $order_ins['sub_total'] = $checkout_data->product_tax_exclusive_total_without_format;
+            $order_ins['sub_total'] = $product_tax_exclusive_total ?? 0;
             $order_ins['description'] = '';
             $order_ins['order_status_id'] = $order_status->id;
             $order_ins['status'] = 'pending';
