@@ -331,13 +331,13 @@ class CCavenueController extends Controller
             $tax_percentage = 0;
             if (isset($cart_items) && !empty($cart_items)) {
                 foreach ($cart_items as $citem) {
-                    
+                    dump( $citem );
                     $tax = [];
                     $tax_percentage = 0;
 
-                    $product_id = $citem->id;
+                    $product_id = $citem->product_id;
                     $product_info = Product::find($product_id);
-                    dd( $product_info );
+                    
                     if ($product_info->quantity < $citem->quantity) {
                         $errors[]     = $citem->product_name . ' is out of stock, Product will be removed from cart.Please choose another';
                         $response['error'] = $errors;
