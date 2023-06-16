@@ -276,7 +276,8 @@ class CCavenueController extends Controller
                 ->leftJoin('cart_product_addons', 'cart_product_addons.product_id', '=', 'carts.product_id')->where('customer_id', $customer_id)->first();
 
             $cart_items = Cart::where('customer_id', $customer_id)->get();
-
+            dump( $cart_info );
+            dump($cart_addon_info );
             $total_order_value = 0;
 
             if ($cart_info) {
