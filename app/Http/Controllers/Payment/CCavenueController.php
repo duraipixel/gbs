@@ -289,19 +289,26 @@ class CCavenueController extends Controller
 
             $order_status           = OrderStatus::where('status', 'published')->where('order', 1)->first();
 
-            $shipping_method_name        = $shipping_method['type'];
-
+            $shipping_method_name   = $shipping_method['type'];
             
             // $cart_items             = $checkout_infomation->cart_items;
             $billing_address        = CustomerAddress::find($billing_address_id);
 
             if( $shipping_method_name == 'STANDARD_SHIPPING' ) {
                 $shipping_address       = CustomerAddress::find($shipping_method['address_id']);
+                $shipping_type_info     = ShippingCharge::find($shipping_method['charge_id']);
+                $order_ins['shipping_options'] = $shipping_method['charge_id'] ?? 0;
+                if ($shipping_type_info) {
+                    $order_ins['shipping_type'] = $shipping_type_info->shipping_title ?? 'Free';
+                }
+
             } else {
                 $pickup_store_address   = StoreLocator::find($shipping_method['address_id']);
+
+                $order_ins['pickup_store_id'] = $shipping_method['address_id'];
+
             }
-            dump( $shipping_address );
-            dd( $billing_address );
+          
             // $coupon_data            = $checkout_infomation->coupon_data;
 
             $coupon_details = '';
@@ -346,9 +353,6 @@ class CCavenueController extends Controller
                 return $response;
             }
 
-            $checkout_total = str_replace(',', '', $checkout_data->total);
-            $pay_amount  = filter_var($checkout_total, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-
             $order_ins['customer_id'] = $customer_id;
             $order_ins['order_no'] = getOrderNo();
 
@@ -388,18 +392,6 @@ class CCavenueController extends Controller
             $order_ins['shipping_state'] = $shipping_address->state ?? $billing_address->state ?? null;
             $order_ins['shipping_city'] = $shipping_address->city ?? $billing_address->city ?? null;
 
-            if (isset($shipping_method) && $shipping_method != 'PICKUP_FROM_STORE' && isset($shipping_address) && !empty($shipping_address)) {
-
-                $shipping_type_info = ShippingCharge::find($checkout_infomation->standard_shipping_charge_id);
-
-                $order_ins['shipping_options'] = $checkout_infomation->standard_shipping_charge_id ?? 0;
-                if ($shipping_type_info) {
-                    $order_ins['shipping_type'] = $shipping_type_info->shipping_title ?? 'Free';
-                }
-            } else {
-
-                $order_ins['pickup_store_id'] = $checkout_infomation->pickup_store_id;
-            }
             dump($request->all());
             dd($order_ins);
             $order_info = Order::create($order_ins);

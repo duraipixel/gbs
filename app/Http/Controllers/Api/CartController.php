@@ -377,7 +377,8 @@ class CartController extends Controller
                 'tax_percentage' => number_format(round($tax_percentage), 2),
                 'shipping_charge' => $shipping_info->charges ?? 0,
                 'addon_amount' => $total_addon_amount,
-                'has_pickup_store' => $has_pickup_store
+                'has_pickup_store' => $has_pickup_store,
+                'brand_id' => $brand_array[0] ?? ''
             );
         }
         
