@@ -278,7 +278,7 @@ class CCavenueController extends Controller
                 ->leftJoin('cart_product_addons', 'cart_product_addons.product_id', '=', 'carts.product_id')->where('customer_id', $customer_id)->first();
 
             $cart_items = Cart::where('customer_id', $customer_id)->get();
-            
+
             $total_order_value = 0;
 
             if ($cart_info) {
@@ -290,25 +290,23 @@ class CCavenueController extends Controller
             $order_status           = OrderStatus::where('status', 'published')->where('order', 1)->first();
 
             $shipping_method_name   = $shipping_method['type'];
-            
+
             // $cart_items             = $checkout_infomation->cart_items;
             $billing_address        = CustomerAddress::find($billing_address_id);
 
-            if( $shipping_method_name == 'STANDARD_SHIPPING' ) {
+            if ($shipping_method_name == 'STANDARD_SHIPPING') {
                 $shipping_address       = CustomerAddress::find($shipping_method['address_id']);
                 $shipping_type_info     = ShippingCharge::find($shipping_method['charge_id']);
                 $order_ins['shipping_options'] = $shipping_method['charge_id'] ?? 0;
                 if ($shipping_type_info) {
                     $order_ins['shipping_type'] = $shipping_type_info->shipping_title ?? 'Free';
                 }
-
             } else {
                 $pickup_store_address   = StoreLocator::find($shipping_method['address_id']);
 
                 $order_ins['pickup_store_id'] = $shipping_method['address_id'];
-
             }
-          
+
             // $coupon_data            = $checkout_infomation->coupon_data;
 
             $coupon_details = '';
@@ -328,16 +326,47 @@ class CCavenueController extends Controller
 
             #check product is out of stock
             $errors                 = [];
+            $tax_total          = 0;
+            $product_tax_exclusive_total = 0;
+            $tax_percentage = 0;
             if (isset($cart_items) && !empty($cart_items)) {
                 foreach ($cart_items as $citem) {
+                    $tax = [];
+                    $tax_percentage = 0;
+
                     $product_id = $citem->id;
                     $product_info = Product::find($product_id);
                     if ($product_info->quantity < $citem->quantity) {
                         $errors[]     = $citem->product_name . ' is out of stock, Product will be removed from cart.Please choose another';
                         $response['error'] = $errors;
                     }
+                    /** 
+                     * do tax calculation here
+                     */
+                    $items = $citem->products;
+                    $category               = $items->productCategory;
+                    $price_with_tax         = $items->mrp;
+                    if (isset($category->parent->tax_id) && !empty($category->parent->tax_id)) {
+                        $tax_info = Tax::find($category->parent->tax_id);
+                    } else if (isset($category->tax_id) && !empty($category->tax_id)) {
+                        $tax_info = Tax::find($category->tax_id);
+                    }
+                    // dump( $citems );
+                    if (isset($tax_info) && !empty($tax_info)) {
+                        $tax = getAmountExclusiveTax($price_with_tax, $tax_info->pecentage);
+                        $tax_total =  $tax_total + ($tax['gstAmount'] * $citem->quantity) ?? 0;
+                        $product_tax_exclusive_total = $product_tax_exclusive_total + ($tax['basePrice'] * $citem->quantity);
+                        // print_r( $product_tax_exclusive_total );
+                        $tax_percentage         = $tax['tax_percentage'] ?? 0;
+                    } else {
+                        $product_tax_exclusive_total = $product_tax_exclusive_total + $citem->sub_total;
+                    }
                 }
             }
+
+            dump( $product_tax_exclusive_total );
+            dd( $tax_percentage );
+
             if (!$shipping_method) {
                 $message = 'Shipping Method not selected';
                 $error = 1;
@@ -467,14 +496,12 @@ class CCavenueController extends Controller
             $response['error'] = $error;
             $response['message'] = 'Payment Initiated Successfully';
             $response['redirect_url'] = route('ccav.payment.start', ['customer_id' => base64_encode($customer_id), 'order_id' => base64_encode($order_info->id)]);
-
         } else {
 
             $error = 1;
             $response['error'] = $error;
             $response['message'] = errorArrays($validator->errors()->all());
             $response['redirect_url'] = '';
-            
         }
         return $response;
     }
