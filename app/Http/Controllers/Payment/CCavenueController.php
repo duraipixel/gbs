@@ -265,8 +265,9 @@ class CCavenueController extends Controller
         $cart_info = Cart::selectRaw('sum(sub_total) as total, coupon_id, coupon_amount, shipping_fee_id, shipping_fee')->where('customer_id', $customer_id)->first();
         $cart_addon_info = Cart::selectRaw('sum(gbs_cart_product_addons.amount) as addon_total, coupon_id, coupon_amount, shipping_fee_id, shipping_fee')
                             ->leftJoin('cart_product_addons', 'cart_product_addons.product_id', '=', 'carts.product_id')->where('customer_id', $customer_id)->first();
-        dump( $cart_info );
-        dd( $cart_addon_info );
+        
+        $cart_items = Cart::where('customer_id', $customer_id)->get();
+        dd( $cart_items );
         $total_order_value = 0;
         if($cart_info ) {
             $coupon_amount = $cart_info->coupon_amount ?? 0;
@@ -278,7 +279,7 @@ class CCavenueController extends Controller
         $shipping_method        = $checkout_infomation->shipping_method;
 
         $checkout_data          = $checkout_infomation->checkout_data;
-        $cart_items             = $checkout_infomation->cart_items;
+        // $cart_items             = $checkout_infomation->cart_items;
         $shipping_address       = $checkout_infomation->shipping_address;
         $billing_address        = $checkout_infomation->billing_address;
         $coupon_data            = $checkout_infomation->coupon_data;
