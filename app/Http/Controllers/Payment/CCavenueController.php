@@ -427,6 +427,7 @@ class CCavenueController extends Controller
 
             if (isset($cart_items) && !empty($cart_items)) {
                 foreach ($cart_items as $item) {
+                    dd( $item );
                     $product_info = Product::find($item->product_id);
 
                     $items_ins['order_id'] = $order_id;
