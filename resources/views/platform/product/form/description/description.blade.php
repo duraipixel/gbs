@@ -36,8 +36,8 @@
                                         <div class="row">
                                             <div class="col-sm-8 mb-2">
                                                 <input type="text" id="title" name="title[]"
-                                                    class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
-                                                    placeholder="Title" value="{{ $item->title ?? '' }}" required />
+                                                    class="form-control form-control-solid mb-3 mb-lg-0 "
+                                                    placeholder="Title" value="{{ $item->title ?? '' }}"  />
                                                 <input type="hidden" name="desc_id[]" value="{{ $item->id }}">
                                             </div>
                                             <div class="col-sm-4 mb-2">
@@ -103,26 +103,27 @@
 </div>
 
 <script>
+    var count = 0;
     $("#btnAdd").click(function() {
-
+        count++;
         newRowAdd =
             `<div class="card border border-2 p-5 new_row_add" id='new_row_add'>
                 <div class="row" >
                     <div class="col-md-7">
                         <div class="row">
                             <div class="col-sm-8 mb-2">
-                                <input type="text" id="title" name="title[]"
-                                    class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
-                                    placeholder="Title" required />
+                                <input type="text" id="title`+count+`" name="title[]"
+                                    class="form-control form-control-solid mb-3 mb-lg-0 "
+                                    placeholder="Title"  />
                                 
                             </div>
                             <div class="col-sm-4 mb-2">
-                                <input type="text" id="sorting_order" name="sorting_order[]"
+                                <input type="text" id="sorting_order`+count+`" name="sorting_order[]"
                                     class="form-control form-control-solid mb-3 mb-lg-0 mobile_num"
-                                    placeholder="Sorting Order"  required />
+                                    placeholder="Sorting Order"   />
                             </div>
                             <div class="col-sm-12">
-                                <textarea class="form-control form-control-solid mb-3 mb-lg-0" name="desc[]" id="desc" required></textarea>
+                                <textarea class="form-control form-control-solid mb-3 mb-lg-0" name="desc[]" id="desc`+count+`" ></textarea>
                             </div>
                         </div>
 
@@ -173,4 +174,5 @@
     $(document).on("click", ".removeDescRow", function() {
         $(this).parents('#new_row_add').remove();
     });
+    
 </script>

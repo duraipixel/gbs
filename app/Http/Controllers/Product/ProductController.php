@@ -219,6 +219,12 @@ class ProductController extends Controller
                                 //'desc_image' => 'max:150', 
                                 //'avatar' => 'nullable|array', 
                                 //'avatar' => 'max:150',
+                                'title' => 'required|required_with:title|array',
+                                'title.*' => 'required|required_with:title.*',   
+                                'sorting_order' => 'required|required_with:sorting_order|array',
+                                'sorting_order.*' => 'required|required_with:sorting_order.*',   
+                                'desc' => 'required|required_with:desc|array',
+                                'desc.*' => 'required|required_with:desc.*',  
                                 'thumbnail_url' => 'nullable|array',                     
                                 'thumbnail_url.*' => 'url',
                                 'video_url' => 'nullable|array',                     
@@ -238,7 +244,7 @@ class ProductController extends Controller
                                 'filter_variation' => 'nullable|array',
                                 'filter_variation.*' => 'nullable|required_with:filter_variation',
                                 'filter_variation_value' => 'nullable|required_with:filter_variation|array',
-                                'filter_variation_value.*' => 'nullable|required_with:filter_variation.*',                                
+                                'filter_variation_value.*' => 'nullable|required_with:filter_variation.*',                                          
                             ];
                                        
         if( isset($request->url) && !empty( $request->url) && !is_null($request->url[0]) ) {
@@ -327,7 +333,6 @@ class ProductController extends Controller
                   //  ProductDescription::updateOrCreate(['id' => $pro_desc_id], $ins_desc_array);
                     ProductDescription::Create($ins_desc_array);               
                 }
-                
             }
             
             if(!empty($id))
