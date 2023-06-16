@@ -238,13 +238,13 @@ class CartController extends Controller
         $product_tax_exclusive_total = 0;
         $tax_percentage = 0;
         $cartTemp = [];
-        $used_addons = [];
+       
         $total_addon_amount = 0;
         $has_pickup_store = true;
         $brand_array = [];
         if (isset($checkCart) && !empty($checkCart)) {
             foreach ($checkCart as $citems) {
-                
+                $used_addons = [];
                 $items = $citems->products;
                 $tax = [];
                 $tax_percentage = 0;
