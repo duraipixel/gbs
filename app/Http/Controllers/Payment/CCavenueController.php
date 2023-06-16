@@ -337,6 +337,7 @@ class CCavenueController extends Controller
 
                     $product_id = $citem->id;
                     $product_info = Product::find($product_id);
+                    dd( $product_info );
                     if ($product_info->quantity < $citem->quantity) {
                         $errors[]     = $citem->product_name . ' is out of stock, Product will be removed from cart.Please choose another';
                         $response['error'] = $errors;
