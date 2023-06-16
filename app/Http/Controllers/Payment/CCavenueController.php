@@ -331,7 +331,7 @@ class CCavenueController extends Controller
             $tax_percentage = 0;
             if (isset($cart_items) && !empty($cart_items)) {
                 foreach ($cart_items as $citem) {
-                    dd($citem);
+                    
                     $tax = [];
                     $tax_percentage = 0;
 
