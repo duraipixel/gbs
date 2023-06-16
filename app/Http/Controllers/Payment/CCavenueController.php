@@ -445,7 +445,6 @@ class CCavenueController extends Controller
                     $items_ins['tax_percentage'] = $product_info->tax->tax_percentage ?? 0;
                     $items_ins['sub_total'] = $item->sub_total;
                     
-                    dump( $items_ins );
                     $order_product_info = OrderProduct::create($items_ins);
                     if (isset($product_info->warranty_id) && !empty($product_info->warranty_id)) {
                         $warranty_info = Warranty::find($product_info->warranty_id);
@@ -480,8 +479,7 @@ class CCavenueController extends Controller
                             $add_ins['amount'] = $aitems->amount;
                             $add_ins['icon'] = $aitems->icon;
                             $add_ins['description'] = $aitems->description;
-                            dump( 'addons' );
-                            dump( $add_ins );
+                         
                             OrderProductAddon::create($add_ins);
                         }
                     }
