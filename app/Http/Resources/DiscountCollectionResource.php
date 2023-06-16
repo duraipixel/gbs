@@ -76,7 +76,6 @@ class DiscountCollectionResource extends JsonResource
                         $proTmp['strike_price']         = $salePrices['strike_rate'];
                         $proTmp['price']                = $salePrices['price'];
                         $proTmp['mrp_price']            = $proItems->price;
-                        $proTmp['has_video_shopping']   = $proItems->has_video_shopping;
                         $proTmp['stock_status']         = $proItems->stock_status;
                         $proTmp['product_hsn_code']     = $proItems->hsn_code;
                         $proTmp['is_discount']          = $salePrices['has_discount'];
