@@ -264,8 +264,8 @@ class CCavenueController extends Controller
 
         $cart_info = Cart::selectRaw('sum(sub_total) as total, coupon_id, coupon_amount, shipping_fee_id, shipping_fee')->where('customer_id', $customer_id)->first();
         $cart_addon_info = Cart::selectRaw('cart_product_addons(amount) as addon_total, coupon_id, coupon_amount, shipping_fee_id, shipping_fee')
-                            ->join('cart_product_addons', 'cart_product_addons.product_id', '=', 'carts.product_id')->where('customer_id', $customer_id)->first();
-        dump( $cart_info);
+                            ->leftJoin('cart_product_addons', 'cart_product_addons.product_id', '=', 'carts.product_id')->where('customer_id', $customer_id)->first();
+        dump( $cart_info );
         dd( $cart_addon_info );
         $total_order_value = 0;
         if($cart_info ) {
