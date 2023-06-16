@@ -165,7 +165,7 @@ class CartController extends Controller
 
         // $checkCart      = Cart::find($cart_id);
         if( $checkCart ) {
-
+            $checkCart->addons()->delete();
             $customer_id    = $checkCart->customer_id;
             $guest_token    = $checkCart->guest_token;
             $checkCart->delete();
@@ -190,6 +190,19 @@ class CartController extends Controller
         $guest_token        = $request->guest_token;
 
         if( $customer_id || $guest_token ) {
+            $data = Cart::when( $customer_id != '', function($q) use($customer_id) {
+                $q->where('customer_id', $customer_id);
+            })->
+            when( $customer_id == '' && $guest_token != '', function($q) use($guest_token) {
+                $q->where('guest_token', $guest_token);
+            })->get();
+
+            if( isset($data) && count($data) >0 ) {
+                foreach ($data as $item) {
+                    $item->addons()->delete();
+                }
+            }
+
 
             Cart::when( $customer_id != '', function($q) use($customer_id) {
                     $q->where('customer_id', $customer_id);
