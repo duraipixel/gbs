@@ -289,13 +289,13 @@ class CCavenueController extends Controller
 
             $order_status           = OrderStatus::where('status', 'published')->where('order', 1)->first();
 
-            $shipping_method        = $shipping_method['type'];
+            $shipping_method_name        = $shipping_method['type'];
 
             
             // $cart_items             = $checkout_infomation->cart_items;
             $billing_address        = CustomerAddress::find($billing_address_id);
 
-            if( $shipping_method == 'STANDARD_SHIPPING' ) {
+            if( $shipping_method_name == 'STANDARD_SHIPPING' ) {
                 $shipping_address       = CustomerAddress::find($shipping_method['address_id']);
             } else {
                 $pickup_store_address   = StoreLocator::find($shipping_method['address_id']);
