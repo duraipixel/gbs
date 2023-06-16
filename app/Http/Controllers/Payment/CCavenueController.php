@@ -88,7 +88,13 @@ class CCavenueController extends Controller
                 /*
                 Success Payment
                 */
-                Cart::where('customer_id', $order_info->customer_id)->delete();
+                $cart_data = Cart::where('customer_id', $order_info->customer_id)->get();
+                if( isset( $cart_data ) && !empty( $cart_data ) ) {
+                    foreach ( $cart_data as $item ) {
+                        $item->addons()->delete();
+                        $item->delete();
+                    }
+                }
                 /** 
                  *  1. do quantity update in product
                  *  2. update order status and payment response
@@ -257,14 +263,15 @@ class CCavenueController extends Controller
         $shippping_fee_amount = 0;
 
         $cart_info = Cart::selectRaw('sum(sub_total) as total, coupon_id, coupon_amount, shipping_fee_id, shipping_fee')->where('customer_id', $customer_id)->first();
-        $cart_addon_info = Cart::selectRaw('cart_product_addons(amount) as total, coupon_id, coupon_amount, shipping_fee_id, shipping_fee')
+        $cart_addon_info = Cart::selectRaw('cart_product_addons(amount) as addon_total, coupon_id, coupon_amount, shipping_fee_id, shipping_fee')
                             ->join('cart_product_addons', 'cart_product_addons.product_id', '=', 'carts.product_id')->where('customer_id', $customer_id)->first();
-     
+        dump( $cart_info);
+        dd( $cart_addon_info );
         $total_order_value = 0;
         if($cart_info ) {
             $coupon_amount = $cart_info->coupon_amount ?? 0;
             $shippping_fee_amount = ($cart_info->shipping_fee ?? 0);
-            $total_order_value = $cart_info->total - ($cart_info->coupon_amount ?? 0) + ($cart_info->shipping_fee ?? 0);
+            $total_order_value = ($cart_info->total + $cart_addon_info->addon_total ?? 0 ) - ($cart_info->coupon_amount ?? 0) + ($cart_info->shipping_fee ?? 0);
         }
         
         $order_status           = OrderStatus::where('status', 'published')->where('order', 1)->first();
