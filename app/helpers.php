@@ -530,12 +530,22 @@ function getProductApiData($product_data, $customer_id = '')
             $addon_arr[] = $temp;
         }
     }
+    $video_link = [];
+    if( isset( $product_data->productUrl ) && count($product_data->productUrl) > 0 ) {
+        foreach ($product_data->productUrl as $uitem) {
+            $video_link[] = array(
+                                'thumbnail' => $uitem->thumbnail_url ?? '',
+                                'video_link' => $uitem->video_url ?? ''
+                            );
+        }
+    }
 
     $pro['addons'] = $addon_arr;
     $pro['description_products'] = $description_arr;
     $pro['frequently_purchased'] = $frequently_purchased;
     $pro['related_products']    = $related_arr;
     $pro['meta'] = $product_data->productMeta;
+    $pro['video_link'] = $video_link;
 
     return $pro;
 }
