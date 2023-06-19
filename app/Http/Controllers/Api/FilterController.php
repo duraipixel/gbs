@@ -186,7 +186,7 @@ class FilterController extends Controller
 
         $attr_response = $this->getAttributeFilter($category_slug);
 
-        $response['exclusive'] =  array('id' => null, 'name' => 'GBS', 'slug' => 'gbs');
+        $response['exclusive'] =  [array('id' => null, 'name' => 'GBS', 'slug' => 'gbs')];
         $response['categories'] =  $categories;
         $response['brands'] =  $attr_response['brands'];
         $response['discounts'] = $discounts;
