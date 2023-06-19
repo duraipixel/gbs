@@ -217,6 +217,7 @@ class FilterController extends Controller
         $sort                   = $request->sort_by;
         $price                  = $request->prices;
         $size                   = $request->sizes;
+        $exclusive              = $request->exclusive ?? '';
 
 
         $not_in_attributes = array('page', 'take', 'categories', 'scategory', 'brands', 'discounts', 'sort_by', 'prices', 'sizes', 'size', 'customer_id', 'collection', 'discount_collection');
@@ -306,6 +307,10 @@ class FilterController extends Controller
                 $q->where(function ($query) use ($filter_category) {
                     return $query->where('product_categories.slug', $filter_category)->orWhere('parent.slug', $filter_category);
                 });
+            })
+            ->when($exclusive != '', function($q) {
+                $q->join('sub_categories', 'sub_categories.id', '=', 'products.label_id');
+                $q->where('sub_categories.slug', 'gbs');
             })
             ->when($filter_sub_category != '', function ($q) use ($filter_sub_category) {
                 return $q->where('product_categories.slug', $filter_sub_category);
@@ -436,6 +441,10 @@ class FilterController extends Controller
                 $q->where(function ($query) use ($filter_category) {
                     return $query->where('product_categories.slug', $filter_category)->orWhere('parent.slug', $filter_category);
                 });
+            })
+            ->when($exclusive != '', function($q) {
+                $q->join('sub_categories', 'sub_categories.id', '=', 'products.label_id');
+                $q->where('sub_categories.slug', 'gbs');
             })
             ->when($filter_sub_category != '', function ($q) use ($filter_sub_category) {
                 return $q->where('product_categories.slug', $filter_sub_category);
