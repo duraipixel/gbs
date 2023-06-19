@@ -224,6 +224,36 @@
                 @endphp
             @endforeach
         @endif
+        @if (isset($order_info->orderAddons) && count($order_info->orderAddons))
+            @foreach ($order_info->orderAddons as $item)
+                <tr>
+                    <td>{{ $i }}</td>
+                    <td>
+                       {{ $item->addon->title ?? '' }}
+                    </td>
+                    <td>
+                        <div>
+                            {{ $item->title }}
+                        </div>
+                        <div>
+                            {{ $item->addon_item_label ?? '' }}
+                        </div>
+                    </td>
+                    <td> </td>
+                    <td> 1 no </td>
+                    <td> {{ number_format($item->amount, 2) }} </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>{{ number_format($item->amount, 2) }}</td>
+                </tr>
+                @php
+                    $i++;
+                @endphp
+            @endforeach
+        @endif
         <tr>
             <td colspan="7">
                 <div>
