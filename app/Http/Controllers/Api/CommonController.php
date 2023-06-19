@@ -52,7 +52,7 @@ class CommonController extends Controller
 
     public function getTopBrands() {
 
-        return Brands::select('id', 'brand_name')->where('is_top_brand', 'yes')
+        return Brands::select('id', 'brand_name', 'slug')->where('is_top_brand', 'yes')
                     ->where('status', 'published')->get();
 
     }
