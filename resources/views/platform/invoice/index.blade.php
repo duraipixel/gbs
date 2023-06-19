@@ -230,14 +230,15 @@
                 <tr>
                     <td>{{ $i }}</td>
                     <td>
-                        {{ $item->title }}
+                       {{ $item->addon->title ?? '' }}
                     </td>
                     <td>
                         <div>
-                            {{ $item->addon_item_label ?? '' }}
-                            {{-- {{ $item->product_name }} --}}
+                            {{ $item->title }}
                         </div>
-                       
+                        <div>
+                            {{ $item->addon_item_label ?? '' }}
+                        </div>
                     </td>
                     <td> </td>
                     <td> 1 no </td>

@@ -2,6 +2,7 @@
 
 namespace App\Models\Product;
 
+use App\Models\ProductAddon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,4 +21,8 @@ class OrderProductAddon extends Model
         'description',
         'icon'
     ];
+
+    public function addon() {
+        return $this->hasOne(ProductAddon::class, 'addon_id', 'id');
+    }
 }
