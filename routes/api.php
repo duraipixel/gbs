@@ -23,6 +23,7 @@ Route::get('/get/testimonials', [App\Http\Controllers\Api\CommonController::clas
 Route::get('/get/history', [App\Http\Controllers\Api\CommonController::class, 'getAllHistoryVideo']);
 Route::get('/get/banners', [App\Http\Controllers\Api\CommonController::class, 'getAllBanners']);
 Route::get('/get/brands', [App\Http\Controllers\Api\CommonController::class, 'getAllBrands']);
+Route::get('/get/brands/top', [App\Http\Controllers\Api\CommonController::class, 'getTopBrands']);
 Route::get('/get/brands/all/{slug}', [App\Http\Controllers\Api\CommonController::class, 'getBrandInfo']);
 Route::get('/get/brands/alphabets', [App\Http\Controllers\Api\CommonController::class, 'getBrandByAlphabets']);
 

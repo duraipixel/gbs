@@ -50,6 +50,13 @@ class CommonController extends Controller
         return BrandResource::collection(Brands::select('id', 'brand_name', 'brand_banner', 'brand_logo', 'short_description', 'notes', 'slug')->where(['status' => 'published'])->orderBy('order_by', 'asc')->get());
     }
 
+    public function getTopBrands() {
+
+        return Brands::select('id', 'brand_name')->where('is_top_brand', 'yes')
+                    ->where('status', 'published')->get();
+
+    }
+
     public function getBrandByAlphabets()
     {
         $alphas = range('A', 'Z');
