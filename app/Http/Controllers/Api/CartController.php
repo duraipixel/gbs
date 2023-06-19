@@ -412,7 +412,7 @@ class CartController extends Controller
         $cart_id    = $request->cart_id;
         $product_id = $request->product_id;
 
-        CartProductAddon::where(['addon_item_id' => $addon_id, 'cart_id' => $cart_id, 'product_id' => $product_id ])->delete();
+        CartProductAddon::where(['addon_id' => $addon_id, 'cart_id' => $cart_id, 'product_id' => $product_id ])->delete();
 
         $cart_info = Cart::find($cart_id);
         $data = $this->getCartListAll($cart_info->customer_id, $cart_info->guest_token);

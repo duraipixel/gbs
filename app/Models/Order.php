@@ -86,6 +86,4 @@ class Order extends Model
         return $this->hasMany(OrderProductAddon::class, 'order_id', 'id');
     }
 
-   
-
 }
