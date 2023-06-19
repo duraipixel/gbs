@@ -135,12 +135,12 @@ class CartController extends Controller
             }
           
             $error = 0;
-            $message = 'Cart updated successfull';
+            $message = 'Cart updated successful';
             $data = $this->getCartListAll($checkCart->customer_id, $checkCart->guest_token);
         } else {
 
             $error = 1;
-            $message = 'Cart Data not available';
+            $message = 'You need to login first';
             $data = [];
         }
 
@@ -408,7 +408,7 @@ class CartController extends Controller
 
     public function deleteAddonItems(Request $request)
     {
-        
+
         $addon_id   = $request->addon_id;
         $cart_id    = $request->cart_id;
         $product_id = $request->product_id;
