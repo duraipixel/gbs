@@ -52,8 +52,8 @@ class CommonController extends Controller
 
     public function getTopBrands() {
 
-        return Brands::select('id', 'brand_name', 'slug')->where('is_top_brand', 'yes')
-                    ->where('status', 'published')->get();
+        return Brands::selectRaw("GROUP_CONCAT( slug SEPARATOR '_') AS slug")->where('is_top_brand', 'yes')
+                    ->where('status', 'published')->first();
 
     }
 
