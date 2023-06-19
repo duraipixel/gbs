@@ -122,7 +122,7 @@ class HomepageSettingController extends Controller
 
                 for ($i = 0; $i < count($request->start); $i++) {  
                     $sett = [];
-                    $id = $item_id[$i];
+                    $id = $item_id;
                     if( isset( $request->home_image[$i] ) && !empty( $request->home_image[$i] ) ) {
                         $fileNameThumb = '';
                         $imageName                  = uniqid().$request->home_image[$i]->getClientOriginalName();
