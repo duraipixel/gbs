@@ -308,7 +308,7 @@ class FilterController extends Controller
                     return $query->where('product_categories.slug', $filter_category)->orWhere('parent.slug', $filter_category);
                 });
             })
-            ->when($exclusive != '', function($q) {
+            ->when($exclusive == 'gbs', function($q) {
                 $q->join('sub_categories', 'sub_categories.id', '=', 'products.label_id');
                 $q->where('sub_categories.slug', 'gbs');
             })
@@ -442,7 +442,7 @@ class FilterController extends Controller
                     return $query->where('product_categories.slug', $filter_category)->orWhere('parent.slug', $filter_category);
                 });
             })
-            ->when($exclusive != '', function($q) {
+            ->when($exclusive == 'gbs', function($q) {
                 $q->join('sub_categories', 'sub_categories.id', '=', 'products.label_id');
                 $q->where('sub_categories.slug', 'gbs');
             })
