@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Master\Customer;
 use App\Models\Master\OrderStatus;
+use App\Models\Product\OrderProductAddon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -79,6 +80,10 @@ class Order extends Model
     public function tracking()
     {
         return $this->hasMany(OrderHistory::class, 'order_id', 'id');
+    }
+
+    public function orderAddons() {
+        return $this->hasMany(OrderProductAddon::class, 'order_id', 'id');
     }
 
    

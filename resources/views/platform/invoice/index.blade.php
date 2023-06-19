@@ -12,6 +12,7 @@
         table td {
             font-size: 10px;
         }
+
         ml-3 {
             margin-left: 3px;
         }
@@ -218,6 +219,35 @@
                     <td>{{ $item->tax_percentage / 2 }}%</td>
                     <td>{{ number_format($item->tax_amount / 2, 2) }}</td>
                     <td>{{ number_format($item->sub_total, 2) }}</td>
+                </tr>
+                @php
+                    $i++;
+                @endphp
+            @endforeach
+        @endif
+        @if (isset($order_info->orderAddons) && count($order_info->orderAddons))
+            @foreach ($order_info->orderAddons as $item)
+                <tr>
+                    <td>{{ $i }}</td>
+                    <td>
+                        {{ $item->title }}
+                    </td>
+                    <td>
+                        <div>
+                            {{ $item->addon_item_label ?? '' }}
+                            {{-- {{ $item->product_name }} --}}
+                        </div>
+                       
+                    </td>
+                    <td> </td>
+                    <td> 1 no </td>
+                    <td> {{ number_format($item->amount, 2) }} </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>{{ number_format($item->amount, 2) }}</td>
                 </tr>
                 @php
                     $i++;

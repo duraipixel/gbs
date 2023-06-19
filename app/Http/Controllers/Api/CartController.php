@@ -161,8 +161,7 @@ class CartController extends Controller
                         when( $customer_id == '' && $guest_token != '', function($q) use($guest_token) {
                             $q->where('guest_token', $guest_token);
                         })->where('product_id', $product_id)->first();
-
-
+                        
         // $checkCart      = Cart::find($cart_id);
         if( $checkCart ) {
             $checkCart->addons()->delete();
