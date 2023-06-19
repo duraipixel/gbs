@@ -276,8 +276,8 @@ class CCavenueController extends Controller
                 ->leftJoin('cart_product_addons', 'cart_product_addons.product_id', '=', 'carts.product_id')->where('customer_id', $customer_id)->first();
 
             $cart_items = Cart::where('customer_id', $customer_id)->get();
-            // dump( $cart_info );
-            // dump($cart_addon_info );
+            dump( $cart_info );
+            dump($cart_addon_info );
             $total_order_value = 0;
 
             if ($cart_info) {
@@ -285,7 +285,7 @@ class CCavenueController extends Controller
                 $shippping_fee_amount = ($cart_info->shipping_fee ?? 0);
                 $total_order_value = ($cart_info->total + $cart_addon_info->addon_total ?? 0) - ($cart_info->coupon_amount ?? 0) + ($cart_info->shipping_fee ?? 0);
             }
-            // dd( $total_order_value );
+            dd( $total_order_value );
             $order_status           = OrderStatus::where('status', 'published')->where('order', 1)->first();
 
             $shipping_method_name   = $shipping_method['type'];

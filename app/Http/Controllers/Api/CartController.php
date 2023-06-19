@@ -408,6 +408,7 @@ class CartController extends Controller
 
     public function deleteAddonItems(Request $request)
     {
+        
         $addon_id   = $request->addon_id;
         $cart_id    = $request->cart_id;
         $product_id = $request->product_id;
