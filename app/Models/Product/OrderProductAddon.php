@@ -23,6 +23,6 @@ class OrderProductAddon extends Model
     ];
 
     public function addon() {
-        return $this->hasOne(ProductAddon::class, 'addon_id', 'id');
+        return $this->hasOne(ProductAddon::class, 'id', 'addon_id');
     }
 }
