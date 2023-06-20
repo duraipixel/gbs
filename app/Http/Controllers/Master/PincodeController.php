@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Master;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Exports\PincodeExport;
-
+use App\Imports\PincodeImport;
 use App\Models\Master\Pincode;
 use Illuminate\Support\Facades\DB;
 use DataTables;
@@ -131,5 +131,20 @@ class PincodeController extends Controller
         $list       = Pincode::select('pincodes.*', 'users.name as users_name',DB::raw(" IF(gbs_pincodes.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'pincodes.added_by')->get();
         $pdf        = PDF::loadView('platform.exports.pincode.excel', array('list' => $list, 'from' => 'pdf'))->setPaper('a4', 'landscape');;
         return $pdf->download('pincode.pdf');
+    }
+    public function doBulkUpload(Request $request)
+    {
+       // dd('ddd');
+        //Excel::import( new PincodeImport, request()->file('file') );
+        $excel_import= Excel::import(new PincodeImport, $request->pincode_file);        
+        if($excel_import)
+        {
+            return back()->with('success','Excel Uploaded successfully!');
+        }
+        else
+        {
+            return back()->with('error','Excel Not Uploaded. Please try again later !');
+        }    
+        //return response()->json(['error'=> 0, 'message' => 'Imported successfully']);
     }
 }

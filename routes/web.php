@@ -35,6 +35,8 @@ Route::middleware(['auth'])->group(function(){
         Route::post('/getTab', [App\Http\Controllers\MyProfileController::class, 'getTab'])->name('my-profile.get.tab');
         Route::post('/save', [App\Http\Controllers\MyProfileController::class, 'saveForm'])->name('my-profile.save')->middleware(['checkAccess:editable']);
     });
+
+    Route::post('/do_upload/pincode', [App\Http\Controllers\Master\PincodeController::class, 'doBulkUpload'])->name('pincode.do-bulk.upload'); 
  
     $categoriesArray = array('sub_category', 'product-tags', 'product-labels');
     foreach ($categoriesArray as $catUrl ) {
