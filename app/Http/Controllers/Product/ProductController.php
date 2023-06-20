@@ -410,18 +410,18 @@ class ProductController extends Controller
             $meta_ins['meta_keyword']       = $request->meta_keywords ?? '';
             $meta_ins['product_id']         = $product_id;
             ProductMetaTag::updateOrCreate(['product_id' => $product_id], $meta_ins);
-
+            ProductRelatedRelation::where('from_product_id', $product_id)->delete();
             if( isset($request->related_product) && !empty($request->related_product) ) {
-                ProductRelatedRelation::where('from_product_id', $product_id)->delete();
+              
                 foreach ( $request->related_product as $proItem ) {
                     $insRelated['from_product_id'] = $product_id;
                     $insRelated['to_product_id'] = $proItem;
                     ProductRelatedRelation::create($insRelated);
                 }
             }
-
+            ProductCrossSaleRelation::where('from_product_id', $product_id)->delete();
             if( isset($request->cross_selling_product) && !empty($request->cross_selling_product) ) {
-                ProductCrossSaleRelation::where('from_product_id', $product_id)->delete();
+               
                 foreach ( $request->cross_selling_product as $proItem ) {
                     $insCrossRelated['from_product_id'] = $product_id;
                     $insCrossRelated['to_product_id'] = $proItem;
