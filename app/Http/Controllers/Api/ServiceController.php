@@ -81,6 +81,7 @@ class ServiceController extends Controller
         $temp['parent_id']      = $data->parent_id;
         $temp['description']    = $data->description;
         $temp['pincode']        = $data->pincode;
+        $temp['whatsapp_no']    = $data->whatsapp_no;
         $temp['address']        = $data->address;
         $temp['map_link']       = $data->map_link;
         $temp['image_360_link'] = $data->image_360_link;
