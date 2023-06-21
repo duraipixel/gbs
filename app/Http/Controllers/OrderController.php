@@ -302,4 +302,11 @@ class OrderController extends Controller
     {
         return Excel::download(new OrderExport, 'orders.xlsx');
     }
+    public function orderCountGolbal()
+    {
+        $data = Order::count();
+        //dd($data);
+        return $data;
+    }
+
 }

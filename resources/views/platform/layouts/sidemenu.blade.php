@@ -220,7 +220,7 @@
                                 <span class="menu-bullet">
                                     <span class="bullet bullet-dot"></span>
                                 </span>
-                                <span class="menu-title">Order List</span>
+                                <span class="menu-title">Order List <span class="mx-3 badge badge-danger order_count_global"></span></span>
                             </a>
                         </div>
                         @if (access()->hasAccess(['order-status']))

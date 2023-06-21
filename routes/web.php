@@ -180,6 +180,7 @@ Route::middleware(['auth'])->group(function(){
         Route::get('/', [App\Http\Controllers\OrderController::class, 'index'])->name('order');
         Route::post('/view', [App\Http\Controllers\OrderController::class, 'orderView'])->name('order.view');
         Route::post('/open/orderStatus/modal', [App\Http\Controllers\OrderController::class, 'openOrderStatusModal'])->name('order.status.modal');
+        Route::get('order-count', [App\Http\Controllers\OrderController::class, 'orderCountGolbal'])->name('order-count');
         Route::post('/change/order/status', [App\Http\Controllers\OrderController::class, 'changeOrderStatus'])->name('order.change.status');
         Route::post('/export/excel', [App\Http\Controllers\OrderController::class, 'export'])->name('order.export.excel')->middleware(['checkAccess:export']);
     });
