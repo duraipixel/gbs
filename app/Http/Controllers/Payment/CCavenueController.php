@@ -383,7 +383,7 @@ class CCavenueController extends Controller
             $order_ins['shipping_amount'] = $shippping_fee_amount;
             $order_ins['coupon_amount'] = $coupon_amount ?? 0;
             $order_ins['coupon_code'] = $coupon_code->coupon_code ?? '';
-            $order_ins['coupon_details'] = $coupon_details ?? '';
+            $order_ins['coupon_percentage'] = isset($coupon_code->calculate_type) && $coupon_code->calculate_type == 'percentage' ? $coupon_code->calculate_value : '';
             $order_ins['sub_total'] = $product_tax_exclusive_total ?? 0;
             $order_ins['description'] = '';
             $order_ins['order_status_id'] = $order_status->id;
