@@ -95,8 +95,6 @@ class OrderController extends Controller
     {
         $order_id = $request->id;
         $order_info = Order::find($order_id);
-        $order_info->order_status_id = 'yes';
-        $order_info->update();
         $modal_title        = 'View Order';
         $globalInfo = GlobalSettings::first();
         $view_order = view('platform.invoice.view_invoice', compact('order_info', 'globalInfo'));
@@ -126,6 +124,7 @@ class OrderController extends Controller
         if ($validator->passes()) {
 
             $info = Order::find($id);
+            $info->notification_status = 'yes';          
             $info->order_status_id = $request->order_status_id;
 
             switch ($request->order_status_id) {
