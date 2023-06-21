@@ -53,6 +53,7 @@ class OrderController extends Controller
                     $billing_info .= '<div class="font-weight-bold">' . $row['billing_name'] . '</div>';
                     $billing_info .= '<div class="">' . $row['billing_email'] . ',' . $row['billing_mobile_no'] . '</div>';
                     $billing_info .= '<div class="">' . $row['billing_address_line1'] . '</div>';
+                    $billing_info .= '<div class="">' . $row['billing_city'] . ','  . $row['billing_state'] . '-'  . $row['billing_post_code'] .  '</div>';
 
                     return $billing_info;
                 })
