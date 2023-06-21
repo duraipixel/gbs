@@ -126,6 +126,15 @@
 </div>
 
 <script>
+$(document).ready(function($)  {
+    var strike_price='{{$info->strike_price ?? '' }}';
+    if(strike_price!='')
+    {
+        getDiscountPricePercentage('strike',strike_price);
+    }
+   
+});
+
 
     function getDisPercentage(mop, mrp) {
         mop = parseFloat(mop);
