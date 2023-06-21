@@ -219,12 +219,13 @@ class ProductController extends Controller
                                 //'desc_image' => 'max:150', 
                                 //'avatar' => 'nullable|array', 
                                 //'avatar' => 'max:150',
-                                'title' => 'required|required_with:title|array',
-                                'title.*' => 'required|required_with:title.*',   
-                                'sorting_order' => 'required|required_with:sorting_order|array',
-                                'sorting_order.*' => 'required|required_with:sorting_order.*',   
-                                'desc' => 'required|required_with:desc|array',
-                                'desc.*' => 'required|required_with:desc.*',  
+
+                                'title' => 'nullable|array',
+                                'title.*' => 'nullable|required_with:title',
+                                'sorting_order' => 'nullable|required_with:title|array',
+                                'sorting_order.*' => 'nullable|required_with:title.*',
+                                'desc' => 'nullable|required_with:title|array',
+                                'desc.*' => 'nullable|required_with:title.*',                                  
                                 'thumbnail_url' => 'nullable|array',                     
                                 'thumbnail_url.*' => 'url',
                                 'video_url' => 'nullable|array',                     
@@ -409,18 +410,18 @@ class ProductController extends Controller
             $meta_ins['meta_keyword']       = $request->meta_keywords ?? '';
             $meta_ins['product_id']         = $product_id;
             ProductMetaTag::updateOrCreate(['product_id' => $product_id], $meta_ins);
-
+            ProductRelatedRelation::where('from_product_id', $product_id)->delete();
             if( isset($request->related_product) && !empty($request->related_product) ) {
-                ProductRelatedRelation::where('from_product_id', $product_id)->delete();
+              
                 foreach ( $request->related_product as $proItem ) {
                     $insRelated['from_product_id'] = $product_id;
                     $insRelated['to_product_id'] = $proItem;
                     ProductRelatedRelation::create($insRelated);
                 }
             }
-
+            ProductCrossSaleRelation::where('from_product_id', $product_id)->delete();
             if( isset($request->cross_selling_product) && !empty($request->cross_selling_product) ) {
-                ProductCrossSaleRelation::where('from_product_id', $product_id)->delete();
+               
                 foreach ( $request->cross_selling_product as $proItem ) {
                     $insCrossRelated['from_product_id'] = $product_id;
                     $insCrossRelated['to_product_id'] = $proItem;
@@ -571,7 +572,7 @@ class ProductController extends Controller
 
     public function export()
     {
-        return Excel::download(new ProductExport, 'product_masters.xlsx');
+        return Excel::download(new ProductExport, 'product.xlsx');
     }
 
     public function exportPdf()

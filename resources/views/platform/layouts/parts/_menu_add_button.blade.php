@@ -26,5 +26,7 @@
     @if( access()->hasAccess(['products'], 'editable') && $title != 'Product Bulk Upload' )
     <a href="{{ $uploadHref }}" class="btn btn-sm btn-primary" >Bulk Upload</a>
     @endif
+
+    <a href="{{ route('products.export.excel') }}" class="btn btn-sm btn-primary" >Export</a>
 </div>
 @endif

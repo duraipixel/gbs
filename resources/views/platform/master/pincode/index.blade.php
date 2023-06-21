@@ -21,9 +21,48 @@
 
     <div id="kt_content_container" class="container-xxl">
         <div class="card">
+            @if ($message = Session::get('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>{{ $message }}</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        @if ($message = Session::get('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>{{ $message }}</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        @if ($message = Session::get('warning'))
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>{{ $message }}</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        @if ($message = Session::get('info'))
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                <strong>{{ $message }}</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Please check the form below for errors</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
             <div class="card-header border-0 pt-6 w-100">
                 <div class="card-toolbar w-100">
+
+                   
                     <div class="d-flex justify-content-end w-100" data-kt-pincode-table-toolbar="base">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            Bulk Upload
+                          </button>
                         @if( access()->hasAccess('pincode', 'filter') )
                         <button type="button" id="btn-light-primary" class="btn btn-light-primary me-3" data-kt-menu-trigger="click"
                             data-kt-menu-placement="bottom-end">
@@ -44,6 +83,7 @@
                             <div class="separator border-gray-200"></div>
                             <div class="px-7 py-5" data-kt-pincode-table-filter="form">
                                 <form id="search-form">
+
                                     <!--begin::Input group-->
                                     <div class="mb-10">
                                         <label class="form-label fs-6 fw-bold">Status:</label>
@@ -109,8 +149,45 @@
         </div>
         <!--end::Card-->
     </div>
+
+    <!-- pop up start --> 
+
+
+    <!-- popup end -->
 @endsection
 @section('add_on_script')
+<!-- Button trigger modal -->
+
+  
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Pincode Bulk Upload</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form name="pincode_bulk_upload" id="pincode_bulk_upload" action="{{ route('pincode.do-bulk.upload')}}" enctype="multipart/form-data" method="post">
+       @csrf
+            <div class="modal-body">
+            <input type="file" name="pincode_file" id="pincode_file" class="form-control">
+        </div>
+
+        <div class="col-4 mx-10">
+            <label for=""> Sample Excel file </label>
+            <div class="mt-2">
+                <a href="{{ asset('assets/data/pincode.xlsx') }}"> <i
+                        class="mdi mdi-file h2"></i> Download Sample</a>
+            </div><br>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Import</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
     <script src="{{ asset('assets/js/datatable.min.js') }}"></script>
 
