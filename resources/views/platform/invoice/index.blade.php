@@ -323,7 +323,7 @@
                         <tr>
                             <td style="text-align: right;">
                                 <div>Coupon Amount </div>
-                                <small>( {{ $order_info->coupon_code  }} {{ $order_info->coupon_percentage ?? 0 }}%)</small>
+                                <small>( {{ $order_info->coupon_code  }} {{ (isset($order_info->coupon_percentage) && $order_info->coupon_percentage != '0.00' ? $order_info->coupon_percentage.'% ' : 0) }})</small>
                             </td>
                             <td class="w-100" style="text-align: right;"><span
                                     style="font-family: DejaVu Sans; sans-serif;">&#8377;</span>{{ number_format($order_info->coupon_amount, 2) }}
