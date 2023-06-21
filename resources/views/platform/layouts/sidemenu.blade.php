@@ -210,7 +210,7 @@
                                 <i class="bi-chat-left fs-3"></i>
                             </span>
                         </span>
-                        <span class="menu-title">Orders</span>
+                        <span class="menu-title"> Orders <span class="mx-3 badge badge-danger order_count_global"></span></span>
                         <span class="menu-arrow"></span>
                     </span>
                     <div class="menu-sub menu-sub-accordion">
@@ -220,7 +220,7 @@
                                 <span class="menu-bullet">
                                     <span class="bullet bullet-dot"></span>
                                 </span>
-                                <span class="menu-title">Order List <span class="mx-3 badge badge-danger order_count_global"></span></span>
+                                <span class="menu-title">Order List </span>
                             </a>
                         </div>
                         @if (access()->hasAccess(['order-status']))

@@ -304,9 +304,12 @@ class OrderController extends Controller
     }
     public function orderCountGolbal()
     {
-        $data = Order::count();
-        //dd($data);
-        return $data;
+        $data = Order::selectRaw('gbs_payments.order_id,gbs_payments.payment_no,gbs_payments.status as payment_status,gbs_orders.*,sum(gbs_order_products.quantity) as order_quantity')
+        ->join('order_products', 'order_products.order_id', '=', 'orders.id')
+        ->join('payments', 'payments.order_id', '=', 'orders.id')
+        ->groupBy('orders.id')->get();
+        $order_count=count($data);
+        return $order_count;
     }
 
 }
