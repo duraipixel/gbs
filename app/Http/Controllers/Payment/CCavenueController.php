@@ -613,7 +613,7 @@ class CCavenueController extends Controller
                     $payment_info = Payment::where('order_id', $order_info->id)->orderBy('id', 'desc')->first();
                     $payment_info->enc_request = $encrypted_data;
                     $payment_info->enc_response = $response;
-
+                    $orders['payment_no'] = $payment_info->payment_no;
                     /** 
                      * insert in payment enc_response
                      */
