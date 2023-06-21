@@ -54,7 +54,7 @@ class OrderStatusController extends Controller
                     $del_btn = '<a href="javascript:void(0);" onclick="return commonDelete(' . $row->id . ', \'order-status\')" class="btn btn-icon btn-active-danger btn-light-danger mx-1 w-30px h-30px" > 
                 <i class="fa fa-trash"></i></a>';
 
-                    return $edit_btn . $del_btn;
+                    return $edit_btn ;
                 })
                 ->rawColumns(['action', 'status', 'image']);
             return $datatables->make(true);
