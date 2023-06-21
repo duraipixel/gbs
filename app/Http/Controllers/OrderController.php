@@ -95,6 +95,8 @@ class OrderController extends Controller
     {
         $order_id = $request->id;
         $order_info = Order::find($order_id);
+        $order_info->order_status_id = 'yes';
+        $order_info->update();
         $modal_title        = 'View Order';
         $globalInfo = GlobalSettings::first();
         $view_order = view('platform.invoice.view_invoice', compact('order_info', 'globalInfo'));
@@ -306,7 +308,7 @@ class OrderController extends Controller
     {
         $data = Order::selectRaw('gbs_payments.order_id,gbs_payments.payment_no,gbs_payments.status as payment_status,gbs_orders.*,sum(gbs_order_products.quantity) as order_quantity')
         ->join('order_products', 'order_products.order_id', '=', 'orders.id')
-        ->join('payments', 'payments.order_id', '=', 'orders.id')
+        ->join('payments', 'payments.order_id', '=', 'orders.id')->where('orders.notification_status','no')
         ->groupBy('orders.id')->get();
         $order_count=count($data);
         return $order_count;
