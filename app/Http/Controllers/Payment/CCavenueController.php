@@ -436,7 +436,7 @@ class CCavenueController extends Controller
                         $tax = getAmountExclusiveTax($price_with_tax, $tax_info->pecentage);
                         $tax_percentage         = $tax['tax_percentage'] ?? 0;
                     } 
-                    dd( $tax );
+                    // dd( $tax );
                     $items_ins['order_id'] = $order_id;
                     $items_ins['product_id'] = $product_info->id;
                     $items_ins['product_name'] = $product_info->product_name;
@@ -448,8 +448,8 @@ class CCavenueController extends Controller
                     $items_ins['strice_price'] = $product_info->strike_price;
                     $items_ins['save_price'] = $product_info->save_price;
                     $items_ins['base_price'] = $product_info->tax->basePrice;
-                    $items_ins['tax_amount'] = ($tax ?? 0) * $item->quantity;
-                    $items_ins['tax_percentage'] = $tax_percentage ?? 0;
+                    $items_ins['tax_amount'] = ($tax['gstAmount'] ?? 0) * $item->quantity;
+                    $items_ins['tax_percentage'] = $tax['tax_percentage'] ?? $tax_percentage ?? 0;
                     $items_ins['sub_total'] = $item->sub_total;
 
                     $order_product_info = OrderProduct::create($items_ins);
