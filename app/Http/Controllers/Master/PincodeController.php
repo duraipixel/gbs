@@ -20,7 +20,7 @@ class PincodeController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = Pincode::select('pincodes.*','users.name as users_name',DB::raw(" IF(gbs_pincodes.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'pincodes.added_by');
+            $data = Pincode::select('pincodes.*','users.name as users_name',DB::raw(" IF(gbs_pincodes.status = 2, 'Inactive', 'Active') as user_status"))->join('users', 'users.id', '=', 'pincodes.added_by')->orderBy('pincodes.id', 'desc');
             $status = $request->get('status');
             $keywords = $request->get('search')['value'];
             $datatables =  Datatables::of($data)
