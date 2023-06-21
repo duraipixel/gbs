@@ -273,6 +273,7 @@
                                                 confirmButton: "btn btn-primary"
                                             }
                                         });
+                                        window.location.reload();
                                     } else {
                                         dtTable.ajax.reload();
                                         Swal.fire({
