@@ -119,6 +119,7 @@ class ProductCategoryController extends Controller
 
                             'avatar' => 'mimes:jpeg,png,jpg',
                             'categoryImage' => 'max:150',
+                            'order_by'=> 'required|unique:product_categories,order_by,' . $id . ',id,deleted_at,NULL',
                             'tax_id' => 'required_if:is_tax,on'
                         ]);
 
