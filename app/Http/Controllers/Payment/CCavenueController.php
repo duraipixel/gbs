@@ -10,6 +10,7 @@ use App\Models\GlobalSettings;
 use App\Models\Master\CustomerAddress;
 use App\Models\Master\EmailTemplate;
 use App\Models\Master\OrderStatus;
+use App\Models\Offers\Coupons;
 use App\Models\Order;
 use App\Models\OrderHistory;
 use App\Models\OrderProduct;
@@ -277,15 +278,19 @@ class CCavenueController extends Controller
                 ->join('carts', 'carts.id', '=', 'cart_product_addons.cart_id')->where('customer_id', $customer_id)->first();
 
             $cart_items = Cart::where('customer_id', $customer_id)->get();
-          
+
             $total_order_value = 0;
 
             if ($cart_info) {
                 $coupon_amount = $cart_info->coupon_amount ?? 0;
+                if( $cart_info->coupon_id ?? '' ) {
+
+                    $coupon_code = Coupons::find($cart_info->coupon_id);
+                }
                 $shippping_fee_amount = ($cart_info->shipping_fee ?? 0);
                 $total_order_value = ($cart_info->total + $cart_addon_info->addon_total ?? 0) - ($cart_info->coupon_amount ?? 0) + ($cart_info->shipping_fee ?? 0);
             }
-            
+
             $order_status           = OrderStatus::where('status', 'published')->where('order', 1)->first();
 
             $shipping_method_name   = $shipping_method['type'];
@@ -304,20 +309,8 @@ class CCavenueController extends Controller
                 $pickup_store_address   = StoreLocator::find($shipping_method['address_id']);
 
                 $order_ins['pickup_store_id'] = $shipping_method['address_id'];
-            }
-
-            // $coupon_data            = $checkout_infomation->coupon_data;
-
-            $coupon_details = '';
-            $coupon_code = '';
-            $coupon_id = 0;
-            if (isset($coupon_data) && !empty($coupon_data)) {
-                $coupon_code = $coupon_data->coupon_code;
-                $coupon_id = $coupon_data->coupon_id;
-                // $coupon_amount = $coupon_data->coupon_amount;
-                $coupon_details = serialize($coupon_data);
-            }
-
+            }        
+          
             $pickup_address_details = '';
             if (isset($pickup_store_address) && !empty($pickup_store_address)) {
                 $pickup_address_details = serialize($pickup_store_address);
@@ -330,13 +323,13 @@ class CCavenueController extends Controller
             $tax_percentage = 0;
             if (isset($cart_items) && !empty($cart_items)) {
                 foreach ($cart_items as $citem) {
-                    
+
                     $tax = [];
                     $tax_percentage = 0;
 
                     $product_id = $citem->product_id;
                     $product_info = Product::find($product_id);
-                    
+
                     if ($product_info->quantity < $citem->quantity) {
                         $errors[]     = $citem->product_name . ' is out of stock, Product will be removed from cart.Please choose another';
                         $response['error'] = $errors;
@@ -420,15 +413,30 @@ class CCavenueController extends Controller
             $order_ins['shipping_city'] = $shipping_address->city ?? $billing_address->city ?? null;
 
             // dump($order_ins);
-           
+
             $order_info = Order::create($order_ins);
             $order_id = $order_info->id;
 
             if (isset($cart_items) && !empty($cart_items)) {
                 foreach ($cart_items as $item) {
-                    
+
                     $product_info = Product::find($item->product_id);
-                    
+                    /**
+                     * tax calculation
+                     */
+                    $category               = $product_info->productCategory;
+                    $price_with_tax         = $product_info->mrp;
+                    if (isset($category->parent->tax_id) && !empty($category->parent->tax_id)) {
+                        $tax_info = Tax::find($category->parent->tax_id);
+                    } else if (isset($category->tax_id) && !empty($category->tax_id)) {
+                        $tax_info = Tax::find($category->tax_id);
+                    }
+                    // dump( $citems );
+                    if (isset($tax_info) && !empty($tax_info)) {
+                        $tax = getAmountExclusiveTax($price_with_tax, $tax_info->pecentage);
+                        $tax_percentage         = $tax['tax_percentage'] ?? 0;
+                    } 
+
                     $items_ins['order_id'] = $order_id;
                     $items_ins['product_id'] = $product_info->id;
                     $items_ins['product_name'] = $product_info->product_name;
@@ -440,10 +448,10 @@ class CCavenueController extends Controller
                     $items_ins['strice_price'] = $product_info->strike_price;
                     $items_ins['save_price'] = $product_info->save_price;
                     $items_ins['base_price'] = $product_info->tax->basePrice;
-                    $items_ins['tax_amount'] = ($product_info->tax->gstAmount ?? 0) * $product_info->quantity;
-                    $items_ins['tax_percentage'] = $product_info->tax->tax_percentage ?? 0;
+                    $items_ins['tax_amount'] = ($tax ?? 0) * $item->quantity;
+                    $items_ins['tax_percentage'] = $tax_percentage ?? 0;
                     $items_ins['sub_total'] = $item->sub_total;
-                    
+
                     $order_product_info = OrderProduct::create($items_ins);
                     if (isset($product_info->warranty_id) && !empty($product_info->warranty_id)) {
                         $warranty_info = Warranty::find($product_info->warranty_id);
@@ -478,7 +486,7 @@ class CCavenueController extends Controller
                             $add_ins['amount'] = $aitems->amount;
                             $add_ins['icon'] = $aitems->icon;
                             $add_ins['description'] = $aitems->description;
-                         
+
                             OrderProductAddon::create($add_ins);
                         }
                     }

@@ -199,7 +199,6 @@
                     </td>
                     <td>
                         <div>
-
                             {{ $item->product_name }}
                         </div>
                         <div>
