@@ -292,7 +292,9 @@
 
                                             }
                                         });
+                                        window.location.reload();
                                     }
+                                  
                                 }
                             });
 
