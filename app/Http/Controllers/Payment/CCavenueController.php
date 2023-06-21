@@ -436,7 +436,7 @@ class CCavenueController extends Controller
                         $tax = getAmountExclusiveTax($price_with_tax, $tax_info->pecentage);
                         $tax_percentage         = $tax['tax_percentage'] ?? 0;
                     } 
-
+                    dd( $tax );
                     $items_ins['order_id'] = $order_id;
                     $items_ins['product_id'] = $product_info->id;
                     $items_ins['product_name'] = $product_info->product_name;
