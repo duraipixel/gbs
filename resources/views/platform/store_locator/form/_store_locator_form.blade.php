@@ -57,6 +57,17 @@
                 </div>
             </div>
         </div>
+        <div class="fv-row mb-5">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="fv-row mb-7">
+                        <label class="required fw-bold fs-7 mb-2">Whatsapp No</label>
+                       <input type="number" class="form-control form-control-solid mb-3 mb-lg-0" maxlength="10" name="whatsapp_no"
+                       id="whatsapp_no" value="{{ $info->whatsapp_no ?? ''}}">
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="fv-row mb-5">
             <div class="row">

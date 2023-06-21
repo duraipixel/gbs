@@ -24,6 +24,7 @@ class StoreLocator extends Model
         'longitude',
         'email',
         'contact_no',
+        'whatsapp_no',
         'map_link',
         'image_360_link',
         'status',

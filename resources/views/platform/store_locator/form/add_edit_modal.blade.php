@@ -182,6 +182,13 @@
                                 }
                             }
                         },
+                        'whatsapp_no': {
+                            validators: {
+                                notEmpty: {
+                                    message: 'Whatsapp No is required'
+                                }
+                            }
+                        },
                        
                     },
                     plugins: {

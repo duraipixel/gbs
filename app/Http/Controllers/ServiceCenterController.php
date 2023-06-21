@@ -117,6 +117,7 @@ class ServiceCenterController extends Controller
                           'description' => 'required',
                           'banner'      => 'max:150',
                           'banner_mb' => 'max:150',
+                          'whatsapp_no' => 'required',
                       ]);
         $serviceCenterId         = '';
 
@@ -143,6 +144,7 @@ class ServiceCenterController extends Controller
                 $ins['added_by'] = Auth::id();
             }
             $ins['title'] = $request->title;
+            $ins['whatsapp_no'] = $request->whatsapp_no;
             $ins['address'] = $request->address;
             $ins['pincode'] = $request->pincode;
             $ins['description'] = $request->description;

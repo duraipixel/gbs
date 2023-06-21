@@ -108,6 +108,7 @@ class StoreLocatorController extends Controller
             ],
             'brand_id' => 'required',
             'description' => 'required',
+            'whatsapp_no' => 'required',
         ]);
         $serviceCenterId         = '';
 
@@ -135,6 +136,7 @@ class StoreLocatorController extends Controller
             }
             $ins['title'] = $request->title;
             $ins['address'] = $request->address;
+            $ins['whatsapp_no'] = $request->whatsapp_no;
             $ins['pincode'] = $request->pincode;
             $ins['description'] = $request->description;
             $ins['map_link'] = $request->map_link;
