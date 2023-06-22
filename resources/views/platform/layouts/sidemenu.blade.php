@@ -296,12 +296,21 @@
                             </a>
                         </div>
                         <div class="menu-item">
-                            <a class="menu-link @if (request()->routeIs(['reports.sale'])) active @endif"
+                            <a class="menu-link @if (request()->routeIs(['reports.productwise'])) active @endif"
                                 href="{{ route('reports.productwise') }}">
                                 <span class="menu-bullet">
                                     <span class="bullet bullet-dot"></span>
                                 </span>
                                 <span class="menu-title">Product Wise Sales Report</span>
+                            </a>
+                        </div>
+                        <div class="menu-item">
+                            <a class="menu-link @if (request()->routeIs(['reports.customerwise'])) active @endif"
+                                href="{{ route('reports.customerwise') }}">
+                                <span class="menu-bullet">
+                                    <span class="bullet bullet-dot"></span>
+                                </span>
+                                <span class="menu-title">Customer Wise Sales Report</span>
                             </a>
                         </div>
                     </div>

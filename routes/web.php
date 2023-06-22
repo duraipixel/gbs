@@ -190,6 +190,9 @@ Route::middleware(['auth'])->group(function(){
         Route::post('/excel/export', [App\Http\Controllers\ReportProductController::class, 'exportExcel'])->name('reports.export.excel');
         Route::get('/productwisesale', [App\Http\Controllers\ProductwiseSaleReportController::class, 'index'])->name('reports.productwise');
         Route::post('/excel/export', [App\Http\Controllers\ProductwiseSaleReportController::class, 'exportExcel'])->name('reports.export.excel');
+        Route::get('/customerwisesale', [App\Http\Controllers\CustomerwiseSaleReportController::class, 'index'])->name('reports.customerwise');
+        Route::post('/excel/export', [App\Http\Controllers\CustomerwiseSaleReportController::class, 'exportExcel'])->name('reports.export.excel');
+
     });
     
     Route::prefix('payment')->group(function(){
