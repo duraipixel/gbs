@@ -45,6 +45,7 @@ class ProductwiseSaleReportController extends Controller
                 $end_date = date('Y-m-d', strtotime( trim( str_replace('/', '-', $dates[1]))));
                 
             }
+          //  dd(  $start_date.'end'.$end_date);
             
             $datatables =  DataTables::of($data)
                 ->filter(function ($query) use ($keywords,$start_date, $end_date, $filter_search_data, $filter_product_status) {
@@ -61,11 +62,12 @@ class ProductwiseSaleReportController extends Controller
                             $q->whereDate('orders.created_at', '<=', $end_date);
                         });
                     }
+                    //dd($keywords);
                     if ($keywords) {
                         $date = date('Y-m-d', strtotime($keywords));
-                        $query->orWhere('order_products.product_name','like',"%{$keywords}%")
+                        $query->Where('order_products.product_name','like',"%{$keywords}%")
                                 ->orWhere('product_categories.name', 'like', "%{$keywords}%")
-                                ->orWhereDate("orders.created_at", $date);               
+                                ->orWhereDate("orders.created_at", $date);      
                                
                     }
                 });
