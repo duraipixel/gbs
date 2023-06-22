@@ -292,7 +292,16 @@
                                 <span class="menu-bullet">
                                     <span class="bullet bullet-dot"></span>
                                 </span>
-                                <span class="menu-title">Sale Report</span>
+                                <span class="menu-title">Standard Sales Report</span>
+                            </a>
+                        </div>
+                        <div class="menu-item">
+                            <a class="menu-link @if (request()->routeIs(['reports.sale'])) active @endif"
+                                href="{{ route('reports.productwise') }}">
+                                <span class="menu-bullet">
+                                    <span class="bullet bullet-dot"></span>
+                                </span>
+                                <span class="menu-title">Product Wise Sales Report</span>
                             </a>
                         </div>
                     </div>

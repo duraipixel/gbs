@@ -12,7 +12,7 @@
             </div>
             <div class="col-sm-12 col-md-6 col-lg-6">
                 <div class="form-group">
-                    <label class="text-muted"> Order No </label>
+                    <label class="text-muted"> Product Name </label>
                     <input type="text" name="filter_search_data" id="filter_search_data" class="form-control">
                 </div>
             </div>

@@ -8,7 +8,7 @@
 <div class="toolbar" id="kt_toolbar">
     <div id="kt_toolbar_container" class="container-fluid d-flex flex-stack">
         @include('platform.layouts.parts._breadcrum')
-        @include('platform.reports.products._export_button')
+        @include('platform.reports.productwise_sale._export_button')
     </div>
 </div>
 @endsection
@@ -16,7 +16,7 @@
     <div id="kt_content_container" class="container-xxl">
         <div class="card">
             <div class="card-header border-0 pt-6 w-100">
-                @include('platform.reports.products._filter_form')
+                @include('platform.reports.productwise_sale._filter_form')
             </div>
             <hr>
             <!--end::Card header-->
@@ -26,17 +26,12 @@
                     <table class="table align-middle table-row-dashed fs-6 gy-2 mb-0 dataTable no-footer" id="product-table">
                         <thead>
                             <tr class="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
-                                <th> Order Date </th>
-                                <th> Order No</th>
-                                <th> Billing Info</th>
-                                <th> Order Amount </th>
-                                <th> Tax Amount </th>
-                                <th> Shipping Amount </th>
-                                <th> Coupon Amount </th>
-                                <th> Discount Amount </th>
-                                <th> Product SubTotal </th>
-                                <th> Order Status</th>
-                                <th> Payment Status</th>
+                             
+                                <th> Category Name</th>
+                                <th> Product Name</th>
+                                <th> No. of Qty Sold</th>
+                                <th> Amount </th>
+                               
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -57,63 +52,35 @@
             $('.date_range').val('');
 });
         var dtTable = $('#product-table').DataTable({
-           
+
             processing: true,
             serverSide: true,
             type: 'POST',
             ajax: {
-                "url": "{{ route('reports.sale') }}",
+                "url": "{{ route('reports.productwise') }}",
                 "data": function(d) {
+                    console.log(d);
                     return $('form#search-form').serialize() + "&" + $.param(d);
                 }
             },
             columns: [
+                
                 {
-                    data: 'created_at',
-                    name: 'created_at',
-                  
+                    data: 'category_name',
+                    name: 'category_name'
                 },
                 {
-                    data: 'order_no',
-                    name: 'order_no'
+                    data: 'product_name',
+                    name: 'product_name'
                 },
                 {
-                    data: 'billing_info',
-                    name: 'billing_info'
+                    data: 'order_quantity',
+                    name: 'order_quantity'
                 },
                 {
-                    data: 'amount',
-                    name: 'amount'
+                    data: 'prod_amount',
+                    name: 'prod_amount'
                 },
-               
-                {
-                    data: 'tax_amount',
-                    name: 'tax_amount'
-                },
-                {
-                    data: 'shipping_amount',
-                    name: 'shipping_amount'
-                },
-                {
-                    data: 'coupon_amount',
-                    name: 'coupon_amount'
-                },
-                {
-                    data: 'discount_amount',
-                    name: 'discount_amount'
-                },
-                {
-                    data: 'sub_total',
-                    name: 'sub_total'
-                },
-                {
-                    data: 'order_status',
-                    name: 'order_status'
-                },
-                {
-                    data: 'payment_status',
-                    name: 'payment_status'
-                }
                
             ],
             language: {
@@ -125,7 +92,6 @@
             "aaSorting": [],
             "pageLength": 50
         });
-       
         $('.dataTables_wrapper').addClass('position-relative');
         $('.dataTables_info').addClass('position-absolute');
         $('.dataTables_filter label input').addClass('form-control form-control-solid w-250px ps-14');
@@ -136,10 +102,10 @@
             dtTable.draw();
             e.preventDefault();
         });
-        $('#search-form').on('reset', function(e) {
+        $('#search-form').on('reset', function(e) {           
             $('#filter_search_data').val('').trigger('change');
-            $('#date_range').val('').trigger('change');
-            $('#filter_product_name').val('');
+            $('.date_range').val('').trigger('change');
+            $('#filter_product_name').val('');           
             dtTable.draw();
             e.preventDefault();
         });
@@ -211,14 +177,18 @@
         }, cb);
 
         cb(start, end);
+
+
+//         $('input[type="search"]').keyup(function(){           
+//             var search=$('input[type="search"]').val();
+//             if(search=='')
+//             {
+//                 $('.date_range').val('').trigger('change');
+//                 dtTable.draw();
+//             }
+// });
+
+
         
-        // $('input[type="search"]').keyup(function(){           
-        //     var search=$('input[type="search"]').val();
-        //     if(search=='')
-        //     {
-        //         $('.date_range').val('').trigger('change');
-        //         dtTable.draw();
-        //     }
-        // });
     </script>
 @endsection

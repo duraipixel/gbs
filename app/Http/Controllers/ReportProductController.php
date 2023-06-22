@@ -17,8 +17,8 @@ class ReportProductController extends Controller
 {
     public function index(Request $request)
     {
-        $title                  = "Products Report";
-        $breadCrum              = array('Reports', 'Products');
+        $title                  = "Standard Sale Report";
+        $breadCrum              = array('Reports', 'Standard Sale Report');
         
         if ($request->ajax()) {
             
