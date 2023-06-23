@@ -313,6 +313,15 @@
                                 <span class="menu-title">Customer Wise Sales Report</span>
                             </a>
                         </div>
+                        <div class="menu-item">
+                            <a class="menu-link @if (request()->routeIs(['reports.payment'])) active @endif"
+                                href="{{ route('reports.payment') }}">
+                                <span class="menu-bullet">
+                                    <span class="bullet bullet-dot"></span>
+                                </span>
+                                <span class="menu-title">Payment Transaction Report</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             @endif
