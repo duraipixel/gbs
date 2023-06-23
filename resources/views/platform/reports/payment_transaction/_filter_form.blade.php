@@ -16,7 +16,7 @@
                     <select name="filter_payment_status" id="filter_payment_status" class="form-control product-select2">
                         <option value="0">All</option>
                         <option value="paid">Paid</option>
-                        <option value="fail">Fail</option>
+                        <option value="failed">Failed</option>
                     </select>
                 </div>
             </div>
