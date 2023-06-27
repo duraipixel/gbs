@@ -116,7 +116,8 @@
                                         </div>
                                     </div>
                                     <div class="col-4 mt-3 pt-5">
-                                        <button type="submit" class="btn btn-primary mb-2">Import</button>
+                                        <button type="submit" class="btn btn-primary mb-2">Import</button>                                   
+                                        <a href="{{route('product_attriut_set_export')}}"><button type="button" class="btn btn-success  mb-2 pl-3">Export</button></a>
                                     </div>
                                 </div>
                             </form>
@@ -220,6 +221,47 @@
 
                 }
             });
-        })
+        }) 
+
+        function exportAttriuteSet()
+        {
+            $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        }); 
+        $.ajax({
+            url: '{{ route("product_attriut_set_export")}}',
+            type: 'GET',
+            cache: false,
+        xhrFields:{
+            responseType: 'blob'
+        },
+           // data: {id:productImageId},
+           
+                success: function(result, status, xhr) {
+
+var disposition = xhr.getResponseHeader('content-disposition');
+var matches = /"([^"]*)"/.exec(disposition);
+var filename = (matches != null && matches[1] ? matches[1] : 'salary.xlsx');
+
+// The actual download
+var blob = new Blob([result], {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+});
+var link = document.createElement('a');
+link.href = window.URL.createObjectURL(blob);
+link.download = filename;
+
+document.body.appendChild(link);
+
+link.click();
+document.body.removeChild(link);
+}
+            
+        });
+
+    }
+        
     </script>
 @endsection

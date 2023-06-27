@@ -22,6 +22,7 @@ use App\Models\Product\ProductMapAttribute;
 use App\Models\Product\ProductMetaTag;
 use App\Models\Product\ProductRelatedRelation;
 use App\Models\Product\ProductWithAttributeSet;
+use App\Exports\ProductAttributeSetBulkExport;
 use App\Models\Warranty;
 use App\Repositories\ProductRepository;
 use Illuminate\Support\Str;
@@ -644,6 +645,10 @@ class ProductController extends Controller
         }
 
         return response()->json(['error' => $error, 'message' => $message, 'price_info' => $price_info ?? ''] );
+    }
+    public function exportAttriuteSet()
+    {
+        return Excel::download(new ProductAttributeSetBulkExport, 'product_arrttiute_set.xlsx');
     }
 
 }

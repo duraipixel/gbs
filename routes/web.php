@@ -138,6 +138,7 @@ Route::middleware(['auth'])->group(function(){
         Route::post('/remove/image', [App\Http\Controllers\Product\ProductController::class, 'removeImage'])->name('products.remove.image');
         
         Route::post('/upload/gallery', [App\Http\Controllers\Product\ProductController::class, 'uploadGallery'])->name('products.upload.gallery');
+        Route::get('/product_attriut_set_export', [App\Http\Controllers\Product\ProductController::class, 'exportAttriuteSet'])->name('product_attriut_set_export')->middleware(['checkAccess:export']);
         Route::get('/export/excel', [App\Http\Controllers\Product\ProductController::class, 'export'])->name('products.export.excel')->middleware(['checkAccess:export']);
         Route::get('/export/pdf', [App\Http\Controllers\Product\ProductController::class, 'exportPdf'])->name('products.export.pdf')->middleware(['checkAccess:export']);
 
