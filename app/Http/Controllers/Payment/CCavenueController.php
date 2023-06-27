@@ -250,7 +250,7 @@ class CCavenueController extends Controller
             $error_message = 'Payment Failed';
         }
 
-        return redirect()->away('http://beta.gbssystems.com/verify-payment/' . $encrypted_order_no);
+        return redirect()->away('https://www.gbssystems.com/verify-payment/' . $encrypted_order_no);
 
         return  array('success' => $success, 'message' => $error_message);
     }
