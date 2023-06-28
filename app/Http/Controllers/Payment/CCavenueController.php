@@ -130,7 +130,7 @@ class CCavenueController extends Controller
                     $pay_ins['payment_type'] = 'ccavenue';
                     $pay_ins['payment_mode'] = $response['payment_mode'] ?? 'online';
                     $pay_ins['response'] = serialize($response);
-                    $pay_ins['status'] = 'paid';
+                    $pay_ins['status'] = 'pending';
 
                     Payment::create($pay_ins);
 
@@ -250,7 +250,7 @@ class CCavenueController extends Controller
             $error_message = 'Payment Failed';
         }
 
-        return redirect()->away('http://beta.gbssystems.com/verify-payment/' . $encrypted_order_no);
+        return redirect()->away('https://www.gbssystems.com/verify-payment/' . $encrypted_order_no);
 
         return  array('success' => $success, 'message' => $error_message);
     }
@@ -608,11 +608,14 @@ class CCavenueController extends Controller
                 curl_close($curl);
 
                 $status_response = '';
+                $payment_status = '';
                 if ($response) {
 
                     $payment_info = Payment::where('order_id', $order_info->id)->orderBy('id', 'desc')->first();
                     $payment_info->enc_request = $encrypted_data;
                     $payment_info->enc_response = $response;
+                    $payment_info->status = 'paid';
+                    $payment_status = 'paid';
                     $orders['payment_no'] = $payment_info->payment_no;
                     /** 
                      * insert in payment enc_response
@@ -635,7 +638,7 @@ class CCavenueController extends Controller
 
                 // 'enc_request=' . $encrypted_data . '&access_code=' . $access_code . '&command=orderStatusTracker&request_type=JSON&response_type=JSON';
 
-                if (strtolower($order_info->payments->status) == 'paid' && $order_info->amount == $order_info->response_amount) {
+                if (strtolower($payment_status) == 'paid' && $order_info->amount == $order_info->response_amount) {
                     $error = 0;
                     $response_api['error'] = $error;
                     $response_api['message'] = 'PAYMENT_SUCCESS';
