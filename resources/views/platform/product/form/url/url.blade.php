@@ -57,10 +57,30 @@
                                 <input type="text" name="url_order_by[]" id="url_order_by" class="form-control mb-2" placeholder="Sorting Order" value="{{ $itemUrl->order_by ?? '' }}" />
                             </div>
                         </div>
+                            <div class="col-md-1">
+                                <button type="button"  
+                                    class="btn btn-sm btn-icon btn-light-danger mt-10" onclick="return romove_url_row({{$itemUrl->id}})">
+                                    <!--begin::Svg Icon | path: icons/duotune/arrows/arr088.svg-->
+                                    <span class="svg-icon svg-icon-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24" fill="none">
+                                            <rect opacity="0.5" x="7.05025" y="15.5356" width="12"
+                                                height="2" rx="1"
+                                                transform="rotate(-45 7.05025 15.5356)" fill="currentColor">
+                                            </rect>
+                                            <rect x="8.46447" y="7.05029" width="12" height="2"
+                                                rx="1" transform="rotate(45 8.46447 7.05029)"
+                                                fill="currentColor"></rect>
+                                        </svg>
+                                    </span>
+                                    <!--end::Svg Icon-->
+                                </button>
+                            </div> 
                     </div> 
-                </div> 
+                     
+                
             </div> 
-              
+                </div>
                 @endforeach
                 @endisset
 
@@ -150,4 +170,55 @@ $('#newinput_url').append(newRowAdd_url);
 $(document).on("click", ".removeDescRow", function() {
 $(this).parents('#new_row_add_url').remove();
 });
+
+function romove_url_row(id)
+{
+    Swal.fire({
+                text: "Are you sure you would like to delete this record?",
+                icon: "warning",
+                showCancelButton: true,
+                buttonsStyling: false,
+                confirmButtonText: "Yes, Delete it!",
+                cancelButtonText: "No, return",
+                customClass: {
+                    confirmButton: "btn btn-danger",
+                    cancelButton: "btn btn-active-light"
+                }
+            }).then(function(result) {
+                if (result.value) {
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+
+                    $.ajax({
+                        url: "{{ route('products_url.delete') }}",
+                        type: 'POST',
+                        data: {
+                            id: id,
+                        },
+                        success: function(res) {
+                            location.reload();
+                            Swal.fire({
+                                title: "Updated!",
+                                text: res.message,
+                                icon: "success",
+                                confirmButtonText: "Ok, got it!",
+                                customClass: {
+                                    confirmButton: "btn btn-success"
+                                },
+                                timer: 3000
+                            });
+
+                        },
+                        error: function(xhr, err) {
+                            if (xhr.status == 403) {
+                                toastr.error(xhr.statusText, 'UnAuthorized Access');
+                            }
+                        }
+                    });
+                }
+            });
+}
         </script>

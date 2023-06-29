@@ -205,6 +205,15 @@ class ProductController extends Controller
 
     }
 
+    public function urlDelete(Request $request)
+    {
+        $id         = $request->id;
+        $info       = ProductUrl::find($id);
+        $info->delete();        
+       return response()->json(['message'=>"Successfully deleted Product!",'status' => 1 ] );
+      
+    }
+
     public function saveForm(Request $request)
     {
         $id                 = $request->id;
