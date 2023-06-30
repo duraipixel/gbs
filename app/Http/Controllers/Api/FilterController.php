@@ -92,7 +92,6 @@ class FilterController extends Controller
                 
             }
         }
-        dump( $category );
         if( !empty( $category ) ) {
             foreach ($category as $key => $value) {
                 
@@ -188,10 +187,16 @@ class FilterController extends Controller
 
         $response['exclusive'] =  [array('id' => null, 'name' => 'GBS', 'slug' => 'gbs')];
         $response['categories'] =  $categories;
-        $response['brands'] =  $attr_response['brands'];
+        if( !empty( $attr_response['brands'] ) ) { 
+            $response['brands'] =  $attr_response['brands'];
+        }
         $response['discounts'] = $discounts;
-        $response['prices'] = $browse;
-        $response['sizes'] = $sizes;
+        if( !empty( $prices ) ) {
+            $response['prices'] = $browse;
+        }
+        if( !empty( $sizes ) ) {
+            $response['sizes'] = $sizes;
+        }
         $new_array = array_merge($response, $attr_response['attributes']);
         $new_array['collection'] = $collection;
         $new_array['handpicked'] = $handpicked;
