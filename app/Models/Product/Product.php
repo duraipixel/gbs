@@ -148,9 +148,11 @@ class Product extends Model
     {
         return $this->hasMany(ProductAddonProduct::class, 'product_id', 'id')
                         ->join('product_addons', 'product_addons.id', '=', 'product_addon_products.product_addon_id')
-                        ->whereNull('product_addons.deleted_at');
+                        ->whereNull('product_addons.deleted_at')
+                        ->where('product_addon_products.type', 'product');
                         
     }
+   
 
     public function reviews() {
         return $this->hasMany(Review::class, 'product_id', 'id');

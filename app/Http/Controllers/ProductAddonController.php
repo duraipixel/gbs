@@ -72,8 +72,8 @@ class ProductAddonController extends Controller
         $from               = $request->from;
         $info               = '';
         $modal_title        = 'Add Product Addon';
-        $product = Product::select('id','product_name')->where('status','published')->get();
-        $category=ProductCategory::select('id','name')->where('status','published')->get();
+        $product            = Product::select('id','product_name')->where('status','published')->get();
+        $category           = ProductCategory::where('status','published')->get();
         $usedProduct = [];
         $usedCategory =[];
         $info_items='';
@@ -83,7 +83,7 @@ class ProductAddonController extends Controller
             $info_items     = ProductAddonProduct::where('product_addon_id',$id)->first();
           
             $usedProduct    = array_column($info->addonProducts->toArray(), 'product_id');
-            $usedCategory    = array_column($info->addonCategory->toArray(), 'product_id');
+            $usedCategory   = array_column($info->addonCategory->toArray(), 'product_id');
             
             $modal_title    = 'Update Product Addon';
         }

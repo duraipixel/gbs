@@ -485,6 +485,7 @@ function getProductApiData($product_data, $customer_id = '')
 
     $addon_arr = [];
 
+
     if (isset($product_data->productAddons) && !empty($product_data->productAddons)) {
 
         foreach ($product_data->productAddons as $items) {
@@ -530,13 +531,106 @@ function getProductApiData($product_data, $customer_id = '')
             $addon_arr[] = $temp;
         }
     }
+    if (isset($product_data->productCategory->productAddonsByCategory) && count($product_data->productCategory->productAddonsByCategory) > 0) {
+
+        $product_addons = $product_data->productCategory->productAddonsByCategory;
+        foreach ($product_addons as $paddon) {
+
+            $addon_items = ProductAddon::find($paddon->product_addon_id);
+            $temp = [];
+            if ($addon_items) {
+
+                $temp['id'] = $addon_items->id;
+                $temp['title'] = $addon_items->title;
+                $temp['description'] = $addon_items->description;
+
+                if (!Storage::exists($addon_items->icon)) {
+                    $path               = asset('assets/logo/no_Image.jpg');
+                } else {
+                    $url                = Storage::url($addon_items->icon);
+                    $path               = asset($url);
+                }
+
+                $temp['icon'] = $path;
+                $addon_item_array = [];
+                // dd( $addon_items->items );
+                if (isset($addon_items->items) && !empty($addon_items->items)) {
+                    foreach ($addon_items->items as $aitem) {
+
+                        $is_selected = false;
+                        if (isset($is_cart->id) && !empty($is_cart->id)) {
+
+                            $is_selected = addonHasSelected($aitem->id, $product_data->id, $is_cart->id);
+                        }
+                        $tmp = [];
+                        $tmp['id'] = $aitem->id;
+                        $tmp['label'] = $aitem->label;
+                        $tmp['amount'] = $aitem->amount;
+                        $tmp['is_selected'] = $is_selected;
+                        $addon_item_array[] = $tmp;
+                    }
+                }
+            }
+            $temp['items'] = $addon_item_array;
+
+            $addon_arr[] = $temp;
+        }
+    } 
+    if (isset($product_data->productCategory->parent->productAddonsByCategory) && count($product_data->productCategory->parent->productAddonsByCategory) > 0) {
+
+        $product_addons = $product_data->productCategory->parent->productAddonsByCategory;
+        foreach ($product_addons as $paddon) {
+
+            $addon_items = ProductAddon::find($paddon->product_addon_id);
+            $temp = [];
+            if ($addon_items) {
+
+                $temp['id'] = $addon_items->id;
+                $temp['title'] = $addon_items->title;
+                $temp['description'] = $addon_items->description;
+
+                if (!Storage::exists($addon_items->icon)) {
+                    $path               = asset('assets/logo/no_Image.jpg');
+                } else {
+                    $url                = Storage::url($addon_items->icon);
+                    $path               = asset($url);
+                }
+
+                $temp['icon'] = $path;
+                $addon_item_array = [];
+                // dd( $addon_items->items );
+                if (isset($addon_items->items) && !empty($addon_items->items)) {
+                    foreach ($addon_items->items as $aitem) {
+
+                        $is_selected = false;
+                        if (isset($is_cart->id) && !empty($is_cart->id)) {
+
+                            $is_selected = addonHasSelected($aitem->id, $product_data->id, $is_cart->id);
+                        }
+                        $tmp = [];
+                        $tmp['id'] = $aitem->id;
+                        $tmp['label'] = $aitem->label;
+                        $tmp['amount'] = $aitem->amount;
+                        $tmp['is_selected'] = $is_selected;
+                        $addon_item_array[] = $tmp;
+                    }
+                }
+            }
+            $temp['items'] = $addon_item_array;
+
+            $addon_arr[] = $temp;
+        }
+    }
+
+    
+
     $video_link = [];
-    if( isset( $product_data->productUrl ) && count($product_data->productUrl) > 0 ) {
+    if (isset($product_data->productUrl) && count($product_data->productUrl) > 0) {
         foreach ($product_data->productUrl as $uitem) {
             $video_link[] = array(
-                                'thumbnail' => $uitem->thumbnail_url ?? '',
-                                'video_link' => $uitem->video_url ?? ''
-                            );
+                'thumbnail' => $uitem->thumbnail_url ?? '',
+                'video_link' => $uitem->video_url ?? ''
+            );
         }
     }
 
