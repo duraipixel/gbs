@@ -403,10 +403,10 @@ function getProductApiData($product_data, $customer_id = '')
             $tmp2['is_featured']     = $productInfo->is_featured;
             $tmp2['is_best_selling'] = $productInfo->is_best_selling;
             $tmp2['is_new']          = $productInfo->is_new;
-            $tmp2['price']           = $product_data->mrp;
-            $tmp2['strike_price']    = $product_data->strike_price;
-            $tmp2['save_price']      = $product_data->strike_price - $product_data->mrp;
-            $tmp2['discount_percentage'] = abs($product_data->discount_percentage);
+            $tmp2['price']           = $productInfo->mrp;
+            $tmp2['strike_price']    = $productInfo->strike_price;
+            $tmp2['save_price']      = $productInfo->strike_price - $productInfo->mrp;
+            $tmp2['discount_percentage'] = abs($productInfo->discount_percentage);
             $tmp2['image']           = $productInfo->base_image;
 
             $imagePath              = $productInfo->base_image;
@@ -426,8 +426,8 @@ function getProductApiData($product_data, $customer_id = '')
     $frequently_purchased           = [];
     if (isset($product_data->productCrossSale) && !empty($product_data->productCrossSale)) {
         foreach ($product_data->productCrossSale as $related) {
-
             $productInfo            = Product::find($related->to_product_id);
+
             $category               = $productInfo->productCategory;
 
             $tmp2                    = [];
@@ -442,10 +442,10 @@ function getProductApiData($product_data, $customer_id = '')
             $tmp2['is_featured']     = $productInfo->is_featured;
             $tmp2['is_best_selling'] = $productInfo->is_best_selling;
             $tmp2['is_new']          = $productInfo->is_new;
-            $tmp2['price']           = $product_data->mrp;
-            $tmp2['strike_price']    = $product_data->strike_price;
-            $tmp2['save_price']      = $product_data->strike_price - $product_data->mrp;
-            $tmp2['discount_percentage'] = abs($product_data->discount_percentage);
+            $tmp2['price']           = $productInfo->mrp;
+            $tmp2['strike_price']    = $productInfo->strike_price;
+            $tmp2['save_price']      = $productInfo->strike_price - $productInfo->mrp;
+            $tmp2['discount_percentage'] = abs($productInfo->discount_percentage);
             $tmp2['image']           = $productInfo->base_image;
 
             $imagePath              = $productInfo->base_image;

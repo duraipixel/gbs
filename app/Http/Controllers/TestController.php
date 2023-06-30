@@ -141,6 +141,16 @@ class TestController extends Controller
 
     public function sendMail()
     {
+
+        Mail::send([], [], function ($message) { 
+            $message->to('durairaj.pixel@gmail.com', 'Tutorials Point')
+               ->subject('subject') 
+               ->setBody('some body', 'text/html'); 
+        });
+        return response()->json([
+            'message' => 'Email has been sent.'
+        ]);
+        die;
         $email = 'durairaj.pixel@gmail.com';
 
         $mailData = [
