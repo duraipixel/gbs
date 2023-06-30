@@ -53,7 +53,7 @@ class CartController extends Controller
                     $checkCart->delete();
                 } else {
                     $error = 0;
-                    $message = 'Cart added successfull';
+                    $message = 'Cart added successful';
                     $product_quantity = $checkCart->quantity + $quantity;
                     if ($product_info->quantity <= $product_quantity) {
                         $product_quantity = $product_info->quantity;
@@ -83,7 +83,7 @@ class CartController extends Controller
                     
                     $cart_id = Cart::create($ins)->id;
                     $error = 0;
-                    $message = 'Cart added successfull';
+                    $message = 'Cart added successful';
                     $data = $this->getCartListAll($customer_id, $guest_token);
                 } else {
                     $error = 1;
@@ -170,7 +170,7 @@ class CartController extends Controller
             $checkCart->delete();
 
             $error = 0;
-            $message = 'Cart Item deleted successfull';
+            $message = 'Cart Item deleted successful';
 
             $data = $this->getCartListAll($customer_id, $guest_token);
         } else {
