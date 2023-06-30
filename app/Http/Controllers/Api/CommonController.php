@@ -329,7 +329,7 @@ class CommonController extends Controller
 
             $tmp = [];
             foreach ( $intel_data as $items ) {             
-                $tmp[] = array('slug' => 'model='.Str::slug($items->attribute_values ), 'name' => $items->attribute_values );
+                $tmp[] = array('slug' => 'processor='.Str::slug($items->attribute_values ), 'name' => $items->attribute_values );
             }
             $intel_information['processors'] = $tmp;
 
