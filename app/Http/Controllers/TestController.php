@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Mail\TestMail;
 use App\Models\GlobalSettings;
+use App\Models\Master\Brands;
 use App\Models\Master\EmailTemplate;
 use App\Models\Order;
 use App\Models\Product\Product;
 use App\Models\Product\ProductCategory;
 use App\Models\Product\ProductDescription;
+use App\Models\ServiceCenter;
 use App\Models\SmsTemplate;
+use App\Models\StoreLocator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -380,5 +383,26 @@ class TestController extends Controller
             }
         }
         
+    }
+
+    public function generateSiteMap(Request $request)
+    {
+        $products = Product::all();
+        $pages = array(
+            'https://www.gbssystems.com',
+            'https://www.gbssystems.com/about-us',
+            'https://www.gbssystems.com/shipping-delivery',
+            'https://www.gbssystems.com/terms-conditions',
+            'https://www.gbssystems.com/privacy-policy',
+            'https://www.gbssystems.com/warantty-policy',
+            'https://www.gbssystems.com/store-locator',
+            'https://www.gbssystems.com/service-center-locator'            ,
+            'https://www.gbssystems.com/products',
+            'https://www.gbssystems.com/my-account/profile',
+            'https://www.gbssystems.com/cart'
+        );
+        $store_locator = StoreLocator::all();
+        $store_center = ServiceCenter::all();
+        return response()->view('site-map', compact('products', 'store_locator', 'pages', 'store_center' ))->header('Content-Type', 'text/xml');
     }
 }
