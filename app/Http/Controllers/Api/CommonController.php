@@ -316,7 +316,7 @@ class CommonController extends Controller
         /**
          * Get Intel Processor data
          */
-        $intel_data = ProductWithAttributeSet::where('title', 'model')
+        $intel_data = ProductWithAttributeSet::where('title', 'processor')
                         ->where('attribute_values', 'like', "%intel%")
                         ->groupBy('attribute_values')
                         ->limit(4)
