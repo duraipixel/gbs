@@ -80,7 +80,7 @@ class FilterController extends Controller
                     foreach ($cat_item->childCategory as $sub_item) {
                         // dump( $sub_item );
                         // dump( count($sub_item->products ) );
-                        if( !isset( $category[$cat_item->id] ) && isset( $cat_item->id ) && !empty( $cat_item->id ) ) {
+                        if( !isset( $category[$cat_item->id] ) ) {
                             $category[$cat_item->id] = array('id' => $cat_item->id, 'name' => $cat_item->name, 'slug' => $cat_item->slug);
                         }
                         if( count($sub_item->products ) > 0 ) {
@@ -92,7 +92,7 @@ class FilterController extends Controller
                 
             }
         }
-        
+        dump( $category );
         if( !empty( $category ) ) {
             foreach ($category as $key => $value) {
                 
