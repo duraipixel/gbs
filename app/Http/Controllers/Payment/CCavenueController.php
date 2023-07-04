@@ -376,7 +376,6 @@ class CCavenueController extends Controller
             $order_ins['customer_id'] = $customer_id;
             $order_ins['order_no'] = getOrderNo();
 
-
             $order_ins['amount'] = $total_order_value;
             $order_ins['tax_amount'] = $tax_total ?? 0;
             $order_ins['tax_percentage'] = $tax_percentage ?? 0;
@@ -614,7 +613,7 @@ class CCavenueController extends Controller
                     $payment_info = Payment::where('order_id', $order_info->id)->orderBy('id', 'desc')->first();
                     $payment_info->enc_request = $encrypted_data;
                     $payment_info->enc_response = $response;
-                    $payment_info->status = 'paid';
+                    // $payment_info->status = 'paid';
                     $payment_status = 'paid';
                     $orders['payment_no'] = $payment_info->payment_no;
                     /** 
@@ -643,6 +642,13 @@ class CCavenueController extends Controller
                     $response_api['error'] = $error;
                     $response_api['message'] = 'PAYMENT_SUCCESS';
                     $orders['status'] = 'paid';
+
+                    $payment_info = Payment::where('order_id', $order_info->id)->orderBy('id', 'desc')->first();
+                    $payment_info->enc_request = $encrypted_data;
+                    $payment_info->enc_response = $response;
+                    $payment_info->status = 'paid';
+                    $payment_info->save();
+
                 } else {
                     $error = 0;
                     $orders['status'] = 'failed';
