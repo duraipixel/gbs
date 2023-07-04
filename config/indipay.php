@@ -11,9 +11,13 @@ return [
 
     'gateway' => 'CCAvenue',                // Replace with the name of default gateway you want to use
 
-    'testMode'  => true,                   // True for Testing the Gateway [For production false]
+    'testMode'  => false,                   // True for Testing the Gateway [For production false]
 
     'ccavenue' => [                         // CCAvenue Parameters
+        // 'merchantId'  => env('INDIPAY_MERCHANT_ID', '2501102'),
+        // 'accessCode'  => env('INDIPAY_ACCESS_CODE', 'AVRD71KE07CJ75DRJC'),
+        // 'workingKey' => env('INDIPAY_WORKING_KEY', 'B00B81683DCD0816F8F32551E2C2910B'),
+
         'merchantId'  => env('INDIPAY_MERCHANT_ID', '2501102'),
         'accessCode'  => env('INDIPAY_ACCESS_CODE', 'AVRD71KE07CJ75DRJC'),
         'workingKey' => env('INDIPAY_WORKING_KEY', 'B00B81683DCD0816F8F32551E2C2910B'),
