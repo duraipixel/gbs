@@ -644,8 +644,8 @@ class CCavenueController extends Controller
                     $orders['status'] = 'paid';
 
                     $payment_info = Payment::where('order_id', $order_info->id)->orderBy('id', 'desc')->first();
-                    $payment_info->enc_request = $encrypted_data;
-                    $payment_info->enc_response = $response;
+                    // $payment_info->enc_request = $encrypted_data;
+                    // $payment_info->enc_response = $response;
                     $payment_info->status = 'paid';
                     $payment_info->save();
 
