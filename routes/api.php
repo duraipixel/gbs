@@ -60,6 +60,7 @@ Route::post('/serviceCenter', [App\Http\Controllers\Api\ServiceController::class
 Route::post('/serviceCenterDetail', [App\Http\Controllers\Api\ServiceController::class, 'getServiceCenterDetail']);
 
 Route::post('/store-locator', [App\Http\Controllers\Api\StoreLocatorController::class, 'getStoreLocator']);
+Route::post('/store-service', [App\Http\Controllers\Api\StoreLocatorController::class, 'getStoreOrService']);
 Route::post('/storeLocatorDetail', [App\Http\Controllers\Api\StoreLocatorController::class, 'getStoreLocatorDetail']);
 Route::get('/quickLink', [App\Http\Controllers\Api\QuickLinkController::class, 'index']);
 
