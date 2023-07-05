@@ -17,13 +17,13 @@
     @endforeach
     @foreach ($store_locator as $items)
         <url>
-            <loc>https://www.gbssystems.com/store-location-details/{{ $items->slug }}</loc>
+            <loc>https://www.gbssystems.com/{{ $items->slug }}</loc>
             <lastmod>{{ $items->created_at->tz('UTC')->toAtomString() }}</lastmod>
         </url>
     @endforeach
     @foreach ($store_center as $items)
         <url>
-            <loc>https://www.gbssystems.com/service-center-details/{{ $items->slug }}</loc>
+            <loc>https://www.gbssystems.com/{{ $items->slug }}</loc>
             <lastmod>{{ $items->created_at->tz('UTC')->toAtomString() }}</lastmod>
         </url>
     @endforeach
