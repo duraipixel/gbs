@@ -44,8 +44,6 @@ class MenuController extends Controller
                                              
                         if( count($sub_item->products ) > 0 ) {                            
                             $category[$cat_item->id]['child'][] = array('id' => $sub_item->id, 'name' => $sub_item->name, 'slug' => $sub_item->slug);
-                        } else {
-                            $category[$cat_item->id]['child'][] = [];
                         }
 
                     }
