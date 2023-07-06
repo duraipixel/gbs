@@ -289,7 +289,7 @@ class ProductController extends Controller
             $ins[ 'label_id' ]              = $request->label_id;
             $ins[ 'is_featured' ]           = $request->is_featured ?? 0;
             $ins[ 'quantity' ]              = $request->qty;
-            $ins['warranty_id']             = $request->warranty_id;
+            $ins['warranty_id']             = $request->warranty_id ?? null;
             $ins[ 'stock_status' ]          = $request->stock_status;
             $ins['discount_percentage']     = $request->discount_percentage ?? 0;
             // $ins[ 'sale_price' ]            = $request->sale_price ?? 0;
