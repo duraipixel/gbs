@@ -44,6 +44,7 @@ class OrderController extends Controller
                             ->orWhere('orders.billing_address_line1', 'like', "%{$keywords}%")
                             ->orWhere('orders.billing_state', 'like', "%{$keywords}%")
                             ->orWhere('orders.status', 'like', "%{$keywords}%")
+                            ->orWhere('orders.order_no', 'like', "%{$keywords}%")
                             ->orWhereDate("orders.created_at", $date);
                     }
                 })
