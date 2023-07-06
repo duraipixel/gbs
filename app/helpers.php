@@ -369,7 +369,6 @@ function getProductApiData($product_data, $customer_id = '')
     $pro['cart_id'] = $is_cart->id ?? 0;
     $pro['warranty_available'] = $product_data->warranty ? $product_data->warranty->toArray() : [];
 
-
     $pro['description']             = $product_data->description;
     $gallery = [];
     if (isset($product_data->productImages) && !empty($product_data->productImages)) {
@@ -378,8 +377,10 @@ function getProductApiData($product_data, $customer_id = '')
             $gallery_url            = Storage::url($att->gallery_path);
             $path                   = asset($gallery_url);
 
-            $gallery = $path;
+            $gallery[] = $path;
         }
+    } else {
+        $gallery[] = $pro['image'];
     }
 
     $pro['gallery'] = $gallery;
