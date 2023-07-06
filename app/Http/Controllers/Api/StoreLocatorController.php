@@ -238,7 +238,7 @@ class StoreLocatorController extends Controller
                     $query->where('service_centers.slug', $slug);
                 })
                 ->groupBy('service_centers.id')
-                ->first();
+                ->dd();
 
             $response = [];
             if (isset($data) && !empty($data)) {
