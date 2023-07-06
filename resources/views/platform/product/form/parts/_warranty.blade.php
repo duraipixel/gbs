@@ -1,6 +1,6 @@
 
 <select name="warranty_id" id="warranty_id" aria-label="Select a Warranty" data-control="select2" data-placeholder="Select a Warranty..." class="form-select mb-2">
-    <option value=""></option>
+    <option value=""> select </option>
     @isset($warranties)
         @foreach ($warranties as $item)
             <option value="{{ $item->id }}" 
