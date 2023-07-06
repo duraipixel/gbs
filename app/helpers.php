@@ -371,17 +371,18 @@ function getProductApiData($product_data, $customer_id = '')
 
 
     $pro['description']             = $product_data->description;
-
+    $gallery = [];
     if (isset($product_data->productImages) && !empty($product_data->productImages)) {
         foreach ($product_data->productImages as $att) {
 
             $gallery_url            = Storage::url($att->gallery_path);
             $path                   = asset($gallery_url);
 
-            $pro['gallery'][] = $path;
+            $gallery = $path;
         }
     }
 
+    $pro['gallery'] = $gallery;
     $pro['attributes']              = $product_data->productAttributes;
     $pro['overview']                = $product_data->productOverviewAttributes;
     $related_arr                    = [];
