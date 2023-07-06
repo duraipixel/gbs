@@ -26,7 +26,7 @@ class OrderController extends Controller
         if ($request->ajax()) {
             $data = Order::selectRaw('gbs_payments.order_id,gbs_payments.payment_no,gbs_payments.status as payment_status,gbs_orders.*,sum(gbs_order_products.quantity) as order_quantity')
                 ->join('order_products', 'order_products.order_id', '=', 'orders.id')
-                ->lefJoin('payments', 'payments.order_id', '=', 'orders.id')
+                ->leftJoin('payments', 'payments.order_id', '=', 'orders.id')
                 ->groupBy('orders.id')->orderBy('orders.id', 'desc');
             $filter_subCategory   = '';
             $status = $request->get('status');
