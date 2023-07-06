@@ -294,7 +294,7 @@ class CommonController extends Controller
         $ins['mobile_no'] = $mobile_no;
         $ins['message'] = $message;
 
-        $to_email = 'durairaj.pixel@gmail.com';
+        $to_email = 'support@gbssystems.com';
         $title = 'New Enquiry Has Received';
 
         $html = '<table>';
