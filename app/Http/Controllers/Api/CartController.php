@@ -415,9 +415,16 @@ class CartController extends Controller
         CartProductAddon::where(['addon_id' => $addon_id, 'cart_id' => $cart_id, 'product_id' => $product_id ])->delete();
 
         $cart_info = Cart::find($cart_id);
-        $data = $this->getCartListAll($cart_info->customer_id, $cart_info->guest_token);
+        if( $cart_info ){
+            $error = 0;
+            $message = 'Addon Deleted Successfully';
+            $data = $this->getCartListAll($cart_info->customer_id, $cart_info->guest_token);
+        } else {
+            $error = 1;
+            $message = 'Cart data not found';
+        }
 
-        return array( 'error' => 0, 'message' => 'Addon Deleted Successfully', 'data' => $data );
+        return array( 'error' => $error, 'message' => $message, 'data' => $data ?? [] );
 
     }
    
