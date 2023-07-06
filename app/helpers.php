@@ -297,7 +297,7 @@ function getProductApiData($product_data, $customer_id = '')
     $pro['price']           = $product_data->mrp;
     $pro['strike_price']    = $product_data->strike_price;
     $pro['save_price']      = round($product_data->strike_price - $product_data->mrp);
-    $pro['discount_percentage'] = $product_data->discount_percentage ? abs($product_data->discount_percentage): getDiscountPercentage($product_data->mrp, $product_data->strike_price);
+    $pro['discount_percentage'] = $product_data->discount_percentage != 0 ? abs($product_data->discount_percentage): getDiscountPercentage($product_data->mrp, $product_data->strike_price);
     $pro['image']           = $product_data->base_image;
     $pro['max_quantity']    = $product_data->quantity;
     dd( $pro );
