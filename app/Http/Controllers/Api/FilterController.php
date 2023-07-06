@@ -239,7 +239,6 @@ class FilterController extends Controller
             }
         }
 
-
         $filter_availability_array = [];
         $filter_attribute_array = [];
         $filter_brand_array = [];
