@@ -184,20 +184,28 @@ class OrderController extends Controller
             #customers
             $tmp['customer'] = $info->customer;
             $tracking = [];
+            $tracking_info = [];
             if (isset($info->tracking) && !empty($info->tracking)) {
                 foreach ($info->tracking as $track) {
-                    $tra = [];
-                    $tra['id'] = $track->id;
-                    $tra['action'] = $track->action;
-                    $tra['description'] = $track->description;
-                    $tra['order_id'] = $track->order_id;
-                    $tra['description'] = $track->description;
-                    $tra['created_at'] = date('H:i A - d M Y', strtotime($track->created_at));
+                    $tracking = [];
+                    $track_data = [];
+                    $tracking['id'] = $track->id;
+                    $tracking['status_name'] = $track->action;
 
-                    $tracking[] = $tra;
+                    $track_data['id'] = $track->id;
+                    $track_data['action'] = $track->action;
+                    $track_data['description'] = $track->description;
+                    $track_data['order_id'] = $track->order_id;
+                    $track_data['created_at'] = date('H:i A - d M Y', strtotime($track->created_at));
+
+                    $tracking['tracking_info'] = $track_data;
+                    $tracking['has_tracking'] = true;
+
+                    $tracking_info[] = $tracking;
+
                 }
             }
-            $tmp['tracking'] = $tracking;
+            $tmp['tracking'] = $tracking_info;
 
             $orderTracking  = OrderStatus::select('id', 'status_name')
                 ->where('order', '!=', 6)
