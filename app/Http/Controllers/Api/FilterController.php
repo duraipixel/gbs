@@ -29,70 +29,27 @@ class FilterController extends Controller
         $response = [];
         if ($category_slug) {
             $category = ProductCategory::select('id', 'name', 'parent_id', 'slug', 'image')->with('childCategory')->where('slug', $category_slug)->first();
-            $top_slide_menu = [];
-            if ($category) {
-                $top_slide_menu['id'] = $category->id;
-                $top_slide_menu['name'] = $category->name;
-                $top_slide_menu['parent_id'] = $category->parent_id;
-                $top_slide_menu['slug'] = $category->slug;
-                $top_slide_menu['image'] = $category->image;
-                $tmp_cat = [];
-                if (isset($category->childCategory) && !empty($category->childCategory)) {
-                    foreach ($category->childCategory as $sub_item) {
-                        if (count($sub_item->products) > 0) {
-                            $tmp_cat[] = array('id' => $sub_item->id, 'name' => $sub_item->name, 'slug' => $sub_item->slug);
-                        }
-                    }
-                }
-                $top_slide_menu['childCategory'] = $tmp_cat;
-            }
 
-            if (isset($category) && $category->parent_id != 0) {
+            if ( isset( $category ) && $category->parent_id != 0) {
                 $top_category = ProductCategory::select('id', 'name', 'parent_id', 'slug', 'image')->with('childCategory')->where('status', 'published')
                     ->where('parent_id', 0)
                     ->where('id', $category->parent_id)
                     ->first();
-
-                $top_slide_menu = [];
-                if ($top_category) {
-                    $top_slide_menu['id'] = $top_category->id;
-                    $top_slide_menu['name'] = $top_category->name;
-                    $top_slide_menu['parent_id'] = $top_category->parent_id;
-                    $top_slide_menu['slug'] = $top_category->slug;
-                    $top_slide_menu['image'] = $top_category->image;
-                    $tmp_cat = [];
-                    if (isset($top_category->childCategory) && !empty($top_category->childCategory)) {
-                        foreach ($top_category->childCategory as $sub_item) {
-                            if (count($sub_item->products) > 0) {
-                                $tmp_cat[] = array('id' => $sub_item->id, 'name' => $sub_item->name, 'slug' => $sub_item->slug);
-                            }
-                        }
-                    }
-                    $top_slide_menu['childCategory'] = $tmp_cat;
-                }
-            } 
+            } else {
+                $top_category = $category;
+            }
         } else {
 
             $top_category = ProductCategory::select('id', 'name', 'parent_id', 'slug', 'image')
                 ->where('status', 'published')
                 ->where('parent_id', 0)
                 ->where('slug', 'laptop')->first();
-
-            $top_slide_menu = [];
-
-            if ($top_category) {
-
-                $top_slide_menu['id'] = $top_category->id;
-                $top_slide_menu['name'] = $top_category->name;
-                $top_slide_menu['parent_id'] = $top_category->parent_id;
-                $top_slide_menu['slug'] = $top_category->slug;
-                $top_slide_menu['image'] = $top_category->image;
-                $top_slide_menu['child_category'] = [];
-
-            }
+                $top_category['child_category'] = [];
         }
-       
-        return $top_slide_menu;
+        if ($top_category) {
+            $response = $top_category;
+        }
+        return $response;
     }
 
     public function getFilterStaticSideMenu(Request $request)
@@ -115,33 +72,34 @@ class FilterController extends Controller
         $all_category = ProductCategory::where('status', 'published')->where('parent_id', 0)->get();
 
         $category = [];
-        if (isset($all_category) && !empty($all_category)) {
-            foreach ($all_category as $cat_item) {
-
+        if( isset( $all_category ) && !empty( $all_category ) ) {
+            foreach ($all_category as $cat_item ) {
+                
                 // dump( $cat_item->childCategory );
-                if (isset($cat_item->childCategory) && !empty($cat_item->childCategory)) {
+                if( isset( $cat_item->childCategory ) && !empty( $cat_item->childCategory ) ) {
                     foreach ($cat_item->childCategory as $sub_item) {
                         // dump( $sub_item );
                         // dump( count($sub_item->products ) );
-                        if (!isset($category[$cat_item->id])) {
+                        if( !isset( $category[$cat_item->id] ) ) {
                             $category[$cat_item->id] = array('id' => $cat_item->id, 'name' => $cat_item->name, 'slug' => $cat_item->slug);
                         }
-                        if (count($sub_item->products) > 0) {
-
+                        if( count($sub_item->products ) > 0 ) {
+                            
                             $category[$cat_item->id]['child'][] = array('id' => $sub_item->id, 'name' => $sub_item->name, 'slug' => $sub_item->slug, 'parent_slug' => $cat_item->slug);
                         }
                     }
                 }
+                
             }
         }
-        if (!empty($category)) {
+        if( !empty( $category ) ) {
             foreach ($category as $key => $value) {
-
+                
                 $categories[] = $value;
             }
         }
 
-
+        
         $get_max_discounts = Product::selectRaw('max(abs(gbs_products.discount_percentage)) as discount')
             ->where('status', 'published')->where('stock_status', 'in_stock')->first();
         $discounts = [];
@@ -229,14 +187,14 @@ class FilterController extends Controller
 
         $response['exclusive'] =  [array('id' => null, 'name' => 'GBS', 'slug' => 'gbs')];
         $response['categories'] =  $categories;
-        if (!empty($attr_response['brands'])) {
+        if( !empty( $attr_response['brands'] ) ) { 
             $response['brands'] =  $attr_response['brands'];
         }
         $response['discounts'] = $discounts;
-        if (!empty($prices)) {
+        if( !empty( $prices ) ) {
             $response['prices'] = $browse;
         }
-        if (!empty($sizes)) {
+        if( !empty( $sizes ) ) {
             $response['sizes'] = $sizes;
         }
         $new_array = array_merge($response, $attr_response['attributes']);
@@ -354,7 +312,7 @@ class FilterController extends Controller
                     return $query->where('product_categories.slug', $filter_category)->orWhere('parent.slug', $filter_category);
                 });
             })
-            ->when($exclusive == 'gbs', function ($q) {
+            ->when($exclusive == 'gbs', function($q) {
                 $q->join('sub_categories', 'sub_categories.id', '=', 'products.label_id');
                 $q->where('sub_categories.slug', 'gbs');
             })
@@ -488,7 +446,7 @@ class FilterController extends Controller
                     return $query->where('product_categories.slug', $filter_category)->orWhere('parent.slug', $filter_category);
                 });
             })
-            ->when($exclusive == 'gbs', function ($q) {
+            ->when($exclusive == 'gbs', function($q) {
                 $q->join('sub_categories', 'sub_categories.id', '=', 'products.label_id');
                 $q->where('sub_categories.slug', 'gbs');
             })
