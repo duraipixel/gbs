@@ -432,36 +432,38 @@ function getProductApiData($product_data, $customer_id = '')
             $productInfo            = Product::find($related->to_product_id);
 
             $category               = $productInfo->productCategory;
+            if( $productInfo->stock_status == 'in_stock' ) {
 
-            $tmp2                    = [];
-            $tmp2['id']              = $productInfo->id;
-            $tmp2['product_name']    = $productInfo->product_name;
-            $tmp2['category_name']   = $category->name ?? '';
-            $tmp2['brand_name']      = $productInfo->productBrand->brand_name ?? '';
-            $tmp2['hsn_code']        = $productInfo->hsn_code;
-            $tmp2['product_url']     = $productInfo->product_url;
-            $tmp2['sku']             = $productInfo->sku;
-            $tmp2['stock_status']    = $productInfo->stock_status;
-            $tmp2['is_featured']     = $productInfo->is_featured;
-            $tmp2['is_best_selling'] = $productInfo->is_best_selling;
-            $tmp2['is_new']          = $productInfo->is_new;
-            $tmp2['price']           = $productInfo->mrp;
-            $tmp2['strike_price']    = $productInfo->strike_price;
-            $tmp2['save_price']      = $productInfo->strike_price - $productInfo->mrp;
-            $tmp2['discount_percentage'] = $productInfo->discount_percentage != 0 ? abs($productInfo->discount_percentage): getDiscountPercentage($productInfo->mrp, $productInfo->strike_price);
-            $tmp2['image']           = $productInfo->base_image;
-
-            $imagePath              = $productInfo->base_image;
-
-            if (!Storage::exists($imagePath)) {
-                $path               = asset('assets/logo/no_Image.jpg');
-            } else {
-                $url                = Storage::url($imagePath);
-                $path               = asset($url);
+                $tmp2                    = [];
+                $tmp2['id']              = $productInfo->id;
+                $tmp2['product_name']    = $productInfo->product_name;
+                $tmp2['category_name']   = $category->name ?? '';
+                $tmp2['brand_name']      = $productInfo->productBrand->brand_name ?? '';
+                $tmp2['hsn_code']        = $productInfo->hsn_code;
+                $tmp2['product_url']     = $productInfo->product_url;
+                $tmp2['sku']             = $productInfo->sku;
+                $tmp2['stock_status']    = $productInfo->stock_status;
+                $tmp2['is_featured']     = $productInfo->is_featured;
+                $tmp2['is_best_selling'] = $productInfo->is_best_selling;
+                $tmp2['is_new']          = $productInfo->is_new;
+                $tmp2['price']           = $productInfo->mrp;
+                $tmp2['strike_price']    = $productInfo->strike_price;
+                $tmp2['save_price']      = $productInfo->strike_price - $productInfo->mrp;
+                $tmp2['discount_percentage'] = $productInfo->discount_percentage != 0 ? abs($productInfo->discount_percentage): getDiscountPercentage($productInfo->mrp, $productInfo->strike_price);
+                $tmp2['image']           = $productInfo->base_image;
+    
+                $imagePath              = $productInfo->base_image;
+    
+                if (!Storage::exists($imagePath)) {
+                    $path               = asset('assets/logo/no_Image.jpg');
+                } else {
+                    $url                = Storage::url($imagePath);
+                    $path               = asset($url);
+                }
+    
+                $tmp2['image']           = $path;
+                $frequently_purchased[]  = $tmp2;
             }
-
-            $tmp2['image']           = $path;
-            $frequently_purchased[]  = $tmp2;
         }
     }
 
