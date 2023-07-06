@@ -183,7 +183,7 @@ class OrderController extends Controller
             $tmp['items'] = $itemArray;
             #customers
             $tmp['customer'] = $info->customer;
-            $tracking = [];
+            $tracking_start_data = [];
             $tracking_info = [];
             if (isset($info->tracking) && !empty($info->tracking)) {
                 foreach ($info->tracking as $track) {
@@ -201,11 +201,11 @@ class OrderController extends Controller
                     $tracking['tracking_info'] = $track_data;
                     $tracking['has_tracking'] = true;
 
-                    $tracking_info[] = $tracking;
+                    $tracking_start_data[] = $tracking;
 
                 }
             }
-            $tmp['tracking'] = $tracking_info;
+            $tmp['tracking'] = $tracking_start_data;
 
             $orderTracking  = OrderStatus::select('id', 'status_name')
                 ->where('order', '!=', 6)
@@ -241,9 +241,9 @@ class OrderController extends Controller
                         $tmp_order['id'] = $oritem->id;
                         $tmp_order['status_name'] = $oritem->status_name;
 
-                        $has_key =  array_search($oritem->status_name, array_column($tracking, 'action'));
+                        $has_key =  array_search($oritem->status_name, array_column($tracking_start_data, 'action'));
                         if (is_int($has_key)) {
-                            $tmp_order['tracking_info'] = $tracking[$has_key];
+                            $tmp_order['tracking_info'] = $tracking_start_data[$has_key];
                         }
                         $tmp_order['has_tracking'] = isset($tmp_order['tracking_info']) ? true : false;
                         $tracking_info[] = $tmp_order;
