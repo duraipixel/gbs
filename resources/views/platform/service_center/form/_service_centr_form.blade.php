@@ -3,7 +3,6 @@
         <div class="fv-row mb-5">
             <div class="row">
                 <div class="col-md-6">
-                    
                     <label class="required fw-bold fs-7 mb-2">Brand</label>
                     <select name="brand_id[]" id="brand_id" class="form-control" multiple>
                         <option value="">--select--</option>
@@ -28,6 +27,13 @@
                         name="pincode" value="{{ $info->pincode ?? '' }}" />
                 </div>
 
+            </div>
+            <div class="row mt-7">
+                <div class="col-md-12">
+                    <label class="required fw-bold fs-7 mb-2">Slug</label>
+                    <input type="text" name="slug" class="form-control form-control-solid mb-3 mb-lg-0"
+                        placeholder="Slug" value="{{ $info->slug ?? '' }}" />
+                </div>
             </div>
 
         </div>

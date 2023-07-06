@@ -89,19 +89,31 @@ class StoreLocatorController extends Controller
                 $usedBrands = array_column($info->brands->toArray(), 'brand_id');
             }
         }
-        
+
         return view('platform.store_locator.form.add_edit_modal', compact('modal_title', 'breadCrum', 'info', 'brands', 'usedBrands'));
     }
 
     public function saveForm(Request $request)
     {
         $id             = $request->id;
+        $slug             = $request->slug;
+        $title             = $request->title;
         $parent_id      = $request->parent_location;
         $validator      = Validator::make($request->all(), [
             'title' => [
                 'required', 'string',
-                Rule::unique('store_locators')->where(function ($query) use ($id, $parent_id) {
-                    return $query->where('parent_id', $parent_id)->where('deleted_at', NULL)->when($id != '', function ($q) use ($id) {
+                Rule::unique('store_locators')->where(function ($query) use ($id, $parent_id, $title) {
+                    return $query->where('parent_id', $parent_id)
+                    ->where('title', $title)
+                        ->where('deleted_at', NULL)->when($id != '', function ($q) use ($id) {
+                        return $q->where('id', '!=', $id);
+                    });
+                }),
+            ],
+            'slug' => [
+                'required', 'string',
+                Rule::unique('store_locators')->where(function ($query) use ($id, $slug) {
+                    return $query->where('slug', $slug)->where('deleted_at', NULL)->when($id != '', function ($q) use ($id) {
                         return $q->where('id', '!=', $id);
                     });
                 }),
@@ -114,19 +126,19 @@ class StoreLocatorController extends Controller
 
         if ($validator->passes()) {
 
-            $contact = array_filter($request->contact);
-            $email = array_filter($request->email);
-            $near_pincode = array_filter($request->near_pincode);
+            $contact = isset($request->contact) && !empty( $request->contact ) ? array_filter($request->contact) : [];
+            $email = isset( $request->email ) && !empty( $request->email ) ? array_filter($request->email) : [];
+            $near_pincode = isset($request->near_pincode) && !empty( $request->near_pincode ) ? array_filter($request->near_pincode) : [];
             $brand_id = $request->brand_id;
 
             if (!$request->is_parent) {
                 $parent_slug = StoreLocator::where('id', $parent_id)->select('slug')->first();
                 $parent_slug = $parent_slug->slug ?? '';
-                $ins['slug'] = $parent_slug . '-' . \Str::slug($request->title);
+                $ins['slug'] = $request->slug ?? ($parent_slug . '-' . \Str::slug($request->title));
                 $ins['parent_id'] = $request->parent_location;
             } else {
 
-                $ins['slug'] = \Str::slug($request->title);
+                $ins['slug'] = $request->slug ?? (\Str::slug($request->title));
                 $ins['parent_id'] = 0;
             }
             if (!$id) {
@@ -247,7 +259,6 @@ class StoreLocatorController extends Controller
             }
 
             $message = (isset($id) && !empty($id)) ? 'Updated Successfully' : 'Added successfully';
-
         } else {
             $error      = 1;
             $message    = $validator->errors()->all();
@@ -263,10 +274,10 @@ class StoreLocatorController extends Controller
         $info           = StoreLocator::find($id);
         $info->status   = $status;
         $info->update();
-        
+
         return response()->json(['message' => "You changed the status!", 'status' => 1]);
     }
-    
+
     public function delete(Request $request)
     {
 
@@ -274,7 +285,6 @@ class StoreLocatorController extends Controller
         $info       = StoreLocator::find($id);
         $info->delete();
         return response()->json(['message' => "Successfully deleted!", 'status' => 1]);
-
     }
 
     public function export()
