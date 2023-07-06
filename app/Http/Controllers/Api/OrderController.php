@@ -107,7 +107,7 @@ class OrderController extends Controller
         $customer_id        = $request->customer_id;
         $order_no           = $request->order_no;
         
-        $info               = Order::where('order_no', $order_no)->where('customer_id', $customer_id)->dd();
+        $info               = Order::where('order_no', $order_no)->where('customer_id', $customer_id)->first();
         
         $orders = [];
         if (isset($info) && !empty($info)) {
