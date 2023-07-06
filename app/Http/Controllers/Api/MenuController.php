@@ -37,7 +37,7 @@ class MenuController extends Controller
         if( isset( $all_category ) && !empty( $all_category ) ) {
             foreach ($all_category as $cat_item ) {
                 $category[$cat_item->id] = array('id' => $cat_item->id, 'name' => $cat_item->name, 'slug' => $cat_item->slug);
-                
+                $category[$cat_item->id]['child'] = [];
                 // dump( $cat_item->childCategory );
                 if( isset( $cat_item->childCategory ) && !empty( $cat_item->childCategory ) ) {
                     foreach ($cat_item->childCategory as $sub_item) {
