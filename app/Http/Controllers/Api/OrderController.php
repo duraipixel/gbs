@@ -139,6 +139,14 @@ class OrderController extends Controller
             $tmp['status'] = $info->status;
             $tmp['invoice_file'] = asset('storage/invoice_order/' . $info->order_no . '.pdf');
             $tmp['order_date'] = date('d M Y H:i A', strtotime($info->created_at));
+            $delivery_document = $info->delivery_document;
+
+            if (!Storage::exists($delivery_document)) {
+                $tmp['delivery_document'] = '';
+            } else {
+                $url                = Storage::url($delivery_document);
+                $tmp['delivery_document'] = asset($url);
+            }
 
             $itemArray = [];
             if (isset($info->orderItems) && !empty($info->orderItems)) {
