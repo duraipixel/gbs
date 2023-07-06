@@ -35,7 +35,8 @@ return [
                     'reports',
                     'sub_category',                    
                     'wishlist',
-                    'review'                             
+                    'review',
+                    'enquiry'                             
 
                 ),
     

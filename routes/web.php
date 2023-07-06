@@ -215,6 +215,10 @@ Route::middleware(['auth'])->group(function(){
         Route::post('/export/excel', [App\Http\Controllers\ReviewController::class, 'export'])->name('review.export.excel')->middleware(['checkAccess:export']);
     
     });
+    ## contact enquiry 
+    Route::get('/enquiry', [App\Http\Controllers\EnquiryController::class, 'index'])->name('enquiry');
+    Route::post('/export/enquiry', [App\Http\Controllers\EnquiryController::class, 'export'])->name('enquiry.export.excel');
+
 
    
 });

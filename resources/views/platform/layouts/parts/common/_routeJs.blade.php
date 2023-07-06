@@ -402,6 +402,12 @@
                    'excel': "{{ route('review.export.excel') }}",
                 }
             },
+            'enquiry': {
+             
+               'export': {
+                   'excel': "{{ route('enquiry.export.excel') }}",
+                }
+            },
             
             
             
