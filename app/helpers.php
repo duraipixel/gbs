@@ -460,7 +460,7 @@ function getProductApiData($product_data, $customer_id = '')
                     $url                = Storage::url($imagePath);
                     $path               = asset($url);
                 }
-    
+                
                 $tmp2['image']           = $path;
                 $frequently_purchased[]  = $tmp2;
             }

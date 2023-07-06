@@ -739,15 +739,18 @@ class FilterController extends Controller
                 });
             })
             ->where('products.stock_status', 'in_stock')
+            ->whereNull('products.deleted_at')
             ->where('products.status', 'published')->groupBy('products.brand_id')
             ->get()->toArray();
 
         $productCategory = ProductCategory::where('slug', $category_slug)->first();
         // dump($category_slug);
         // dd( $productCategory );
-        $attribute_header = ProductWithAttributeSet::select('product_with_attribute_sets.*')->join('products', 'products.id', '=', 'product_with_attribute_sets.product_id')
+        $attribute_header = ProductWithAttributeSet::select('product_with_attribute_sets.*')
+        ->join('products', 'products.id', '=', 'product_with_attribute_sets.product_id')
             ->where(['products.status' => 'published', 'products.stock_status' => 'in_stock'])
             ->where('product_with_attribute_sets.title', '!=', 'size')
+            ->whereNull('products.deleted_at')
             ->groupBy('product_with_attribute_sets.title')
             ->get();
 
@@ -763,6 +766,7 @@ class FilterController extends Controller
                     ->where(['products.status' => 'published', 'products.stock_status' => 'in_stock'])
                     ->where('product_with_attribute_sets.title', $att_value->title)
                     ->groupBy('product_with_attribute_sets.attribute_values')
+                    ->whereNull('products.deleted_at')
                     ->get();
                 if (isset($sub_values) && !empty($sub_values)) {
                     $sub_array = [];
