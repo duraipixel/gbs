@@ -24,6 +24,7 @@ class StoreLocatorController extends Controller
             ->join('store_locator_pincodes', 'store_locator_pincodes.store_locator_id', '=', 'store_locators.id')
             ->join('brands', 'brands.id', '=', 'store_locator_brands.brand_id')
             ->where('store_locators.status', 'published')
+            ->where('store_locator_brands.status', 'active')
             // ->where('store_locators.parent_id', 0)
             ->when($brand_id != '', function ($query) use ($brand_id) {
                 $query->where('brands.id', $brand_id);
