@@ -408,7 +408,8 @@ function getProductApiData($product_data, $customer_id = '')
             $tmp2['price']           = $productInfo->mrp;
             $tmp2['strike_price']    = $productInfo->strike_price;
             $tmp2['save_price']      = $productInfo->strike_price - $productInfo->mrp;
-            $tmp2['discount_percentage'] = abs($productInfo->discount_percentage);
+            $tmp2['discount_percentage'] = $productInfo->discount_percentage != 0 ? abs($productInfo->discount_percentage): getDiscountPercentage($productInfo->mrp, $productInfo->strike_price);
+            
             $tmp2['image']           = $productInfo->base_image;
 
             $imagePath              = $productInfo->base_image;
@@ -447,7 +448,7 @@ function getProductApiData($product_data, $customer_id = '')
             $tmp2['price']           = $productInfo->mrp;
             $tmp2['strike_price']    = $productInfo->strike_price;
             $tmp2['save_price']      = $productInfo->strike_price - $productInfo->mrp;
-            $tmp2['discount_percentage'] = abs($productInfo->discount_percentage);
+            $tmp2['discount_percentage'] = $productInfo->discount_percentage != 0 ? abs($productInfo->discount_percentage): getDiscountPercentage($productInfo->mrp, $productInfo->strike_price);
             $tmp2['image']           = $productInfo->base_image;
 
             $imagePath              = $productInfo->base_image;
