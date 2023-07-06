@@ -36,7 +36,7 @@ class StoreLocatorController extends Controller
                 $query->where('store_locators.id', $center_id);
             })
             ->groupBy('store_locators.id')
-            ->dd();
+            ->get();
 
         $params = [];
 
