@@ -118,18 +118,16 @@ class FilterController extends Controller
         if (isset($all_category) && !empty($all_category)) {
             foreach ($all_category as $cat_item) {
 
+                $category[$cat_item->id] = array('id' => $cat_item->id, 'name' => $cat_item->name, 'slug' => $cat_item->slug);
+                $category[$cat_item->id]['child'] = [];
                 // dump( $cat_item->childCategory );
-                if (isset($cat_item->childCategory) && !empty($cat_item->childCategory)) {
+                if( isset( $cat_item->childCategory ) && !empty( $cat_item->childCategory ) ) {
                     foreach ($cat_item->childCategory as $sub_item) {
-                        // dump( $sub_item );
-                        // dump( count($sub_item->products ) );
-                        if (!isset($category[$cat_item->id])) {
-                            $category[$cat_item->id] = array('id' => $cat_item->id, 'name' => $cat_item->name, 'slug' => $cat_item->slug);
+                                             
+                        if( count($sub_item->products ) > 0 ) {                            
+                            $category[$cat_item->id]['child'][] = array('id' => $sub_item->id, 'name' => $sub_item->name, 'slug' => $sub_item->slug);
                         }
-                        if (count($sub_item->products) > 0) {
 
-                            $category[$cat_item->id]['child'][] = array('id' => $sub_item->id, 'name' => $sub_item->name, 'slug' => $sub_item->slug, 'parent_slug' => $cat_item->slug);
-                        }
                     }
                 }
             }

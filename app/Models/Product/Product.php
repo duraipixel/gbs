@@ -146,6 +146,7 @@ class Product extends Model
 
     public function productAddons()
     {
+        
         return $this->hasMany(ProductAddonProduct::class, 'product_id', 'id')
                         ->join('product_addons', 'product_addons.id', '=', 'product_addon_products.product_addon_id')
                         ->whereNull('product_addons.deleted_at')
