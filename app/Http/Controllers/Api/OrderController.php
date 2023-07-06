@@ -106,7 +106,7 @@ class OrderController extends Controller
     {
         $customer_id        = $request->customer_id ?? 1;
         $order_no           = $request->order_no;
-        $info           = Order::where('order_no', $order_no)->first();
+        $info           = Order::where('order_no', $order_no)->where('customer_id', $customer_id)->first();
 
 
         $orders = [];
