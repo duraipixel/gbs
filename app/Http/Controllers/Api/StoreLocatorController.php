@@ -212,7 +212,7 @@ class StoreLocatorController extends Controller
         $slug = $request->slug;
         $data = StoreLocator::select('store_locators.*')
             ->join('store_locator_brands', 'store_locator_brands.store_locator_id', '=', 'store_locators.id')
-            ->join('store_locator_pincodes', 'store_locator_pincodes.store_locator_id', '=', 'store_locators.id')
+            ->leftJoin('store_locator_pincodes', 'store_locator_pincodes.store_locator_id', '=', 'store_locators.id')
             ->join('brands', 'brands.id', '=', 'store_locator_brands.brand_id')
             ->where('store_locators.status', 'published')
             // ->where('store_locators.parent_id', 0)
@@ -230,7 +230,7 @@ class StoreLocatorController extends Controller
         } else {
             $data = ServiceCenter::select('service_centers.*')
                 ->join('service_center_brands', 'service_center_brands.service_center_id', '=', 'service_centers.id')
-                ->join('service_center_pincodes', 'service_center_pincodes.service_center_id', '=', 'service_centers.id')
+                ->leftJoin('service_center_pincodes', 'service_center_pincodes.service_center_id', '=', 'service_centers.id')
                 ->join('brands', 'brands.id', '=', 'service_center_brands.brand_id')
                 ->where('service_centers.status', 'published')
                 // ->where('service_centers.parent_id', 0)
@@ -238,7 +238,7 @@ class StoreLocatorController extends Controller
                     $query->where('service_centers.slug', $slug);
                 })
                 ->groupBy('service_centers.id')
-                ->dd();
+                ->first();
 
             $response = [];
             if (isset($data) && !empty($data)) {
