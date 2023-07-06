@@ -264,7 +264,7 @@
                     </div>
                 </div>
             </div>
-            @if (access()->hasAccess(['reports.products']))
+            @if (access()->hasAccess(['reports']))
                 <div data-kt-menu-trigger="click"
                     class="menu-item menu-accordion mb-1 @if (request()->routeIs(['reports.*'])) hover show @endif">
                     <span class="menu-link">
