@@ -771,6 +771,7 @@ class FilterController extends Controller
                     foreach ($sub_values as $items_sub) {
                         $temp_val = [];
                         $temp_val['name'] = trim($items_sub->attribute_values);
+                        dump( $att_value->title );
                         if( strtolower($att_value->title) == 'screen-size' ) {
                             $temp_val['slug'] = str_replace(' ', '-',trim($items_sub->attribute_values));
                         } else {
@@ -782,7 +783,7 @@ class FilterController extends Controller
                 }
             }
         }
-        dd( $attributes);
+        // dd( $attributes);
 
         return array('attributes' => $attributes, 'brands' => $brands ?? []);
     }
