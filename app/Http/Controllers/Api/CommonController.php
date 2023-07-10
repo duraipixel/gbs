@@ -304,10 +304,10 @@ class CommonController extends Controller
         $html .= '<tr><td> Email </td><td>'.$email.'</td></tr>';
         $html .= '<tr><td> Moblie No </td><td>'.$mobile_no.'</td></tr>';
         $html .= '<tr><td> Message </td><td>'.$message.'</td></tr>';
-        
+
         Enquiry::create($ins);
         $send_mail = new EnquiryMail($html, $title);
-        Mail::to($to_email)->bcc('durairaj.pixel@gmail.com')->send($send_mail);
+        Mail::to($to_email)->bcc(['durairaj.pixel@gmail.com', 'pravin@pixel-studios.com'])->send($send_mail);
 
         return array('status' => 1, 'message' => 'Enquiry submitted successfully');
 
