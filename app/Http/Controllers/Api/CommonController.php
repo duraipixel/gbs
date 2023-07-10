@@ -297,15 +297,17 @@ class CommonController extends Controller
         $to_email = 'support@gbssystems.com';
         $title = 'New Enquiry Has Received';
 
-        $html = '<table>';
+        $html = '<h3>Dear Support Team,</h3>';
+        $html = '<p>New Enquiry was received!</p>';
+        $html .= '<table>';
         $html .= '<tr><td> Name </td><td>'.$name.'</td></tr>';
         $html .= '<tr><td> Email </td><td>'.$email.'</td></tr>';
         $html .= '<tr><td> Moblie No </td><td>'.$mobile_no.'</td></tr>';
         $html .= '<tr><td> Message </td><td>'.$message.'</td></tr>';
-
-        $send_mail = new EnquiryMail($html, $title);
-        Mail::to($to_email)->cc('durairaj.pixel@gmail.com')->send($send_mail);
+        $html .= '<p>Thanks, </p><p>Team GBS Systems<p>';
         Enquiry::create($ins);
+        $send_mail = new EnquiryMail($html, $title);
+        Mail::to($to_email)->bcc('durairaj.pixel@gmail.com')->send($send_mail);
 
         return array('status' => 1, 'message' => 'Enquiry submitted successfully');
 
