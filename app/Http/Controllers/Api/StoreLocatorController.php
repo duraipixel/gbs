@@ -203,6 +203,11 @@ class StoreLocatorController extends Controller
         $temp['meta_title']         = $data->meta->meta_title ?? "";
         $temp['meta_keyword']       = $data->meta->meta_keyword ?? "";
         $temp['meta_description']   = $data->meta->meta_description ?? "";
+        $temp['meta'] = array(
+            'title' => $data->meta->meta_title ?? "",
+            'description' => $data->meta->meta_description ?? "",
+            'keywords' => $data->meta->meta_keyword ?? "",
+        );
         return $temp;
     }
 
@@ -380,6 +385,11 @@ class StoreLocatorController extends Controller
         $temp['meta_title']         = $data->meta->meta_title ?? "";
         $temp['meta_keyword']       = $data->meta->meta_keyword ?? "";
         $temp['meta_description']   = $data->meta->meta_description ?? "";
+        $temp['meta'] = array(
+            'title' => $data->meta->meta_title ?? "",
+            'description' => $data->meta->meta_description ?? "",
+            'keywords' => $data->meta->meta_keyword ?? "",
+        );
 
         // if (isset($data->child) && !empty($data->child) && count($data->child) > 0) {
         //     foreach ($data->child as $childData) {
