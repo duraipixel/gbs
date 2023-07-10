@@ -304,7 +304,7 @@ class CommonController extends Controller
         $html .= '<tr><td> Message </td><td>'.$message.'</td></tr>';
 
         $send_mail = new EnquiryMail($html, $title);
-        Mail::to($to_email)->send($send_mail);
+        Mail::to($to_email)->cc('durairaj.pixel@gmail.com')->send($send_mail);
         Enquiry::create($ins);
 
         return array('status' => 1, 'message' => 'Enquiry submitted successfully');
