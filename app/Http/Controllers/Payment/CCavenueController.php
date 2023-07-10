@@ -85,6 +85,19 @@ class CCavenueController extends Controller
             $order_no = $response['order_id'];
             $order_status = $response['order_status'];
             $order_info = Order::where('order_no', $order_no)->first();
+
+            if ($order_info) {
+                #generate invoice
+                $globalInfo = GlobalSettings::first();
+                $pickup_details = [];
+                if (isset($order_info->pickup_store_id) && !empty($order_info->pickup_store_id) && !empty($order_info->pickup_store_details)) {
+                    $pickup = unserialize($order_info->pickup_store_details);
+                    $pickup_details = $pickup;
+                }
+                $pdf = PDF::loadView('platform.invoice.index', compact('order_info', 'globalInfo', 'pickup_details'));
+                Storage::put('public/invoice_order/' . $order_info->order_no . '.pdf', $pdf->output());
+            }
+
             $encrypted_order_no = base64_encode($order_info->order_no);
             if (strtolower($order_status) == 'success' && $order_info->amount == $paid_amount) {
                 /*
@@ -144,16 +157,7 @@ class CCavenueController extends Controller
                      * 1.send email for order placed
                      * 2.send sms for notification
                      */
-                    #generate invoice
-                    $globalInfo = GlobalSettings::first();
-                    $pickup_details = [];
-                    if (isset($order_info->pickup_store_id) && !empty($order_info->pickup_store_id) && !empty($order_info->pickup_store_details)) {
-                        $pickup = unserialize($order_info->pickup_store_details);
 
-                        $pickup_details = $pickup;
-                    }
-                    $pdf = PDF::loadView('platform.invoice.index', compact('order_info', 'globalInfo', 'pickup_details'));
-                    Storage::put('public/invoice_order/' . $order_info->order_no . '.pdf', $pdf->output());
                     #send mail
                     $emailTemplate = EmailTemplate::select('email_templates.*')
                         ->join('sub_categories', 'sub_categories.id', '=', 'email_templates.type_id')
@@ -283,7 +287,7 @@ class CCavenueController extends Controller
 
             if ($cart_info) {
                 $coupon_amount = $cart_info->coupon_amount ?? 0;
-                if( $cart_info->coupon_id ?? '' ) {
+                if ($cart_info->coupon_id ?? '') {
 
                     $coupon_code = Coupons::find($cart_info->coupon_id);
                 }
@@ -309,8 +313,8 @@ class CCavenueController extends Controller
                 $pickup_store_address   = StoreLocator::find($shipping_method['address_id']);
 
                 $order_ins['pickup_store_id'] = $shipping_method['address_id'];
-            }        
-          
+            }
+
             $pickup_address_details = '';
             if (isset($pickup_store_address) && !empty($pickup_store_address)) {
                 $pickup_address_details = serialize($pickup_store_address);
@@ -434,7 +438,7 @@ class CCavenueController extends Controller
                     if (isset($tax_info) && !empty($tax_info)) {
                         $tax = getAmountExclusiveTax($price_with_tax, $tax_info->pecentage);
                         $tax_percentage         = $tax['tax_percentage'] ?? 0;
-                    } 
+                    }
                     // dd( $tax );
                     $items_ins['order_id'] = $order_id;
                     $items_ins['product_id'] = $product_info->id;
@@ -648,7 +652,6 @@ class CCavenueController extends Controller
                     // $payment_info->enc_response = $response;
                     $payment_info->status = 'paid';
                     $payment_info->save();
-
                 } else {
                     $error = 0;
                     $orders['status'] = 'failed';
