@@ -210,8 +210,8 @@
                     </td>
                     <td> {{ $item->hsn_code ?? '85044030' }} </td>
                     <td> {{ $item->quantity }} nos</td>
-                    <td> {{ number_format($item->base_price, 2) }} </td>
-                    <td>{{ number_format($item->base_price, 2) }}</td>
+                    <td> {{ number_format($item->price, 2) }} </td>
+                    <td>{{ number_format($item->price, 2) }}</td>
                     <td>{{ $item->tax_percentage / 2 }}%</td>
                     <td>{{ number_format($item->tax_amount / 2, 2) }}</td>
                     <td>{{ $item->tax_percentage / 2 }}%</td>

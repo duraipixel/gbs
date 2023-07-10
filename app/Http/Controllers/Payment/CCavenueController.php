@@ -454,6 +454,7 @@ class CCavenueController extends Controller
                     $items_ins['tax_amount'] = ($tax['gstAmount'] ?? 0) * $item->quantity;
                     $items_ins['tax_percentage'] = $tax['tax_percentage'] ?? $tax_percentage ?? 0;
                     $items_ins['sub_total'] = $item->sub_total;
+                    
 
                     $order_product_info = OrderProduct::create($items_ins);
                     if (isset($product_info->warranty_id) && !empty($product_info->warranty_id)) {
