@@ -782,7 +782,7 @@ class FilterController extends Controller
                 }
             }
         }
-
+        dd( $attributes);
 
         return array('attributes' => $attributes, 'brands' => $brands ?? []);
     }
