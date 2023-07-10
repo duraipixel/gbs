@@ -202,10 +202,10 @@ class StoreLocatorController extends Controller
         $temp['status']             = $data->status;
         $temp['meta_title']         = $data->meta->meta_title ?? "";
         $temp['meta_keyword']       = $data->meta->meta_keyword ?? "";
-        $temp['meta_description']   = $data->meta->meta_description ?? "";
+        $temp['meta_description']   = strip_tags($data->meta->meta_description ?? "");
         $temp['meta'] = array(
             'title' => $data->meta->meta_title ?? "",
-            'description' => $data->meta->meta_description ?? "",
+            'description' => strip_tags($data->meta->meta_description ?? ""),
             'keywords' => $data->meta->meta_keyword ?? "",
         );
         return $temp;
@@ -384,10 +384,10 @@ class StoreLocatorController extends Controller
         $temp['status']             = $data->status;
         $temp['meta_title']         = $data->meta->meta_title ?? "";
         $temp['meta_keyword']       = $data->meta->meta_keyword ?? "";
-        $temp['meta_description']   = $data->meta->meta_description ?? "";
+        $temp['meta_description']   = strip_tags($data->meta->meta_description ?? "");
         $temp['meta'] = array(
             'title' => $data->meta->meta_title ?? "",
-            'description' => $data->meta->meta_description ?? "",
+            'description' => strip_tags($data->meta->meta_description ?? ""),
             'keywords' => $data->meta->meta_keyword ?? "",
         );
 
