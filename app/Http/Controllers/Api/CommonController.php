@@ -303,7 +303,7 @@ class CommonController extends Controller
         $html .= '<tr><td> Name </td><td>'.$name.'</td></tr>';
         $html .= '<tr><td> Email </td><td>'.$email.'</td></tr>';
         $html .= '<tr><td> Moblie No </td><td>'.$mobile_no.'</td></tr>';
-        $html .= '<tr><td> Message </td><td>'.$message.'</td></tr>';
+        $html .= '<tr><td> Message </td><td>'.$message.'</td></tr></table>';
 
         Enquiry::create($ins);
         $send_mail = new EnquiryMail($html, $title);
