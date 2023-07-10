@@ -27,7 +27,7 @@ class BrowseController extends Controller
                 $tmp = [];
                 $tmp['start_size'] = $data_field->start_size;
                 $tmp['end_size'] = $data_field->end_size;
-                if( $data->fields->slug == 'screen-size' ) {
+                if( $parent['type'] == 'screen-size' ) {
                     $tmp['slug'] = $data_field->start_size.'-inch_'.$data_field->end_size.'-inch';
                 } else {
                     $tmp['slug'] = $data_field->start_size.'-'.$data_field->end_size;
