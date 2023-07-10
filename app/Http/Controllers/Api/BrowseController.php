@@ -27,7 +27,11 @@ class BrowseController extends Controller
                 $tmp = [];
                 $tmp['start_size'] = $data_field->start_size;
                 $tmp['end_size'] = $data_field->end_size;
-                $tmp['slug'] = $data_field->start_size.'-inch_'.$data_field->end_size.'-inch';
+                if( $data->fields->slug == 'screen-size' ) {
+                    $tmp['slug'] = $data_field->start_size.'-inch_'.$data_field->end_size.'-inch';
+                } else {
+                    $tmp['slug'] = $data_field->start_size.'-'.$data_field->end_size;
+                }
                 $image           = $data_field->setting_image_name;
                 $mobUrl          = Storage::url($image);
                 $pathbrowse      = asset($mobUrl);
