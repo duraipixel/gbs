@@ -771,7 +771,11 @@ class FilterController extends Controller
                     foreach ($sub_values as $items_sub) {
                         $temp_val = [];
                         $temp_val['name'] = trim($items_sub->attribute_values);
-                        $temp_val['slug'] = Str::slug(trim($items_sub->attribute_values));
+                        if( strtolower($att_value->title) == 'screen-size' ) {
+                            $temp_val['slug'] = str_replace(' ', '-',trim($items_sub->attribute_values));
+                        } else {
+                            $temp_val['slug'] = Str::slug(trim($items_sub->attribute_values));
+                        }
                         $sub_array[] = $temp_val;
                     }
                     $attributes[Str::slug(strtolower($att_value->title))] = $sub_array;

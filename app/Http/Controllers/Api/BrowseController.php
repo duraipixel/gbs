@@ -20,13 +20,14 @@ class BrowseController extends Controller
             $parent['id']             = $data->id;
             $parent['title']          = $data->title;
             $parent['color']          = $data->color;
-            $parent['type']           = $data->fields->slug == 'price' ? 'prices' : $data->fields->slug;
+            $parent['type']           = $data->fields->slug == 'price' ? 'prices' : 'screen-size';
             $items_field = HomepageSettingItems::where('homepage_settings_id', $data->id)->get();
             $items = [];
             foreach ($items_field as $key => $data_field) {
                 $tmp = [];
                 $tmp['start_size'] = $data_field->start_size;
                 $tmp['end_size'] = $data_field->end_size;
+                $tmp['slug'] = $data_field->start_size.'-inch_'.$data_field->end_size.'-inch';
                 $image           = $data_field->setting_image_name;
                 $mobUrl          = Storage::url($image);
                 $pathbrowse      = asset($mobUrl);
