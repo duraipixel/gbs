@@ -307,7 +307,7 @@ class CommonController extends Controller
         Mail::to($to_email)->send($send_mail);
         Enquiry::create($ins);
 
-        return array('status' => 1, 'message' => 'Enquiry submitted successfuly');
+        return array('status' => 1, 'message' => 'Enquiry submitted successfully');
 
     }
 

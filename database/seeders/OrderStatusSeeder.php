@@ -22,7 +22,7 @@ class OrderStatusSeeder extends Seeder
         OrderStatus::updateOrCreate(['status_name' => 'Order Initiate'], $ins);
 
         $ins1['status_name'] = 'Order Placed';
-        $ins1['description'] = 'payment was successfull';
+        $ins1['description'] = 'payment was successful';
         $ins1['order'] = '2';
         $ins1['added_by'] = '1';
         $ins1['status'] = 'published';

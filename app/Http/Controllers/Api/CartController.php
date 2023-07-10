@@ -212,7 +212,7 @@ class CartController extends Controller
             
             $data = $this->getCartListAll($customer_id, $guest_token);
             $error = 0;
-            $message = 'Cart Cleared successfull';
+            $message = 'Cart Cleared successful';
 
         } else {
 
