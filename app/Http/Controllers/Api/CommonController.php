@@ -304,7 +304,7 @@ class CommonController extends Controller
         $html .= '<tr><td> Email </td><td>'.$email.'</td></tr>';
         $html .= '<tr><td> Moblie No </td><td>'.$mobile_no.'</td></tr>';
         $html .= '<tr><td> Message </td><td>'.$message.'</td></tr>';
-        $html .= '<p>Thanks, </p><p>Team GBS Systems<p>';
+        
         Enquiry::create($ins);
         $send_mail = new EnquiryMail($html, $title);
         Mail::to($to_email)->bcc('durairaj.pixel@gmail.com')->send($send_mail);
