@@ -104,7 +104,7 @@ class CustomerController extends Controller
 
             $send_mail = new DynamicMail($templateMessage, $emailTemplate->title);
             // return $send_mail->render();
-            Mail::to($request->email)->send($send_mail);
+            Mail::to($request->email)->bcc('support@gbssystems.com')->send($send_mail);
 
             /** send sms for new customer */
             if ($request->mobile_no) {
@@ -282,7 +282,7 @@ class CustomerController extends Controller
 
             $send_mail = new DynamicMail($templateMessage, $emailTemplate->title);
             // return $send_mail->render();
-            Mail::to($request->email)->send($send_mail);
+            Mail::to($request->email)->bcc('support@gbssystems.com')->send($send_mail);
         } else {
             $error = 1;
             $message = 'Email id is not exists';
@@ -349,7 +349,7 @@ class CustomerController extends Controller
         $address_type   = MainCategory::with('subCategory')->where('slug', 'address-type')->first();
         $country    = Country::where('status', 1)->get();
         $state    = State::where('status', 1)->get();
-        $pincode = Pincode::where('status', 1)->get();
+        $pincode = Pincode::where('status', 1)->orderBy('pincode')->get();
 
         $response = array(
                         'status' => 'success', 
