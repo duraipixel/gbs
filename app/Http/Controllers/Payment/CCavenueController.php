@@ -593,7 +593,10 @@ class CCavenueController extends Controller
                 $working_key = 'B00B81683DCD0816F8F32551E2C2910B';
                 $merchant_data = json_encode($merchant_json_data);
                 $encrypted_data = $this->statusEncrypt($merchant_data, $working_key);
-
+                $payment_info = Payment::where('order_id', $order_info->id)->orderBy('id', 'desc')->first();
+                $payment_info->enc_request = $encrypted_data;
+                $payment_info->save();
+                
                 $curl = curl_init();
 
                 curl_setopt_array($curl, array(
@@ -615,7 +618,6 @@ class CCavenueController extends Controller
                 if ($response) {
 
                     $payment_info = Payment::where('order_id', $order_info->id)->orderBy('id', 'desc')->first();
-                    $payment_info->enc_request = $encrypted_data;
                     $payment_info->enc_response = $response;
                     // $payment_info->status = 'paid';
                     $payment_status = 'paid';
@@ -637,6 +639,7 @@ class CCavenueController extends Controller
                     $payment_info->enc_response_decrypted = $status_response;
                     $obj = json_decode($status_response);
                     $payment_info->save();
+                    
                 }
 
                 // 'enc_request=' . $encrypted_data . '&access_code=' . $access_code . '&command=orderStatusTracker&request_type=JSON&response_type=JSON';
