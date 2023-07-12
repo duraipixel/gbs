@@ -499,7 +499,7 @@ class CCavenueController extends Controller
             /**** order history */
             $his['order_id'] = $order_info->id;
             $his['action'] = 'Order Initiate';
-            $his['description'] = 'Order has been Initiated successfully';
+            $his['description'] = 'Order has been Initiated successfully & '.route('ccav.payment.start', ['customer_id' => base64_encode($customer_id), 'order_id' => base64_encode($order_info->id)]);
             OrderHistory::create($his);
 
             $error = 0;
