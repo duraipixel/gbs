@@ -600,7 +600,7 @@ class CCavenueController extends Controller
                 $curl = curl_init();
 
                 curl_setopt_array($curl, array(
-                    CURLOPT_URL => 'https://apitest.ccavenue.com/apis/servlet/DoWebTrans?enc_request=' . $encrypted_data . '&access_code=AVRD71KE07CJ75DRJC&request_type=JSON&response_type=JSON&command=orderStatusTracker&version=1.2',
+                    CURLOPT_URL => 'https://api.ccavenue.com/apis/servlet/DoWebTrans?enc_request=' . $encrypted_data . '&access_code=AVRD71KE07CJ75DRJC&request_type=JSON&response_type=JSON&command=orderStatusTracker&version=1.2',
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_ENCODING => '',
                     CURLOPT_MAXREDIRS => 10,
@@ -639,7 +639,7 @@ class CCavenueController extends Controller
                     $payment_info->enc_response_decrypted = $status_response;
                     $obj = json_decode($status_response);
                     $payment_info->save();
-                    
+
                 }
 
                 // 'enc_request=' . $encrypted_data . '&access_code=' . $access_code . '&command=orderStatusTracker&request_type=JSON&response_type=JSON';
