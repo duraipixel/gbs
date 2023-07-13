@@ -31,7 +31,7 @@ class MenuController extends Controller
     public function getAllMenu()
     {
 
-        $all_category = ProductCategory::where('status', 'published')->where('parent_id', 0)->get();
+        $all_category = ProductCategory::where('status', 'published')->where('parent_id', 0)->orderBy('order_by', 'asc')->get();
 
         $category = [];
         if( isset( $all_category ) && !empty( $all_category ) ) {
@@ -48,7 +48,6 @@ class MenuController extends Controller
 
                     }
                 }
-                
             }
         }
         $new_menu = [];
