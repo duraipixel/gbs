@@ -56,6 +56,7 @@
                         <tr class="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
                             <th> Title  </th>
                             <th> Brand  </th>
+                            <th> Display Order  </th>
                             <th> Status </th>
                             <th style="width: 75px;">Action</th>
                         </tr>
@@ -95,6 +96,10 @@
             {
                 data: 'brand_name',
                 name: 'brand_name'
+            },
+            {
+                data: 'order_by',
+                name: 'order_by'
             },
           
             {

@@ -56,6 +56,7 @@
                         <tr class="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
                             <th> Title  </th>
                             <th> Parent Location  </th>
+                            <th> Display Order  </th>
                             <th> Status </th>
                             <th style="width: 75px;">Action</th>
                         </tr>
@@ -96,7 +97,10 @@
                 data: 'parent_name',
                 name: 'parent_name'
             },
-          
+            {
+                data: 'order_by',
+                name: 'order_by'
+            },
             {
                 data: 'status',
                 name: 'status'
