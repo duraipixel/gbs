@@ -174,10 +174,11 @@ class CCavenueController extends Controller
                         'dynamic_content' => '',
                         'order_id' => $order_info->order_no
                     );
+                    extract($extract);
+                    
                     $templateMessage = $emailTemplate->message;
                     $templateMessage = str_replace("{", "", addslashes($templateMessage));
                     $templateMessage = str_replace("}", "", $templateMessage);
-                    extract($extract);
                     eval("\$templateMessage = \"$templateMessage\";");
 
                     $title = $emailTemplate->title;
