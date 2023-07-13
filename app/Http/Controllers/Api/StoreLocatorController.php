@@ -224,6 +224,7 @@ class StoreLocatorController extends Controller
             ->when($slug != '', function ($query) use ($slug) {
                 $query->where('store_locators.slug', $slug);
             })
+            ->orderBy('store_locators.order_by', 'asc')
             ->groupBy('store_locators.id')
             ->first();
 
@@ -242,6 +243,7 @@ class StoreLocatorController extends Controller
                 ->when($slug != '', function ($query) use ($slug) {
                     $query->where('service_centers.slug', $slug);
                 })
+                ->orderBy('service_centers.order_by', 'asc')
                 ->groupBy('service_centers.id')
                 ->first();
 
