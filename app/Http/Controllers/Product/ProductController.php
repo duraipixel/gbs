@@ -291,7 +291,7 @@ class ProductController extends Controller
             $ins[ 'quantity' ]              = $request->qty;
             $ins['warranty_id']             = $request->warranty_id ?? null;
             $ins[ 'stock_status' ]          = $request->stock_status;
-            $ins['discount_percentage']     = $request->discount_percentage ?? 0;
+            $ins['discount_percentage']     = getDiscountPercentage(round($request->mrp), round($request->strike_price));
             // $ins[ 'sale_price' ]            = $request->sale_price ?? 0;
             // $ins[ 'sale_start_date' ]       = $request->sale_start_date ?? null;
             // $ins[ 'sale_end_date' ]         = $request->sale_end_date ?? null;
