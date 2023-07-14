@@ -81,7 +81,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            {{-- <div class="col-md-4">
                                 <div class="mb-7">
                                     <label class="fw-bold fs-6 mb-2"> Comparable </label>
                                     <div
@@ -90,7 +90,7 @@
                                             value="1" @if (isset($info->is_comparable) && $info->is_comparable == '1') checked @endif />
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
                             {{-- <div class="col-md-4">
                                 <div class="mb-7">
                                     <label class="fw-bold fs-6 mb-2"> Use in Product Overview </label>
