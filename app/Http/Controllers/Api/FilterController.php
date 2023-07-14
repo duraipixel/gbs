@@ -764,7 +764,7 @@ class FilterController extends Controller
             ->whereNull('products.deleted_at')
             ->where('product_attribute_sets.is_searchable', 1)
             ->groupBy('product_with_attribute_sets.title')
-            ->dd();
+            ->get();
 
         $attributes = [];
         if (isset($attribute_header) && !empty($attribute_header)) {
