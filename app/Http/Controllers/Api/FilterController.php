@@ -762,7 +762,7 @@ class FilterController extends Controller
             ->where(['products.status' => 'published', 'products.stock_status' => 'in_stock'])
             ->where('product_with_attribute_sets.title', '!=', 'size')
             ->whereNull('products.deleted_at')
-            ->where('product_attribute_sets.is_searchable', 1)
+            ->where('product_attribute_sets.is_searchable', '1')
             ->groupBy('product_with_attribute_sets.title')
             ->get();
 
