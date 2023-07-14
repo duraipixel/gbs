@@ -177,17 +177,21 @@ class ProductAttributeSetController extends Controller
     
     public function exportPdf()
     {
+
         $list       = ProductAttributeSet::all();
         $pdf        = PDF::loadView('platform.exports.product.product_attribute_excel', array('list' => $list, 'from' => 'pdf'))->setPaper('a4', 'landscape');;
         return $pdf->download('productAttributesSets.pdf');
+
     }
 
     public function getAttributeRow(Request $request)
     {
+
         $product_id             = $request->product_id;
         $info                   = Product::find($product_id);
         $attributes             = ProductAttributeSet::where('status', 'published')->orderBy('order_by','ASC')->get();
         return view('platform.product.form.filter._items', compact('attributes', 'info'));
+        
     }
 
 }

@@ -30,6 +30,7 @@ return [
                     'state',
                     'country',
                     'order-status',
+                    'order',
                     'sms-template',
                     'payment-gateway', 
                     'reports',
