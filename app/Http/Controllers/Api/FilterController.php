@@ -471,6 +471,12 @@ class FilterController extends Controller
             ->when($sort == 'is_featured', function ($q) {
                 $q->orderBy('products.is_featured', 'desc');
             })
+            ->when($sort == 'a-to-z', function ($q) {
+                $q->orderBy('products.product_name', 'asc');
+            })
+            ->when($sort == 'z-to-a', function ($q) {
+                $q->orderBy('products.product_name', 'asc');
+            })
             ->where('products.stock_status', 'in_stock')
             ->groupBy('products.id')
             ->get();
@@ -601,6 +607,12 @@ class FilterController extends Controller
             })
             ->when($sort == 'price-low-to-high', function ($q) {
                 $q->orderBy('products.mrp', 'asc');
+            })
+            ->when($sort == 'a-to-z', function ($q) {
+                $q->orderBy('products.product_name', 'asc');
+            })
+            ->when($sort == 'z-to-a', function ($q) {
+                $q->orderBy('products.product_name', 'asc');
             })
             ->when($sort == 'is_featured', function ($q) {
                 $q->orderBy('products.is_featured', 'desc');
