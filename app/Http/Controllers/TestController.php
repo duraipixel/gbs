@@ -145,10 +145,10 @@ class TestController extends Controller
     public function sendMail()
     {
 
-        Mail::send([], [], function ($message) { 
+        Mail::send([], [], function ($message) {
             $message->to('durairaj.pixel@gmail.com', 'Tutorials Point')
-               ->subject('subject') 
-               ->setBody('some body', 'text/html'); 
+                ->subject('subject')
+                ->setBody('some body', 'text/html');
         });
         return response()->json([
             'message' => 'Email has been sent.'
@@ -315,11 +315,10 @@ class TestController extends Controller
         $response = '3601f58b98fb48e3e36112be0bc24a780a5feef78ebb91c949fcb1b2eb6d09f9b62714ef5839d83137f8c1903ae1dadd162e7fb7a3640ba73ee298108973a377cf62a02441024851976ba5e86574131d6fd17ac2c721bab703338e00da3acce67649f6101f14d4f0cf7ac36d169ca0e81fe2685824603baf9a8dd364a2733902d0fa568197e8b6a2d372d5cc8ec911a70d289bb9d0dc8def29152c9c81b676ee971de00f1f16c147d2e624b6b837b07ea7e7d481ceb001476cebe0d076bb2284b182ee622f98520ddbcc61f2842e4fc5c2383eb7fe5d229dd2a41de51fbe74390d40a409d3a5b4ad574473d591c1c3a120f09a062e5438f600672400c4d7e91b46889e813059bd7cffe4760b023a051d769569330c8d62889553f17efaf3eb3a03c0ac11947f62bbaf30a622ea80a70aef6d575892ff7441635b86ab98541b31576e23e6382ed59472808ec796026d655a2247c3dba007a81f3cd0b0b978df38011008ff2b17fec354b2d28d54fbd217b3b96ed9bcdfd678994957fd9d8684113a0cca67e12f6833c7468745a1adf0fa6b4920c7365b9a1fbf70a0d8df470729e7f5a7cd22ca8a22aec443f2cb8468739a6a94e46aed5bd5a7e684c2cd86e1f79d0ef070bca6494fdd8f2f3c0aed791acc5626244acd719828b95cb0a52bbf9e4abb9d0ffb77d7d29a1767189992272e961334fb304f09b17d877fd006085a71810a9b40f9bd1e8e69efd50c7b63470a1fd76549b12d2c42ae5b81234b1ae343435636b840108171a041b4c82cd1b412941d2fc9a9e6143c4a61120101359db1d1bc592d0b9c429f269fe6953d6b0ebb048516c99b5b3d2982fec77c842716719248cc8f1aa7d705d04d4265032cc38f3028a22c48ee9b715270c5b0dcf0e05b373ef645b8bb6b2b09886b3f17dacba19ed13933854266e5cdfe3e7374fc3efe6acb081b28f249214c31931f42a59a14b62cd1de8c686165f862ff9b10546945668a2c0de35d4807382d534c6456afc3c50b49138c24ff22631c9c99a22b47925250fe6573871def58e698768439994b4d9c8e6e39a0250ed39c1a526d5d11aeb6d4752fb73f4ac58f1ed4a4856d13aaeb6e4b112c230d18b9aa292dfcf433ea04fce3d9836b54a0dcdd7fc67847261b13fccdfeb4f5bdf746daacb3d302c59c6f7547d4efb3e1bfa4abcceaf202f7671d22df739a9944a5f6fb38ef6dc99043c6d751f7d15a8c7529b18eac48797ea8c9fb386488edcf7ef498d1c28ca7b9d1f9a0eb04d13a382c175cd6a219e7583ea66d0e4762c3af5537c594c3710c3f5ccdd87d69bf63869659672ffe963792b395d088d7a4387bf507e36e5585d4e200ca44c7a9f13d60448d380114959805bd9b2cd42b4beac97086cac0cac858c4dcc6ef4132069653273c3790ffcf1bdf407b565d5241da6f83b3c021a98b848b881ce197579c5917170d7af157ae3bf05f5ddd50d25fd14b3779ccbbb512f48947719e739722f9d01ce1d68fe1f5988745cad9c8b8170b32608276ae56b8aec615221eb5e52612c2f67d6fcac2e2068f88b7e00b6b2ebf26427829057f9aadf7ba8cee9ed530bc6ddc7108f8252bf646a2d9a7930f84900d1c2b427b190ecf6c284591f80a59cca4531a94a83dd5546d8e103db459ff7f43b66da86642a57b962fd2dc3a419862be09de277d0c1fd6c205f095b07d6e83018dad3972d7acffd4220ca9d36b817c9b1937a145f39b171619aa8a2e873289ff0e1a6b70fbed2503d79faa65ca38673d25f49c09f4bfdcde4d86386a3d870236f7630c842e91b7bba263c07aa8b9982b86801ae5bfe8ddbebcd80d590a8330d20267ead354843f10e9ddc22dd8c8d8bcfe7464d7f0573cdcac';
 
         $return = $this->statusDecrypt(trim($response), $working_key);
-        dump( $return );
-        dd( json_decode( $return ));
-
+        dump($return);
+        dd(json_decode($return));
     }
-     
+
     function statusDecrypt($encryptedText, $key)
     {
         $key = $this->statusHextobin(md5($key));
@@ -356,7 +355,8 @@ class TestController extends Controller
         return $binString;
     }
 
-    public function testDescription() {
+    public function testDescription()
+    {
         $deleted_data = DB::select("select * from  gbs_product_descriptions  
         WHERE 
         deleted_at is not null 
@@ -364,25 +364,23 @@ class TestController extends Controller
         GROUP by title
         order by deleted_at DESC");
 
-        if( isset( $deleted_data ) && !empty( $deleted_data )  ) {
-            foreach ($deleted_data as $items ) {
+        if (isset($deleted_data) && !empty($deleted_data)) {
+            foreach ($deleted_data as $items) {
                 $update_data = ProductDescription::where(['product_id' => $items->product_id, 'title' => $items->title])
-                ->whereNull('deleted_at')
-                ->where(function($query){
-                    $query->whereNotNull('desc_image');
-                    $query->orWhere('desc_image', '!=', '');
-                })->first();
+                    ->whereNull('deleted_at')
+                    ->where(function ($query) {
+                        $query->whereNotNull('desc_image');
+                        $query->orWhere('desc_image', '!=', '');
+                    })->first();
 
-                if( $update_data) {
+                if ($update_data) {
                     $update_data->desc_image = $items->desc_image;
                     $update_data->save();
                 }
 
-                dump( $update_data );
-                
+                dump($update_data);
             }
         }
-        
     }
 
     public function generateSiteMap(Request $request)
@@ -396,13 +394,47 @@ class TestController extends Controller
             'https://www.gbssystems.com/privacy-policy',
             'https://www.gbssystems.com/warantty-policy',
             'https://www.gbssystems.com/store-locator',
-            'https://www.gbssystems.com/service-center-locator'            ,
+            'https://www.gbssystems.com/service-center-locator',
             'https://www.gbssystems.com/products',
             'https://www.gbssystems.com/my-account/profile',
             'https://www.gbssystems.com/cart'
         );
         $store_locator = StoreLocator::all();
         $store_center = ServiceCenter::all();
-        return response()->view('site-map', compact('products', 'store_locator', 'pages', 'store_center' ))->header('Content-Type', 'text/xml');
+        return response()->view('site-map', compact('products', 'store_locator', 'pages', 'store_center'))->header('Content-Type', 'text/xml');
+    }
+
+    public function testMailcontent()
+    {
+        $emailTemplate = EmailTemplate::select('email_templates.*')
+            ->join('sub_categories', 'sub_categories.id', '=', 'email_templates.type_id')
+            ->where('sub_categories.slug', 'new-order')->first();
+        $globalInfo = GlobalSettings::first();
+        $order_info = Order::find(5);
+        $extract = array(
+            'name' => $order_info->billing_name,
+            'regards' => $globalInfo->site_name,
+            'company_website' => '',
+            'company_mobile_no' => $globalInfo->site_mobile_no,
+            'company_address' => $globalInfo->address,
+            'dynamic_content' => '',
+            'order_id' => $order_info->order_no
+        );
+        extract($extract);
+
+        $templateMessage = $emailTemplate->message;
+        $templateMessage = str_replace("{", "", addslashes($templateMessage));
+        $templateMessage = str_replace("}", "", $templateMessage);
+        eval("\$templateMessage = \"$templateMessage\";");
+
+        $title = $emailTemplate->title;
+        $title = str_replace("{", "", addslashes($title));
+        $title = str_replace("}", "", $title);
+        eval("\$title = \"$title\";");
+        dd( $templateMessage );
+        $filePath = 'storage/invoice_order/' . $order_info->order_no . '.pdf';
+        $send_mail = new OrderMail($templateMessage, $title, $filePath);
+        // return $send_mail->render();
+        Mail::to($order_info->billing_email)->bcc('support@gbssystems.com')->send($send_mail);
     }
 }
