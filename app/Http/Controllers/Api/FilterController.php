@@ -612,7 +612,7 @@ class FilterController extends Controller
                 $q->orderBy('products.product_name', 'asc');
             })
             ->when($sort == 'z-to-a', function ($q) {
-                $q->orderBy('products.product_name', 'asc');
+                $q->orderBy('products.product_name', 'desc');
             })
             ->when($sort == 'is_featured', function ($q) {
                 $q->orderBy('products.is_featured', 'desc');
