@@ -52,9 +52,9 @@ class ProductAttributeSetController extends Controller
                     $status = '<a href="javascript:void(0);" class="badge badge-light-'.(($row->status == 'published') ? 'success': 'danger').'" tooltip="Click to '.(($row->status == 'published') ? 'Unpublish' : 'Publish').'" onclick="return commonChangeStatus(' . $row->id . ', \''.(($row->status == 'published') ? 'unpublished': 'published').'\', \'product-attribute\')">'.ucfirst($row->status).'</a>';
                     return $status;
                 })
-                ->addColumn('product_list', function($row){
-                    return ( isset( $row->is_use_in_product_listing ) && $row->is_use_in_product_listing == '1' ) ? 'Yes' : 'No';
-                })
+                // ->addColumn('product_list', function($row){
+                //     return ( isset( $row->is_use_in_product_listing ) && $row->is_use_in_product_listing == '1' ) ? 'Yes' : 'No';
+                // })
                 ->addColumn('compare', function($row){
                     return ( isset( $row->is_comparable ) && $row->is_comparable == '1' ) ? 'Yes' : 'No';
                 })
@@ -77,7 +77,7 @@ class ProductAttributeSetController extends Controller
                                 <i class="fa fa-trash"></i></a>';
                     return $edit_btn . $del_btn;
                 })
-                ->rawColumns(['action', 'status', 'product_list', 'compare', 'search', 'category']);
+                ->rawColumns(['action', 'status', 'compare', 'search', 'category']);
             return $datatables->make(true);
         }
         return view('platform.product_attribute_sets.index', compact('title','breadCrum'));

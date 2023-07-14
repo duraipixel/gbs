@@ -42,7 +42,6 @@
                                 <th> Tag Line </th>
                                 <th> Can Searchable </th>
                                 <th> Can Comparable </th>
-                                <th> Can use in Product List </th>
                                 <th> Status </th>
                                 <th style="width: 75px;"> Action </th>
                             </tr>
@@ -88,10 +87,6 @@
                 {
                     data: 'compare',
                     name: 'is_comparable'
-                },
-                {
-                    data: 'product_list',
-                    name: 'is_use_in_product_listing'
                 },
                 {
                     data: 'status',
