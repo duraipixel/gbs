@@ -41,7 +41,6 @@
                                 <th> Category  </th>
                                 <th> Tag Line </th>
                                 <th> Can Searchable </th>
-                                <th> Can Comparable </th>
                                 <th> Status </th>
                                 <th style="width: 75px;"> Action </th>
                             </tr>
@@ -74,7 +73,8 @@
                 },
                 {
                     data: 'category',
-                    name: 'category'
+                    name: 'category',
+                    orderable: false,
                 },
                 {
                     data: 'tag_line',
@@ -84,10 +84,7 @@
                     data: 'search',
                     name: 'is_searchable'
                 },
-                {
-                    data: 'compare',
-                    name: 'is_comparable'
-                },
+               
                 {
                     data: 'status',
                     name: 'status'
@@ -118,6 +115,7 @@
             dtTable.draw();
             e.preventDefault();
         });
+
         $('#search-form').on('reset', function(e) {
             $('select[name=filter_status]').val(0).change();
 
