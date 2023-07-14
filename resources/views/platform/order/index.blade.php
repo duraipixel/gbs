@@ -25,7 +25,7 @@
             <div class="card-header border-0 pt-6 w-100">
                 <div class="card-toolbar w-100">
                     <div class="d-flex justify-content-end w-100" data-kt-customer-table-toolbar="base">
-                        @if( access()->hasAccess('order', 'filter') )
+                        @if( access()->hasAccess('order', 'export') )
                             @include('platform.order._filter')
                         @endif
                         @include('platform.layouts.parts.common._export_button')
