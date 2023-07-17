@@ -240,6 +240,7 @@ class FilterController extends Controller
         $new_array = array_merge($response, $attr_response['attributes']);
         $new_array['collection'] = $collection;
         $new_array['handpicked'] = $handpicked;
+
         // dd( $attr_response['attributes'] );
         // dd( $new_array );
         // $response['sort_by'] =  $sort_by;          
@@ -258,6 +259,7 @@ class FilterController extends Controller
         $filter_discount        = $request->discounts;
         $filter_discount_collection = $request->discount_collection;
         $filter_collection      = $request->collection;
+        $fitler_handpicked      = $request->handpicked;
         // $filter_attribute       = $request->attribute_category ?? '';
         $sort                   = $request->sort_by;
         $price                  = $request->prices;
@@ -286,6 +288,7 @@ class FilterController extends Controller
         $filter_price_array = [];
         $filter_size_array = [];
         $filter_collection_array = [];
+        $filter_handpicked_array = [];
         $tmp_price = [];
 
         $price_start = 0;
@@ -297,6 +300,10 @@ class FilterController extends Controller
 
         if (isset($filter_collection) && !empty($filter_collection)) {
             $filter_collection_array = explode("_", $filter_collection);
+        }
+
+        if (isset($fitler_handpicked) && !empty($fitler_handpicked)) {
+            $filter_handpicked_array = explode("_", $fitler_handpicked);
         }
 
         // dd( $filter_collection_array);
@@ -452,12 +459,15 @@ class FilterController extends Controller
                     }
                 }
             })
-            ->when((!empty($filter_collection_array) || !empty($filter_discount_collection)), function ($q) {
+            ->when((!empty($filter_collection_array) || !empty($filter_handpicked_array) || !empty($filter_discount_collection)), function ($q) {
                 $q->leftJoin('product_collections_products', 'product_collections_products.product_id', '=', 'products.id');
                 $q->leftJoin('product_collections', 'product_collections.id', '=', 'product_collections_products.product_collection_id');
             })
             ->when(!empty($filter_collection_array), function ($q) use ($filter_collection_array) {
                 $q->whereIn('product_collections.slug', $filter_collection_array);
+            })
+            ->when(!empty($filter_handpicked_array), function ($q) use ($filter_handpicked_array) {
+                $q->whereIn('product_collections.slug', $filter_handpicked_array);
             })
             ->when(!empty($filter_discount_collection), function ($q) use ($filter_discount_collection) {
                 $q->where('product_collections.slug', $filter_discount_collection);
@@ -592,12 +602,15 @@ class FilterController extends Controller
                     }
                 }
             })
-            ->when((!empty($filter_collection_array) || !empty($filter_discount_collection)), function ($q) {
+            ->when((!empty($filter_collection_array) || !empty($filter_handpicked_array) || !empty($filter_discount_collection)), function ($q) {
                 $q->leftJoin('product_collections_products', 'product_collections_products.product_id', '=', 'products.id');
                 $q->leftJoin('product_collections', 'product_collections.id', '=', 'product_collections_products.product_collection_id');
             })
             ->when(!empty($filter_collection_array), function ($q) use ($filter_collection_array) {
                 $q->whereIn('product_collections.slug', $filter_collection_array);
+            })
+            ->when(!empty($filter_handpicked_array), function ($q) use ($filter_handpicked_array) {
+                $q->whereIn('product_collections.slug', $filter_handpicked_array);
             })
             ->when(!empty($filter_discount_collection), function ($q) use ($filter_discount_collection) {
                 $q->where('product_collections.slug', $filter_discount_collection);
