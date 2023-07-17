@@ -210,7 +210,15 @@ class CommonController extends Controller
         $response['testimonials'] =  TestimonialResource::collection(Testimonials::select('id', 'title', 'image', 'short_description', 'long_description')->where(['status' => 'published'])->orderBy('order_by', 'asc')->get());
         $response['video'] = HistoryVideoResource::collection(WalkThrough::select('id', 'title', 'video_url', 'file_path', 'description')->where(['status' => 'published'])->orderBy('order_by', 'asc')->get());
         $response['banner'] = BannerResource::collection(Banner::select('id', 'title', 'description', 'banner_image', 'tag_line', 'order_by')->where(['status' => 'published'])->orderBy('order_by', 'asc')->get());
+
+        $service_places['chennai'] = 'laptop-service-center-in-chennai';
+        $service_places['madurai'] = 'laptop-service-center-in-madurai';
+        $service_places['trichy'] = 'laptop-service-center-in-trichy';
+        $service_places['coimbatore'] = 'laptop-service-center-in-coimbatore';
+        $service_places['bangalore'] = 'laptop-service-center-in-bangalore';
+        $response['service_places'] = $service_places;
         return $response;
+
     }
 
     public function getBrandInfo(Request $request)
