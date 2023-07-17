@@ -633,7 +633,7 @@ class FilterController extends Controller
             ->where('products.stock_status', 'in_stock')
             ->groupBy('products.id')
             ->skip(0)->take($take_limit)
-            ->get();
+            ->dd();
 
         $tmp = [];
         if (isset($details) && !empty($details)) {
