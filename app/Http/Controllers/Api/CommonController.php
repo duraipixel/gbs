@@ -221,6 +221,18 @@ class CommonController extends Controller
 
     }
 
+    public function getHomeServicePlaces() {
+
+        $service_places['chennai'] = 'laptop-service-center-in-chennai';
+        $service_places['madurai'] = 'laptop-service-center-in-madurai';
+        $service_places['trichy'] = 'laptop-service-center-in-trichy';
+        $service_places['coimbatore'] = 'laptop-service-center-in-coimbatore';
+        $service_places['bangalore'] = 'laptop-service-center-in-bangalore';
+        $response['service_places'] = $service_places;
+        return $response;
+        
+    }
+
     public function getBrandInfo(Request $request)
     {
 
