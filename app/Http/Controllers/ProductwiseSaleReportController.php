@@ -70,6 +70,9 @@ class ProductwiseSaleReportController extends Controller
                                 ->orWhereDate("orders.created_at", $date);      
                                
                     }
+                })->editColumn('status', function($row){
+                    
+                    return ucwords($row->status);
                 });
                 
             return $datatables->make(true);

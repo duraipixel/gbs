@@ -31,7 +31,7 @@
                                 <th> Product Name</th>
                                 <th> No. of Qty Sold</th>
                                 <th> Amount </th>
-                               
+                                <th> Order Status </th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -80,6 +80,10 @@
                 {
                     data: 'prod_amount',
                     name: 'prod_amount'
+                },
+                {
+                    data: 'status',
+                    name: 'status'
                 },
                
             ],
