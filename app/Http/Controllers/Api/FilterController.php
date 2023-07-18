@@ -800,7 +800,7 @@ class FilterController extends Controller
                         $temp_val['name'] = trim($items_sub->attribute_values);
                         
                         if( Str::slug(strtolower($att_value->title)) == 'screen-size' ) {
-                            $temp_val['slug'] = ucwords(str_replace(' ', '-',trim($items_sub->attribute_values)));
+                            $temp_val['slug'] = str_replace(' ', '-',trim( ucwords($items_sub->attribute_values)));
                         } else {
                             $temp_val['slug'] = Str::slug(trim($items_sub->attribute_values));
                         }
