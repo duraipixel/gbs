@@ -163,6 +163,8 @@ class CustomerController extends Controller
                     }
                     
                 }
+                //get cart count
+                $cart_count = Cart::where(['customer_id' => $checkCustomer->id])->count();
             }
         } else {
             $error = 1;
@@ -172,7 +174,7 @@ class CustomerController extends Controller
             $customer_address = [];
         }
 
-        return array('error' => $error, 'message' => $message, 'status' => $status, 'customer' => $customer_data, 'customer_addres' => $customer_address);
+        return array('error' => $error, 'message' => $message, 'status' => $status, 'customer' => $customer_data, 'customer_addres' => $customer_address, 'cart_count' => $cart_count ?? 0 );
     }
 
    
