@@ -64,6 +64,7 @@ class HomepageSettingController extends Controller
         $breadCrum              = array('Homepage Setting');
         return view('platform.homepage_setting.homepage_setting.index', compact('title', 'breadCrum'));
     }
+
     public function modalAddEdit(Request $request)
     {
         $id                 = $request->id;
@@ -85,6 +86,7 @@ class HomepageSettingController extends Controller
 
         return view('platform.homepage_setting.homepage_setting.add_edit_modal', compact('info', 'modal_title', 'from','field','home_items','home_items_first'));
     }
+
     public function saveForm(Request $request,$id = null)
     {
         $id             = $request->id;
@@ -100,7 +102,7 @@ class HomepageSettingController extends Controller
             $ins['description']                         = $request->description;
             $ins['order_by']                            = $request->order_by ?? 0;
             $ins['added_by']                            = auth()->user()->id;
-
+            // dd( $request->all() );
             if($request->status == "1")
             {
                 $ins['status']          = 'published';
@@ -122,7 +124,7 @@ class HomepageSettingController extends Controller
 
                 for ($i = 0; $i < count($request->start); $i++) {  
                     $sett = [];
-                    $id = $item_id;
+                    $id = $item_id[$i];
                     if( isset( $request->home_image[$i] ) && !empty( $request->home_image[$i] ) ) {
                         $fileNameThumb = '';
                         $imageName                  = uniqid().$request->home_image[$i]->getClientOriginalName();

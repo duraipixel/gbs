@@ -90,7 +90,7 @@ class ProductController extends Controller
 
             $keywords = $request->get('search')['value'];
             
-            $datatables =  Datatables::of($data)
+            $datatables = Datatables::of($data)
                 ->filter(function ($query) use ($keywords) {
 
                     if ($keywords) {

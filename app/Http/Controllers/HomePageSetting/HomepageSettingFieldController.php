@@ -60,6 +60,7 @@ class HomepageSettingFieldController extends Controller
         $breadCrum              = array('Homepage Setting Field');
         return view('platform.homepage_setting.homepage_setting_field.index', compact('title', 'breadCrum'));
     }
+
     public function modalAddEdit(Request $request)
     {
         $id                 = $request->id;
@@ -85,7 +86,6 @@ class HomepageSettingFieldController extends Controller
         $banner_id      = '';
         if ($validator->passes()) {
         
- 
             $ins['title']               = $request->title;
             $ins['slug']                = Str::slug($request->title);
             $ins['product_id']          = $request->product_id;
@@ -102,6 +102,7 @@ class HomepageSettingFieldController extends Controller
             
             $error                      = 0;
             $info                       = HomepageSettingField::updateOrCreate(['id' => $id], $ins);
+
             if ($request->hasFile('icon')) {
                
                 $filename       = time() . '_' . $request->icon->getClientOriginalName();
@@ -113,9 +114,9 @@ class HomepageSettingFieldController extends Controller
                 $info->icon = $filename;
                 $info->save();
             }
-           
         
             $message                    = (isset($id) && !empty($id)) ? 'Updated Successfully' : 'Added successfully';
+
         } else {
             $error                      = 1;
             $message                    = $validator->errors()->all();

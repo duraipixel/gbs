@@ -141,6 +141,7 @@ class CustomerController extends Controller
         
         $checkCustomer = Customer::with(['customerAddress', 'customerAddress.subCategory'])->where('email', $email)->first();
         if ($checkCustomer) {
+
             if( $checkCustomer->email_verified_at == null ) {
                 $error = 1;
                 $message = 'Verification pending check your mail';
@@ -166,6 +167,7 @@ class CustomerController extends Controller
                 //get cart count
                 $cart_count = Cart::where(['customer_id' => $checkCustomer->id])->count();
             }
+            
         } else {
             $error = 1;
             $message = 'Invalid credentials';
@@ -175,9 +177,8 @@ class CustomerController extends Controller
         }
 
         return array('error' => $error, 'message' => $message, 'status' => $status, 'customer' => $customer_data, 'customer_addres' => $customer_address, 'cart_count' => $cart_count ?? 0 );
-    }
 
-   
+    }
 
     public function updateProfile(Request $request)
     {
