@@ -79,7 +79,8 @@
                 },
                 {
                     data: 'billing_info',
-                    name: 'billing_info'
+                    name: 'billing_info',
+                    orderable: false,
                 },
                 {
                     data: 'amount',

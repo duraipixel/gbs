@@ -78,26 +78,32 @@
                 {
                     data: 'order_no',
                     name: 'order_no',
+                    orderable: false,
                 },
                 {
                     data: 'order_date',
-                    name: 'order_date'
+                    name: 'order_date',
+                    orderable: false,
                 },
                 {
                     data: 'payment_no',
-                    name: 'payment_no'
+                    name: 'payment_no',
+                    orderable: false,
                 },
                 {
                     data: 'order_amount',
-                    name: 'order_amount'
+                    name: 'order_amount',
+                    orderable: false,
                 },
                 {
                     data: 'order_status_dd',
-                    name: 'order_status_dd'
+                    name: 'order_status_dd',
+                    orderable: false,
                 },           
                 {
                     data: 'payment_status',
-                    name: 'payment_status'
+                    name: 'payment_status',
+                    orderable: false,
                 },
                 {
                     data: 'action',

@@ -66,13 +66,13 @@ class PaymentReportController extends Controller
                 ->editColumn('order_status_dd', function($row){
                     return ucwords(str_replace('_', " ", $row->order_status_dd) );
                 })
-                     
                 ->addColumn('action', function ($row) {
                     $view_btn = '<a href="javascript:void(0)" onclick="return viewPayments('.$row->id.')" class="btn btn-icon btn-active-primary btn-light-primary mx-1 w-30px h-30px" > 
                                     <i class="fa fa-eye"></i>
                                 </a>';
                     return $view_btn;
-                });
+                })
+                ->rawColumns(['action', 'order_status_dd']);
                
             return $datatables->make(true);
         }
