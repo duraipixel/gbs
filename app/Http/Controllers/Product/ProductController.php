@@ -181,7 +181,7 @@ class ProductController extends Controller
         $brands                 = Brands::where('status', 'published')->get();
 
         $images                 = $this->productRepository->getImageInfoJson($id);
-        //dd($images);
+        
         $brochures              = $this->productRepository->getBrochureJson($id);
         
         $params                 = array(
@@ -271,6 +271,8 @@ class ProductController extends Controller
 
         if ($validator->passes()) {
             
+            // dd( $request->all() );
+
             if( isset( $request->avatar_remove ) && !empty($request->avatar_remove) ) {
                 $ins['base_image']          = null;
             }
@@ -372,7 +374,49 @@ class ProductController extends Controller
                 $productInfo->base_image    = $fileNameThumb;
                 $productInfo->update();
 
-            }            
+            }       
+            /**
+             *
+             * product gallery
+             * 
+             * 
+             * */
+            if( $request->hasFile('gallery') && isset( $product_id ) ) {
+                $image_order = ProductImage::where('product_id', $product_id)->orderBy('order_by', 'desc')->first();
+                $files = $request->file('gallery');
+                $imageIns = [];
+                $iteration = 1;
+                $order_no = ($image_order->order_by ?? 0 ) + 1;
+                foreach ($files as $file) {
+    
+                    $imageName = uniqid().$file->getClientOriginalName();
+                    $imageName = str_replace([' ', '  '], "_", $imageName);
+                    
+                    if (!is_dir(storage_path("app/public/products/".$product_id."/gallery"))) {
+                        mkdir(storage_path("app/public/products/".$product_id."/gallery"), 0775, true);
+                    }
+                    
+                    $fileName =  'public/products/'.$product_id.'/gallery/' . time() . '-' . $imageName;
+                    Image::make($file)->save(storage_path('app/' . $fileName));
+                    
+                    $fileSize = $file->getSize();
+                    $imageIns[] = array( 
+                        'gallery_path'  => $fileName,                   
+                        'product_id'    => $product_id,
+                        'file_size'     => $fileSize,
+                        'is_default'    => ($iteration == 1) ? 1: "0",
+                        'order_by'      => $order_no,
+                        'status'        => 'published'
+                    );
+                    $order_no++;
+                    $iteration++;
+    
+                }
+                if( !empty( $imageIns ) ) {
+                    ProductImage::insert($imageIns);
+                }
+    
+            }     
          
             $request->session()->put('image_product_id', $product_id);
             if( isset( $request->filter_variation ) && !empty( $request->filter_variation ) )  {
@@ -499,7 +543,7 @@ class ProductController extends Controller
     {
         
         $product_id = $request->session()->pull('image_product_id');
-
+        // dd( $request->all() );
         if( $request->hasFile('file') && isset( $product_id ) ) {
             
             $files = $request->file('file');
@@ -655,9 +699,24 @@ class ProductController extends Controller
 
         return response()->json(['error' => $error, 'message' => $message, 'price_info' => $price_info ?? ''] );
     }
+
     public function exportAttriuteSet()
     {
         return Excel::download(new ProductAttributeSetBulkExport, 'product_arrttiute_set.xlsx');
+    }
+
+    public function changeImageOrder(Request $request) {
+
+        $id = $request->id;
+        $order_no = $request->order_no;
+        if( $order_no ) {
+            $info           = ProductImage::find( $id );   
+            $info->order_by = $request->order_no;
+            $info->save();
+            return array('error' => 1, 'message' => 'Image Order Changed successfully');
+        }
+
+
     }
 
 }

@@ -16,12 +16,13 @@ class ProductRepository
                 $tmp['size'] = $value->file_size;
                 $tmp['url'] = asset( Storage::url($value->gallery_path));
                 $tmp['id'] = $value->id;
+                $tmp['order_by'] = $value->order_by;
 
                 $imgArray[] = $tmp;
             }
         } 
-
-        return json_encode( $imgArray, JSON_UNESCAPED_SLASHES );
+        return $imgArray;
+        // return json_encode( $imgArray, JSON_UNESCAPED_SLASHES );
     }
 
     public function getBrochureJson($product_id) {

@@ -138,6 +138,7 @@ Route::middleware(['auth'])->group(function(){
         Route::post('/save', [App\Http\Controllers\Product\ProductController::class, 'saveForm'])->name('products.save');
         Route::post('/get/base/mrp', [App\Http\Controllers\Product\ProductController::class, 'getBaseMrpPrice'])->name('get.product.base_mrp_prce');
         Route::post('/remove/image', [App\Http\Controllers\Product\ProductController::class, 'removeImage'])->name('products.remove.image');
+        Route::post('/change/image/order', [App\Http\Controllers\Product\ProductController::class, 'changeImageOrder'])->name('products.image.order');
 
         Route::post('/url_delete', [App\Http\Controllers\Product\ProductController::class, 'urlDelete'])->name('products_url.delete')->middleware(['checkAccess:delete']);
         
