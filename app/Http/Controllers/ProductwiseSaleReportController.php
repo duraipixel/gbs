@@ -72,7 +72,7 @@ class ProductwiseSaleReportController extends Controller
                     }
                 })->editColumn('status', function($row){
                     
-                    return ucwords($row->status);
+                    return ucwords( str_replace("_", " ", $row->status) );
                 });
                 
             return $datatables->make(true);
