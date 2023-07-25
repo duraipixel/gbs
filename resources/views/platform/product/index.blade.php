@@ -31,6 +31,7 @@
                                 <th> Product </th>
                                 <th> SKU </th>
                                 <th> Category </th>
+                                <th> HSN Code </th>
                                 <th> Brand  </th>
                                 <th> Price </th>
                                 <th> Qty </th>
@@ -77,6 +78,10 @@
                 {
                     data: 'category',
                     name: 'category'
+                },
+                {
+                    data: 'hsn_code',
+                    name: 'hsn_code'
                 },
                 {
                     data: 'brand_name',
