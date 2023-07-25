@@ -121,7 +121,7 @@ Route::middleware(['client'])->group(function(){
     Route::post('/remove/coupon', [App\Http\Controllers\Api\Couponcontroller::class, 'removeCoupon']);    
 
     Route::post('/get/orders', [App\Http\Controllers\Api\OrderController::class, 'getOrders']);
-    Route::post('/get/orders-status', [App\Http\Controllers\Api\OrderController::class, 'getOrderStatus']);
+    Route::post('/get/orders-status/{customer_id}', [App\Http\Controllers\Api\OrderController::class, 'getOrderStatus']);
 
     
     Route::post('/get/orderByno', [App\Http\Controllers\Api\OrderController::class, 'getOrderByOrderNo']);

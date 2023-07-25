@@ -108,11 +108,11 @@ class OrderController extends Controller
         return $orders;
     }
 
-    public function getOrderStatus()
+    public function getOrderStatus($customer_id)
     {
         return response()->json([
             "status" => true,
-            "data"   => OrderStatus::all()
+            "data"   => Order::where('customer_id', $customer_id)->groupBy("status")
         ]);
     }
 
