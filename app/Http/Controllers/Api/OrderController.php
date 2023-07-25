@@ -112,7 +112,7 @@ class OrderController extends Controller
     {
         return response()->json([
             "status" => true,
-            "data"   => Order::where('customer_id', $customer_id)->groupBy("status")
+            "data"   => Order::where('customer_id', $customer_id)->groupBy("status")->get()
         ]);
     }
 
