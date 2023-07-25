@@ -102,13 +102,21 @@ class OrderController extends Controller
         return $orders;
     }
 
+    public function getOrderStatus()
+    {
+        return response()->json([
+            "status" => true,
+            "data"   => OrderStatus::all()
+        ]);
+    }
+
     public function getOrderByOrderNo(Request $request)
     {
         $customer_id        = $request->customer_id;
         $order_no           = $request->order_no;
-        
+
         $info               = Order::where('order_no', $order_no)->where('customer_id', $customer_id)->first();
-        
+
         $orders = [];
         if (isset($info) && !empty($info)) {
 
@@ -202,7 +210,6 @@ class OrderController extends Controller
                     $tracking['has_tracking'] = true;
 
                     $tracking_start_data[] = $tracking;
-
                 }
             }
             $tmp['tracking'] = $tracking_start_data;
