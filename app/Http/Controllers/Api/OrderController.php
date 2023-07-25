@@ -17,8 +17,14 @@ class OrderController extends Controller
 {
     public function getOrders(Request $request)
     {
-        $customer_id        = $request->customer_id ?? 1;
-        $orderAll           = Order::where('customer_id', $customer_id)->orderBy('id', 'desc')->get();
+        $customer_id   = $request->customer_id ?? 1;
+        $ifOrderStatus = !empty($request->order_status_id) && isset($request->order_status_id);
+        $orderAll      = Order::where('customer_id', $customer_id)
+                                ->when($ifOrderStatus, function ($q) use ($request) {
+                                    $q->where("order_status_id", $request->order_status_id);
+                                })
+                                ->orderBy('id', 'desc')
+                                ->get();
         $orders = [];
         if (isset($orderAll) && !empty($orderAll)) {
             foreach ($orderAll as $item) {
