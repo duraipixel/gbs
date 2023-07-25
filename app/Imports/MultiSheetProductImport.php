@@ -144,7 +144,7 @@ class MultiSheetProductImport implements ToModel, WithHeadingRow
                 
             }
             $ins['product_name'] = trim($row['product_name']);
-            $ins['hsn_code'] = $row['hsn'] ?? null;
+            $ins['hsn_code'] = $row['hsn_no'] ?? null;
             $ins['product_url'] = Str::slug(Str::replace('.', '-', $row['sku']).'-'.trim($row['brand']));
             $ins['sku'] = $sku;
             $ins['strike_price'] = round($row['mrp_price']);
