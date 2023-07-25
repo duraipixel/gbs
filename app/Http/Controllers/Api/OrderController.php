@@ -18,10 +18,10 @@ class OrderController extends Controller
     public function getOrders(Request $request)
     {
         $customer_id   = $request->customer_id ?? 1;
-        $ifOrderStatus = !empty($request->order_status_id) && isset($request->order_status_id);
+        $ifOrderStatus = !empty($request->status) && isset($request->status);
         $orderAll      = Order::where('customer_id', $customer_id)
                                 ->when($ifOrderStatus, function ($q) use ($request) {
-                                    $q->where("order_status_id", $request->order_status_id);
+                                    $q->where("status", $request->status);
                                 })
                                 ->orderBy('id', 'desc')
                                 ->get();
