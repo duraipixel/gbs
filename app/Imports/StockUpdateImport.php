@@ -14,6 +14,8 @@ class StockUpdateImport implements ToModel, WithHeadingRow
         $sku = $row['sku'];
         $mop_price  = $row['mop_price'];
         $quantity  = $row['quantity'];
+        $stock_status = $row['stock_status'];
+
 
         $product_info = Product::where('sku', $sku)->first();
         
@@ -26,6 +28,9 @@ class StockUpdateImport implements ToModel, WithHeadingRow
             $product_info->price = $base_price;
             $product_info->mrp = $mop_price;
             $product_info->quantity = $quantity;
+            if( $stock_status ) {
+                $product_info->stock_status = $stock_status;
+            }
             
             $product_info->save();
             
