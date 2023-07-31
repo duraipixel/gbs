@@ -327,7 +327,7 @@ class CommonController extends Controller
 
         Enquiry::create($ins);
         $send_mail = new EnquiryMail($html, $title);
-        Mail::to($to_email)->bcc(['durairaj.pixel@gmail.com', 'pravin@pixel-studios.com'])->send($send_mail);
+        Mail::to($to_email)->bcc(['durairaj.pixel@gmail.com', 'pravin@pixel-studios.com', $to_email])->send($send_mail);
 
         return array('status' => 1, 'message' => 'Enquiry submitted successfully');
 

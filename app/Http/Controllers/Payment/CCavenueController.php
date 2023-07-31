@@ -189,7 +189,7 @@ class CCavenueController extends Controller
                     $filePath = 'storage/invoice_order/' . $order_info->order_no . '.pdf';
                     $send_mail = new OrderMail($templateMessage, $title, $filePath);
                     // return $send_mail->render();
-                    Mail::to($order_info->billing_email)->bcc('support@gbssystems.com')->send($send_mail);
+                    Mail::to($order_info->billing_email)->bcc(['support@gbssystems.com', $order_info->billing_email])->send($send_mail);
 
                     #send sms for notification
                     $sms_params = array(

@@ -185,7 +185,7 @@ class OrderController extends Controller
 
                     $send_mail = new DynamicMail($templateMessage, $title);
                     // return $send_mail->render();
-                    Mail::to($info->billing_email)->bcc('support@gbssystems.com')->send($send_mail);
+                    Mail::to($info->billing_email)->bcc(['support@gbssystems.com', $info->billing_email])->send($send_mail);
 
                     #send sms for notification
                     $sms_params = array(
@@ -266,7 +266,7 @@ class OrderController extends Controller
                     $filePath = 'storage/orderDocument/' . $info->order_no . '/document/' . $imagName;
                     $send_mail = new OrderMail($templateMessage, $title, $filePath);
                     // return $send_mail->render();
-                    Mail::to($info->billing_email)->bcc('support@gbssystems.com')->send($send_mail);
+                    Mail::to($info->billing_email)->bcc(['support@gbssystems.com', $info->billing_email ])->send($send_mail);
 
                     #send sms for notification
                     $sms_params = array(
