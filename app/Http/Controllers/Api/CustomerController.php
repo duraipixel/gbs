@@ -286,8 +286,7 @@ class CustomerController extends Controller
 
             $send_mail = new DynamicMail($templateMessage, $emailTemplate->title);
             // return $send_mail->render();
-            // Mail::to([$email])->bcc('support@gbssystems.com')->send($send_mail);
-            Mail::to([$email])->send($send_mail);
+            Mail::to([$email])->bcc('support@gbssystems.com')->send($send_mail);
         } else {
             $error = 1;
             $message = 'Email id is not exists';
