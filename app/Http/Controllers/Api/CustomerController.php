@@ -253,6 +253,7 @@ class CustomerController extends Controller
         $customer_info = Customer::where('email', $email)->first();
 
         if (isset($customer_info) && !empty($customer_info)) {
+
             $error = 0;
             $message = 'Password link sent to mail, Please check';
             $customer_info->forgot_token = $token_id;
@@ -285,7 +286,7 @@ class CustomerController extends Controller
 
             $send_mail = new DynamicMail($templateMessage, $emailTemplate->title);
             // return $send_mail->render();
-            Mail::to($request->email)->bcc('support@gbssystems.com')->send($send_mail);
+            Mail::to([$email])->bcc('support@gbssystems.com')->send($send_mail);
         } else {
             $error = 1;
             $message = 'Email id is not exists';
