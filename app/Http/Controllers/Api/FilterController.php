@@ -267,7 +267,6 @@ class FilterController extends Controller
         $exclusive              = $request->exclusive ?? '';
         $search                 = $request->search ?? '';
 
-        return $request->search;
         $not_in_attributes = array('page','search' ,'take', 'categories', 'scategory', 'brands', 'discounts', 'sort_by', 'prices', 'sizes', 'size', 'customer_id', 'collection', 'handpicked', 'discount_collection', 'exclusive');
         $from_request = $request->all();
 
@@ -488,7 +487,7 @@ class FilterController extends Controller
             ->when($sort == 'z-to-a', function ($q) {
                 $q->orderBy('products.product_name', 'asc');
             })
-            ->when($search, function($q) use($search){
+            ->when(!empty($search), function($q) use($search){
                 $q->where(function($query) use($search) {
                     $query->where('products.product_name', 'like', "%{$search}%")
                     ->orWhere('products.sku', 'like', "%{$search}%")
@@ -641,7 +640,7 @@ class FilterController extends Controller
             ->when($sort == 'is_featured', function ($q) {
                 $q->orderBy('products.is_featured', 'desc');
             })
-            ->when($search, function($q) use($search){
+            ->when(!empty($search), function($q) use($search){
                 $q->where(function($query) use($search) {
                     $query->where('products.product_name', 'like', "%{$search}%")
                     ->orWhere('products.sku', 'like', "%{$search}%")
@@ -655,8 +654,9 @@ class FilterController extends Controller
             ->groupBy('products.id')
             ->skip(0)->take($take_limit)
             ->get();
-
-        $tmp = [];
+            return $details;
+      
+            $tmp = [];
         if (isset($details) && !empty($details)) {
             foreach ($details as $items) {
                 $tmp[] = getProductApiData($items);
