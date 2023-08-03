@@ -267,7 +267,7 @@ class FilterController extends Controller
         $exclusive              = $request->exclusive ?? '';
         $search                 = $request->search ?? '';
 
-
+        return $request->search;
         $not_in_attributes = array('page','search' ,'take', 'categories', 'scategory', 'brands', 'discounts', 'sort_by', 'prices', 'sizes', 'size', 'customer_id', 'collection', 'handpicked', 'discount_collection', 'exclusive');
         $from_request = $request->all();
 
