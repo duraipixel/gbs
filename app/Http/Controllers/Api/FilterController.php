@@ -641,6 +641,16 @@ class FilterController extends Controller
             ->when($sort == 'is_featured', function ($q) {
                 $q->orderBy('products.is_featured', 'desc');
             })
+            ->when($search, function($q) use($search){
+                $q->where(function($query) use($search) {
+                    $query->where('products.product_name', 'like', "%{$search}%")
+                    ->orWhere('products.sku', 'like', "%{$search}%")
+                    ->orWhere('products.hsn_code', 'like', "%{$search}%")
+                    ->orWhere('products.price', 'like', "%{$search}%")
+                    ->orWhere('product_categories.name', 'like', "%{$search}%")
+                    ->orWhere('brands.brand_name', 'like', "%{$search}%");
+                });
+            } )
             ->where('products.stock_status', 'in_stock')
             ->groupBy('products.id')
             ->skip(0)->take($take_limit)
