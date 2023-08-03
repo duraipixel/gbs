@@ -9,7 +9,7 @@ require_once 'phpmailer/PHPMailerAutoload.php';
 
 // $_REQUEST[]; 
 
-$to = 'prabhu.k.pixel@gmail.com';
+$to = 'durairaj.pixel@gmail.com';
 
 $subject = $mlsubject;
 
