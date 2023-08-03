@@ -654,7 +654,6 @@ class FilterController extends Controller
             ->groupBy('products.id')
             ->skip(0)->take($take_limit)
             ->get();
-            return $details;
       
             $tmp = [];
         if (isset($details) && !empty($details)) {
