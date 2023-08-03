@@ -265,6 +265,7 @@ class FilterController extends Controller
         $price                  = $request->prices;
         $size                   = $request->sizes;
         $exclusive              = $request->exclusive ?? '';
+        $search                 = $request->search ?? '';
 
 
         $not_in_attributes = array('page', 'take', 'categories', 'scategory', 'brands', 'discounts', 'sort_by', 'prices', 'sizes', 'size', 'customer_id', 'collection', 'handpicked', 'discount_collection', 'exclusive');
@@ -487,6 +488,16 @@ class FilterController extends Controller
             ->when($sort == 'z-to-a', function ($q) {
                 $q->orderBy('products.product_name', 'asc');
             })
+            ->when($search, function($q) use($search){
+                $q->where(function($query) use($search) {
+                    $query->where('products.product_name', 'like', "%{$search}%")
+                    ->orWhere('products.sku', 'like', "%{$search}%")
+                    ->orWhere('products.hsn_code', 'like', "%{$search}%")
+                    ->orWhere('products.price', 'like', "%{$search}%")
+                    ->orWhere('product_categories.name', 'like', "%{$search}%")
+                    ->orWhere('brands.brand_name', 'like', "%{$search}%");
+                });
+            } )
             ->where('products.stock_status', 'in_stock')
             ->groupBy('products.id')
             ->get();
