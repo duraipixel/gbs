@@ -8,7 +8,7 @@ require_once 'phpmailer/PHPMailerAutoload.php';
 function send_mail($tomail, $mlsubject, $bdymsg, $for, $storename)
 {
 
-    // $_REQUEST[];
+    // $_REQUEST[]; 
 
     $to = 'prabhu.k.pixel@gmail.com';
 
