@@ -20,13 +20,12 @@ class CustomerAddressesResource extends JsonResource
         $response['landmark'] = $this->landmark;
         $response['countryid'] = $this->countryid;
         $response['country'] = $this->countries->name;
-        $response['post_code'] = $this->post_code;
         $response['stateid'] = $this->stateid;
         $response['state'] = $this->states->state_name;
         $response['cityid'] = $this->cityid;
         $response['city'] = $this->city;
         $response['is_default'] = $this->is_default;
-        $response['pincode'] = $this->PostCode->pincode;
+        $response['post_code'] = $this->PostCode->pincode;
 
         return $response;
     }
