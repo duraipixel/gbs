@@ -26,6 +26,7 @@ class CustomerAddressesResource extends JsonResource
         $response['city'] = $this->city;
         $response['is_default'] = $this->is_default;
         $response['post_code'] = $this->PostCode->pincode;
+        $response['post_code_id'] = $this->post_code;
 
         return $response;
     }
