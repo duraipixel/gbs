@@ -48,6 +48,7 @@ class CustomerController extends Controller
 
     public function registerCustomer(Request $request)
     {
+       
         $validator = Validator::make($request->all(), [
             'first_name' => 'required|string',
             'last_name' => 'required|string',
