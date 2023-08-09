@@ -3,13 +3,14 @@
         <div class="fv-row mb-5">
             <div class="row">
                 <div class="col-md-6">
-                    
+
                     <label class="required fw-bold fs-7 mb-2">Brand</label>
                     <select name="brand_id[]" id="brand_id" class="form-control" multiple>
                         <option value="">--select--</option>
                         @isset($brands)
                             @foreach ($brands as $item)
-                                <option value="{{ $item->id }}" @if(in_array($item->id, $usedBrands)) selected @endif>{{ $item->brand_name }}</option>
+                                <option value="{{ $item->id }}" @if (in_array($item->id, $usedBrands)) selected @endif>
+                                    {{ $item->brand_name }}</option>
                             @endforeach
                         @endisset
                     </select>
@@ -69,8 +70,8 @@
                 <div class="col-md-6">
                     <div class="fv-row mb-7">
                         <label class="required fw-bold fs-7 mb-2">Whatsapp No</label>
-                       <input type="number" class="form-control form-control-solid mb-3 mb-lg-0" maxlength="10" name="whatsapp_no"
-                       id="whatsapp_no" value="{{ $info->whatsapp_no ?? ''}}">
+                        <input type="number" class="form-control form-control-solid mb-3 mb-lg-0" maxlength="10"
+                            name="whatsapp_no" id="whatsapp_no" value="{{ $info->whatsapp_no ?? '' }}">
                     </div>
                 </div>
             </div>
@@ -78,15 +79,15 @@
 
         <div class="fv-row mb-5">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <div class="fv-row mb-7">
-                        <label class="required fw-bold fs-7 mb-2">Description</label>
-                        <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Description" name="description"
-                            id="description" cols="30" rows="2">{{ $info->description ?? '' }}</textarea>
+                        <label class="required fw-bold fs-7 mb-2">Description </label>
+                        <div class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Description" name="description"
+                            id="textEditor" cols="50" rows="10">{!! $info->description ?? "" !!}</div>
                     </div>
 
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <div class="fv-row mb-7">
                         <label class="fw-bold fs-7 mb-2">Address</label>
                         <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Address" name="address" id="address"
@@ -115,8 +116,9 @@
                             @if (isset($info->nearPincodes))
                                 @foreach ($info->nearPincodes as $item)
                                     <div class="col-sm-4">
-                                        <input type="text" name="near_pincode[]" class="numberonly form-control mt-3"
-                                            placeholder="Pincode" value="{{ $item->pincode }}">
+                                        <input type="text" name="near_pincode[]"
+                                            class="numberonly form-control mt-3" placeholder="Pincode"
+                                            value="{{ $item->pincode }}">
                                     </div>
                                 @endforeach
                             @else
@@ -143,7 +145,7 @@
                                 <label>Add Contacts</label>
                             </div>
                             <div class="col-sm-4 text-end">
-                                <button id="add_new_contact" type="button"  class="btn btn-info btn-sm">
+                                <button id="add_new_contact" type="button" class="btn btn-info btn-sm">
                                     <span class="bi bi-plus-square-dotted">
                                     </span> Add New
                                 </button>
@@ -153,22 +155,23 @@
                             @if (isset($info->contacts))
                                 @foreach ($info->contacts as $item)
                                     <div class="col-sm-4">
-                                        <input type="text" name="contact[]" maxlength="10" class="numberonly form-control mt-3"
-                                            placeholder="Contact No" value="{{ $item->contact }}">
+                                        <input type="text" name="contact[]" maxlength="10"
+                                            class="numberonly form-control mt-3" placeholder="Contact No"
+                                            value="{{ $item->contact }}">
                                     </div>
                                 @endforeach
                             @else
                                 <div class="col-sm-4">
-                                    <input type="text" name="contact[]" maxlength="10" class="numberonly form-control mt-3"
-                                        placeholder="Contact No">
+                                    <input type="text" name="contact[]" maxlength="10"
+                                        class="numberonly form-control mt-3" placeholder="Contact No">
                                 </div>
                                 <div class="col-sm-4">
-                                    <input type="text" name="contact[]" maxlength="10" class="numberonly form-control mt-3"
-                                        placeholder="Contact No">
+                                    <input type="text" name="contact[]" maxlength="10"
+                                        class="numberonly form-control mt-3" placeholder="Contact No">
                                 </div>
                                 <div class="col-sm-4">
-                                    <input type="text" name="contact[]" maxlength="10" class="numberonly form-control mt-3"
-                                        placeholder="Contact No">
+                                    <input type="text" name="contact[]" maxlength="10"
+                                        class="numberonly form-control mt-3" placeholder="Contact No">
                                 </div>
                             @endif
                         </div>
@@ -192,18 +195,21 @@
                                 @foreach ($info->emails as $item)
                                     <div class="col-sm-4">
                                         <input type="text" name="email[]" class="form-control mt-3"
-                                            placeholder="Email" value="{{$item->email}}">
+                                            placeholder="Email" value="{{ $item->email }}">
                                     </div>
                                 @endforeach
                             @else
                                 <div class="col-sm-4">
-                                    <input type="text" name="email[]" class="form-control mt-3" placeholder="Email">
+                                    <input type="text" name="email[]" class="form-control mt-3"
+                                        placeholder="Email">
                                 </div>
                                 <div class="col-sm-4">
-                                    <input type="text" name="email[]" class="form-control mt-3" placeholder="Email">
+                                    <input type="text" name="email[]" class="form-control mt-3"
+                                        placeholder="Email">
                                 </div>
                                 <div class="col-sm-4">
-                                    <input type="text" name="email[]" class="form-control mt-3" placeholder="Email">
+                                    <input type="text" name="email[]" class="form-control mt-3"
+                                        placeholder="Email">
                                 </div>
                             @endif
                         </div>
@@ -212,8 +218,8 @@
                 <div class="col-sm-12">
                     <div class="fv-row mb-7 mt-3">
                         <label class="fw-bold fs-7 mb-2">Map Link</label>
-                        <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Map Link" name="map_link"
-                            id="map_link" cols="30" rows="2">{{ $info->map_link ?? '' }}</textarea>
+                        <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Map Link" name="map_link" id="map_link"
+                            cols="30" rows="2">{{ $info->map_link ?? '' }}</textarea>
                     </div>
                 </div>
                 <div class="col-sm-12">
@@ -321,7 +327,16 @@
         </div>
     </div>
 </div>
+
+
+<!-- include summernote css/js -->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+
 <script>
+    var quill = new Quill('#textEditor', {
+        theme: 'snow'
+    }); 
 
     $('#brand_id').select2();
     $('.numberonly').keypress(function(e) {

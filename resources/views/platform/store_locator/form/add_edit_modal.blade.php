@@ -175,13 +175,13 @@
                             }
                         },
                         
-                        'description': {
-                            validators: {
-                                notEmpty: {
-                                    message: 'Description is required'
-                                }
-                            }
-                        },
+                        // 'description': {
+                        //     validators: {
+                        //         notEmpty: {
+                        //             message: 'Description is required'
+                        //         }
+                        //     }
+                        // },
                         'whatsapp_no': {
                             validators: {
                                 notEmpty: {
@@ -244,6 +244,7 @@
                             var from = $('#from').val();
                             var form = $('#add_service_center_form')[0]; 
                             var formData = new FormData(form);
+                            formData.set('description', $('.ql-editor').html())
                             submitButton.setAttribute('data-kt-indicator', 'on');
                             submitButton.disabled = true;
                             //call ajax call
