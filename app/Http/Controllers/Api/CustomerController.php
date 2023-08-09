@@ -371,7 +371,7 @@ class CustomerController extends Controller
 
     public function addressList($customer_id)
     {
-        $address_details = CustomerAddress::with(['countries', 'states','pincode'])->where('customer_id', $customer_id)->orderBy('created_at', 'desc')->get();
+        $address_details = CustomerAddress::with(['countries', 'states','PostCode'])->where('customer_id', $customer_id)->orderBy('created_at', 'desc')->get();
         return CustomerAddressesResource::collection($address_details);
     }
 

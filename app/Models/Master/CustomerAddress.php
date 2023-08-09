@@ -44,6 +44,10 @@ class CustomerAddress extends Model
     {
         return $this->hasOne(Pincode::class, 'id', 'post_code_id');
     }
+    public function PostCode()
+    {
+        return $this->hasOne(Pincode::class, 'id', 'post_code_id');
+    }
     public function subCategory()
     {
         return $this->hasOne(SubCategory::class, 'id', 'address_type_id');
