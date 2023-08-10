@@ -8,6 +8,7 @@ use App\Models\Cart;
 use App\Models\GlobalSettings;
 use App\Models\Master\EmailTemplate;
 use App\Models\Master\OrderStatus;
+use App\Models\Offers\Coupons;
 use App\Models\Order;
 use App\Models\OrderHistory;
 use App\Models\OrderProduct;
@@ -31,7 +32,7 @@ class CheckoutController extends Controller
 
         $keyId = env('RAZORPAY_KEY');
         $keySecret = env('RAZORPAY_SECRET');
-        
+
         $checkout_infomation = json_decode($request->checkout_infomation);
         // dd( $checkout_infomation );
         // dump( $checkout_infomation->checkout_data );
@@ -57,7 +58,7 @@ class CheckoutController extends Controller
         $coupon_code = '';
         $coupon_amount = 0;
         $coupon_id = 0;
-        if( isset( $coupon_data ) && !empty( $coupon_data ) ){
+        if (isset($coupon_data) && !empty($coupon_data)) {
             $coupon_code = $coupon_data->coupon_code;
             $coupon_id = $coupon_data->coupon_id;
             $coupon_amount = $coupon_data->coupon_amount;
@@ -65,7 +66,7 @@ class CheckoutController extends Controller
         }
 
         $pickup_address_details = '';
-        if( isset( $pickup_store_address ) && !empty( $pickup_store_address ) ){
+        if (isset($pickup_store_address) && !empty($pickup_store_address)) {
             $pickup_address_details = serialize($pickup_store_address);
         }
 
@@ -81,7 +82,7 @@ class CheckoutController extends Controller
                 }
             }
         }
-        if( !$shipping_method ) {
+        if (!$shipping_method) {
             $message     = 'Shipping Method not selected';
             $error = 1;
             $response['error'] = $error;
@@ -92,24 +93,24 @@ class CheckoutController extends Controller
             $error = 1;
             $response['error'] = $error;
             $response['message'] = implode(',', $errors);
-            
+
             return $response;
         }
 
         $checkout_total = str_replace(',', '', $checkout_data->total);
         $pay_amount  = filter_var($checkout_total, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-        
+
 
         $order_ins['customer_id'] = $customer_id;
         $order_ins['customer_id'] = $customer_id;
         $order_ins['order_no'] = getOrderNo();
-        
-       
+
+
         $order_ins['amount'] = $pay_amount;
         $order_ins['tax_amount'] = $checkout_data->tax_total ? str_replace(',', '', $checkout_data->tax_total) : 0;
         $order_ins['tax_percentage'] = $checkout_data->tax_percentage ?? 0;
         $order_ins['shipping_amount'] = $checkout_data->shipping_charge ?? 0;
-        
+
         $order_ins['coupon_amount'] = $coupon_amount ?? 0;
         $order_ins['coupon_code'] = $coupon_code ?? '';
         $order_ins['coupon_details'] = $coupon_details ?? '';
@@ -118,7 +119,7 @@ class CheckoutController extends Controller
         $order_ins['order_status_id'] = $order_status->id;
         $order_ins['status'] = 'pending';
         $order_ins['pickup_store_details'] = $pickup_address_details;
-        
+
         $order_ins['billing_name'] = $billing_address->name;
         $order_ins['billing_email'] = $billing_address->email;
         $order_ins['billing_mobile_no'] = $billing_address->mobile_no;
@@ -141,19 +142,17 @@ class CheckoutController extends Controller
         $order_ins['shipping_state'] = $shipping_address->state ?? $billing_address->state ?? null;
         $order_ins['shipping_city'] = $shipping_address->city ?? $billing_address->city ?? null;
 
-        if( isset( $shipping_method ) && $shipping_method != 'PICKUP_FROM_STORE' && isset( $shipping_address ) && !empty( $shipping_address ) ) {
+        if (isset($shipping_method) && $shipping_method != 'PICKUP_FROM_STORE' && isset($shipping_address) && !empty($shipping_address)) {
 
             $shipping_type_info = ShippingCharge::find($checkout_infomation->standard_shipping_charge_id);
 
             $order_ins['shipping_options'] = $checkout_infomation->standard_shipping_charge_id ?? 0;
-            if( $shipping_type_info ) {
+            if ($shipping_type_info) {
                 $order_ins['shipping_type'] = $shipping_type_info->shipping_title ?? 'Free';
             }
-
         } else {
 
             $order_ins['pickup_store_id'] = $checkout_infomation->pickup_store_id;
-
         }
 
         $order_info = Order::create($order_ins);
@@ -174,34 +173,34 @@ class CheckoutController extends Controller
                 $items_ins['strice_price'] = $item->strike_price;
                 $items_ins['save_price'] = $item->save_price;
                 $items_ins['base_price'] = $item->tax->basePrice;
-                $items_ins['tax_amount'] = ($item->tax->gstAmount ?? 0 ) * $item->quantity;
+                $items_ins['tax_amount'] = ($item->tax->gstAmount ?? 0) * $item->quantity;
                 $items_ins['tax_percentage'] = $item->tax->tax_percentage ?? 0;
                 $items_ins['sub_total'] = $item->sub_total;
 
                 $order_product_info = OrderProduct::create($items_ins);
-                if( isset( $product_info->warranty_id ) && !empty($product_info->warranty_id ) ) {
+                if (isset($product_info->warranty_id) && !empty($product_info->warranty_id)) {
                     $warranty_info = Warranty::find($product_info->warranty_id);
-                    if($warranty_info){
+                    if ($warranty_info) {
                         $war = [];
-                        $war['order_product_id']= $order_product_info->id;
-                        $war['product_id']= $order_product_info->product_id;
-                        $war['warranty_id']= $warranty_info->id;
-                        $war['warranty_name']= $warranty_info->name;
-                        $war['description']= $warranty_info->description;
-                        $war['warranty_period']= $warranty_info->warranty_period;
-                        $war['warranty_period_type']= $warranty_info->warranty_period_type;
-                        $war['warranty_start_date']= date('Y-m-d');
-                        $war['warranty_end_date']= getEndWarrantyDate($warranty_info->warranty_period, $warranty_info->warranty_period_type);
-                        $war['status']= 'active';
+                        $war['order_product_id'] = $order_product_info->id;
+                        $war['product_id'] = $order_product_info->product_id;
+                        $war['warranty_id'] = $warranty_info->id;
+                        $war['warranty_name'] = $warranty_info->name;
+                        $war['description'] = $warranty_info->description;
+                        $war['warranty_period'] = $warranty_info->warranty_period;
+                        $war['warranty_period_type'] = $warranty_info->warranty_period_type;
+                        $war['warranty_start_date'] = date('Y-m-d');
+                        $war['warranty_end_date'] = getEndWarrantyDate($warranty_info->warranty_period, $warranty_info->warranty_period_type);
+                        $war['status'] = 'active';
                         OrderProductWarranty::create($war);
                     }
-                } 
+                }
 
                 /**
                  * insert addons data
                  */
-                if( isset( $item->addons ) && !empty( $item->addons ) ) {
-                    foreach ($item->addons as $aitems ) {
+                if (isset($item->addons) && !empty($item->addons)) {
+                    foreach ($item->addons as $aitems) {
                         $add_ins = [];
                         $add_ins['order_id'] = $order_id;
                         $add_ins['product_id'] = $item->id;
@@ -327,6 +326,12 @@ class CheckoutController extends Controller
 
                     $order_items = OrderProduct::where('order_id', $order_info->id)->get();
 
+                    if(!is_null($order_info->coupon_code)) {
+                        $AppliedCoupon =  Coupons::where('coupon_code', $order_info->coupon_code)->first();
+                        $AppliedCoupon->used_quantity = $AppliedCoupon->quantity - 1;
+                        $AppliedCoupon->save();
+                    }
+
                     if (isset($order_items) && !empty($order_items)) {
                         foreach ($order_items as $product) {
                             $product_info = Product::find($product->product_id);
@@ -363,9 +368,9 @@ class CheckoutController extends Controller
                     #generate invoice
                     $globalInfo = GlobalSettings::first();
                     $pickup_details = [];
-                    if( isset( $order_info->pickup_store_id ) && !empty( $order_info->pickup_store_id) && !empty($order_info->pickup_store_details )) {
+                    if (isset($order_info->pickup_store_id) && !empty($order_info->pickup_store_id) && !empty($order_info->pickup_store_details)) {
                         $pickup = unserialize($order_info->pickup_store_details);
-                        
+
                         $pickup_details = $pickup;
                     }
                     $pdf = PDF::loadView('platform.invoice.index', compact('order_info', 'globalInfo', 'pickup_details'));
@@ -397,11 +402,11 @@ class CheckoutController extends Controller
                     $title = str_replace("}", "", $title);
                     eval("\$title = \"$title\";");
 
-                    $filePath = 'storage/invoice_order/'.$order_info->order_no.'.pdf';
+                    $filePath = 'storage/invoice_order/' . $order_info->order_no . '.pdf';
                     $send_mail = new OrderMail($templateMessage, $title, $filePath);
                     // return $send_mail->render();
                     Mail::to($order_info->billing_email)->bcc('support@gbssystems.com')->send($send_mail);
-                                   
+
 
                     #send sms for notification
                     $sms_params = array(
@@ -443,7 +448,7 @@ class CheckoutController extends Controller
                     if (isset($order_items) && !empty($order_items)) {
                         foreach ($order_items as $product) {
                             $product_info = Product::find($product->id);
-                            $pquantity = $product_info->quantity - $product->quantity;
+                            $pquantity = $product_info->quantity - $product->quantity; // reduce product Qty
                             $product_info->quantity = $pquantity;
                             if ($pquantity == 0) {
                                 $product_info->stock_status = 'out_of_stock';
@@ -465,7 +470,6 @@ class CheckoutController extends Controller
                     $error_message = $request->razor_response['error']['description'];
 
                     Payment::create($pay_ins);
-                 
                 }
             }
         }
