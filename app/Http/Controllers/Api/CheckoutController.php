@@ -20,6 +20,7 @@ use App\Models\ShippingCharge;
 use App\Models\Warranty;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Razorpay\Api\Api;
 use PDF;
@@ -405,8 +406,11 @@ class CheckoutController extends Controller
                     $filePath = 'storage/invoice_order/' . $order_info->order_no . '.pdf';
                     $send_mail = new OrderMail($templateMessage, $title, $filePath);
                     // return $send_mail->render();
-                    Mail::to($order_info->billing_email)->bcc('support@gbssystems.com')->send($send_mail);
-
+                    try {
+                        Mail::to($order_info->billing_email)->bcc('support@gbssystems.com')->send($send_mail);
+                    } catch (\Throwable $th) {
+                        Log::info($th->getMessage());
+                    }
 
                     #send sms for notification
                     $sms_params = array(
