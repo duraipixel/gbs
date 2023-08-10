@@ -126,7 +126,7 @@ class CCavenueController extends Controller
 
                     if(!is_null($order_info->coupon_code)) {
                         $AppliedCoupon =  Coupons::where('coupon_code', $order_info->coupon_code)->first();
-                        $AppliedCoupon->used_quantity = $AppliedCoupon->quantity - 1;
+                        $AppliedCoupon->quantity = $AppliedCoupon->quantity - 1;
                         $AppliedCoupon->save();
                     }
 
@@ -195,7 +195,11 @@ class CCavenueController extends Controller
                     $filePath = 'storage/invoice_order/' . $order_info->order_no . '.pdf';
                     $send_mail = new OrderMail($templateMessage, $title, $filePath);
                     // return $send_mail->render();
-                    Mail::to($order_info->billing_email)->bcc(['support@gbssystems.com', $order_info->billing_email])->send($send_mail);
+                    try {
+                        Mail::to($order_info->billing_email)->bcc(['support@gbssystems.com', $order_info->billing_email])->send($send_mail);
+                    } catch (\Throwable $th) {
+                        //throw $th;
+                    }
 
                     #send sms for notification
                     $sms_params = array(
@@ -232,7 +236,7 @@ class CCavenueController extends Controller
 
                     if(!is_null($order_info->coupon_code)) {
                         $AppliedCoupon =  Coupons::where('coupon_code', $order_info->coupon_code)->first();
-                        $AppliedCoupon->used_quantity = $AppliedCoupon->quantity - 1;
+                        $AppliedCoupon->quantity = $AppliedCoupon->quantity - 1;
                         $AppliedCoupon->save();
                     }
 

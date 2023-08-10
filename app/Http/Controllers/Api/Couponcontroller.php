@@ -51,7 +51,7 @@ class Couponcontroller extends Controller
                 $has_product_error = 0;
                 $overall_discount_percentage = 0;
                 $couponApplied = [];
-                if ($coupon->quantity > $coupon->used_quantity ?? 0) {
+                if ($coupon->quantity > 0) {
                     
                     switch ($coupon->coupon_type) {
                         case '1':
