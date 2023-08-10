@@ -7,6 +7,7 @@ use App\Models\Cart;
 use App\Models\CartProductAddon;
 use App\Models\Offers\CouponCategory;
 use App\Models\Offers\Coupons;
+use App\Models\Order;
 use App\Models\Settings\Tax;
 use App\Models\ShippingCharge;
 use Illuminate\Http\Request;
@@ -20,9 +21,11 @@ class Couponcontroller extends Controller
         $coupon_code = $request->coupon_code;
         $customer_id = $request->customer_id;
         $shipping_fee_id = $request->shipping_fee_id ?? '';
-        $carts          = Cart::where('customer_id', $customer_id)->get();
+        $carts     = Cart::where('customer_id', $customer_id)->get();
+        $isApplied = Order::where('customer_id', $customer_id)->where('coupon_code', $coupon_code)->first();
+
         
-        if ($carts) {
+        if ($carts && is_null($isApplied)) {
             $coupon = Coupons::where('coupon_code', $coupon_code)
                 ->where('is_discount_on', 'no')
                 ->whereDate('coupons.start_date', '<=', date('Y-m-d'))
