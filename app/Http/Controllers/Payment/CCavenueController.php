@@ -450,7 +450,7 @@ class CCavenueController extends Controller
                     $items_ins['price'] = $item->price;
                     $items_ins['strice_price'] = $product_info->strike_price;
                     $items_ins['save_price'] = $product_info->save_price;
-                    $items_ins['base_price'] = $product_info->tax->basePrice;
+                    $items_ins['base_price'] = $product_info->tax->basePrice ?? 0;
                     $items_ins['tax_amount'] = ($tax['gstAmount'] ?? 0) * $item->quantity;
                     $items_ins['tax_percentage'] = $tax['tax_percentage'] ?? $tax_percentage ?? 0;
                     $items_ins['sub_total'] = $item->sub_total;
