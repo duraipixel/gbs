@@ -24,7 +24,7 @@ class Couponcontroller extends Controller
         $carts     = Cart::where('customer_id', $customer_id)->get();
         $isApplied = Order::where('customer_id', $customer_id)->where('coupon_code', $coupon_code)->first();
 
-        
+        return  $isApplied;
         if ($carts && is_null($isApplied)) {
             $coupon = Coupons::where('coupon_code', $coupon_code)
                 ->where('is_discount_on', 'no')
