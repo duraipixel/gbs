@@ -24,8 +24,14 @@ class Couponcontroller extends Controller
         $carts     = Cart::where('customer_id', $customer_id)->get();
         $isApplied = Order::where('customer_id', $customer_id)->where('coupon_code', $coupon_code)->first();
 
-        return  $isApplied;
-        if ($carts && is_null($isApplied)) {
+        if(is_null($isApplied)) {
+            return response([
+                "status" => 'error',
+                "message" => 'You have already used the coupon.'
+            ]);
+        }
+         
+        if ($carts) {
             $coupon = Coupons::where('coupon_code', $coupon_code)
                 ->where('is_discount_on', 'no')
                 ->whereDate('coupons.start_date', '<=', date('Y-m-d'))
