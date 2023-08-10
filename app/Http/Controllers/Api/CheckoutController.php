@@ -445,6 +445,13 @@ class CheckoutController extends Controller
 
                     $order_items = OrderProduct::where('order_id', $order_info->id)->get();
 
+
+                    if(!is_null($order_info->coupon_code)) {
+                        $AppliedCoupon =  Coupons::where('coupon_code', $order_info->coupon_code)->first();
+                        $AppliedCoupon->used_quantity = $AppliedCoupon->quantity - 1;
+                        $AppliedCoupon->save();
+                    }
+
                     if (isset($order_items) && !empty($order_items)) {
                         foreach ($order_items as $product) {
                             $product_info = Product::find($product->id);
