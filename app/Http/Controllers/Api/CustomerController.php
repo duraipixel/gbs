@@ -89,7 +89,7 @@ class CustomerController extends Controller
             $customer_data->update();
 
             $extract = array(
-                'name' => $request->firstName,
+                'name' => $request->first_name." ".$request->last_name,
                 'regards' => $globalInfo->site_name,
                 'link' => '<a href="' . $link . '"> Verify Account </a>',
                 'company_website' => '',
