@@ -77,15 +77,15 @@
 
         <div class="fv-row mb-5">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <div class="fv-row mb-7">
                         <label class="required fw-bold fs-7 mb-2">Description</label>
-                        <div class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Description" name="description"
-                        id="textEditor" cols="50" rows="10">{!! $info->description ?? "" !!}</div>
+                        <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Description" name="description"
+                            id="description" cols="30" rows="2">{{ $info->description ?? '' }}</textarea>
                     </div>
 
                 </div>
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <div class="fv-row mb-7">
                         <label class="fw-bold fs-7 mb-2">Address</label>
                         <textarea class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Address" name="address" id="address"
@@ -320,14 +320,7 @@
         </div>
     </div>
 </div>
-<!-- include summernote css/js -->
-<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
-
 <script>
-    var quill = new Quill('#textEditor', {
-        theme: 'snow'
-    }); 
 
     $('#brand_id').select2();
     $('.numberonly').keypress(function(e) {
