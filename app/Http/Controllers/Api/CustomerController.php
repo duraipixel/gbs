@@ -26,75 +26,68 @@ class CustomerController extends Controller
 {
     public function verifyAccount(Request $request)
     {
-        
-        $email = $request->token;
-        $email = base64_decode($email);
-        $error = 1;
-        $message = 'Token Expired';
+        $email    = $request->token;
+        $email    = base64_decode($email);
+        $error    = 1;
+        $message  = 'Token Expired';
         $customer = Customer::with('customerAddress')->where('email', $email)->whereNull('deleted_at')->first();
         if( $customer ) {
             if( !empty($customer->verification_token) ) {
-                $customer->email_verified_at = Carbon::now();
+                $customer->email_verified_at  = Carbon::now();
                 $customer->verification_token = null;
                 $customer->update();
-                $error = 0;
+                $error   = 0;
                 $message = 'Account Verified Succesfull';
             } 
         }
 
         return array('error' => $error, 'message' => $message, 'customer' => $customer);
-
     }
 
     public function registerCustomer(Request $request)
     {
        
-        $validator = Validator::make($request->all(), [
+        Validator::make($request->all(), [
             'first_name' => 'required|string',
-            'last_name' => 'required|string',
-            'email' => 'required|email|unique:customers,email,id,deleted_at,NULL', 
-            'password' => 'required|string',
+            'last_name'  => 'required|string',
+            'email'      => 'required|email|unique:customers,email,id,deleted_at,NULL',
+            'password'   => 'required|string',
 
         ], ['email.unique' => 'Email id is already registered.Please try to login']);
 
         $customer = Customer::where('email', $request->email)->whereNull('deleted_at')->first();
+
         if (!$customer) {
-
-            $ins['first_name'] = $request->first_name;
-            $ins['last_name'] = $request->last_name ?? null;
-            $ins['email'] = $request->email;
-            $ins['mobile_no'] = $request->mobile ?? null;
+            $ins['first_name']  = $request->first_name;
+            $ins['last_name']   = $request->last_name ?? null;
+            $ins['email']       = $request->email;
+            $ins['mobile_no']   = $request->mobile ?? null;
             $ins['customer_no'] = getCustomerNo();
-            $ins['password'] = Hash::make($request->password);
-            $ins['status'] = 'published';
-
-            $customer_data = Customer::create($ins);
-
-            $token_id = base64_encode($request->email);
+            $ins['password']    = Hash::make($request->password);
+            $ins['status']      = 'published';
+            $customer_data      = Customer::create($ins);
+            $token_id           = base64_encode($request->email);
 
             /** send email for new customer */
             $emailTemplate = EmailTemplate::select('email_templates.*')
                 ->join('sub_categories', 'sub_categories.id', '=', 'email_templates.type_id')
                 ->where('sub_categories.slug', 'new-registration')->first();
-
-            $globalInfo = GlobalSettings::first();
-
-            // $link = 'http://192.168.0.35:2000/verify-account/' . $token_id;
-            // $link = 'https://gbs-dev.vercel.app/verify-account/' . $token_id;
-            // $link = 'https://beta.gbssystems.com/verify-account/' . $token_id;
-            $link = 'https://www.gbssystems.com/verify-account/' . $token_id;
-            
-
+                
+                // $link = 'http://192.168.0.35:2000/verify-account/' . $token_id;
+                // $link = 'https://gbs-dev.vercel.app/verify-account/' . $token_id;
+                // $link = 'https://beta.gbssystems.com/verify-account/' . $token_id;
+            $globalInfo                        = GlobalSettings::first();
+            $link                              = 'https://www.gbssystems.com/verify-account/' . $token_id;
             $customer_data->verification_token = $token_id;
             $customer_data->update();
 
             $extract = array(
-                'name' => $request->first_name." ".$request->last_name,
-                'regards' => $globalInfo->site_name,
-                'link' => '<a href="' . $link . '"> Verify Account </a>',
-                'company_website' => '',
+                'name'              => $request->first_name." ".$request->last_name,
+                'regards'           => $globalInfo->site_name,
+                'link'              => '<a href="' . $link . '"> Verify Account </a>',
+                'company_website'   => '',
                 'company_mobile_no' => $globalInfo->site_mobile_no,
-                'company_address' => $globalInfo->address
+                'company_address'   => $globalInfo->address
             );
 
             $templateMessage = $emailTemplate->message;
@@ -104,31 +97,31 @@ class CustomerController extends Controller
             eval("\$templateMessage = \"$templateMessage\";");
 
             $send_mail = new DynamicMail($templateMessage, $emailTemplate->title);
-            // return $send_mail->render();
             Mail::to($request->email)->bcc(['support@gbssystems.com', $request->email])->send($send_mail);
+            // return $send_mail->render();
 
             /** send sms for new customer */
             if ($request->mobile_no) {
 
                 $sms_params = array(
-                    'name' => $request->firstName,
-                    'reference_id' => $ins['customer_no'],
-                    'company_name' => env('APP_NAME'),
+                    'name'          => $request->firstName,
+                    'reference_id'  => $ins['customer_no'],
+                    'company_name'  => env('APP_NAME'),
                     'login_details' => $ins['email'] . '/' . $request->password,
-                    'mobile_no' => [$request->mobile_no]
+                    'mobile_no'     => [$request->mobile_no]
                 );
 
                 sendGBSSms('register', $sms_params);
             }
 
-            $error = 0;
+            $error   = 0;
             $message = 'Verification email is sent to your email address, Please verify account to login';
-            $status = 'success';
+            $status  = 'success';
         } else {
-            $error = 1;
-            // $message = $validator->errors()->all();
+            $error   = 1;
             $message = ['Email id is already exists'];
-            $status = 'error';
+            $status  = 'error';
+            // $message = $validator->errors()->all();
         }
         return array('error' => $error, 'message' => $message, 'status' => $status, 'customer' => $customer_data ?? '' );
     }
@@ -136,27 +129,24 @@ class CustomerController extends Controller
     public function doLogin(Request $request)
     {
         
-        $email = $request->email;
-        $password = $request->password;
-        $guest_token = $request->guest_token;
-        
+        $email         = $request->email;
+        $password      = $request->password;
+        $guest_token   = $request->guest_token;
         $checkCustomer = Customer::with(['customerAddress', 'customerAddress.subCategory'])->where('email', $email)->first();
-        if ($checkCustomer) {
 
+        if ($checkCustomer) {
             if( $checkCustomer->email_verified_at == null ) {
-                $error = 1;
-                $message = 'Verification pending check your mail';
-                $status = 'error';
-                $customer_data = '';
+                $error            = 1;
+                $message          = 'Verification pending check your mail';
+                $status           = 'error';
+                $customer_data    = '';
                 $customer_address = [];
             } else {
-
-                $error = 0;
-                $message = 'Login Success';
-                $status = 'success';
-                $customer_data = $checkCustomer;
+                $error            = 0;
+                $message          = 'Login Success';
+                $status           = 'success';
+                $customer_data    = $checkCustomer;
                 $customer_address = $checkCustomer->customerAddress ?? [];
-
                 if( $guest_token ) {
 
                     $cartData = Cart::where('guest_token', $guest_token)->get();
@@ -170,10 +160,10 @@ class CustomerController extends Controller
             }
             
         } else {
-            $error = 1;
-            $message = 'Invalid credentials';
-            $status = 'error';
-            $customer_data = '';
+            $error            = 1;
+            $message          = 'Invalid credentials';
+            $status           = 'error';
+            $customer_data    = '';
             $customer_address = [];
         }
 
@@ -184,13 +174,12 @@ class CustomerController extends Controller
     public function updateProfile(Request $request)
     {
 
-        $customer_id = $request->customer_id;
-        $first_name = $request->first_name;
-        $last_name = $request->last_name;
-        
-        $mobile_no = $request->mobile_no;
-
+        $customer_id  = $request->customer_id;
+        $first_name   = $request->first_name;
+        $last_name    = $request->last_name;
+        $mobile_no    = $request->mobile_no;
         $customerInfo = Customer::find($customer_id);
+
         if( $first_name ) {
             $customerInfo->first_name = $first_name;
         }
@@ -211,32 +200,30 @@ class CustomerController extends Controller
     public function changePassword(Request $request)
     {
 
-        $customer_id = $request->customer_id;
+        $customer_id      = $request->customer_id;
         $current_password = $request->current_password;
-        $newPassword = $request->password;
+        $newPassword      = $request->password;
+        $customerInfo     = Customer::find($customer_id);
 
-        $customerInfo = Customer::find($customer_id);
         if( $customerInfo ) {
             if ($current_password == $newPassword) {
-                $error = 1;
+                $error   = 1;
                 $message = 'New password cannot be same as current password';
             } else if (isset($customerInfo) && !empty($customerInfo)) {
     
                 if (Hash::check($current_password, $customerInfo->password)) {
-                    $error = 0;
-    
-                    $customerInfo->password = Hash::make($newPassword);
+                    $error                             = 0;
+                    $customerInfo->password            = Hash::make($newPassword);
                     $customerInfo->password_changed_at = date('Y-m-d H:i:s');
                     $customerInfo->update();
-    
                     $message = 'Password changed successfully';
                 } else {
-                    $error = 1;
+                    $error   = 1;
                     $message = 'Current password is not match';
                 }
             }
         } else {
-            $error = 1;
+            $error   = 1;
             $message = 'Customer Data not exits';
         }
         
@@ -248,35 +235,35 @@ class CustomerController extends Controller
 
     public function sendPasswordLink(Request $request)
     {
-        $email = $request->email;
-        $token_id = base64_encode($email);
-
+        $email         = $request->email;
+        $token_id      = base64_encode($email);
         $customer_info = Customer::where('email', $email)->first();
 
         if (isset($customer_info) && !empty($customer_info)) {
 
-            $error = 0;
-            $message = 'Password link sent to mail, Please check';
+            $error                       = 0;
+            $message                     = 'Password link sent to mail, Please check';
             $customer_info->forgot_token = $token_id;
             $customer_info->update();
+
             /** send email for new customer */
             $emailTemplate = EmailTemplate::select('email_templates.*')
                 ->join('sub_categories', 'sub_categories.id', '=', 'email_templates.type_id')
                 ->where('sub_categories.slug', 'forgot-password')->first();
 
             $globalInfo = GlobalSettings::first();
+            $link       = 'https://www.gbssystems.com/reset-password/' . $token_id;
             // $link = 'http://192.168.0.35:2000/verify-account/' . $token_id;
             // $link = 'https://gbs-dev.vercel.app/reset-password/' . $token_id;
             // $link = 'https://beta.gbssystems.com/reset-password/' . $token_id;
-            $link = 'https://www.gbssystems.com/reset-password/' . $token_id;
             
             $extract = array(
-                'name' => $customer_info->firstName . ' ' . $customer_info->last_name,
-                'link' => '<a href="' . $link . '"> Reset Password </a>',
-                'regards' => $globalInfo->site_name,
-                'company_website' => '',
+                'name'              => $customer_info->firstName . ' ' . $customer_info->last_name,
+                'link'              => '<a href="' . $link . '"> Reset Password </a>',
+                'regards'           => $globalInfo->site_name,
+                'company_website'   => '',
                 'company_mobile_no' => $globalInfo->site_mobile_no,
-                'company_address' => $globalInfo->address
+                'company_address'   => $globalInfo->address
             );
 
             $templateMessage = $emailTemplate->message;
@@ -289,7 +276,7 @@ class CustomerController extends Controller
             // return $send_mail->render();
             Mail::to([$email])->bcc(['support@gbssystems.com', $email])->send($send_mail);
         } else {
-            $error = 1;
+            $error   = 1;
             $message = 'Email id is not exists';
         }
         return array('error' => $error, 'message' => $message);
@@ -297,22 +284,20 @@ class CustomerController extends Controller
 
     public function resetPasswordLink(Request $request)
     {
-        $customer_id = $request->customer_id;
-        $password = $request->password;
-
+        $customer_id  = $request->customer_id;
+        $password     = $request->password;
         $customerInfo = Customer::find($customer_id);
 
         if (isset($customerInfo) && !empty($customerInfo)) {
 
-            $customerInfo->password = Hash::make($password);
+            $customerInfo->password            = Hash::make($password);
             $customerInfo->password_changed_at = date('Y-m-d H:i:s');
-            $customerInfo->forgot_token = null;
+            $customerInfo->forgot_token        = null;
             $customerInfo->update();
-
-            $error = 0;
+            $error   = 0;
             $message = 'Password has been reset successfully. Please try login';
         } else {
-            $error = 1;
+            $error   = 1;
             $message = 'Customer not found, Please try register';
         }
         return array('error' => $error, 'message' => $message);
@@ -320,18 +305,17 @@ class CustomerController extends Controller
 
     public function checkValidToken(Request $request)
     {
-        $token_id = $request->token_id;
-        
+        $token_id     = $request->token_id;
         $customerInfo = Customer::where('forgot_token', $token_id)->first();
 
         if (isset($customerInfo) && !empty($customerInfo)) {
-            $error = 0;
+            $error   = 0;
             $message = 'Token is valid';
-            $data = $customerInfo;
+            $data    = $customerInfo;
         } else {
-            $error = 1;
+            $error   = 1;
             $message = 'Token is invalid';
-            $data = '';
+            $data    = '';
         }
         return array('error' => $error, 'message' => $message, 'customer' => $data);
     }
@@ -339,7 +323,7 @@ class CustomerController extends Controller
     public function getProfileDetails(Request $request)
     {
 
-        $customer_id = $request->customer_id;
+        $customer_id   = $request->customer_id;
         $customer_info = Customer::find($customer_id);
         
         return array('status' => 'success', 'message' => 'Successfully fetched customer data', 'customer' => $customer_info );
@@ -349,21 +333,21 @@ class CustomerController extends Controller
     public function getCustomerAddressDetails(Request $request)
     {
 
-        $customer_id = $request->customer_id;
-        $address_array  = $this->addressList($customer_id);
-        $address_type   = MainCategory::with('subCategory')->where('slug', 'address-type')->first();
-        $country    = Country::where('status', 1)->get();
-        $state    = State::where('status', 1)->get();
-        $pincode = Pincode::where('status', 1)->orderBy('pincode')->get();
+        $customer_id   = $request->customer_id;
+        $address_array = $this->addressList($customer_id);
+        $address_type  = MainCategory::with('subCategory')->where('slug', 'address-type')->first();
+        $country       = Country::where('status', 1)->get();
+        $state         = State::where('status', 1)->get();
+        $pincode       = Pincode::where('status', 1)->orderBy('pincode')->get();
 
         $response = array(
-                        'status' => 'success', 
-                        'message' => 'Successfully fetched address data', 
-                        'addresses' => $address_array, 
+                        'status'       => 'success',
+                        'message'      => 'Successfully fetched address data',
+                        'addresses'    => $address_array,
                         'address_type' => $address_type->subCategory,
-                        'country' => $country,
-                        'state' => $state,
-                        'pincode' => $pincode
+                        'country'      => $country,
+                        'state'        => $state,
+                        'pincode'      => $pincode
                     );
         
         return $response;
@@ -378,23 +362,23 @@ class CustomerController extends Controller
     public function addUpdateCustomerAddress(Request $request)
     {
 
-        $ins['customer_id'] = $request->customer_id;
+        $ins['customer_id']     = $request->customer_id;
         $ins['address_type_id'] = $request->address_type_id;
-        $ins['name'] = $request->name;
-        $ins['email'] = $request->email;
-        $ins['mobile_no'] = $request->mobile_no;
-        $ins['address_line1'] = $request->address;
-        $ins['countryid'] = $request->country;
-        $ins['stateid'] = $request->state;
-        $ins['post_code'] = $request->post_code;
-        $ins['city'] = $request->city;
+        $ins['name']            = $request->name;
+        $ins['email']           = $request->email;
+        $ins['mobile_no']       = $request->mobile_no;
+        $ins['address_line1']   = $request->address;
+        $ins['countryid']       = $request->country;
+        $ins['stateid']         = $request->state;
+        $ins['post_code']       = $request->post_code;
+        $ins['city']            = $request->city;
 
         CustomerAddress::updateOrCreate(['id' => $request->id], $ins);
         
         $response = array(
-                        'error' => 0, 
-                        'message' => $request->id ? 'Address Updated successfully' :'Address Added successfully', 
-                        'status' => 'success', 
+                        'error'     => 0,
+                        'message'   => $request->id ? 'Address Updated successfully' :'Address Added successfully',
+                        'status'    => 'success',
                         'addresses' => $this->addressList($request->customer_id)
                     );
         return $response;
@@ -407,10 +391,10 @@ class CustomerController extends Controller
         $customer_address_id = $request->customer_address_id;
 
         if( !$customer_address_id ) {
-            $error = 1;
+            $error   = 1;
             $message = 'Address id is required';
         } else {
-            $error = 0;
+            $error   = 0;
             $message = 'Address set as Default Successfully';
             CustomerAddress::where('customer_id', $request->customer_id)->update(['is_default' => 0]);
 
@@ -428,11 +412,11 @@ class CustomerController extends Controller
 
         $address_id = $request->customer_address_id;
         if( !$address_id ) {
-            $error = 1;
+            $error   = 1;
             $message = 'Address not found';
         } else {
-            $error = 0;
-            $message = 'Address deleted successfully';
+            $error       = 0;
+            $message     = 'Address deleted successfully';
             $addressInfo = CustomerAddress::find($address_id);
             $addressInfo->delete();
         }
@@ -443,13 +427,12 @@ class CustomerController extends Controller
 
     public function setWishlists(Request $request)
     {
-        $customer_id = $request->customer_id;
-        $product_id = $request->product_id;
-        $status = $request->status;
-
+        $customer_id        = $request->customer_id;
+        $product_id         = $request->product_id;
+        $status             = $request->status;
         $ins['customer_id'] = $customer_id;
-        $ins['product_id'] = $product_id;
-        $ins['status'] = $status;
+        $ins['product_id']  = $product_id;
+        $ins['status']      = $status;
 
         Wishlist::updateOrCreate(['customer_id' => $customer_id, 'product_id' => $product_id], $ins);
 
@@ -471,13 +454,12 @@ class CustomerController extends Controller
     public function getWishlist(Request $request)
     {
         $customer_id = $request->customer_id;
+        $wishlist    = Wishlist::where('status', 1)->where(['customer_id' => $customer_id])->get();
 
-        $wishlist = Wishlist::where('status', 1)
-                                ->where(['customer_id' => $customer_id])->get();
         $wishlist_arr = []; 
         if( isset( $wishlist ) && !empty( $wishlist ) ) {
             foreach ($wishlist as $items ) {
-                $product_data = Product::find($items->product_id);
+                $product_data   = Product::find($items->product_id);
                 $wishlist_arr[] = getProductApiData($product_data, $customer_id);
             }
         }

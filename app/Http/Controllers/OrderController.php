@@ -97,9 +97,14 @@ class OrderController extends Controller
     {
         $order_id = $request->id;
         $order_info = Order::find($order_id);
+        $pickup_details = [];
+        if (isset($order_info->pickup_store_id) && !empty($order_info->pickup_store_id) && !empty($order_info->pickup_store_details)) {
+            $pickup = unserialize($order_info->pickup_store_details);
+            $pickup_details = $pickup;
+        }
         $modal_title        = 'View Order';
         $globalInfo = GlobalSettings::first();
-        $view_order = view('platform.invoice.view_invoice', compact('order_info', 'globalInfo'));
+        $view_order = view('platform.invoice.view_invoice', compact('order_info', 'globalInfo', 'pickup_details'));
         return view('platform.order.view_modal', compact('view_order', 'modal_title'));
     }
 
@@ -126,7 +131,7 @@ class OrderController extends Controller
         if ($validator->passes()) {
 
             $info = Order::find($id);
-            $info->notification_status = 'yes';          
+            $info->notification_status = 'yes';
             $info->order_status_id = $request->order_status_id;
 
             switch ($request->order_status_id) {
@@ -204,8 +209,8 @@ class OrderController extends Controller
 
                 case '5':
                     $otp = $request->otp;
-                    if( $otp ){
-                        if( $info->delivery_otp != $otp ){
+                    if ($otp) {
+                        if ($info->delivery_otp != $otp) {
 
                             $message = ['OTP is not matched'];
                             return response()->json(['error' => '1', 'message' => $message]);
@@ -227,9 +232,9 @@ class OrderController extends Controller
                         }
 
                         $thumbnailPath          = 'public/orderDocument/' . $info->order_no . '/document/' . $imagName;
-                        
+
                         $path = Storage::put($thumbnailPath, file_get_contents($request->delivery_document));
-                        
+
                         $info->delivery_document = $thumbnailPath;
                     }
                     $info->otp_verified_by = auth()->user()->id;
@@ -241,7 +246,7 @@ class OrderController extends Controller
                         ->where('sub_categories.slug', 'order-delivered')->first();
 
                     $globalInfo = GlobalSettings::first();
-                    
+
                     $extract = array(
                         'name' => $info->billing_name,
                         'regards' => $globalInfo->site_name,
@@ -266,7 +271,7 @@ class OrderController extends Controller
                     $filePath = 'storage/orderDocument/' . $info->order_no . '/document/' . $imagName;
                     $send_mail = new OrderMail($templateMessage, $title, $filePath);
                     // return $send_mail->render();
-                    Mail::to($info->billing_email)->bcc(['support@gbssystems.com', $info->billing_email ])->send($send_mail);
+                    Mail::to($info->billing_email)->bcc(['support@gbssystems.com', $info->billing_email])->send($send_mail);
 
                     #send sms for notification
                     $sms_params = array(
@@ -308,11 +313,10 @@ class OrderController extends Controller
     public function orderCountGolbal()
     {
         $data = Order::selectRaw('gbs_payments.order_id,gbs_payments.payment_no,gbs_payments.status as payment_status,gbs_orders.*,sum(gbs_order_products.quantity) as order_quantity')
-        ->join('order_products', 'order_products.order_id', '=', 'orders.id')
-        ->join('payments', 'payments.order_id', '=', 'orders.id')->where('orders.notification_status','no')
-        ->groupBy('orders.id')->get();
-        $order_count=count($data);
+            ->join('order_products', 'order_products.order_id', '=', 'orders.id')
+            ->join('payments', 'payments.order_id', '=', 'orders.id')->where('orders.notification_status', 'no')
+            ->groupBy('orders.id')->get();
+        $order_count = count($data);
         return $order_count;
     }
-
 }
