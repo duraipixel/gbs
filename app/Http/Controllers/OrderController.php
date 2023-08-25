@@ -13,6 +13,7 @@ use App\Models\OrderHistory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use DataTables;
+use Exception;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
