@@ -99,6 +99,7 @@ class OrderController extends Controller
         $order_info = Order::find($order_id);
         $pickup_details = [];
         if (isset($order_info->pickup_store_id) && !empty($order_info->pickup_store_id) && !empty($order_info->pickup_store_details)) {
+            dd( $order_info->pickup_store_details );
             $pickup = unserialize( urldecode($order_info->pickup_store_details) );
             $pickup_details = $pickup;
         }
