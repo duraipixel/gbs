@@ -99,7 +99,20 @@ class OrderController extends Controller
         $order_info = Order::find($order_id);
         $pickup_details = [];
         if (isset($order_info->pickup_store_id) && !empty($order_info->pickup_store_id) && !empty($order_info->pickup_store_details)) {
-            dd( unserialize($order_info->pickup_store_details) );
+
+            try {
+                // Attempt to unserialize the retrieved data
+                $unserializedData = unserialize($order_info->pickup_store_details);
+            
+                if ($unserializedData === false) {
+                    throw new Exception("Unserialization failed.");
+                }
+            
+                // Now you can work with the unserialized data
+            } catch (Exception $e) {
+                // Handle any errors that occur during unserialization
+                echo "Error: " . $e->getMessage();
+            }
             $pickup = unserialize( urldecode($order_info->pickup_store_details) );
             $pickup_details = $pickup;
         }
