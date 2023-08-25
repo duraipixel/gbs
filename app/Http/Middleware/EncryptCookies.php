@@ -11,8 +11,6 @@ class EncryptCookies extends Middleware
      *
      * @var array<int, string>
      */
-    protected static $serialize = true;
-    
     protected $except = [
         //
     ];
