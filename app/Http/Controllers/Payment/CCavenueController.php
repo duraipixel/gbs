@@ -420,16 +420,16 @@ class CCavenueController extends Controller
             $order_ins['billing_state'] = $billing_address->state ?? null;
             $order_ins['billing_city'] = $billing_address->city ?? null;
 
-            $order_ins['shipping_name'] = $shipping_address->name ?? $billing_address->name;
-            $order_ins['shipping_email'] = $shipping_address->email ?? $billing_address->email;
-            $order_ins['shipping_mobile_no'] = $shipping_address->mobile_no ?? $billing_address->mobile_no;
-            $order_ins['shipping_address_line1'] = $shipping_address->address_line1 ?? $billing_address->address_line1;
-            $order_ins['shipping_address_line2'] = $shipping_address->address_line2 ?? $billing_address->address_line2 ?? null;
+            $order_ins['shipping_name'] = $pickup_store_address->title ?? $shipping_address->name ?? $billing_address->name;
+            $order_ins['shipping_email'] = $pickup_store_address->email ??$shipping_address->email ?? $billing_address->email;
+            $order_ins['shipping_mobile_no'] = $pickup_store_address->whatsapp_no ?? $shipping_address->mobile_no ?? $billing_address->mobile_no;
+            $order_ins['shipping_address_line1'] = $pickup_store_address->address ?? $shipping_address->address_line1 ?? $billing_address->address_line1;
+            $order_ins['shipping_address_line2'] = (isset($pickup_store_address) && !empty($pickup_store_address)) ? null : ($shipping_address->address_line2 ?? $billing_address->address_line2 ?? null);
             $order_ins['shipping_landmark'] = $shipping_address->landmark ?? $billing_address->landmark ?? null;
             $order_ins['shipping_country'] = $shipping_address->country ?? $billing_address->country ?? null;
-            $order_ins['shipping_post_code'] = $shipping_address->post_code ?? $billing_address->post_code;
-            $order_ins['shipping_state'] = $shipping_address->state ?? $billing_address->state ?? null;
-            $order_ins['shipping_city'] = $shipping_address->city ?? $billing_address->city ?? null;
+            $order_ins['shipping_post_code'] = (isset($pickup_store_address) && !empty($pickup_store_address)) ? null : ($shipping_address->post_code ?? $billing_address->post_code);
+            $order_ins['shipping_state'] = (isset($pickup_store_address) && !empty($pickup_store_address)) ? null : ($shipping_address->state ?? $billing_address->state ?? null);
+            $order_ins['shipping_city'] = (isset($pickup_store_address) && !empty($pickup_store_address)) ? null : ($shipping_address->city ?? $billing_address->city ?? null);
 
             // dump($order_ins);
 

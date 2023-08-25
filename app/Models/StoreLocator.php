@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class StoreLocator extends Model
 {
+    
     use HasFactory,SoftDeletes;
     protected $fillable = [
 
