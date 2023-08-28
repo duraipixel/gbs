@@ -303,54 +303,55 @@ class CartController extends Controller
                             }
                         }
                     }
+                    $total_addon_amount += $addon_total;
+
+                    $pro                    = [];
+                    $pro['id']              = $items->id;
+                    $pro['tax']             = $tax;
+                    $pro['tax_percentage']  = $tax_percentage;
+                    $pro['hsn_no']          = $items->hsn_code ?? null;
+                    $pro['product_name']    = $items->product_name;
+                    $pro['category_name']   = $category->name ?? '';
+                    $pro['brand_name']      = $items->productBrand->brand_name ?? '';
+                    $pro['hsn_code']        = $items->hsn_code;
+                    $pro['product_url']     = $items->product_url;
+                    $pro['sku']             = $items->sku;
+                    $pro['stock_status']    = $items->stock_status;
+                    $pro['is_featured']     = $items->is_featured;
+                    $pro['is_best_selling'] = $items->is_best_selling;
+                    $pro['price']           = $items->mrp;
+                    $pro['strike_price']    = $items->strike_price;
+                    $pro['save_price']      = $items->strike_price - $items->mrp;
+                    $pro['discount_percentage'] = abs($items->discount_percentage);
+                    $pro['image']           = $items->base_image;
+                    $pro['max_quantity']    = $items->quantity;
+                    $imagePath              = $items->base_image;
+    
+                    $brand_array[] = $items->brand_id;
+    
+                    if (!Storage::exists($imagePath)) {
+                        $path               = asset('assets/logo/no_Image.jpg');
+                    } else {
+                        $url                = Storage::url($imagePath);
+                        $path               = asset($url);
+                    }
+    
+                    $pro['image']           = $path;
+                    $pro['customer_id']     = $customer_id;
+                    $pro['guest_token']     = $citems->guest_token;
+                    $pro['cart_id']         = $citems->id;
+                    $pro['price']           = $citems->price;
+                    $pro['quantity']        = $citems->quantity;
+                    $pro['sub_total']       = $citems->sub_total;
+                    $pro['addons']          = $used_addons;
+                    $grand_total            += $citems->sub_total;
+                    $grand_total            += $addon_total;
+                    $cartTemp[] = $pro;
                 } catch (\Throwable $th) {
                     //throw $th;
                 }
-
-                $total_addon_amount += $addon_total;
-
-                $pro                    = [];
-                $pro['id']              = $items->id;
-                $pro['tax']             = $tax;
-                $pro['tax_percentage']  = $tax_percentage;
-                $pro['hsn_no']          = $items->hsn_code ?? null;
-                $pro['product_name']    = $items->product_name;
-                $pro['category_name']   = $category->name ?? '';
-                $pro['brand_name']      = $items->productBrand->brand_name ?? '';
-                $pro['hsn_code']        = $items->hsn_code;
-                $pro['product_url']     = $items->product_url;
-                $pro['sku']             = $items->sku;
-                $pro['stock_status']    = $items->stock_status;
-                $pro['is_featured']     = $items->is_featured;
-                $pro['is_best_selling'] = $items->is_best_selling;
-                $pro['price']           = $items->mrp;
-                $pro['strike_price']    = $items->strike_price;
-                $pro['save_price']      = $items->strike_price - $items->mrp;
-                $pro['discount_percentage'] = abs($items->discount_percentage);
-                $pro['image']           = $items->base_image;
-                $pro['max_quantity']    = $items->quantity;
-                $imagePath              = $items->base_image;
-
-                $brand_array[] = $items->brand_id;
-
-                if (!Storage::exists($imagePath)) {
-                    $path               = asset('assets/logo/no_Image.jpg');
-                } else {
-                    $url                = Storage::url($imagePath);
-                    $path               = asset($url);
-                }
-
-                $pro['image']           = $path;
-                $pro['customer_id']     = $customer_id;
-                $pro['guest_token']     = $citems->guest_token;
-                $pro['cart_id']         = $citems->id;
-                $pro['price']           = $citems->price;
-                $pro['quantity']        = $citems->quantity;
-                $pro['sub_total']       = $citems->sub_total;
-                $pro['addons']          = $used_addons;
-                $grand_total            += $citems->sub_total;
-                $grand_total            += $addon_total;
-                $cartTemp[] = $pro;
+ 
+             
             }
 
             $tmp['carts'] = $cartTemp;
