@@ -36,14 +36,14 @@ class CartController extends Controller
         $checkCart = Cart::when($customer_id != '', function ($q) use ($customer_id) {
             $q->where('customer_id', $customer_id);
         })->when($customer_id == '' && $guest_token != '', function ($q) use ($guest_token) {
-                $q->where('guest_token', $guest_token);
-            })->where('product_id', $product_id)->first();
+            $q->where('guest_token', $guest_token);
+        })->where('product_id', $product_id)->first();
 
         $getCartToken = Cart::when($customer_id != '', function ($q) use ($customer_id) {
             $q->where('customer_id', $customer_id);
         })->when($customer_id == '' && $guest_token != '', function ($q) use ($guest_token) {
-                $q->where('guest_token', $guest_token);
-            })->first();
+            $q->where('guest_token', $guest_token);
+        })->first();
 
 
         if (isset($checkCart) && !empty($checkCart)) {
@@ -155,8 +155,8 @@ class CartController extends Controller
         $checkCart = Cart::when($customer_id != '', function ($q) use ($customer_id) {
             $q->where('customer_id', $customer_id);
         })->when($customer_id == '' && $guest_token != '', function ($q) use ($guest_token) {
-                $q->where('guest_token', $guest_token);
-            })->where('product_id', $product_id)->first();
+            $q->where('guest_token', $guest_token);
+        })->where('product_id', $product_id)->first();
 
         // $checkCart      = Cart::find($cart_id);
         if ($checkCart) {
@@ -187,8 +187,8 @@ class CartController extends Controller
             $data = Cart::when($customer_id != '', function ($q) use ($customer_id) {
                 $q->where('customer_id', $customer_id);
             })->when($customer_id == '' && $guest_token != '', function ($q) use ($guest_token) {
-                    $q->where('guest_token', $guest_token);
-                })->get();
+                $q->where('guest_token', $guest_token);
+            })->get();
 
             if (isset($data) && count($data) > 0) {
                 foreach ($data as $item) {
@@ -200,8 +200,8 @@ class CartController extends Controller
             Cart::when($customer_id != '', function ($q) use ($customer_id) {
                 $q->where('customer_id', $customer_id);
             })->when($customer_id == '' && $guest_token != '', function ($q) use ($guest_token) {
-                    $q->where('guest_token', $guest_token);
-                })->delete();
+                $q->where('guest_token', $guest_token);
+            })->delete();
 
             $data = $this->getCartListAll($customer_id, $guest_token);
             $error = 0;
@@ -230,8 +230,8 @@ class CartController extends Controller
         $checkCart          = Cart::with(['products', 'products.productCategory'])->when($customer_id != '', function ($q) use ($customer_id) {
             $q->where('customer_id', $customer_id);
         })->when($customer_id == '' && $guest_token != '', function ($q) use ($guest_token) {
-                $q->where('guest_token', $guest_token);
-            })->get();
+            $q->where('guest_token', $guest_token);
+        })->get();
 
         $tmp                = [];
         $grand_total        = 0;
@@ -275,32 +275,36 @@ class CartController extends Controller
                 /**
                  * addon amount calculated here
                  */
-                $addonItems = CartProductAddon::where(['cart_id' => $citems->id, 'product_id' => $items->id])->get();
+                try {
+                    $addonItems = CartProductAddon::where(['cart_id' => $citems->id, 'product_id' => $items->id])->get();
 
-                $addon_total = 0;
-                if (isset($addonItems) && !empty($addonItems) && count($addonItems) > 0) {
-                    foreach ($addonItems as $addItems) {
-                        if (isset($addItems->addonItem->addon) && !empty($addItems->addonItem->addon)) {
+                    $addon_total = 0;
+                    if (isset($addonItems) && !empty($addonItems) && count($addonItems) > 0) {
+                        foreach ($addonItems as $addItems) {
+                            if (isset($addItems->addonItem->addon) && !empty($addItems->addonItem->addon)) {
 
-                            $addons = [];
-                            $addons['addon_id'] = $addItems->addonItem->addon->id;
-                            $addons['title'] = $addItems->addonItem->addon->title;
-                            $addons['description'] = $addItems->addonItem->addon->description;
+                                $addons = [];
+                                $addons['addon_id'] = $addItems->addonItem->addon->id;
+                                $addons['title'] = $addItems->addonItem->addon->title;
+                                $addons['description'] = $addItems->addonItem->addon->description;
 
-                            if (!Storage::exists($addItems->addonItem->addon->icon)) {
-                                $path               = asset('assets/logo/no_Image.jpg');
-                            } else {
-                                $url                = Storage::url($addItems->addonItem->addon->icon);
-                                $path               = asset($url);
+                                if (!Storage::exists($addItems->addonItem->addon->icon)) {
+                                    $path               = asset('assets/logo/no_Image.jpg');
+                                } else {
+                                    $url                = Storage::url($addItems->addonItem->addon->icon);
+                                    $path               = asset($url);
+                                }
+                                $addons['addon_item_id'] = $addItems->addonItem->id;
+                                $addons['icon'] = $path;
+                                $addons['addon_item_label'] = $addItems->addonItem->label;
+                                $addons['amount'] = $addItems->addonItem->amount;
+                                $addon_total += $addItems->addonItem->amount;
+                                $used_addons[] = $addons;
                             }
-                            $addons['addon_item_id'] = $addItems->addonItem->id;
-                            $addons['icon'] = $path;
-                            $addons['addon_item_label'] = $addItems->addonItem->label;
-                            $addons['amount'] = $addItems->addonItem->amount;
-                            $addon_total += $addItems->addonItem->amount;
-                            $used_addons[] = $addons;
                         }
                     }
+                } catch (\Throwable $th) {
+                    //throw $th;
                 }
 
                 $total_addon_amount += $addon_total;
