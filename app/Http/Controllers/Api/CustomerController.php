@@ -96,8 +96,12 @@ class CustomerController extends Controller
             extract($extract);
             eval("\$templateMessage = \"$templateMessage\";");
 
-            $send_mail = new DynamicMail($templateMessage, $emailTemplate->title);
-            Mail::to($request->email)->bcc(['support@gbssystems.com', $request->email])->send($send_mail);
+            try {
+                $send_mail = new DynamicMail($templateMessage, $emailTemplate->title);
+                Mail::to($request->email)->bcc(['support@gbssystems.com', $request->email])->send($send_mail);
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
             // return $send_mail->render();
 
             /** send sms for new customer */
