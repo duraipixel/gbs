@@ -296,11 +296,7 @@
                             6. Once Invoice Made Cannot Be Modified / Cancelled
                         </small>
                     </div>
-                    <div><small> 7. Product payment through online only.</small></div>
-                    <div><small> 8. Product should be collected only in nearby showrooms listed on the product level.</small></div>
-                    <div><small> 9. The delivery branch address will change depending on the product availability.</small></div>
-                    <div><small> 10. Only one order has to be placed from one mail ID.</small></div>
-                    <div><small> 11. Delivery is not available for this offer.</small></div>
+                    
                 </div>
             </td>
             <td colspan="5" style="text-align:right;width:100%;">
