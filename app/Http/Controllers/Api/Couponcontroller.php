@@ -190,7 +190,6 @@ class Couponcontroller extends Controller
                                     /** upddate cart coupon amount */
                                     if( isset($shipping_fee_id) && !empty( $shipping_fee_id ) ) {
                                         $shippingfee_info = ShippingCharge::select('id', 'shipping_title', 'minimum_order_amount', 'charges', 'is_free')->find($shipping_fee_id);
-                                        
                                     }
                                     $update_data = [
                                         'coupon_id' => $coupon->id,
@@ -238,9 +237,8 @@ class Couponcontroller extends Controller
         ];
         DB::table('carts')->where('customer_id', $customer_id)->update($update_data);
         $response['cart_info'] = $this->getCartListAll($customer_id, null, null, null, $shipping_fee_id);
-        $response['status'] = 'success';
-        $response['message'] = 'Coupon removed successfully';
-
+        $response['status']    = 'success';
+        $response['message']   = 'Coupon removed successfully';
         return $response;
     }
 
@@ -260,15 +258,15 @@ class Couponcontroller extends Controller
                                         $q->where('guest_token', $guest_token);
                                     })->get();
 
-        $tmp                = [];
-        $grand_total        = 0;
-        $tax_total          = 0;
+        $tmp                         = [];
+        $grand_total                 = 0;
+        $tax_total                   = 0;
         $product_tax_exclusive_total = 0;
-        $tax_percentage = 0;
-        $total_addon_amount = 0;
-        $cartTemp = [];
-        $brand_array = [];
-        $has_pickup_store = true;
+        $tax_percentage              = 0;
+        $total_addon_amount          = 0;
+        $cartTemp                    = [];
+        $brand_array                 = [];
+        $has_pickup_store            = true;
         if (isset($checkCart) && !empty($checkCart)) {
             foreach ($checkCart as $citems) {
                 

@@ -96,8 +96,9 @@
                                     <select name="coupon_type" id="coupon_type" aria-label="Select a Coupon Type" data-control="select2" data-placeholder="Select Coupon Type..." class="form-select mb-2">
                                         <option value="">Select a Coupon Type</option>
                                         <option value="1" @if(isset($info->coupon_type) && $info->coupon_type == "1") selected="selected" @endif>Product</option>
-                                        {{-- <option value="2" @if(isset($info->coupon_type) && $info->coupon_type == "2") selected="selected" @endif>Customer</option> --}}
+                                        {{-- <option value="2" @if(isset($info->coupon_type) && $info->coupon_type == "2") selected="selected" @endif>Combo Products</option> --}}
                                         <option value="3" @if(isset($info->coupon_type) && $info->coupon_type == "3") selected="selected" @endif>Category</option>
+                                        <option value="4" @if(isset($info->coupon_type) && $info->coupon_type == "4") selected="selected" @endif>Order Value</option>
                                     </select>
                                 </div>
                             </div>
