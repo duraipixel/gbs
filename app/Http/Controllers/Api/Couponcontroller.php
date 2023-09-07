@@ -40,9 +40,10 @@ class Couponcontroller extends Controller
 
             if (isset($coupon) && !empty($coupon)) {
                 /**
-                 * 1.check quantity is available to use
-                 * 2.check coupon can apply for cart products
-                 * 3.get percentage or fixed amount
+                 * 1. check quantity is available to use
+                 * 2. check coupon can apply for cart products
+                 * 3. get percentage or fixed amount
+                 * 4. get percentage or fixed amount For Total Order Amount
                  * 
                  * coupon type 1- product, 2-customer, 3-category
                  */
@@ -125,12 +126,8 @@ class Couponcontroller extends Controller
                                 $response['message'] = 'Coupon not applicable';
                             }
                             break;
-
-                        case '2':
-                            # customer ...
-                            break;
-                        // case '4':
-                        //     return   $this->applyOrderValueCoupon($customer_id);
+                        // case '2':
+                        //     # customer ...
                         //     break;
                         case '4':
                             # category ...
@@ -294,40 +291,7 @@ class Couponcontroller extends Controller
             $response['message'] = 'There is no products on the cart';
         }
         return $response;
-    }
-
-    public function applyOrderValueCoupon($customer_id)
-    {
-        $totalPrice = DB::table('carts')
-            ->join('products', 'carts.product_id', '=', 'products.id')
-            ->where('carts.customer_id', $customer_id)
-            ->sum(DB::raw('gbs_carts.quantity * gbs_products.price'));
-
-        return ['totalPrice' => $totalPrice];
-        // $cart = DB::table('carts')->where('customer_id', $customer_id)->get();
-        // return $cart;
-        // $counpon_type = $coupon->calculate_type === 'percentage' ? '/' : '-';
-        // return $coupon;
-        // $product_amount = 0;
-        // /** upddate cart coupon amount */
-        // if (isset($shipping_fee_id) && !empty($shipping_fee_id)) {
-        //     $shippingfee_info = ShippingCharge::select('id', 'shipping_title', 'minimum_order_amount', 'charges', 'is_free')->find($shipping_fee_id);
-        // }
-        // $update_data = [
-        //     'coupon_id'       => $coupon->id,
-        //     'coupon_amount'   => $product_amount,
-        //     'shipping_fee_id' => $shippingfee_info->id ?? null,
-        //     'shipping_fee'    => $shippingfee_info->charges ?? null
-        // ];
-        // $cart->update($update_data);
-        // return response([
-        //     'status'      => 'success',
-        //     'message'     => 'Coupon applied',
-        //     'coupon_code' => $coupon->coupon_code,
-        //     'coupon_id'   => $coupon->id,
-        //     'cart_info'   => $this->getCartListAll($customer_id, null, null, null, $shipping_fee_id, $product_amount),
-        // ]);
-    }
+    } 
 
     public function removeCoupon(Request $request)
     {
