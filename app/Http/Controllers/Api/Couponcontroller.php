@@ -229,9 +229,9 @@ class Couponcontroller extends Controller
 
     public function applyOrderValueCoupon($customer_id)
     {
-        $totalPrice = DB::table('gbs_carts')
-            ->join('gbs_products', 'gbs_carts.product_id', '=', 'gbs_products.id')
-            ->where('gbs_carts.customer_id', $customer_id)
+        $totalPrice = DB::table('carts')
+            ->join('products', 'carts.product_id', '=', 'products.id')
+            ->where('carts.customer_id', $customer_id)
             ->sum(DB::raw('gbs_carts.quantity * gbs_products.price'));
 
         return ['totalPrice' => $totalPrice];
