@@ -129,8 +129,77 @@ class Couponcontroller extends Controller
                         case '2':
                             # customer ...
                             break;
+                        // case '4':
+                        //     return   $this->applyOrderValueCoupon($customer_id);
+                        //     break;
                         case '4':
-                            return   $this->applyOrderValueCoupon($customer_id);
+                            # category ...
+                            $checkCartData = Cart::selectRaw('gbs_carts.*,gbs_products.product_name, SUM(gbs_carts.sub_total) as category_total')
+                                ->join('products', 'products.id', '=', 'carts.product_id')
+                                ->where('carts.customer_id', $customer_id)
+                                // ->groupBy('carts.product_id')
+                                ->first();
+
+                            if (isset($checkCartData) && !empty($checkCartData)) {
+
+                                if ($checkCartData->category_total >= $coupon->minimum_order_value) {
+                                    /**
+                                     * check percentage or fixed amount
+                                     */
+                                    switch ($coupon->calculate_type) {
+
+                                        case 'percentage':
+                                            $product_amount = percentageAmountOnly($checkCartData->category_total, $coupon->calculate_value);
+                                            $tmp['discount_amount'] = percentageAmountOnly($checkCartData->category_total, $coupon->calculate_value);
+                                            $tmp['coupon_id'] = $coupon->id;
+                                            $tmp['coupon_code'] = $coupon->coupon_code;
+                                            $tmp['coupon_applied_amount'] = number_format((float)$checkCartData->category_total, 2, '.', '');
+                                            $tmp['coupon_type'] = array('discount_type' => $coupon->calculate_type, 'discount_value' => $coupon->calculate_value);
+                                            $overall_discount_percentage = $coupon->calculate_value;
+                                            $couponApplied = $tmp;
+                                            break;
+                                        case 'fixed_amount':
+                                            $product_amount += $coupon->calculate_value;
+                                            $tmp['discount_amount'] = $coupon->calculate_value;
+                                            $tmp['coupon_id'] = $coupon->id;
+                                            $tmp['coupon_code'] = $coupon->coupon_code;
+                                            $tmp['coupon_applied_amount'] = number_format((float)$checkCartData->sub_total, 2, '.', '');
+                                            $tmp['coupon_type']         = array('discount_type' => $coupon->calculate_type, 'discount_value' => $coupon->calculate_value);
+                                            $has_product++;
+                                            $couponApplied[] = $tmp;
+
+                                            break;
+                                        default:
+
+                                            break;
+                                    }
+
+                                    $response['coupon_info'] = $couponApplied;
+                                    $response['overall_applied_discount'] = $overall_discount_percentage;
+                                    $response['coupon_amount'] = number_format((float)$product_amount, 2, '.', '');
+                                    $response['coupon_id'] = $coupon->id;
+                                    $response['coupon_code'] = $coupon->coupon_code;
+                                    $response['status'] = 'success';
+                                    $response['message'] = 'Coupon applied';
+
+                                    /** upddate cart coupon amount */
+                                    if (isset($shipping_fee_id) && !empty($shipping_fee_id)) {
+                                        $shippingfee_info = ShippingCharge::select('id', 'shipping_title', 'minimum_order_amount', 'charges', 'is_free')->find($shipping_fee_id);
+                                    }
+                                    $update_data = [
+                                        'coupon_id' => $coupon->id,
+                                        'coupon_amount' => $product_amount,
+                                        'shipping_fee_id' => $shippingfee_info->id ?? null,
+                                        'shipping_fee' => $shippingfee_info->charges ?? null
+                                    ];
+                                    DB::table('carts')->where('customer_id', $customer_id)->update($update_data);
+
+                                    $response['cart_info'] = $this->getCartListAll($customer_id, null, null, null, $shipping_fee_id, $response['coupon_amount']);
+                                }
+                            } else {
+                                $response['status'] = 'error';
+                                $response['message'] = 'Cart order does not meet coupon minimum order amount';
+                            }
                             break;
                         case '3':
                             # category ...
