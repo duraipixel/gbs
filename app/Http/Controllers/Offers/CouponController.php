@@ -115,7 +115,12 @@ class CouponController extends Controller
             $data       = DB::table('products')->select('id', 'product_name')->where('status', 'published')->get();
             $title      = "Product";
             foreach ($data as $key => $val) {
-                $value[] = "<option value=" . $val->id . ">" . $val->product_name . "</option>";
+                if($name == '4') {
+                    $selected =  $key == 0 ? 'selected' : '';
+                    $value[] = "<option $selected value=" . $val->id . ">" . $val->product_name . "</option>";
+                } else {
+                    $value[] = "<option value=" . $val->id . ">" . $val->product_name . "</option>";
+                }
             }
             return response()->json(["data" => $value, "title" => $title]);
         }
