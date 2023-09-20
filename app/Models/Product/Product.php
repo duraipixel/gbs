@@ -100,7 +100,7 @@ class Product extends Model
 
     public function productMeta()
     {
-        return $this->hasOne(ProductMetaTag::class, 'product_id', 'id')->select('id', 'meta_title', 'meta_keyword', 'meta_description');
+        return $this->hasOne(ProductMetaTag::class, 'product_id', 'id')->select('id','product_id', 'meta_title', 'meta_keyword', 'meta_description');
     }
 
     public function userInfo()
