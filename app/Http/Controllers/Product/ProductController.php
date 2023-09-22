@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Product;
 
 use App\Exports\ProductExport;
 use App\Http\Controllers\Controller;
+use App\Imports\MultiSheetRelatedProductImport;
 use App\Imports\MultiSheetProductImport;
 use App\Imports\StockUpdateImport;
 use App\Imports\TestImport;
@@ -23,6 +24,7 @@ use App\Models\Product\ProductMetaTag;
 use App\Models\Product\ProductRelatedRelation;
 use App\Models\Product\ProductWithAttributeSet;
 use App\Exports\ProductAttributeSetBulkExport;
+use App\Exports\RelatedProductAttributeSetExport;
 use App\Models\Warranty;
 use App\Repositories\ProductRepository;
 use Illuminate\Support\Str;
@@ -659,6 +661,11 @@ class ProductController extends Controller
         Excel::import( new MultiSheetProductImport, request()->file('file') );
         return response()->json(['error'=> 0, 'message' => 'Imported successfully']);
     }
+    public function doRelatedBulkUpload()
+    {
+        Excel::import( new MultiSheetRelatedProductImport, request()->file('file') );
+        return response()->json(['error'=> 0, 'message' => 'Imported successfully']);
+    }
 
     public function doStockUpdate()
     {
@@ -703,6 +710,10 @@ class ProductController extends Controller
     public function exportAttriuteSet()
     {
         return Excel::download(new ProductAttributeSetBulkExport, 'product_arrttiute_set.xlsx');
+    }
+     public function exportAttriuteSetRelatedProduct()
+    {
+        return Excel::download(new RelatedProductAttributeSetExport, 'related_product_arrttiute_set.xlsx');
     }
 
     public function changeImageOrder(Request $request) {

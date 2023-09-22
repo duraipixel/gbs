@@ -296,6 +296,7 @@
                             6. Once Invoice Made Cannot Be Modified / Cancelled
                         </small>
                     </div>
+                    
                 </div>
             </td>
             <td colspan="5" style="text-align:right;width:100%;">

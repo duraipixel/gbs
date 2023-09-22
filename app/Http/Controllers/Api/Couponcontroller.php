@@ -24,25 +24,26 @@ class Couponcontroller extends Controller
         $carts     = Cart::where('customer_id', $customer_id)->get();
         $isApplied = Order::where('customer_id', $customer_id)->where('coupon_code', $coupon_code)->first();
 
-        if(!is_null($isApplied)) {
+        if (!is_null($isApplied)) {
             return response([
                 "status" => 'error',
                 "message" => 'You have already used the coupon.'
             ]);
         }
-         
+
         if ($carts) {
             $coupon = Coupons::where('coupon_code', $coupon_code)
                 ->where('is_discount_on', 'no')
                 ->whereDate('coupons.start_date', '<=', date('Y-m-d'))
                 ->whereDate('coupons.end_date', '>=', date('Y-m-d'))
                 ->first();
-            
+
             if (isset($coupon) && !empty($coupon)) {
                 /**
-                 * 1.check quantity is available to use
-                 * 2.check coupon can apply for cart products
-                 * 3.get percentage or fixed amount
+                 * 1. check quantity is available to use
+                 * 2. check coupon can apply for cart products
+                 * 3. get percentage or fixed amount
+                 * 4. get percentage or fixed amount For Total Order Amount
                  * 
                  * coupon type 1- product, 2-customer, 3-category
                  */
@@ -52,7 +53,7 @@ class Couponcontroller extends Controller
                 $overall_discount_percentage = 0;
                 $couponApplied = [];
                 if ($coupon->quantity > 0) {
-                    
+
                     switch ($coupon->coupon_type) {
                         case '1':
                             # product ...
@@ -100,9 +101,8 @@ class Couponcontroller extends Controller
                                             $response['status'] = 'success';
                                             $response['message'] = 'Coupon applied';
                                             /** upddate cart coupon amount */
-                                            if( isset($shipping_fee_id) && !empty( $shipping_fee_id ) ) {
+                                            if (isset($shipping_fee_id) && !empty($shipping_fee_id)) {
                                                 $shippingfee_info = ShippingCharge::select('id', 'shipping_title', 'minimum_order_amount', 'charges', 'is_free')->find($shipping_fee_id);
-                                                
                                             }
                                             $update_data = [
                                                 'coupon_id' => $coupon->id,
@@ -126,27 +126,19 @@ class Couponcontroller extends Controller
                                 $response['message'] = 'Coupon not applicable';
                             }
                             break;
-
-                        case '2':
-                            # customer ...
-                            break;
-
-                        case '3':
+                        // case '2':
+                        //     # customer ...
+                        //     break;
+                        case '4':
                             # category ...
-                            $checkCartData = Cart::selectRaw('mm_carts.*,mm_products.product_name,mm_product_categories.name,mm_coupon_categories.id as catcoupon_id, SUM(mm_carts.sub_total) as category_total')
-                                                ->join('products', 'products.id', '=', 'carts.product_id')
-                                                ->join('product_categories', 'product_categories.id', '=', 'products.category_id')
-                                                ->join('coupon_categories', function ($join) {
-                                                    $join->on('coupon_categories.category_id', '=', 'product_categories.id');
-                                                    // $join->orOn('coupon_categories.category_id', '=', 'product_categories.parent_id');
-                                                })
-                                                ->where('coupon_categories.coupon_id', $coupon->id )
-                                                ->where('carts.customer_id', $customer_id)
-                                                // ->groupBy('carts.product_id')
-                                                ->first();
+                            $checkCartData = Cart::selectRaw('gbs_carts.*,gbs_products.product_name, SUM(gbs_carts.sub_total) as category_total')
+                                ->join('products', 'products.id', '=', 'carts.product_id')
+                                ->where('carts.customer_id', $customer_id)
+                                // ->groupBy('carts.product_id')
+                                ->first();
 
-                            if( isset( $checkCartData) && !empty( $checkCartData ) ) {
-                                
+                            if (isset($checkCartData) && !empty($checkCartData)) {
+
                                 if ($checkCartData->category_total >= $coupon->minimum_order_value) {
                                     /**
                                      * check percentage or fixed amount
@@ -188,9 +180,8 @@ class Couponcontroller extends Controller
                                     $response['message'] = 'Coupon applied';
 
                                     /** upddate cart coupon amount */
-                                    if( isset($shipping_fee_id) && !empty( $shipping_fee_id ) ) {
+                                    if (isset($shipping_fee_id) && !empty($shipping_fee_id)) {
                                         $shippingfee_info = ShippingCharge::select('id', 'shipping_title', 'minimum_order_amount', 'charges', 'is_free')->find($shipping_fee_id);
-                                        
                                     }
                                     $update_data = [
                                         'coupon_id' => $coupon->id,
@@ -199,7 +190,82 @@ class Couponcontroller extends Controller
                                         'shipping_fee' => $shippingfee_info->charges ?? null
                                     ];
                                     DB::table('carts')->where('customer_id', $customer_id)->update($update_data);
-                                    
+
+                                    $response['cart_info'] = $this->getCartListAll($customer_id, null, null, null, $shipping_fee_id, $response['coupon_amount']);
+                                }
+                            } else {
+                                $response['status'] = 'error';
+                                $response['message'] = 'Cart order does not meet coupon minimum order amount';
+                            }
+                            break;
+                        case '3':
+                            # category ...
+                            $checkCartData = Cart::selectRaw('gbs_carts.*,gbs_products.product_name,gbs_product_categories.name,gbs_coupon_categories.id as catcoupon_id, SUM(gbs_carts.sub_total) as category_total')
+                                ->join('products', 'products.id', '=', 'carts.product_id')
+                                ->join('product_categories', 'product_categories.id', '=', 'products.category_id')
+                                ->join('coupon_categories', function ($join) {
+                                    $join->on('coupon_categories.category_id', '=', 'product_categories.id');
+                                    // $join->orOn('coupon_categories.category_id', '=', 'product_categories.parent_id');
+                                })
+                                ->where('coupon_categories.coupon_id', $coupon->id)
+                                ->where('carts.customer_id', $customer_id)
+                                // ->groupBy('carts.product_id')
+                                ->first();
+
+                            if (isset($checkCartData) && !empty($checkCartData)) {
+
+                                if ($checkCartData->category_total >= $coupon->minimum_order_value) {
+                                    /**
+                                     * check percentage or fixed amount
+                                     */
+                                    switch ($coupon->calculate_type) {
+
+                                        case 'percentage':
+                                            $product_amount = percentageAmountOnly($checkCartData->category_total, $coupon->calculate_value);
+                                            $tmp['discount_amount'] = percentageAmountOnly($checkCartData->category_total, $coupon->calculate_value);
+                                            $tmp['coupon_id'] = $coupon->id;
+                                            $tmp['coupon_code'] = $coupon->coupon_code;
+                                            $tmp['coupon_applied_amount'] = number_format((float)$checkCartData->category_total, 2, '.', '');
+                                            $tmp['coupon_type'] = array('discount_type' => $coupon->calculate_type, 'discount_value' => $coupon->calculate_value);
+                                            $overall_discount_percentage = $coupon->calculate_value;
+                                            $couponApplied = $tmp;
+                                            break;
+                                        case 'fixed_amount':
+                                            $product_amount += $coupon->calculate_value;
+                                            $tmp['discount_amount'] = $coupon->calculate_value;
+                                            $tmp['coupon_id'] = $coupon->id;
+                                            $tmp['coupon_code'] = $coupon->coupon_code;
+                                            $tmp['coupon_applied_amount'] = number_format((float)$checkCartData->sub_total, 2, '.', '');
+                                            $tmp['coupon_type']         = array('discount_type' => $coupon->calculate_type, 'discount_value' => $coupon->calculate_value);
+                                            $has_product++;
+                                            $couponApplied[] = $tmp;
+
+                                            break;
+                                        default:
+
+                                            break;
+                                    }
+
+                                    $response['coupon_info'] = $couponApplied;
+                                    $response['overall_applied_discount'] = $overall_discount_percentage;
+                                    $response['coupon_amount'] = number_format((float)$product_amount, 2, '.', '');
+                                    $response['coupon_id'] = $coupon->id;
+                                    $response['coupon_code'] = $coupon->coupon_code;
+                                    $response['status'] = 'success';
+                                    $response['message'] = 'Coupon applied';
+
+                                    /** upddate cart coupon amount */
+                                    if (isset($shipping_fee_id) && !empty($shipping_fee_id)) {
+                                        $shippingfee_info = ShippingCharge::select('id', 'shipping_title', 'minimum_order_amount', 'charges', 'is_free')->find($shipping_fee_id);
+                                    }
+                                    $update_data = [
+                                        'coupon_id' => $coupon->id,
+                                        'coupon_amount' => $product_amount,
+                                        'shipping_fee_id' => $shippingfee_info->id ?? null,
+                                        'shipping_fee' => $shippingfee_info->charges ?? null
+                                    ];
+                                    DB::table('carts')->where('customer_id', $customer_id)->update($update_data);
+
                                     $response['cart_info'] = $this->getCartListAll($customer_id, null, null, null, $shipping_fee_id, $response['coupon_amount']);
                                 }
                             } else {
@@ -225,7 +291,7 @@ class Couponcontroller extends Controller
             $response['message'] = 'There is no products on the cart';
         }
         return $response;
-    }
+    } 
 
     public function removeCoupon(Request $request)
     {
@@ -238,9 +304,8 @@ class Couponcontroller extends Controller
         ];
         DB::table('carts')->where('customer_id', $customer_id)->update($update_data);
         $response['cart_info'] = $this->getCartListAll($customer_id, null, null, null, $shipping_fee_id);
-        $response['status'] = 'success';
-        $response['message'] = 'Coupon removed successfully';
-
+        $response['status']    = 'success';
+        $response['message']   = 'Coupon removed successfully';
         return $response;
     }
 
@@ -248,30 +313,28 @@ class Couponcontroller extends Controller
     function getCartListAll($customer_id = null, $guest_token = null,  $shipping_info = null, $shipping_type = null, $selected_shipping = null, $coupon_amount = null)
     {
         // dd( $coupon_data );
-        if( $selected_shipping ) {
+        if ($selected_shipping) {
             $shippingfee_info = ShippingCharge::select('id', 'shipping_title', 'minimum_order_amount', 'charges', 'is_free')->find($selected_shipping);
-            
         }
-        
-        $checkCart          = Cart::with(['products', 'products.productCategory'])->when( $customer_id != '', function($q) use($customer_id) {
-                                        $q->where('customer_id', $customer_id);
-                                    })->
-                                    when( $customer_id == '' && $guest_token != '', function($q) use($guest_token) {
-                                        $q->where('guest_token', $guest_token);
-                                    })->get();
 
-        $tmp                = [];
-        $grand_total        = 0;
-        $tax_total          = 0;
+        $checkCart          = Cart::with(['products', 'products.productCategory'])->when($customer_id != '', function ($q) use ($customer_id) {
+            $q->where('customer_id', $customer_id);
+        })->when($customer_id == '' && $guest_token != '', function ($q) use ($guest_token) {
+            $q->where('guest_token', $guest_token);
+        })->get();
+
+        $tmp                         = [];
+        $grand_total                 = 0;
+        $tax_total                   = 0;
         $product_tax_exclusive_total = 0;
-        $tax_percentage = 0;
-        $total_addon_amount = 0;
-        $cartTemp = [];
-        $brand_array = [];
-        $has_pickup_store = true;
+        $tax_percentage              = 0;
+        $total_addon_amount          = 0;
+        $cartTemp                    = [];
+        $brand_array                 = [];
+        $has_pickup_store            = true;
         if (isset($checkCart) && !empty($checkCart)) {
             foreach ($checkCart as $citems) {
-                
+
                 $items = $citems->products;
                 $tax = [];
                 $tax_percentage = 0;
@@ -297,21 +360,21 @@ class Couponcontroller extends Controller
                 /**
                  * addon amount calculated here
                  */
-                $addonItems = CartProductAddon::where(['cart_id' => $citems->id, 'product_id' => $items->id ])->get();
-                
+                $addonItems = CartProductAddon::where(['cart_id' => $citems->id, 'product_id' => $items->id])->get();
+
                 $addon_total = 0;
-                if( isset( $addonItems ) && !empty( $addonItems ) ) {
+                if (isset($addonItems) && !empty($addonItems)) {
                     foreach ($addonItems as $addItems) {
-                        
+
                         $addons = [];
                         $addons['addon_id'] = $addItems->addonItem->addon->id;
                         $addons['title'] = $addItems->addonItem->addon->title;
                         $addons['description'] = $addItems->addonItem->addon->description;
 
-                        if (!Storage::exists( $addItems->addonItem->addon->icon)) {
+                        if (!Storage::exists($addItems->addonItem->addon->icon)) {
                             $path               = asset('assets/logo/no_Image.jpg');
                         } else {
-                            $url                = Storage::url( $addItems->addonItem->addon->icon);
+                            $url                = Storage::url($addItems->addonItem->addon->icon);
                             $path               = asset($url);
                         }
                         $addons['addon_item_id'] = $addItems->addonItem->id;
@@ -320,7 +383,6 @@ class Couponcontroller extends Controller
                         $addons['amount'] = $addItems->addonItem->amount;
                         $addon_total += $addItems->addonItem->amount;
                         $used_addons[] = $addons;
-
                     }
                 }
 
@@ -364,31 +426,30 @@ class Couponcontroller extends Controller
                 $pro['price']           = $citems->price;
                 $pro['quantity']        = $citems->quantity;
                 $pro['sub_total']       = $citems->sub_total;
-                
+
                 $grand_total            += $citems->sub_total;
                 $grand_total            += $addon_total;
                 $cartTemp[] = $pro;
-                
             }
 
             $tmp['carts'] = $cartTemp;
             $tmp['cart_count'] = count($cartTemp);
-            if (isset( $shippingfee_info ) && !empty( $shippingfee_info ) ) {
+            if (isset($shippingfee_info) && !empty($shippingfee_info)) {
                 $tmp['selected_shipping_fees'] = array(
-                                                'id' => $shippingfee_info->id,
-                                                'charges' => $shippingfee_info->charges,
-                                                'shipping_title' => $shippingfee_info->shipping_title
-                                                );
-                
+                    'id' => $shippingfee_info->id,
+                    'charges' => $shippingfee_info->charges,
+                    'shipping_title' => $shippingfee_info->shipping_title
+                );
+
                 $grand_total                = $grand_total + ($shippingfee_info->charges ?? 0);
             }
-            if( isset( $coupon_amount ) && !empty( $coupon_amount ) ) {
+            if (isset($coupon_amount) && !empty($coupon_amount)) {
                 $grand_total = $grand_total - $coupon_amount ?? 0;
             }
 
-            if( count(array_unique($brand_array)) > 1 ) {
+            if (count(array_unique($brand_array)) > 1) {
                 $has_pickup_store = false;
-            } 
+            }
 
             $amount         = filter_var($grand_total, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
             $charges        = ShippingCharge::select('id', 'shipping_title', 'minimum_order_amount', 'charges', 'is_free')->where('status', 'published')->where('minimum_order_amount', '<', $amount)->get();
@@ -404,12 +465,12 @@ class Couponcontroller extends Controller
                 'coupon_amount' => $coupon_amount ?? 0,
                 'addon_amount' => $total_addon_amount,
                 'has_pickup_store' => $has_pickup_store
-                
+
             );
         }
-        
+
         return $tmp;
-    } 
+    }
 
     public function setShippingCharges(Request $request)
     {
@@ -417,9 +478,9 @@ class Couponcontroller extends Controller
         $customer_id = $request->customer_id;
         $shipping_fee_id = $request->shipping_fee_id;
         $coupon_amount = $request->coupon_amount ?? 0;
-        
+
         $fee_info = ShippingCharge::select('id', 'shipping_title', 'minimum_order_amount', 'charges', 'is_free')->find($shipping_fee_id);
-        if( $fee_info ) {
+        if ($fee_info) {
             $update_data = [
                 'shipping_fee_id' => $shipping_fee_id,
                 'shipping_fee' => $fee_info->charges
@@ -429,16 +490,13 @@ class Couponcontroller extends Controller
             $response['data'] = $data;
             $response['error'] = '0';
             $response['message'] = 'Shipping Fee Applied';
-
         } else {
 
             $response['data'] = [];
             $response['error'] = '1';
             $response['message'] = 'There is no products on the cart';
-
         }
-        
-        return $response;
 
+        return $response;
     }
 }

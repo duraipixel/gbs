@@ -13,5 +13,9 @@ class ProductRelatedRelation extends Model
         'from_product_id',
         'to_product_id'
     ];
+    public function product()
+    {
+        return $this->hasOne(Product::class, 'id', 'to_product_id');
+    }
     
 }

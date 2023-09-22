@@ -133,6 +133,40 @@
                 </div>
             </div>
         </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <h3>Related Product</h3>
+                    <div class="row">
+                        <div class="col-8">
+                            <form id="importrelatedform" method="POST" action="{{ route('related.products.bulk.upload') }}"
+                                enctype="multipart/form-data">
+                                @csrf
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Select Import File</label>
+                                            <input type="file" name="file" class="form-control" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 mt-3 pt-5">
+                                        <button type="submit" class="btn btn-primary mb-2">Import</button>                                   
+                                        <a href="{{route('related_product_set_export')}}"><button type="button" class="btn btn-success  mb-2 pl-3">Export</button></a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-4">
+                            <label for=""> Sample Attributes Excel file </label>
+                            <div class="mt-2">
+                                <a href="{{ asset('assets/data/related_product_arrttiute.xlsx') }}"> <i
+                                        class="mdi mdi-file h2"></i> Download Sample</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection
 @section('add_on_script')
@@ -155,6 +189,33 @@
 
                             if (response.error == 0) {
                                 toastr.success('Success', response.message);
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 2000);
+                            } else {
+                                toastr.error('Error', response.message);
+                            }
+
+                        }
+                    });
+
+                }
+            });
+            $("#importrelatedform").validate({
+                submitHandler: function(form) {
+                    var formData = new FormData(form);
+                    $.ajax({
+                        url: form.action,
+                        type: form.method,
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+
+                        success: function(response) {
+
+                            if (response.error == 0) {
+                                toastr.success('Success', response.message);
+                                $('#importrelatedform')[0].reset();
                                 setTimeout(() => {
                                     location.reload();
                                 }, 2000);

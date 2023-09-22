@@ -129,6 +129,7 @@ Route::middleware(['auth'])->group(function(){
     Route::prefix('products')->group(function(){
         Route::get('/', [App\Http\Controllers\Product\ProductController::class, 'index'])->name('products')->middleware(['checkAccess:visible']); 
         Route::get('/upload', [App\Http\Controllers\Product\ProductController::class, 'bulkUpload'])->name('products.upload')->middleware(['checkAccess:editable']); 
+        Route::post('/related/upload/product', [App\Http\Controllers\Product\ProductController::class, 'doRelatedBulkUpload'])->name('related.products.bulk.upload')->middleware(['checkAccess:editable']);
         Route::post('/upload/product', [App\Http\Controllers\Product\ProductController::class, 'doBulkUpload'])->name('products.bulk.upload')->middleware(['checkAccess:editable']); 
         Route::post('/stock/upload/product', [App\Http\Controllers\Product\ProductController::class, 'doStockUpdate'])->name('products.stock.upload')->middleware(['checkAccess:editable']); 
         Route::post('/upload/attribute', [App\Http\Controllers\Product\ProductController::class, 'doAttributesBulkUpload'])->name('products.attribute.upload')->middleware(['checkAccess:editable']); 
@@ -144,6 +145,7 @@ Route::middleware(['auth'])->group(function(){
         
         Route::post('/upload/gallery', [App\Http\Controllers\Product\ProductController::class, 'uploadGallery'])->name('products.upload.gallery');
         Route::get('/product_attriut_set_export', [App\Http\Controllers\Product\ProductController::class, 'exportAttriuteSet'])->name('product_attriut_set_export');
+        Route::get('/related_product_export', [App\Http\Controllers\Product\ProductController::class, 'exportAttriuteSetRelatedProduct'])->name('related_product_set_export');
         Route::get('/export/excel', [App\Http\Controllers\Product\ProductController::class, 'export'])->name('products.export.excel')->middleware(['checkAccess:export']);
         Route::get('/export/pdf', [App\Http\Controllers\Product\ProductController::class, 'exportPdf'])->name('products.export.pdf')->middleware(['checkAccess:export']);
 
