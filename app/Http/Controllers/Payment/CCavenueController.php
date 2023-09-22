@@ -126,8 +126,10 @@ class CCavenueController extends Controller
 
                     if(!is_null($order_info->coupon_code)) {
                         $AppliedCoupon =  Coupons::where('coupon_code', $order_info->coupon_code)->first();
+                        if(isset($AppliedCoupon) && $AppliedCoupon !=null ){
                         $AppliedCoupon->quantity = $AppliedCoupon->quantity - 1;
                         $AppliedCoupon->save();
+                          }
                     }
 
                     if (isset($order_items) && !empty($order_items)) {
