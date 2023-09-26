@@ -218,6 +218,7 @@ class ProductController extends Controller
 
     public function saveForm(Request $request)
     {
+       
         $id                 = $request->id;
         $product_page_type  = $request->product_page_type;
         $isUpdate           = false;
@@ -309,8 +310,9 @@ class ProductController extends Controller
             $product_id = $productInfo->id;
             
             $desc_id = $request->desc_id ?? '';
+            ProductDescription::where('product_id', $product_id)->delete();
             if( isset( $request->title ) && !empty( $request->title ) ) {
-                ProductDescription::where('product_id', $product_id)->delete();
+              
                 for ($i = 0; $i < count($request->title); $i++) {    
                     $ins_desc_array = [];
                     $pro_desc_id = $desc_id[$i] ?? '';
