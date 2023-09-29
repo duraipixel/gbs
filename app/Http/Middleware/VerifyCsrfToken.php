@@ -8,7 +8,8 @@ class VerifyCsrfToken extends Middleware
 {
     
     protected $except = [
-        'razorpay.payment', 'ccavenue.response', 'ccavenue.request', 'ccpayment'
+        'razorpay.payment', 'ccavenue.response', 'ccavenue.request', 'ccpayment',
+        'api/*'
     ];
 
 }
