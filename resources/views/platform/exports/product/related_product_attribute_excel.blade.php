@@ -23,16 +23,23 @@
             @foreach ($list as $item)
             @php
                 $relatedsku=[];
-               foreach($item->productRelated as $related_sku){
+                $related_data="";
+            if(isset($item->productRelated)){
+             foreach($item->productRelated as $related_sku){
                 $relatedsku[]=$related_sku->Product->sku;
                 $related_data=implode(",\n",$relatedsku);
-               }
+                }
+                }
+             
  
                $frequentsku=[];
+               $frequent_data="";
+               if(isset($item->productCrossSale)){
                foreach($item->productCrossSale as $frequent_sku){
                 $frequentsku[]=$frequent_sku->Product->sku;
                 $frequent_data=implode(",\n",$frequentsku);
                }
+            }
 
              @endphp
             <tr>
