@@ -123,11 +123,10 @@ class TestController extends Controller
         }
     }
 
-    public function invoiceSample(Request $request)
+    public function invoiceSample(Request $request,$id)
     {
         $info = 'teste';
-
-        $order_info = Order::find(5);
+        $order_info = Order::find($id);
         $globalInfo = GlobalSettings::first();
         // $pdf = PDF::loadView('platform.invoice.index', compact('order_info', 'globalInfo'));    
         // Storage::put('public/invoice_order/'.$order_info->order_no.'.pdf', $pdf->output());

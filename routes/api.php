@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
+Route::get('/test-invoice/{id}', [App\Http\Controllers\TestController::class, 'invoiceSample']);
 Route::get('/get/site/info', [App\Http\Controllers\Api\SiteController::class, 'siteInfo']);
 Route::get('/get/home/details', [App\Http\Controllers\Api\CommonController::class, 'getAllHomeDetails']);
 Route::get('/get/home/service/places', [App\Http\Controllers\Api\CommonController::class, 'getHomeServicePlaces']);
