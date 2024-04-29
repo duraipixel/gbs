@@ -124,7 +124,9 @@ class TestController extends Controller
     }
 
     public function invoiceSample(Request $request,$id)
-    {
+    {  
+
+        dd(1);
         $info = 'teste';
         $order_info = Order::find($id);
         $globalInfo = GlobalSettings::first();
